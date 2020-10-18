@@ -1,0 +1,72 @@
+.App {
+  text-align: center;
+}
+
+.navbar{
+  background-color: rgb(209, 60, 60);
+  height: 8vh;
+  /* font-family: 'Kaushan Script', cursive; */
+}
+
+.navbar__logo{
+  font-family: 'Kaushan Script', cursive;
+  color: white;
+  padding: 5px;
+  cursor: pointer;
+  font-size: 30px;
+}
+
+.navbar__icons{
+  float: right;
+  margin-top: -6vh !important;
+  margin: 0 10px;
+}
+
+.login{
+  width: 40vw;
+  margin: 20px auto;
+  background-color: whitesmoke;
+  border: 1px lightgray solid;
+}
+
+.login__box{
+  padding: 50px;
+}
+
+.login__box button{
+  margin: 20px 0;
+}
+
+.navbar__dasboard{
+  float: left;
+  margin-top: -6vh;
+}
+
+.login__title{
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+.dashmenu{
+  float: left;
+  width: 250px;
+  background-color: whitesmoke;
+  border: 1px lightgray solid;
+  height: 92vh;
+}
+
+.dashmenu__item{
+  cursor: pointer;
+  margin: 5px auto;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  height: 60px;
+  /* padding: 20px; */
+}
+.dashboard{
+  margin-right: 50px;
+  padding: 20px;
+  width: 70vw;
+  float: right;
+}
