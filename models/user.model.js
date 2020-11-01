@@ -7,4 +7,4 @@ const userSchema = new mongoose.Schema({
     email:{type:String,required:true}
 })
 
-mongoose.model('Admin',userSchema)
+mongoose.model('admin',userSchema)

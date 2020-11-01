@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
-const Admin = mongoose.model("Admin")
+const admin = mongoose.model("admin")
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { JWT_SECRET } = require('../config/keys')
@@ -11,7 +11,7 @@ router.post('/signup',(req,res)=>{
     if(!username || !password || !email || !usertype){
         return res.status(422).json({error:"please enter all the required fields"})
     }
-    Admin.findOne({email:email})
+    admin.findOne({email:email})
     .then(saveduser => {
         if(saveduser){
             return res.status(422).json({error:"user already exists..."})
@@ -39,7 +39,7 @@ router.post('/signin',(req,res)=>{
     if(!email || !password){
         return res.status(422).json({error:"please enter all fields"})
     }
-    Admin.findOne({email:email})
+    admin.findOne({email:email})
     .then(saveduser => {
         if(!saveduser){
             return res.status(422).json({error:"Invalid Email or Password"})

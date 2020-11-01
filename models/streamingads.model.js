@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const ObjectId = mongoose.SchemaType
+// const ObjectId = mongoose.Schema.Types
 
 const streamingadsSchema = new mongoose.Schema({
     AdTitle:{type:String,required:true},
