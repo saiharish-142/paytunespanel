@@ -41,7 +41,7 @@ function Dashboard() {
                             <td></td>
                             <td>{ad.PricingModel}</td>
                             <td>{ad.Category}</td>
-                            <td>{<td>{ad.createdOn ? ad.createdOn.substring(0,10) : ad.createdAt.substring(0,10)}</td></td>
+                            <td>{ad.createdOn ? ad.createdOn.substring(0,10) : ad.createdAt.substring(0,10)}</td>
                             <td className='mangeads__report' onClick={()=>history.push(`/manageAds/report/${ad._id}`)}>Report</td>
                         </tr>
                     })}
