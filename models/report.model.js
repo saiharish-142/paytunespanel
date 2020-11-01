@@ -8,7 +8,10 @@ const reportSchema = new mongoose.Schema({
     dealID:{type:String},
     impressions:{type:Number},
     Spend:{type:String},
-    avgspend:{type:String}
+    avgSpend:{type:String},
+    region:{type:String},
+    complete:{type:Number},
+    clicks:{type:Number}
 },{timestamps:true})
 
 mongoose.model('Report',reportSchema)
