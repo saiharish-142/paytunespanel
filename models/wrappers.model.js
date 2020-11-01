@@ -21,4 +21,4 @@ const wrapperSchema = new mongoose.Schema({
     frequencycheck:{type:Boolean}
 },{timestamps:true})
 
-mongoose.model('Wrapper',wrapperSchema)
+mongoose.model("wrappers",wrapperSchema)

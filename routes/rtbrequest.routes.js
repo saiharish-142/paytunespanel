@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
-const Rtbrequest = mongoose.model('Rtbrequest')
+const Rtbrequest = mongoose.model('rtbrequests')
 const adminauth  = require('../authenMiddleware/adminauth')
 
 router.get('/rtbrs',adminauth,(req,res)=>{

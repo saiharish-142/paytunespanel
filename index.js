@@ -18,8 +18,8 @@ cron.schedule('00 02 * * *',function(){
     var appIds = []
     const Report = mongoose.model('Report')
     const trackinglogs = mongoose.model('trackinglogs')
-    const StreamingAds = mongoose.model('StreamingAds')
-    const Rtbrequest = mongoose.model('Rtbrequest')
+    const StreamingAds = mongoose.model('streamingads')
+    const Rtbrequest = mongoose.model('rtbrequests')
     const publisherapps = mongoose.model('publisherapps')
     // console.log(fd)
     StreamingAds.find()

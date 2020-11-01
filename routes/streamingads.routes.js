@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const router = express.Router()
-const StreamingAds = mongoose.model('StreamingAds')
+const StreamingAds = mongoose.model('streamingads')
 const adminauth = require('../authenMiddleware/adminauth')
 
 router.get('/allads',adminauth,(req,res)=>{

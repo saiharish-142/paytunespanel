@@ -69,4 +69,4 @@ const streamingadsSchema = new mongoose.Schema({
     TargetImpressions:{type:String}
 },{timestamps:true})
 
-mongoose.model('StreamingAds',streamingadsSchema)
+mongoose.model("streamingads" ,streamingadsSchema)

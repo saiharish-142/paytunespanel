@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const router = express.Router()
-const Wrapper = mongoose.model('Wrapper')
+const Wrapper = mongoose.model('wrappers')
 const adminauth = require('../authenMiddleware/adminauth')
 
 router.get('/allwrappers',(req,res)=>{

@@ -3,8 +3,8 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const Report = mongoose.model('Report')
 const trackinglogs = mongoose.model('trackinglogs')
-const StreamingAds = mongoose.model('StreamingAds')
-const Rtbrequest = mongoose.model('Rtbrequest')
+const StreamingAds = mongoose.model('streamingads')
+const Rtbrequest = mongoose.model('rtbrequests')
 const adminauth  = require('../authenMiddleware/adminauth')
 
 router.get('/reports',adminauth,(req,res)=>{

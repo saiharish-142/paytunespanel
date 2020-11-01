@@ -212,4 +212,4 @@ const rtbrequestSchema = new mongoose.Schema({
     bidstatus:{type:Boolean}
 },{timestamps:true})
 
-mongoose.model('Rtbrequest',rtbrequestSchema)
+mongoose.model("rtbrequests",rtbrequestSchema)
