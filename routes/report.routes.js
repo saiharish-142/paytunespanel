@@ -34,7 +34,7 @@ router.post('/createReport',(req,res)=>{
             campaignId:campaignId,
             appId:appId
         })
-        .populate('rtbreqid')
+        // .populate('rtbreqid')
         .then(logs=>{
             if(!logs){
                 return res.json({Message:'there are no logs on th given information'})
@@ -52,7 +52,7 @@ router.post('/createReport',(req,res)=>{
             completed = data.filter(x => x.Type==='complete')
             // console.log(data)
             // data = data.filter(x => x.appId===appId)
-            Rtbrequest
+            // Rtbrequest
             const report = new Report({
                 Date:date,
                 Publisher:appId,

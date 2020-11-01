@@ -9,7 +9,7 @@ const reportSchema = new mongoose.Schema({
     impressions:{type:Number},
     Spend:{type:String},
     avgSpend:{type:String},
-    region:{type:String},
+    region:[{type:String}],
     complete:{type:Number},
     clicks:{type:Number}
 },{timestamps:true})
