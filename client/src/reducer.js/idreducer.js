@@ -1,6 +1,6 @@
-export const InitialState = null
-export const reducer = (state, action) => {
-    if(action.type==="USER"){
+export const InitialState1 = null
+export const reducer1 = (state, action) => {
+    if(action.type==="ID"){
         return action.payload;
     }
     if(action.type==="CLEAR"){

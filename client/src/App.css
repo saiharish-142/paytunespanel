@@ -40,6 +40,7 @@
 .navbar__dasboard{
   float: left;
   margin-top: -6vh;
+  z-index:2;
 }
 
 .login__title{
@@ -65,8 +66,43 @@
   /* padding: 20px; */
 }
 .dashboard{
-  margin-right: 50px;
+  margin: 10px auto;
+  /* margin-right: 50px; */
   padding: 20px;
   width: 70vw;
-  float: right;
+  /* float: right; */
+}
+
+.mangeads__report{
+  cursor: pointer;
+}
+
+.mangeads__report:hover{
+  color: blue;
+  /* font-size: medium; */
+}
+
+@media screen and (max-width: 700px){
+  .navbar{
+    height: 10vh;
+  }
+  .navbar__icons{
+  margin-top: -7vh !important;
+  /* margin-top: -20vh; */
+    /* display: none; */
+  }
+  .navbar__logo{
+    font-size: 26px;
+    padding-top: 10px;
+  }
+  .login{
+    width: 80vw;
+  }
+  .login__box{
+    padding: 30px;
+  }
+  .dashboard{
+    overflow: auto;
+    width: 90vw;
+  }
 }

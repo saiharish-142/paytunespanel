@@ -1,6 +1,8 @@
 import React,{ useEffect,useState } from 'react'
+import { useHistory } from 'react-router-dom'
 
 function Dashboard() {
+    const history = useHistory()
     const [streamingads, setStreamingads] = useState([])
     useEffect(() => {
         fetch('/streamingads/allads',{
@@ -40,7 +42,7 @@ function Dashboard() {
                             <td>{ad.PricingModel}</td>
                             <td>{ad.Category}</td>
                             <td>{ad.createdAt.substring(0,10)}</td>
-                            <td></td>
+                            <td className='mangeads__report' onClick={()=>history.push(`/manageAds/report/${ad._id}`)}>Report</td>
                         </tr>
                     })}
                 </tbody>

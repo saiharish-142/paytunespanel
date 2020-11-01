@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 
 function Login() {
     const history = useHistory()
-    const {state,dispatch} = useContext(UserContext)
+    const {dispatch} = useContext(UserContext)
     const [email, setemail] = useState('')
     const [password, setpassword] = useState('')
     const login = () =>{
@@ -38,7 +38,7 @@ function Login() {
             }}>
                 <div className='login__title'>Log In</div>
                 <input placeholder='Email' required value={email} onChange={(e)=>setemail(e.target.value)} />
-                <input placeholder='Password' required value={password} onChange={(e)=>setpassword(e.target.value)} />
+                <input type='password' placeholder='Password' required value={password} onChange={(e)=>setpassword(e.target.value)} />
                 <button className='btn'>login</button>
             </form>
         </div>

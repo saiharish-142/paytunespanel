@@ -5,7 +5,7 @@ function Dashmenu() {
     const history = useHistory()
     return (
         <div className='dashmenu'>
-            <div className='dashmenu__item' onClick={()=>history.push('/dashbord')}>
+            <div className='dashmenu__item' onClick={()=>history.push('/manageAds')}>
                 <i className='material-icons'>equalizer</i>
                 <div>Dashboard</div>
             </div>
