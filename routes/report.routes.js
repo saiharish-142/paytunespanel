@@ -9,6 +9,7 @@ const adminauth  = require('../authenMiddleware/adminauth')
 
 router.get('/reports',adminauth,(req,res)=>{
     Report.find()
+    .populate('Publisher')
     .sort('-createdAt')
     .then(reports=>{
         res.json(reports)

@@ -9,7 +9,7 @@ const cron = require('node-cron')
 app.use(express.json())
 app.use(cors())
 
-cron.schedule('00 00 * * *',function(){
+cron.schedule('00 02 * * *',function(){
     var d = new Date()
     d.setDate(d.getDate()-1);
     var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()

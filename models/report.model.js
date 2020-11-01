@@ -3,7 +3,7 @@ const { ObjectId } = mongoose.Schema.Types
 
 const reportSchema = new mongoose.Schema({
     Date:{type:Date},
-    Publisher:{type:ObjectId},
+    Publisher:{type:ObjectId,ref:'publisherapps'},
     mediatype:{type:String},
     dealID:{type:String},
     impressions:{type:Number},
