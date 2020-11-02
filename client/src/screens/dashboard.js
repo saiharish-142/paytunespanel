@@ -1,5 +1,6 @@
 import React,{ useEffect,useState } from 'react'
 import { useHistory } from 'react-router-dom'
+import DataTable from '../components/CampTable'
 
 function Dashboard() {
     const history = useHistory()
@@ -19,34 +20,8 @@ function Dashboard() {
     }, [])
     return (
         <div className='dashboard'>
-            {streamingads.length ? <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Advertiser</th>
-                        <th>Pricing</th>
-                        <th>RO from Advertiser</th>
-                        <th>Pricing Model</th>
-                        <th>Category</th>
-                        <th>Created On</th>
-                        <th>Report</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {streamingads.map((ad,i)=>{
-                        return <tr key={i}>
-                            <td>{ad.AdTitle}</td>
-                            <td>{ad.Advertiser}</td>
-                            <td>{ad.Pricing !== '0' && ad.Pricing}</td>
-                            <td></td>
-                            <td>{ad.PricingModel}</td>
-                            <td>{ad.Category}</td>
-                            <td>{ad.createdOn ? ad.createdOn.substring(0,10) : ad.createdAt.substring(0,10)}</td>
-                            <td className='mangeads__report' onClick={()=>history.push(`/manageAds/report/${ad._id}`)}>Report</td>
-                        </tr>
-                    })}
-                </tbody>
-            </table> : <div> Loading... </div>}
+            <DataTable streamingads={streamingads} />
+            {streamingads.length ? "": <div> Loading... </div>}
         </div>
     )
 }

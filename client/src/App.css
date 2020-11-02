@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  min-height: 100vh;
+  /* height: fit-content !important; */
+  background-color: whitesmoke;
 }
 
 .navbar{
@@ -25,7 +28,6 @@
 .login{
   width: 40vw;
   margin: 20px auto;
-  background-color: whitesmoke;
   border: 1px lightgray solid;
 }
 
@@ -69,7 +71,7 @@
   margin: 10px auto;
   /* margin-right: 50px; */
   padding: 20px;
-  width: 70vw;
+  width: 80vw;
   /* float: right; */
 }
 

@@ -80,8 +80,8 @@ export default function DetailedTable() {
     }, [id])
     // console.log(id)
     return (
-        <>
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Detailed Report</div>
+        <div style={{paddingBottom:'50px'}}>
+        <div style={{margin:'0px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Detailed Report</div>
         <button 
             onClick={()=>history.push(`/manageAds/report/${state1}`)} 
             className='btn #424242 grey darken-3'
@@ -149,7 +149,7 @@ export default function DetailedTable() {
             </TableBody>
         </Table>
         </TableContainer>
-        <TableContainer style={{margin:'60px auto',width:'fit-content'}} component={Paper}>
+        <TableContainer style={{margin:'50px auto 0 auto',width:'fit-content'}} component={Paper}>
         <Typography variant="h6" id="tableTitle" component="div">
             Publishers wise Report
         </Typography>
@@ -211,6 +211,6 @@ export default function DetailedTable() {
             </TableBody>
         </Table>
         </TableContainer>
-        </>
+        </div>
     );
 }

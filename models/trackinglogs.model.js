@@ -7,7 +7,7 @@ const trackinglogsSchema = new mongoose.Schema({
     appId:{type:ObjectId,required:true},
     campaignId:{type:ObjectId,required:true},
     rtbreqid:{type:ObjectId},
-    date:{type:Date,required:true},
+    date:{type:String,required:true},
     region:{type:String},
     ifa:{type:String}
 },{timestamps:true})

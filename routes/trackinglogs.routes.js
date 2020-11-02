@@ -12,6 +12,28 @@ router.get('/trackinglogs',adminauth,(req,res)=>{
     .catch(err => console.log(err))
 })
 
+router.get('/logbyDate',adminauth,(req,res)=>{
+    trackinglogs.find({date:req.body.date})
+    .then(result=>{
+        res.json(result)
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+})
+
+router.get('/logbtdet',adminauth,(req,res)=>{
+    trackinglogs.find({
+        date:req.body.date,
+        campaignId:req.body.campaignId ,
+        appId:req.body.appId
+    })
+    .then(result=>{
+        res.json(result)
+    })
+    .catch(err => console.log(err))
+})
+
 router.post('/addlogs',adminauth, (req,res)=>{
     const { Type,id,appId, campaignId, rtbreqid, date, region, ifa } = req.body
     if(!Type || !appId || !campaignId || !rtbreqid || !date){

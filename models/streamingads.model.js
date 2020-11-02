@@ -66,7 +66,8 @@ const streamingadsSchema = new mongoose.Schema({
     Duration:{type:String},
     maxARPU:{type:Number},
     minARPU:{type:Number},
-    TargetImpressions:{type:String}
+    TargetImpressions:{type:String},
+    createdOn:{type:Date}
 },{timestamps:true})
 
 mongoose.model("streamingads" ,streamingadsSchema)

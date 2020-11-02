@@ -6,7 +6,7 @@ const adminauth = require('../authenMiddleware/adminauth')
 
 router.get('/allads',adminauth,(req,res)=>{
     StreamingAds.find()
-    .sort('-updatedAt')
+    .sort('-createdOn')
     .then(ads=>{
         res.json(ads)
     })

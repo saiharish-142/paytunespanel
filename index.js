@@ -13,7 +13,7 @@ cron.schedule('00 02 * * *',function(){
     var d = new Date()
     d.setDate(d.getDate()-1);
     var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
-    var yd = new Date(dte)
+    // var yd = new Date(dte)
     var camIds = []
     var appIds = []
     const Report = mongoose.model('Report')
@@ -51,7 +51,7 @@ cron.schedule('00 02 * * *',function(){
         var completed = [];
         var region = [];
         trackinglogs.find({
-            date:'2020-10-22T00:00:00.000Z',
+            date:dte,
             campaignId:campaignId,
             appId:appId
         })
@@ -68,16 +68,28 @@ cron.schedule('00 02 * * *',function(){
             })
             region = [...new Set(region)];
             // region = logs[0].region
-            impressions = data.filter(x => x.Type==='impression')
-            if(appId === '5f91ca4441375c24943f4756'){
-                clicked = data.filter(x => x.Type==='clicktracking')
-                // console.log('spotify')
-            }else{
-                clicked = data.filter(x => x.Type==='companionclicktracking')
-                // console.log('not spotify')
-            }
-            completed = data.filter(x => x.Type==='complete')
-            // console.log(data)
+            if(data[0].Type){
+                impressions = data.filter(x => x.Type==='impression')
+                if(appId === '5f91ca4441375c24943f4756'){
+                    clicked = data.filter(x => x.Type==='clicktracking')
+                    // console.log('spotify')
+                }else{
+                    clicked = data.filter(x => x.Type==='companionclicktracking')
+                    // console.log('not spotify')
+                }
+                completed = data.filter(x => x.Type==='complete')
+            }// console.log(data)
+            if(data[0].type){
+                impressions = data.filter(x => x.type==='impression')
+                if(appId === '5f91ca4441375c24943f4756'){
+                    clicked = data.filter(x => x.type==='clicktracking')
+                    // console.log('spotify')
+                }else{
+                    clicked = data.filter(x => x.type==='companionclicktracking')
+                    // console.log('not spotify')
+                }
+                completed = data.filter(x => x.type==='complete')
+            }// console.log(data)
             // data = data.filter(x => x.appId===appId)
             // Rtbrequest
             const report = new Report({
