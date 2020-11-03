@@ -8,6 +8,9 @@ router.get('/trackinglogs',adminauth,(req,res)=>{
     trackinglogs.find()
     .limit(100)
     .then(logs=>{
+        if(!logs.length){
+            return res.status(422).json({error:"not found"})
+        }
         res.json(logs)
     })
     .catch(err => console.log(err))
@@ -16,6 +19,9 @@ router.get('/trackinglogs',adminauth,(req,res)=>{
 router.get('/trackinglogs/:id',adminauth,(req,res)=>{
     trackinglogs.find({_id:req.params.id})
     .then(logs=>{
+        if(!logs.length){
+            return res.status(422).json({error:"not found"})
+        }
         res.json(logs)
     })
     .catch(err => console.log(err))
@@ -24,6 +30,9 @@ router.get('/trackinglogs/:id',adminauth,(req,res)=>{
 router.get('/logbyDate',adminauth,(req,res)=>{
     trackinglogs.find({date:req.body.date})
     .then(result=>{
+        if(!result.length){
+            return res.status(422).json({error:"not found"})
+        }
         res.json(result)
     })
     .catch(err=>{
@@ -36,6 +45,9 @@ router.get('/logbyDate/:num',adminauth,(req,res)=>{
     .limit(100)
     .skip(100*num)
     .then(result=>{
+        if(!result.length){
+            return res.status(422).json({error:"not found"})
+        }
         res.json(result)
     })
     .catch(err=>{
@@ -49,6 +61,9 @@ router.get('/logbtdet',adminauth,(req,res)=>{
         campaignId:req.body.campaignId
     })
     .then(result=>{
+        if(!result.length){
+            return res.status(422).json({error:"not found"})
+        }
         res.json(result)
     })
     .catch(err => console.log(err))
@@ -61,6 +76,9 @@ router.get('/logbtdet',adminauth,(req,res)=>{
         appId:req.body.appId
     })
     .then(result=>{
+        if(!result.length){
+            return res.status(422).json({error:"not found"})
+        }
         res.json(result)
     })
     .catch(err => console.log(err))
