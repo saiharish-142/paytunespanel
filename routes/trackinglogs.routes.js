@@ -12,6 +12,14 @@ router.get('/trackinglogs',adminauth,(req,res)=>{
     .catch(err => console.log(err))
 })
 
+router.get('/trackinglogs/:id',adminauth,(req,res)=>{
+    trackinglogs.find({_id:req.params.id})
+    .then(logs=>{
+        res.json(logs)
+    })
+    .catch(err => console.log(err))
+})
+
 router.get('/logbyDate',adminauth,(req,res)=>{
     trackinglogs.find({date:req.body.date})
     .then(result=>{
@@ -25,7 +33,18 @@ router.get('/logbyDate',adminauth,(req,res)=>{
 router.get('/logbtdet',adminauth,(req,res)=>{
     trackinglogs.find({
         date:req.body.date,
-        campaignId:req.body.campaignId ,
+        campaignId:req.body.campaignId
+    })
+    .then(result=>{
+        res.json(result)
+    })
+    .catch(err => console.log(err))
+})
+
+router.get('/logbtdet',adminauth,(req,res)=>{
+    trackinglogs.find({
+        date:req.body.date,
+        campaignId:req.body.campaignId,
         appId:req.body.appId
     })
     .then(result=>{

@@ -9,6 +9,60 @@ const cron = require('node-cron')
 app.use(express.json())
 app.use(cors())
 
+// var d = new Date()
+// d.setDate(d.getDate()-1);
+// var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+// var fd = new Date(dte)
+// cron.schedule('00 14 * * *',function(){
+//     // var camIds = []
+//     const Report = mongoose.model('Report')
+//     const trackinglogs = mongoose.model('trackinglogs')
+//     const StreamingAds = mongoose.model('StreamingAds')
+//     const Rtbrequest = mongoose.model('Rtbrequest')
+//     // console.log(fd)
+//     StreamingAds.find()
+//     .then(ads=>{
+//         camIds = ads.map(ad => {
+//             return ad._id
+//         })
+//     })
+//     // for(var i=0;i<=10;i++)
+//     // console.log('started')
+// })
+
+mongoose.connect(MONGOURI,{useNewUrlParser: true,useFindAndModify:false, useUnifiedTopology: true})
+mongoose.connection.on('connected',() => {
+    console.log("connected to database.....")
+})
+mongoose.connection.on('error',err=>{
+    console.log('error in connection',err)
+})
+
+require('./models/user.model')
+require('./models/streamingads.model')
+require('./models/publisherapps.model')
+require('./models/trackinglogs.model')
+require('./models/wrappers.model')
+require('./models/rtbrequests.model')
+require('./models/report.model')
+
+app.use('/auth',require('./routes/user.routes'))
+app.use('/streamingads',require('./routes/streamingads.routes'))
+app.use('/publishers',require('./routes/publisherapps.routes'))
+app.use('/logs',require('./routes/trackinglogs.routes'))
+app.use('/wrapper',require('./routes/wrapper.routes'))
+app.use('/report',require('./routes/report.routes'))
+app.use('/rtbreq',require('./routes/rtbrequest.routes'))
+
+if(process.env.NODE_ENV==="production"){
+    app.use(express.static('client/build'))
+    const path = require('path')
+    app.get("*",(req,res)=>{
+        res.sendFile(path.resolve(__dirname,'client','build','index.html'))
+    })
+}
+
+app.listen(port, () => console.log(`app listening on port ${port}!`))
 cron.schedule('00 02 * * *',function(){
     var d = new Date()
     d.setDate(d.getDate()-1);
@@ -58,7 +112,7 @@ cron.schedule('00 02 * * *',function(){
         // .populate('rtbreqid')
         .then(logs=>{
             console.log(logs.length)
-            if(!logs){
+            if(!logs.length){
                 console.log('ntg')
                 return res.json({Message:'there are no logs on th given information'})
             }
@@ -114,57 +168,3 @@ cron.schedule('00 02 * * *',function(){
         .catch(err=>console.log(err))
     }
 })
-// var d = new Date()
-// d.setDate(d.getDate()-1);
-// var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
-// var fd = new Date(dte)
-// cron.schedule('00 14 * * *',function(){
-//     // var camIds = []
-//     const Report = mongoose.model('Report')
-//     const trackinglogs = mongoose.model('trackinglogs')
-//     const StreamingAds = mongoose.model('StreamingAds')
-//     const Rtbrequest = mongoose.model('Rtbrequest')
-//     // console.log(fd)
-//     StreamingAds.find()
-//     .then(ads=>{
-//         camIds = ads.map(ad => {
-//             return ad._id
-//         })
-//     })
-//     // for(var i=0;i<=10;i++)
-//     // console.log('started')
-// })
-
-mongoose.connect(MONGOURI,{useNewUrlParser: true,useFindAndModify:false, useUnifiedTopology: true})
-mongoose.connection.on('connected',() => {
-    console.log("connected to database.....")
-})
-mongoose.connection.on('error',err=>{
-    console.log('error in connection',err)
-})
-
-require('./models/user.model')
-require('./models/streamingads.model')
-require('./models/publisherapps.model')
-require('./models/trackinglogs.model')
-require('./models/wrappers.model')
-require('./models/rtbrequests.model')
-require('./models/report.model')
-
-app.use('/auth',require('./routes/user.routes'))
-app.use('/streamingads',require('./routes/streamingads.routes'))
-app.use('/publishers',require('./routes/publisherapps.routes'))
-app.use('/logs',require('./routes/trackinglogs.routes'))
-app.use('/wrapper',require('./routes/wrapper.routes'))
-app.use('/report',require('./routes/report.routes'))
-app.use('/rtbreq',require('./routes/rtbrequest.routes'))
-
-if(process.env.NODE_ENV==="production"){
-    app.use(express.static('client/build'))
-    const path = require('path')
-    app.get("*",(req,res)=>{
-        res.sendFile(path.resolve(__dirname,'client','build','index.html'))
-    })
-}
-
-app.listen(port, () => console.log(`app listening on port ${port}!`))
