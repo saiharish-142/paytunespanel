@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const {ObjectId} = mongoose.Schema.Types
 
 const trackinglogsSchema = new mongoose.Schema({
-    Type:{type:String,required:true},
-    id:{type:ObjectId},
     appId:{type:ObjectId,required:true},
+    id:{type:ObjectId},
     campaignId:{type:ObjectId,required:true},
+    type:{type:String,required:true},
     rtbreqid:{type:ObjectId},
     date:{type:String,required:true},
     createdOn:{type:Date,required:true},

@@ -56,8 +56,8 @@ const streamingadsSchema = new mongoose.Schema({
             Name:{type:String},
             S3path:{type:String},
             SampleRate:{type:String},
-            Tracks:{type:String},
-            Type:{type:String}
+            type:{type:String},
+            Tracks:{type:String}
             // Id:{type:ObjectId}
         }]
     }],

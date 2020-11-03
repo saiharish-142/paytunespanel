@@ -74,7 +74,7 @@ cron.schedule('45 21 * * *',function(){
     StreamingAds.find()
     .then(ads=>{
         camIds = ads.map(ad => {
-            return {_id: ad._id, type:ad.Linear[0].MediaFiles[0].Type}
+            return {_id: ad._id, type:ad.Linear[0].MediaFiles[0].type}
         })
         publisherapps.find()
         .then(apps => {
@@ -117,37 +117,20 @@ cron.schedule('45 21 * * *',function(){
                 return log.region 
             })
             region = [...new Set(region)];
-            // region = logs[0].region
-            if(data[0].Type){
-                impressions = data.filter(x => x.Type==='impression')
-                if(appId === '5d3f052e979a1c2391016c04'){
-                    clicked = data.filter(x => x.Type==='clicktracking')
-                    clicked2 = data.filter(x => x.Type==='click')
-                    clicked = data.concat(clicked2)
-                    // console.log('spotify')
-                }else{
-                    clicked = data.filter(x => x.Type==='companionclicktracking')
-                    clicked2 = data.filter(x => x.Type==='click')
-                    clicked = data.concat(clicked2)
-                    // console.log('not spotify')
-                }
-                completed = data.filter(x => x.Type==='complete')
-            }// console.log(data)
-            if(data[0].type){
-                impressions = data.filter(x => x.type==='impression')
-                if(appId === '5d3f052e979a1c2391016c04'){
-                    clicked = data.filter(x => x.type==='clicktracking')
-                    clicked2 = data.filter(x => x.Type==='click')
-                    clicked = data.concat(clicked2)
-                    // console.log('spotify')
-                }else{
-                    clicked = data.filter(x => x.type==='companionclicktracking')
-                    clicked2 = data.filter(x => x.Type==='click')
-                    clicked = data.concat(clicked2)
-                    // console.log('not spotify')
-                }
-                completed = data.filter(x => x.type==='complete')
-            }// console.log(data)
+            impressions = data.filter(x => x.type==='impression')
+            if(appId === '5f91ca4441375c24943f4756'){
+                clicked = data.filter(x => x.type==='clicktracking')
+                clicked2 = data.filter(x => x.type==='click')
+                clicked = data.concat(clicked2)
+                // console.log('spotify')
+            }else{
+                clicked = data.filter(x => x.type==='companionclicktracking')
+                clicked2 = data.filter(x => x.type==='click')
+                clicked = data.concat(clicked2)
+                // console.log('not spotify')
+            }
+            completed = data.filter(x => x.type==='complete')
+            // console.log(data)
             // data = data.filter(x => x.appId===appId)
             // Rtbrequest
             const report = new Report({
@@ -192,7 +175,7 @@ cron.schedule('02 00 * * *',function(){
     StreamingAds.find()
     .then(ads=>{
         camIds = ads.map(ad => {
-            return {_id: ad._id, type:ad.Linear[0].MediaFiles[0].Type}
+            return {_id: ad._id, type:ad.Linear[0].MediaFiles[0].type}
         })
         publisherapps.find()
         .then(apps => {
@@ -235,37 +218,20 @@ cron.schedule('02 00 * * *',function(){
                 return log.region 
             })
             region = [...new Set(region)];
-            // region = logs[0].region
-            if(data[0].Type){
-                impressions = data.filter(x => x.Type==='impression')
-                if(appId === '5f91ca4441375c24943f4756'){
-                    clicked = data.filter(x => x.Type==='clicktracking')
-                    clicked2 = data.filter(x => x.Type==='click')
-                    clicked = data.concat(clicked2)
-                    // console.log('spotify')
-                }else{
-                    clicked = data.filter(x => x.Type==='companionclicktracking')
-                    clicked2 = data.filter(x => x.Type==='click')
-                    clicked = data.concat(clicked2)
-                    // console.log('not spotify')
-                }
-                completed = data.filter(x => x.Type==='complete')
-            }// console.log(data)
-            if(data[0].type){
-                impressions = data.filter(x => x.type==='impression')
-                if(appId === '5f91ca4441375c24943f4756'){
-                    clicked = data.filter(x => x.type==='clicktracking')
-                    clicked2 = data.filter(x => x.Type==='click')
-                    clicked = data.concat(clicked2)
-                    // console.log('spotify')
-                }else{
-                    clicked = data.filter(x => x.type==='companionclicktracking')
-                    clicked2 = data.filter(x => x.Type==='click')
-                    clicked = data.concat(clicked2)
-                    // console.log('not spotify')
-                }
-                completed = data.filter(x => x.type==='complete')
-            }// console.log(data)
+            impressions = data.filter(x => x.type==='impression')
+            if(appId === '5f91ca4441375c24943f4756'){
+                clicked = data.filter(x => x.type==='clicktracking')
+                clicked2 = data.filter(x => x.type==='click')
+                clicked = data.concat(clicked2)
+                // console.log('spotify')
+            }else{
+                clicked = data.filter(x => x.type==='companionclicktracking')
+                clicked2 = data.filter(x => x.type==='click')
+                clicked = data.concat(clicked2)
+                // console.log('not spotify')
+            }
+            completed = data.filter(x => x.type==='complete')
+            // console.log(data)
             // data = data.filter(x => x.appId===appId)
             // Rtbrequest
             const report = new Report({
