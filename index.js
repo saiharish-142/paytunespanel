@@ -54,7 +54,7 @@ if(process.env.NODE_ENV==="production"){
 // console.log(yd > nd)
 
 app.listen(port, () => console.log(`app listening on port ${port}!`))
-cron.schedule('00 23 * * *',function(){
+// cron.schedule('00 23 * * *',function(){
     var d = new Date()
     d.setDate(d.getDate()-1);
     if(d.getDate() < 10){
@@ -155,7 +155,7 @@ cron.schedule('00 23 * * *',function(){
         })
         .catch(err=>console.log(err))
     }
-})
+// })
 cron.schedule('02 00 * * *',function(){
     var d = new Date()
     d.setDate(d.getDate()-1);
