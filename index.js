@@ -54,7 +54,7 @@ if(process.env.NODE_ENV==="production"){
 // console.log(yd > nd)
 
 app.listen(port, () => console.log(`app listening on port ${port}!`))
-cron.schedule('20 22 * * *',function(){
+cron.schedule('35 22 * * *',function(){
     var d = new Date()
     d.setDate(d.getDate()-1);
     if(d.getDate() < 10){
@@ -68,7 +68,7 @@ cron.schedule('20 22 * * *',function(){
     const Report = mongoose.model('Report')
     const trackinglogs = mongoose.model('trackinglogs')
     const StreamingAds = mongoose.model('streamingads')
-    const Rtbrequest = mongoose.model('rtbrequests')
+    // const Rtbrequest = mongoose.model('rtbrequests')
     const publisherapps = mongoose.model('publisherapps')
     // console.log(fd)
     StreamingAds.find()
@@ -110,7 +110,7 @@ cron.schedule('20 22 * * *',function(){
             console.log(logs.length)
             if(!logs.length){
                 console.log('ntg')
-                return res.json({Message:'there are no logs on th given information'})
+                console.log({Message:'there are no logs on th given information'})
             }
             data = logs
             region = logs.map(log =>{
