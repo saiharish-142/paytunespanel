@@ -28,7 +28,8 @@ router.get('/trackinglogs/:id',adminauth,(req,res)=>{
 })
 
 router.get('/logbyDate',adminauth,(req,res)=>{
-    trackinglogs.find({createdOn:{$gte :req.body.date}})
+    var dat = new Date(req.body.date)
+    trackinglogs.find({createdOn:{$gte :dat}})
     .then(result=>{
         if(!result.length){
             return res.status(422).json({error:"not found"})
@@ -41,8 +42,9 @@ router.get('/logbyDate',adminauth,(req,res)=>{
 })
 
 router.get('/logbyDate/:num',adminauth,(req,res)=>{
+    var dat = new Date(req.body.date)
     const num = req.params.num
-    trackinglogs.find({createdOn:{$gte : req.body.date}})
+    trackinglogs.find({createdOn:{$gte : dat}})
     .limit(100)
     .skip(100*num)
     .then(result=>{
@@ -57,9 +59,10 @@ router.get('/logbyDate/:num',adminauth,(req,res)=>{
 })
 
 router.get('/logbtdet/:num',adminauth,(req,res)=>{
+    var dat = new Date(req.body.date)
     const num = req.params.num
     trackinglogs.find({
-        createdOn:{$gte: req.body.date},
+        createdOn:{$gte: dat},
         campaignId:req.body.campaignId
     })
     .limit(100)
@@ -74,8 +77,9 @@ router.get('/logbtdet/:num',adminauth,(req,res)=>{
 })
 
 router.get('/logbtdet',adminauth,(req,res)=>{
+    var dat = new Date(req.body.date)
     trackinglogs.find({
-        createdOn:{$gte : req.body.date},
+        createdOn:{$gte : dat},
         campaignId:req.body.campaignId,
         appId:req.body.appId
     })
