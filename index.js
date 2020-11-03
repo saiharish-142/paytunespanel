@@ -119,7 +119,7 @@ cron.schedule('45 21 * * *',function(){
             // region = logs[0].region
             if(data[0].Type){
                 impressions = data.filter(x => x.Type==='impression')
-                if(appId === '5f91ca4441375c24943f4756'){
+                if(appId === '5d3f052e979a1c2391016c04'){
                     clicked = data.filter(x => x.Type==='clicktracking')
                     // console.log('spotify')
                 }else{
@@ -130,7 +130,7 @@ cron.schedule('45 21 * * *',function(){
             }// console.log(data)
             if(data[0].type){
                 impressions = data.filter(x => x.type==='impression')
-                if(appId === '5f91ca4441375c24943f4756'){
+                if(appId === '5d3f052e979a1c2391016c04'){
                     clicked = data.filter(x => x.type==='clicktracking')
                     // console.log('spotify')
                 }else{
