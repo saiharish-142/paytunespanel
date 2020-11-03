@@ -6,6 +6,7 @@ const adminauth = require('../authenMiddleware/adminauth')
 
 router.get('/trackinglogs',adminauth,(req,res)=>{
     trackinglogs.find()
+    .limit(100)
     .then(logs=>{
         res.json(logs)
     })
