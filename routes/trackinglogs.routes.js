@@ -31,6 +31,18 @@ router.get('/logbyDate',adminauth,(req,res)=>{
     })
 })
 
+router.get('/logbyDate/:num',adminauth,(req,res)=>{
+    trackinglogs.find({date:req.body.date})
+    .limit(100)
+    .skip(100*num)
+    .then(result=>{
+        res.json(result)
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+})
+
 router.get('/logbtdet',adminauth,(req,res)=>{
     trackinglogs.find({
         date:req.body.date,
