@@ -54,7 +54,7 @@ if(process.env.NODE_ENV==="production"){
 // console.log(yd > nd)
 
 app.listen(port, () => console.log(`app listening on port ${port}!`))
-cron.schedule('35 22 * * *',function(){
+cron.schedule('00 23 * * *',function(){
     var d = new Date()
     d.setDate(d.getDate()-1);
     if(d.getDate() < 10){
@@ -74,7 +74,7 @@ cron.schedule('35 22 * * *',function(){
     StreamingAds.find()
     .then(ads=>{
         camIds = ads.map(ad => {
-            return {_id: ad._id, type:ad.Linear[0].MediaFiles[0].type}
+            return {_id: ad._id}
         })
         publisherapps.find()
         .then(apps => {
@@ -94,6 +94,7 @@ cron.schedule('35 22 * * *',function(){
 
     async function ReportMaker(date, campaignId, appId ){
         // console.log(date,campaignId,appId)
+        // console.log(campaignId._id)
         var data = [];
         var clicked = [];
         var clicked2 = [];
@@ -102,7 +103,7 @@ cron.schedule('35 22 * * *',function(){
         var region = [];
         trackinglogs.find({
             createdOn:{$gte: yd},
-            campaignId:campaignId,
+            campaignId:campaignId._id,
             appId:appId
         })
         // .populate('rtbreqid')
@@ -136,7 +137,7 @@ cron.schedule('35 22 * * *',function(){
             const report = new Report({
                 Date:date,
                 Publisher:appId,
-                mediatype: campaignId.type,
+                // mediatype: campaignId.type,
                 // dealID,
                 impressions:impressions.length,
                 complete:completed.length,
@@ -175,7 +176,7 @@ cron.schedule('02 00 * * *',function(){
     StreamingAds.find()
     .then(ads=>{
         camIds = ads.map(ad => {
-            return {_id: ad._id, type:ad.Linear[0].MediaFiles[0].type}
+            return {_id: ad._id}
         })
         publisherapps.find()
         .then(apps => {
@@ -203,7 +204,7 @@ cron.schedule('02 00 * * *',function(){
         var region = [];
         trackinglogs.find({
             createdOn:{$gte: yd},
-            campaignId:campaignId,
+            campaignId:campaignId._id,
             appId:appId
         })
         // .populate('rtbreqid')
@@ -237,7 +238,7 @@ cron.schedule('02 00 * * *',function(){
             const report = new Report({
                 Date:date,
                 Publisher:appId,
-                mediatype: campaignId.type,
+                // mediatype: campaignId.type,
                 // dealID,
                 impressions:impressions.length,
                 complete:completed.length,

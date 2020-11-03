@@ -12,6 +12,6 @@ const reportSchema = new mongoose.Schema({
     region:[{type:String}],
     complete:{type:Number},
     clicks:{type:Number}
-},{timestamps:true})
+})
 
 mongoose.model('Report',reportSchema)
