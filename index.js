@@ -96,6 +96,7 @@ cron.schedule('45 21 * * *',function(){
         // console.log(date,campaignId,appId)
         var data = [];
         var clicked = [];
+        var clicked2 = [];
         var impressions = [];
         var completed = [];
         var region = [];
@@ -121,9 +122,13 @@ cron.schedule('45 21 * * *',function(){
                 impressions = data.filter(x => x.Type==='impression')
                 if(appId === '5d3f052e979a1c2391016c04'){
                     clicked = data.filter(x => x.Type==='clicktracking')
+                    clicked2 = data.filter(x => x.Type==='click')
+                    clicked = data.concat(clicked2)
                     // console.log('spotify')
                 }else{
                     clicked = data.filter(x => x.Type==='companionclicktracking')
+                    clicked2 = data.filter(x => x.Type==='click')
+                    clicked = data.concat(clicked2)
                     // console.log('not spotify')
                 }
                 completed = data.filter(x => x.Type==='complete')
@@ -132,9 +137,13 @@ cron.schedule('45 21 * * *',function(){
                 impressions = data.filter(x => x.type==='impression')
                 if(appId === '5d3f052e979a1c2391016c04'){
                     clicked = data.filter(x => x.type==='clicktracking')
+                    clicked2 = data.filter(x => x.Type==='click')
+                    clicked = data.concat(clicked2)
                     // console.log('spotify')
                 }else{
                     clicked = data.filter(x => x.type==='companionclicktracking')
+                    clicked2 = data.filter(x => x.Type==='click')
+                    clicked = data.concat(clicked2)
                     // console.log('not spotify')
                 }
                 completed = data.filter(x => x.type==='complete')
@@ -205,6 +214,7 @@ cron.schedule('02 00 * * *',function(){
         // console.log(date,campaignId,appId)
         var data = [];
         var clicked = [];
+        var clicked2 = [];
         var impressions = [];
         var completed = [];
         var region = [];
@@ -230,9 +240,13 @@ cron.schedule('02 00 * * *',function(){
                 impressions = data.filter(x => x.Type==='impression')
                 if(appId === '5f91ca4441375c24943f4756'){
                     clicked = data.filter(x => x.Type==='clicktracking')
+                    clicked2 = data.filter(x => x.Type==='click')
+                    clicked = data.concat(clicked2)
                     // console.log('spotify')
                 }else{
                     clicked = data.filter(x => x.Type==='companionclicktracking')
+                    clicked2 = data.filter(x => x.Type==='click')
+                    clicked = data.concat(clicked2)
                     // console.log('not spotify')
                 }
                 completed = data.filter(x => x.Type==='complete')
@@ -241,9 +255,13 @@ cron.schedule('02 00 * * *',function(){
                 impressions = data.filter(x => x.type==='impression')
                 if(appId === '5f91ca4441375c24943f4756'){
                     clicked = data.filter(x => x.type==='clicktracking')
+                    clicked2 = data.filter(x => x.Type==='click')
+                    clicked = data.concat(clicked2)
                     // console.log('spotify')
                 }else{
                     clicked = data.filter(x => x.type==='companionclicktracking')
+                    clicked2 = data.filter(x => x.Type==='click')
+                    clicked = data.concat(clicked2)
                     // console.log('not spotify')
                 }
                 completed = data.filter(x => x.type==='complete')
