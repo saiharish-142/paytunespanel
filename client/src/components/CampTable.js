@@ -81,9 +81,10 @@ export default function StickyHeadTable({streamingads}) {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {streamingads
+                {streamingads.length > 1 ? streamingads
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
+                .map((row) =>{ 
+                    if(typeof row !== 'undefined'){
                     return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                         <TableCell align='left'>{row.AdTitle}</TableCell>
@@ -95,8 +96,10 @@ export default function StickyHeadTable({streamingads}) {
                         <TableCell align='center'>{row.createdOn ? row.createdOn.substring(0,10) : row.createdAt.substring(0,10)}</TableCell>
                         <TableCell align='center' className='mangeads__report' onClick={()=>history.push(`/manageAds/report/${row._id}`)}>Report</TableCell>
                     </TableRow>
-                    );
-                })}
+                    );}else{
+                        return (<TableRow><TableCell>No ads to display</TableCell></TableRow>)
+                    }
+                }) : <TableRow><TableCell>No ads to display</TableCell></TableRow>}
             </TableBody>
             </Table>
         </TableContainer>

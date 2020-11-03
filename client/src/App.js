@@ -5,7 +5,7 @@ import Navbar from './components/Navbar';
 import { reducer, InitialState} from './reducer.js/reducer'
 import { reducer1, InitialState1} from './reducer.js/idreducer'
 import Login from './screens/Login';
-import Dashboard from './screens/dashboard';
+import Dashboard from './screens/manageAds';
 import Home from './screens/Home';
 import Report from './screens/Report';
 import DetailedTable from './screens/detailedReport';
