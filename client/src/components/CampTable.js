@@ -17,22 +17,22 @@ const columns = [
         id: "Pricing",
         label: "Pricing",
         minWidth: 50,
-        align: "center",
-        format: (value) => value.toLocaleString("en-US")
+        align: "center"
+        // format: (value) => value.toLocaleString("en-US")
     },
     {
         id: "ro",
         label: "RO from Advertiser",
         minWidth: 50,
-        align: "center",
-        format: (value) => value.toLocaleString("en-US")
+        align: "center"
+        // format: (value) => value.toLocaleString("en-US")
     },
     {
         id: "PricingModel",
         label: "Pricing Model",
         minWidth: 50,
-        align: "center",
-        format: (value) => value.toFixed(2)
+        align: "center"
+        // format: (value) => value.toFixed(2)
     },
     { id: "Category", label: "Category",align: "center", minWidth: 50 },
     { id: "createdOn", label: "Created On",align: "center", minWidth: 120 },
@@ -81,23 +81,23 @@ export default function StickyHeadTable({streamingads}) {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {streamingads.length > 1 ? streamingads
+                {streamingads.length >= 1 ? streamingads
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) =>{ 
                     if(typeof row !== 'undefined'){
                     return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
-                        <TableCell align='left'>{row.AdTitle}</TableCell>
-                        <TableCell align='left'>{row.Advertiser}</TableCell>
-                        <TableCell align='center'>{row.Pricing}</TableCell>
-                        <TableCell align='center'>{row.ro}</TableCell>
-                        <TableCell align='center'>{row.PricingModel}</TableCell>
-                        <TableCell align='center'>{row.Category}</TableCell>
+                        <TableCell align='left'>{row.AdTitle && row.AdTitle}</TableCell>
+                        <TableCell align='left'>{row.Advertiser && row.Advertiser}</TableCell>
+                        <TableCell align='center'>{row.Pricing && row.Pricing}</TableCell>
+                        <TableCell align='center'>{row.ro && row.ro}</TableCell>
+                        <TableCell align='center'>{row.PricingModel && row.PricingModel}</TableCell>
+                        <TableCell align='center'>{row.Category && row.Category}</TableCell>
                         <TableCell align='center'>{row.createdOn ? row.createdOn.substring(0,10) : row.createdAt.substring(0,10)}</TableCell>
                         <TableCell align='center' className='mangeads__report' onClick={()=>history.push(`/manageAds/report/${row._id}`)}>Report</TableCell>
                     </TableRow>
                     );}else{
-                        return (<TableRow><TableCell>No ads to display</TableCell></TableRow>)
+                        return (<TableRow><TableCell>No aaads to display</TableCell></TableRow>)
                     }
                 }) : <TableRow><TableCell>No ads to display</TableCell></TableRow>}
             </TableBody>
