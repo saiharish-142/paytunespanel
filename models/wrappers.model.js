@@ -18,7 +18,8 @@ const wrapperSchema = new mongoose.Schema({
     burl:{type:Boolean},
     click:{type:Boolean},
     error:{type:Boolean},
+    createdOn:{type:Date},
     frequencycheck:{type:Boolean}
-},{timestamps:true})
+})
 
 mongoose.model("wrappers",wrapperSchema)

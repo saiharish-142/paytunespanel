@@ -8,8 +8,9 @@ const trackinglogsSchema = new mongoose.Schema({
     campaignId:{type:ObjectId,required:true},
     rtbreqid:{type:ObjectId},
     date:{type:String,required:true},
+    createdOn:{type:Date,required:true},
     region:{type:String},
     ifa:{type:String}
-},{timestamps:true})
+})
 
 mongoose.model('trackinglogs',trackinglogsSchema)

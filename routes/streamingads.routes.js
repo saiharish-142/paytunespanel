@@ -13,6 +13,17 @@ router.get('/allads',adminauth,(req,res)=>{
     .catch(err => console.log(err))
 })
 
+router.get('/allads2',adminauth,(req,res)=>{
+    const { date } = req.body
+    var dat = new Date(date)
+    StreamingAds.find({createdAt:{$gte:dat}})
+    .sort('-createdOn')
+    .then(ads=>{
+        res.json(ads)
+    })
+    .catch(err => console.log(err))
+})
+
 router.post('/addAds',adminauth,(req,res)=>{
     const {
         AdTitle, adType,
