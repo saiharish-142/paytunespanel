@@ -60,11 +60,27 @@ router.get('/logbyDate/:num',adminauth,(req,res)=>{
 
 router.get('/logcamp/:num',adminauth,(req,res)=>{
     const num = req.params.num
+    trackinglogs.find({campaignId:req.body.campaignId})
+    .limit(100)
+    .skip(100*num)
+    .then(result=>{
+        if(result.length===0){
+            return res.status(422).json({error:"not found"})
+        }
+        res.json(result)
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+})
+
+router.get('/logidmp/:num',adminauth,(req,res)=>{
+    const num = req.params.num
     trackinglogs.find({id:req.body.campaignId})
     .limit(100)
     .skip(100*num)
     .then(result=>{
-        if(!result.length){
+        if(result.length===0){
             return res.status(422).json({error:"not found"})
         }
         res.json(result)
