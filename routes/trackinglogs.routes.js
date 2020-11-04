@@ -9,7 +9,7 @@ router.get('/trackinglogs',adminauth,(req,res)=>{
     .limit(100)
     .then(logs=>{
         if(!logs.length){
-            return res.status(422).json({error:"not found"})
+            return res.status(422).json({error:"not found",result})
         }
         res.json(logs)
     })
@@ -20,7 +20,7 @@ router.get('/trackinglogs/:id',adminauth,(req,res)=>{
     trackinglogs.find({_id:req.params.id})
     .then(logs=>{
         if(!logs.length){
-            return res.status(422).json({error:"not found"})
+            return res.status(422).json({error:"not found",result})
         }
         res.json(logs)
     })
@@ -32,7 +32,7 @@ router.get('/logbyDate',adminauth,(req,res)=>{
     trackinglogs.find({createdOn:{$gte :dat}})
     .then(result=>{
         if(!result.length){
-            return res.status(422).json({error:"not found"})
+            return res.status(422).json({error:"not found",result})
         }
         res.json(result)
     })
@@ -49,7 +49,7 @@ router.get('/logbyDate/:num',adminauth,(req,res)=>{
     .skip(100*num)
     .then(result=>{
         if(!result.length){
-            return res.status(422).json({error:"not found"})
+            return res.status(422).json({error:"not found",result})
         }
         res.json(result)
     })
@@ -65,7 +65,7 @@ router.get('/logcamp/:num',adminauth,(req,res)=>{
     .skip(100*num)
     .then(result=>{
         if(result.length===0){
-            return res.status(422).json({error:"not found"})
+            return res.status(422).json({error:"not found",result})
         }
         res.json(result)
     })
@@ -81,7 +81,7 @@ router.get('/logidmp/:num',adminauth,(req,res)=>{
     .skip(100*num)
     .then(result=>{
         if(result.length===0){
-            return res.status(422).json({error:"not found"})
+            return res.status(422).json({error:"not found",result})
         }
         res.json(result)
     })
@@ -101,7 +101,7 @@ router.get('/logbtdet/:num',adminauth,(req,res)=>{
     .skip(100*num)
     .then(result=>{
         if(!result.length){
-            return res.status(422).json({error:"not found"})
+            return res.status(422).json({error:"not found",result})
         }
         res.json(result)
     })
@@ -117,7 +117,7 @@ router.get('/logbtdet',adminauth,(req,res)=>{
     })
     .then(result=>{
         if(!result.length){
-            return res.status(422).json({error:"not found"})
+            return res.status(422).json({error:"not found",result})
         }
         res.json(result)
     })
