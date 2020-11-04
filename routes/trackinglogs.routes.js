@@ -58,12 +58,28 @@ router.get('/logbyDate/:num',adminauth,(req,res)=>{
     })
 })
 
+router.get('/logcamp/:num',adminauth,(req,res)=>{
+    const num = req.params.num
+    trackinglogs.find({id:req.body.campaignId})
+    .limit(100)
+    .skip(100*num)
+    .then(result=>{
+        if(!result.length){
+            return res.status(422).json({error:"not found"})
+        }
+        res.json(result)
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+})
+
 router.get('/logbtdet/:num',adminauth,(req,res)=>{
     var dat = new Date(req.body.date)
     const num = req.params.num
     trackinglogs.find({
         createdOn:{$gte: dat},
-        campaignId:req.body.campaignId
+        id:req.body.campaignId
     })
     .limit(100)
     .skip(100*num)
@@ -80,7 +96,7 @@ router.get('/logbtdet',adminauth,(req,res)=>{
     var dat = new Date(req.body.date)
     trackinglogs.find({
         createdOn:{$gte : dat},
-        campaignId:req.body.campaignId,
+        id:req.body.campaignId,
         appId:req.body.appId
     })
     .then(result=>{
