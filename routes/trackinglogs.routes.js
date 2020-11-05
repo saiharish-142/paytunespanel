@@ -69,14 +69,14 @@ router.post('/logbtdet/:num',adminauth,(req,res)=>{
     var dat2 = new Date(req.body.date2)
     const num = req.params.num
     trackinglogs.find({
-        createdOn:[{$gte: dat},{$lte:dat2}]
+        createdOn:{$gte: dat}
     })
     .sort('-createdOn')
     .limit(1000)
     .skip(1000*num)
     .then(result=>{
         data = result
-        data = data.filter(x => x.campaignId === req.body.campaignId)
+        data = data.filter(x => x.campaignId === req.body.campaignId && x.createdOn < dat2)
         if(!result.length){
             return res.status(422).json({error:"not found",result})
         }
