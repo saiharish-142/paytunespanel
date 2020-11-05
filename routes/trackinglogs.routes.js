@@ -93,7 +93,10 @@ router.post('/creareport',adminauth,(req,res)=>{
             i++;
             if(result.length===0 || Ldata.length>1){
                 clearInterval(timer)
-                publisherfinder(fdata,date,campaignId)
+                if(fdata.length){
+                    publisherfinder(fdata,date,campaignId)
+                    console.log('noo logs found')
+                }
                 return res.json({message:'no more logs available'})
             }else{console.log('done')}
             // region = await data.map(log => {return log.region })
@@ -131,8 +134,9 @@ async function publisherfinder({jlogs,date,campaignId}){
         app = await result.map(x => x._id)
         async function midware(){
             applogs = await logs.filter(x => x.appId.equals(app[i]))
-            if(app[i]!== undefined)
-            reportposter(applogs,app[i],date,campaignId)
+            if(app[i]!== undefined){
+            console.log(app[i],jlogs,logs)
+            reportposter(applogs,app[i],date,campaignId)}
             if(i>=app.length){
                 clearInterval(tim)
             }
