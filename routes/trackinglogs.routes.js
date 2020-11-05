@@ -5,14 +5,17 @@ const trackinglogs = mongoose.model('trackinglogs')
 const adminauth = require('../authenMiddleware/adminauth')
 
 router.get('/trackinglogs',adminauth,(req,res)=>{
+    var da = [];
     trackinglogs.find()
     .sort('-createdOn')
     .limit(100)
     .then(logs=>{
+        da = logs
         if(!logs.length){
             return res.status(422).json({error:"not found",result})
         }
-        res.json(logs)
+        da = da.map(x => {return x.campaignId})
+        res.json(da)
     })
     .catch(err => console.log(err))
 })
