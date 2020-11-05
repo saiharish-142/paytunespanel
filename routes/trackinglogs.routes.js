@@ -71,6 +71,7 @@ router.post('/creareport',adminauth,(req,res)=>{
     var data = [];
     var fdata = [];
     var i=0;
+    console.log('started')
     async function reportMaker(){
         trackinglogs.find({createdOn:{$gte:dat}})
         .sort('-createdOn')
