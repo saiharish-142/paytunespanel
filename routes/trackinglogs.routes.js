@@ -65,6 +65,7 @@ router.post('/logcamp/:num',adminauth,(req,res)=>{
 
 router.post('/logbtdet/:num',adminauth,(req,res)=>{
     var data = [];
+    var data2 = [];
     var dat = new Date(req.body.date)
     var dat2 = new Date(req.body.date2)
     const num = req.params.num
@@ -77,11 +78,11 @@ router.post('/logbtdet/:num',adminauth,(req,res)=>{
     .then(result=>{
         data = result
         data = data.filter(x => x.campaignId === req.body.campaignId)
-        data = data.filter(x => x.createdOn < dat2)
+        data2 = data.filter(x => x.createdOn < dat2)
         if(!result.length){
             return res.status(422).json({error:"not found",result})
         }
-        res.json(data)
+        res.json(data,data2)
     })
     .catch(err => console.log(err))
 })
