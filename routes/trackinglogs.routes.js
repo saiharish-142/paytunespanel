@@ -66,9 +66,10 @@ router.get('/logcamp/:num',adminauth,(req,res)=>{
 router.get('/logbtdet/:num',adminauth,(req,res)=>{
     var data = [];
     var dat = new Date(req.body.date)
+    var dat2 = new Date(req.body.date2)
     const num = req.params.num
     trackinglogs.find({
-        createdOn:{$gte: dat}
+        createdOn:{$gte: dat ,$lte = dat2}
     })
     .sort('-createdOn')
     .limit(1000)
