@@ -63,7 +63,7 @@ router.post('/logcamp/:num',adminauth,(req,res)=>{
     })
 })
 
-router.post('/logbtdet/:num',adminauth,(req,res)=>{
+router.post('/logbtdet/:num',adminauth,async (req,res)  =>{
     var data = [];
     var data2 = [];
     var dat = new Date(req.body.date)
@@ -77,9 +77,9 @@ router.post('/logbtdet/:num',adminauth,(req,res)=>{
     .skip(1000*num)
     .then(result=>{
         data = result
-        data = data.filter(x => x.campaignId!== undefined)
-        data = data.filter(x => x.campaignId!== null)
-        data = data.filter(x => x.campaignId!== req.body.campaignId)
+        data = await data.filter(x => x.campaignId!== undefined)
+        data = await data.filter(x => x.campaignId!== null)
+        data = await data.filter(x => x.campaignId!== req.body.campaignId)
         // data = data.map(x => {x.campaignId,req.body.campaignId,x.campaignId===req.body.campaignId})
         if(!result.length){
             return res.status(422).json({error:"not found",result})
