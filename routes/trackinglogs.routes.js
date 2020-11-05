@@ -69,7 +69,7 @@ router.get('/logbtdet/:num',adminauth,(req,res)=>{
     var dat2 = new Date(req.body.date2)
     const num = req.params.num
     trackinglogs.find({
-        createdOn:{$gte: dat}
+        createdOn:[{$gte: dat},{$lte:dat2}]
     })
     .sort('-createdOn')
     .limit(1000)
