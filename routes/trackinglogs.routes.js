@@ -28,7 +28,7 @@ router.get('/trackinglogs/:id',adminauth,(req,res)=>{
     .catch(err => console.log(err))
 })
 
-router.get('/logbyDate/:num',adminauth,(req,res)=>{
+router.post('/logbyDate/:num',adminauth,(req,res)=>{
     var dat = new Date(req.body.date)
     const num = req.params.num
     trackinglogs.find({createdOn:{$gte : dat}})
@@ -46,7 +46,7 @@ router.get('/logbyDate/:num',adminauth,(req,res)=>{
     })
 })
 
-router.get('/logcamp/:num',adminauth,(req,res)=>{
+router.post('/logcamp/:num',adminauth,(req,res)=>{
     const num = req.params.num
     trackinglogs.find({campaignId:req.body.campaignId})
     .sort('-createdOn')
@@ -63,7 +63,7 @@ router.get('/logcamp/:num',adminauth,(req,res)=>{
     })
 })
 
-router.get('/logbtdet/:num',adminauth,(req,res)=>{
+router.post('/logbtdet/:num',adminauth,(req,res)=>{
     var data = [];
     var dat = new Date(req.body.date)
     var dat2 = new Date(req.body.date2)
@@ -85,7 +85,7 @@ router.get('/logbtdet/:num',adminauth,(req,res)=>{
     .catch(err => console.log(err))
 })
 
-router.get('/logbtdet',adminauth,(req,res)=>{
+router.post('/logbtdet',adminauth,(req,res)=>{
     var dat = new Date(req.body.date)
     trackinglogs.find({
         campaignId:req.body.campaignId,
