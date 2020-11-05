@@ -81,6 +81,7 @@ router.post('/creareport',adminauth,(req,res)=>{
             data = await data.filter(x=>x.campaignId.equals(campaignId))
             fdata = fdata.concat(data)
             console.log(data.length,`completed round ${i} in campaign`)
+            i++;
             if(result.length===0){
                 clearInterval(timer)
                 publisherfinder(fdata,date,campaignId)
@@ -92,10 +93,25 @@ router.post('/creareport',adminauth,(req,res)=>{
     var timer = setInterval(reportMaker, 180000)
 })
 
-async function publisherfinder({logs,date,campaignId}){
+async function publisherfinder({jlogs,date,campaignId}){
     var app = [];
     var applogs = [];
     var i = 0;
+    function removeDuplicates(originalArray, prop) {
+        var newArray = [];
+        var lookupObject  = {};
+    
+        for(var i in originalArray) {
+            lookupObject[originalArray[i][prop]] = originalArray[i];
+        }
+    
+        for(i in lookupObject) {
+            newArray.push(lookupObject[i]);
+        }
+        return newArray;
+    }
+    
+    var logs = await removeDuplicates(jlogs, "_id");
     publisherapps.find()
     .then(async (result)=>{
         app = await result.map(x => x._id)
