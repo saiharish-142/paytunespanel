@@ -85,8 +85,8 @@ router.get('/logbtdet/:num',adminauth,(req,res)=>{
 router.get('/logbtdet',adminauth,(req,res)=>{
     var dat = new Date(req.body.date)
     trackinglogs.find({
-        createdOn:{$gte : dat},
         campaignId:req.body.campaignId,
+        createdOn:{$gte : dat},
         appId:req.body.appId
     })
     .sort('-createdOn')
