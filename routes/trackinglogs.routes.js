@@ -82,7 +82,7 @@ router.post('/logbtdet/:num',adminauth,(req,res)=>{
         if(!result.length){
             return res.status(422).json({error:"not found",result})
         }
-        res.json(data,data2)
+        res.json({data,data2})
     })
     .catch(err => console.log(err))
 })
