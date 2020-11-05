@@ -79,9 +79,9 @@ router.post('/logbtdet/:num',adminauth,(req,res)=>{
         data = data.filter(x => x.campaignId === req.body.campaignId)
         data = data.filter(x => x.createdOn < dat2)
         if(!result.length){
-            return res.status(422).json({error:"not found",data})
+            return res.status(422).json({error:"not found",result})
         }
-        res.json(result)
+        res.json(data)
     })
     .catch(err => console.log(err))
 })
