@@ -6,6 +6,7 @@ const adminauth = require('../authenMiddleware/adminauth')
 
 router.get('/trackinglogs',adminauth,(req,res)=>{
     trackinglogs.find()
+    .sort('-createdOn')
     .limit(100)
     .then(logs=>{
         if(!logs.length){
@@ -27,24 +28,11 @@ router.get('/trackinglogs/:id',adminauth,(req,res)=>{
     .catch(err => console.log(err))
 })
 
-router.get('/logbyDate',adminauth,(req,res)=>{
-    var dat = new Date(req.body.date)
-    trackinglogs.find({createdOn:{$gte :dat}})
-    .then(result=>{
-        if(!result.length){
-            return res.status(422).json({error:"not found",result})
-        }
-        res.json(result)
-    })
-    .catch(err=>{
-        console.log(err)
-    })
-})
-
 router.get('/logbyDate/:num',adminauth,(req,res)=>{
     var dat = new Date(req.body.date)
     const num = req.params.num
     trackinglogs.find({createdOn:{$gte : dat}})
+    .sort('-createdOn')
     .limit(100)
     .skip(100*num)
     .then(result=>{
@@ -61,22 +49,7 @@ router.get('/logbyDate/:num',adminauth,(req,res)=>{
 router.get('/logcamp/:num',adminauth,(req,res)=>{
     const num = req.params.num
     trackinglogs.find({campaignId:req.body.campaignId})
-    .limit(100)
-    .skip(100*num)
-    .then(result=>{
-        if(result.length===0){
-            return res.status(422).json({error:"not found",result})
-        }
-        res.json(result)
-    })
-    .catch(err=>{
-        console.log(err)
-    })
-})
-
-router.get('/logidmp/:num',adminauth,(req,res)=>{
-    const num = req.params.num
-    trackinglogs.find({id:req.body.campaignId})
+    .sort('-createdOn')
     .limit(100)
     .skip(100*num)
     .then(result=>{
@@ -95,8 +68,9 @@ router.get('/logbtdet/:num',adminauth,(req,res)=>{
     const num = req.params.num
     trackinglogs.find({
         createdOn:{$gte: dat},
-        id:req.body.campaignId
+        campaignId:req.body.campaignId
     })
+    .sort('-createdOn')
     .limit(100)
     .skip(100*num)
     .then(result=>{
@@ -112,9 +86,10 @@ router.get('/logbtdet',adminauth,(req,res)=>{
     var dat = new Date(req.body.date)
     trackinglogs.find({
         createdOn:{$gte : dat},
-        id:req.body.campaignId,
+        campaignId:req.body.campaignId,
         appId:req.body.appId
     })
+    .sort('-createdOn')
     .then(result=>{
         if(!result.length){
             return res.status(422).json({error:"not found",result})
