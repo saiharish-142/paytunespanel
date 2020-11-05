@@ -77,7 +77,7 @@ router.post('/logbtdet/:num',adminauth,(req,res)=>{
     .skip(1000*num)
     .then(result=>{
         data = result
-        data = data.filter(x => x.campaignId.toString() === req.body.campaignId.toString())
+        data = data.map(x => {return { id:x.campaignId, campaignId, match: x.campaignId === campaignId } })
         data2 = data.filter(x => x.createdOn < dat2)
         if(!result.length){
             return res.status(422).json({error:"not found",result})
