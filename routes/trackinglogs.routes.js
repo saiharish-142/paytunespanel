@@ -98,7 +98,10 @@ router.post('/creareport',adminauth,(req,res)=>{
             }else{console.log('done')}
             // region = await data.map(log => {return log.region })
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+            console.log(err)
+            clearInterval(timer)
+        })
     }
     var timer = setInterval(reportMaker, 300000)
 })
