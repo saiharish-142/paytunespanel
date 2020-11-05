@@ -107,7 +107,7 @@ router.post('/creareport',adminauth,(req,res)=>{
             publisherfinder(fdata,date,campaignId)
         })
     }
-    var timer = setInterval(reportMaker, 210000)
+    var timer = setInterval(reportMaker, 300000)
 })
 
 async function publisherfinder({jlogs,date,campaignId}){
