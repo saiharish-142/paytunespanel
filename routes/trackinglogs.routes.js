@@ -89,7 +89,7 @@ router.post('/creareport',adminauth,(req,res)=>{
                 }
             })
             fdata = fdata.concat(data)
-            console.log(data.length,`completed round ${i} in campaign`)
+            console.log(data.length,`completed round ${i} in campaign`,fdata.length)
             i++;
             if(result.length===0 || Ldata.length>1){
                 clearInterval(timer)
