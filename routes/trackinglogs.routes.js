@@ -63,7 +63,7 @@ router.post('/logcamp/:num',adminauth,(req,res)=>{
     })
 })
 
-router.post('/logbtdet/:num',adminauth,async (req,res)  =>{
+router.post('/logbtdet/:num',adminauth,(req,res)  =>{
     var data = [];
     var data2 = [];
     var dat = new Date(req.body.date)
@@ -75,7 +75,7 @@ router.post('/logbtdet/:num',adminauth,async (req,res)  =>{
     .sort('-createdOn')
     .limit(1000)
     .skip(1000*num)
-    .then(result=>{
+    .then(async (result)=>{
         data = result
         data = await data.filter(x => x.campaignId!== undefined)
         data = await data.filter(x => x.campaignId!== null)
