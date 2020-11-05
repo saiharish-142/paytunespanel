@@ -66,24 +66,32 @@ router.post('/logcamp/:num',adminauth,(req,res)=>{
 })
 
 router.post('/creareport',adminauth,(req,res)=>{
-    const { campaignId, date } = req.body
+    const { campaignId, date, tdate } = req.body
     var dat = new Date(date)
+    var tdat = new Date(tdate)
+    var Ldata = [];
     var data = [];
     var fdata = [];
     var i=0;
-    console.log('started')
+    console.log('started',dat,tdat)
     async function reportMaker(){
-        trackinglogs.find({createdOn:{$gte:dat}})
+        trackinglogs.find({createdOn:{$lte:dat}})
         .sort('-createdOn')
         .limit(1000)
         .skip(1000*i)
         .then(async (result)=>{
             data = result
             data = await data.filter(x=>x.campaignId.equals(campaignId))
+            Ldata = await data.filter(x=>{
+                var d = new Date(x.createdOn)
+                if(d<=tdat){
+                    return x;
+                }
+            })
             fdata = fdata.concat(data)
             console.log(data.length,`completed round ${i} in campaign`)
             i++;
-            if(result.length===0){
+            if(result.length===0 || Ldata.length>1){
                 clearInterval(timer)
                 publisherfinder(fdata,date,campaignId)
                 return res.json({message:'no more logs available'})
