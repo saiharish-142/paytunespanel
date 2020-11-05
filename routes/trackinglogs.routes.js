@@ -90,6 +90,7 @@ router.get('/logbtdet',adminauth,(req,res)=>{
         appId:req.body.appId
     })
     .sort('-createdOn')
+    .limit(100)
     .then(result=>{
         if(!result.length){
             return res.status(422).json({error:"not found",result})
