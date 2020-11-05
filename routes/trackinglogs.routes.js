@@ -95,9 +95,10 @@ router.post('/creareport',adminauth,(req,res)=>{
                 clearInterval(timer)
                 publisherfinder(fdata,date,campaignId)
                 return res.json({message:'no more logs available'})
-            }
+            }else{console.log('done')}
             // region = await data.map(log => {return log.region })
         })
+        .catch(err => console.log(err))
     }
     var timer = setInterval(reportMaker, 180000)
 })
