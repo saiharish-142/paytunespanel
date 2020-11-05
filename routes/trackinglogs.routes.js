@@ -5,17 +5,14 @@ const trackinglogs = mongoose.model('trackinglogs')
 const adminauth = require('../authenMiddleware/adminauth')
 
 router.get('/trackinglogs',adminauth,(req,res)=>{
-    var da = [];
     trackinglogs.find()
     .sort('-createdOn')
-    .limit(100)
+    .limit(200)
     .then(logs=>{
-        da = logs
         if(!logs.length){
             return res.status(422).json({error:"not found",result})
         }
-        da = da.map(x => {return x.campaignId})
-        res.json(da)
+        res.json(logs)
     })
     .catch(err => console.log(err))
 })
@@ -67,16 +64,18 @@ router.get('/logcamp/:num',adminauth,(req,res)=>{
 })
 
 router.get('/logbtdet/:num',adminauth,(req,res)=>{
+    var data = [];
     var dat = new Date(req.body.date)
     const num = req.params.num
     trackinglogs.find({
-        createdOn:{$gte: dat},
-        campaignId:req.body.campaignId
+        createdOn:{$gte: dat}
     })
     .sort('-createdOn')
-    .limit(100)
-    .skip(100*num)
+    .limit(1000)
+    .skip(1000*num)
     .then(result=>{
+        data = result
+        data = data.filter(x => x.campaignId === req.body.campaignId)
         if(!result.length){
             return res.status(422).json({error:"not found",result})
         }
