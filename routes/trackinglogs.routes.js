@@ -2,6 +2,8 @@ const express = require('express')
 const mongoose = require('mongoose')
 const router = express.Router()
 const trackinglogs = mongoose.model('trackinglogs')
+const Report = mongoose.model('Report')
+const publisherapps = mongoose.model('publisherapps')
 const adminauth = require('../authenMiddleware/adminauth')
 
 router.get('/trackinglogs',adminauth,(req,res)=>{
@@ -62,6 +64,91 @@ router.post('/logcamp/:num',adminauth,(req,res)=>{
         console.log(err)
     })
 })
+
+router.post('/creareport',adminauth,(req,res)=>{
+    const { campaignId, date } = req.body
+    var dat = new Date(date)
+    var data = [];
+    var fdata = [];
+    var i=0;
+    async function reportMaker(){
+        trackinglogs.find({createdOn:{$gte:dat}})
+        .sort('-createdOn')
+        .limit(1000)
+        .skip(1000*i)
+        .then(async (result)=>{
+            data = result
+            data = await data.filter(x=>x.campaignId.equals(campaignId))
+            fdata = fdata.concat(data)
+            console.log(data.length,`completed round ${i} in campaign`)
+            if(result.length===0){
+                clearInterval(timer)
+                publisherfinder(fdata,date,campaignId)
+                return res.json({message:'no more logs available'})
+            }
+            // region = await data.map(log => {return log.region })
+        })
+    }
+    var timer = setInterval(reportMaker, 180000)
+})
+
+async function publisherfinder({logs,date,campaignId}){
+    var app = [];
+    var applogs = [];
+    var i = 0;
+    publisherapps.find()
+    .then(async (result)=>{
+        app = await result.map(x => x._id)
+        async function midware(){
+            applogs = await logs.filter(x => x.appId.equals(app[i]))
+            if(app[i]!== undefined)
+            reportposter(applogs,app[i],date,campaignId)
+            if(i>=app.length){
+                clearInterval(tim)
+            }
+            i++;
+        }
+        var tim = setInterval(midware, 3000)
+    })
+    .catch(err => console.log(err))
+}
+
+async function reportposter({logsFiltered,appid,date,campaignId}){
+    var region = [];
+    var complete = [];
+    var clicked = [];
+    var clicked2 = [];
+    var impressions = [];
+    // var start = [];
+    region = await logsFiltered.map(x => { return x.region })
+    region = [...new Set(region)];
+    complete = await logsFiltered.filter(x => x.type==='complete')
+    impressions = await data.filter(x => x.type==='impression')
+    // start = await data.filter(x => x.type==='start')
+    if(appid.equals('5f91ca4441375c24943f4756')){
+        clicked = logsFiltered.filter(x=>x.type==='clicktracking')
+        clicked2 = logsFiltered.filter(x => x.type==='click')
+        clicked = clicked.concat(clicked2)
+    }else{
+        clicked = logsFiltered.filter(x=>x.type==='companionclicktracking')
+        clicked2 = logsFiltered.filter(x => x.type==='click')
+        clicked = clicked.concat(clicked2)
+    }
+    const report = new Report({
+        date:date,
+        Publisher:appid,
+        campaignId:campaignId,
+        impressions:impressions.length,
+        complete:complete.length,
+        clicks:clicked.length,
+        region:region,
+        Spend:logsFiltered.length + ' USD',
+        avgSpend:logsFiltered.length
+    })
+    report.save()
+    .then(reul => console.log(reul))
+    .catch(err => console.log(err))
+}
 
 router.post('/logbtdet/:num',adminauth,(req,res)  =>{
     var data = [];
