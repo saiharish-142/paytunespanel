@@ -101,6 +101,7 @@ router.post('/creareport',adminauth,(req,res)=>{
         .catch(err => {
             console.log(err)
             clearInterval(timer)
+            publisherfinder(fdata,date,campaignId)
         })
     }
     var timer = setInterval(reportMaker, 300000)
