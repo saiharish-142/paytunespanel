@@ -78,6 +78,8 @@ router.post('/logbtdet/:num',adminauth,(req,res)=>{
     .then(result=>{
         data = result
         data = data.filter(x => x.campaignId!== undefined)
+        data = data.filter(x => x.campaignId!== null)
+        data = data.filter(x => x.campaignId!== req.body.campaignId)
         // data = data.map(x => {x.campaignId,req.body.campaignId,x.campaignId===req.body.campaignId})
         if(!result.length){
             return res.status(422).json({error:"not found",result})
