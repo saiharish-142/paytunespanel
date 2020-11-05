@@ -75,8 +75,8 @@ router.post('/creareport',adminauth,(req,res)=>{
     async function reportMaker(){
         trackinglogs.find({createdOn:{$gte:dat}})
         .sort('-createdOn')
-        .limit(1000)
-        .skip(1000*i)
+        .limit(1500)
+        .skip(1500*i)
         .then(async (result)=>{
             data = result
             data = await data.filter(x=>x.campaignId.equals(campaignId))
