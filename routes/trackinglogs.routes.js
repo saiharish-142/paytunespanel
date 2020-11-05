@@ -100,7 +100,7 @@ router.post('/creareport',adminauth,(req,res)=>{
         })
         .catch(err => console.log(err))
     }
-    var timer = setInterval(reportMaker, 180000)
+    var timer = setInterval(reportMaker, 300000)
 })
 
 async function publisherfinder({jlogs,date,campaignId}){
