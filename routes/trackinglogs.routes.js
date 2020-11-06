@@ -85,23 +85,23 @@ router.post('/repotcre',adminauth,async (req,res)  =>{
     .catch(err => console.log(err))
 })
 
-router.post('/logbtdet',adminauth,(req,res)=>{
-    var dat = new Date(req.body.date)
-    trackinglogs.find({
-        campaignId:req.body.campaignId,
-        createdOn:{$gte : dat},
-        appId:req.body.appId
-    })
-    .sort('-createdOn')
-    .limit(100)
-    .then(result=>{
-        if(!result.length){
-            return res.status(422).json({error:"not found",result})
-        }
-        res.json(result)
-    })
-    .catch(err => console.log(err))
-})
+// router.post('/logbtdet',adminauth,(req,res)=>{
+//     var dat = new Date(req.body.date)
+//     trackinglogs.find({
+//         campaignId:req.body.campaignId,
+//         createdOn:{$gte : dat},
+//         appId:req.body.appId
+//     })
+//     .sort('-createdOn')
+//     .limit(100)
+//     .then(result=>{
+//         if(!result.length){
+//             return res.status(422).json({error:"not found",result})
+//         }
+//         res.json(result)
+//     })
+//     .catch(err => console.log(err))
+// })
 
 router.post('/addlogs',adminauth, (req,res)=>{
     const { Type,id,appId, campaignId, rtbreqid, date, region, ifa } = req.body
