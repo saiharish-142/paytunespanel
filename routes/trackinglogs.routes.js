@@ -71,9 +71,9 @@ router.post('/logbtdet/:num',adminauth,(req,res)  =>{
     var dat = new Date(req.body.date)
     var dat2 = new Date(req.body.date2)
     const num = req.params.num
-    const { campaignId,date } = req.body
+    const { campaignId } = req.body
     var ObjectId = require('mongoose').Types.ObjectId; 
-    var query = { campaign_id: new ObjectId(campaign._id) };
+    // var query = { campaign_id: new ObjectId(campaign._id) };
     // var ob =  new ObjectId(campaignId)
     trackinglogs.find({
         createdOn:{$lte:dat},
