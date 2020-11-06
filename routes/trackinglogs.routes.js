@@ -31,9 +31,9 @@ router.get('/trackinglogs/:id',adminauth,(req,res)=>{
 })
 
 router.post('/logbyDate/:num',adminauth,(req,res)=>{
-    var dat = new Date(req.body.date)
+    const { date, campaignId } = req.body
     const num = req.params.num
-    trackinglogs.find({createdOn:{$gte : dat}})
+    trackinglogs.find({date:date,campaignId:campaignId})
     .sort('-createdOn')
     .limit(100)
     .skip(100*num)
