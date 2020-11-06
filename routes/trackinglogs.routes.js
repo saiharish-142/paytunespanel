@@ -91,14 +91,15 @@ router.post('/creareport',adminauth,(req,res)=>{
             fdata = fdata.concat(data)
             console.log(data.length,`completed round ${i} in campaign`,fdata.length)
             i++;
-            if(result.length===0 || Ldata.length>1){
+            // if(result.length===0 || Ldata.length>1){
                 clearInterval(timer)
-                if(fdata.length){
+                if(fdata.length===0)
+                console.log('noo logs found')
+                if(fdata.length>0){
                     publisherfinder(fdata,date,campaignId)
-                    console.log('noo logs found')
                 }
                 return res.json({message:'no more logs available'})
-            }else{console.log('done')}
+            // }else{console.log('done')}
             // region = await data.map(log => {return log.region })
         })
         .catch(err => {
@@ -110,7 +111,7 @@ router.post('/creareport',adminauth,(req,res)=>{
     var timer = setInterval(reportMaker, 300000)
 })
 
-async function publisherfinder({jlogs,date,campaignId}){
+async function publisherfinder({logs,date,campaignId}){
     var app = [];
     var applogs = [];
     var i = 0;
@@ -128,14 +129,14 @@ async function publisherfinder({jlogs,date,campaignId}){
         return newArray;
     }
     
-    var logs = await removeDuplicates(jlogs, "_id");
+    // var logs = await removeDuplicates(jlogs, "_id");
     publisherapps.find()
     .then(async (result)=>{
         app = await result.map(x => x._id)
         async function midware(){
             applogs = await logs.filter(x => x.appId.equals(app[i]))
             if(app[i]!== undefined){
-            console.log(app[i],jlogs,logs)
+            console.log(app[i],logs)
             reportposter(applogs,app[i],date,campaignId)}
             if(i>=app.length){
                 clearInterval(tim)
