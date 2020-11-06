@@ -72,14 +72,15 @@ router.post('/repotcre',adminauth,async (req,res)  =>{
     // var reg = await trackinglogs.aggregate([{$match :{date:date,campaignId:campaignId}},{$group:{_id:"$appId"}}]).distinct("region")
     trackinglogs.aggregate([
         { $match: {
-            "type": logtype, 
             "campaignId":campaignId,
             "date":date
         } },
         { $group:{
-            _id: {appId: "$appId",region :"$region"},count:{$sum:1}
+            _id: {appId: "$appId",region :"$region",type:"$type"},count:{$sum:1}
         }},{$group:{
-            _id:"$_id.appId" , region_s:{$push:{region:"$_id.region" , count:"$count"}}
+            _id:"$_id.appId" , ctype:{$push:{region:"$_id.region",type:"$_id.type", count:"$count"}}
+        }},{$group:{
+            _id:"ctype.type", con:{$push:{region:"$ctype.region",count:"$ctype.count"}}
         }}
     ])
     .then(result=>{
