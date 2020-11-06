@@ -92,20 +92,20 @@ router.post('/creareport',adminauth,(req,res)=>{
             console.log(data.length,`completed round ${i} in campaign`,fdata.length)
             i++;
             // if(result.length===0 || Ldata.length>1){
-                clearInterval(timer)
+                // clearInterval(timer)
                 if(fdata.length===0)
                 console.log('noo logs found')
                 if(fdata.length>0){
-                    publisherfinder(fdata,date,campaignId)
+                    // publisherfinder(fdata,date,campaignId)
                 }
-                return res.json({message:'no more logs available'})
+                return res.json({message:'no more logs available',fdata,data})
             // }else{console.log('done')}
             // region = await data.map(log => {return log.region })
         })
         .catch(err => {
             console.log(err)
             clearInterval(timer)
-            publisherfinder(fdata,date,campaignId)
+            // publisherfinder(fdata,date,campaignId)
         })
     }
     var timer = setInterval(reportMaker, 300000)
