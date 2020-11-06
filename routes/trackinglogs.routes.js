@@ -5,7 +5,6 @@ const trackinglogs = mongoose.model('trackinglogs')
 const Report = mongoose.model('Report')
 const publisherapps = mongoose.model('publisherapps')
 const adminauth = require('../authenMiddleware/adminauth')
-// var ObjectId = require('mongoose').Types.ObjectId; 
 
 router.get('/trackinglogs',adminauth,(req,res)=>{
     trackinglogs.find()
@@ -73,10 +72,12 @@ router.post('/logbtdet/:num',adminauth,(req,res)  =>{
     var dat2 = new Date(req.body.date2)
     const num = req.params.num
     const { campaignId,date } = req.body
+    var ObjectId = require('mongoose').Types.ObjectId; 
+    var query = { campaign_id: new ObjectId(campaign._id) };
     // var ob =  new ObjectId(campaignId)
     trackinglogs.find({
-        date:date,
-        campaignId:campaignId
+        createdOn:{$lte:dat},
+        campaignId:new ObjectId(campaignId)
     })
     .sort('-createdOn')
     .limit(1000)
