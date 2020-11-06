@@ -5,6 +5,7 @@ const trackinglogs = mongoose.model('trackinglogs')
 const Report = mongoose.model('Report')
 const publisherapps = mongoose.model('publisherapps')
 const adminauth = require('../authenMiddleware/adminauth')
+var ObjectId = require('mongoose').Types.ObjectId; 
 
 router.get('/trackinglogs',adminauth,(req,res)=>{
     trackinglogs.find()
@@ -118,7 +119,6 @@ async function publisherfinder({logs,date,campaignId}){
     function removeDuplicates(originalArray, prop) {
         var newArray = [];
         var lookupObject  = {};
-    
         for(var i in originalArray) {
             lookupObject[originalArray[i][prop]] = originalArray[i];
         }
@@ -192,13 +192,13 @@ router.post('/logbtdet/:num',adminauth,(req,res)  =>{
     var dat2 = new Date(req.body.date2)
     const num = req.params.num
     const { campaignId } = req.body
+    var ob =  new ObjectId(campaignId)
     trackinglogs.find({
-        $and:[
-            {$or:[{'createdOn':{$lte:dat}}]},
-            {$or:[{'createdOn':{$gte:dat2}}]}
-        ]
+        createdOn:{$lte:dat},
+        campaignId:ob
     })
     .sort('-createdOn')
+    .limit(1000)
     .then(async (result)=>{
         data = await result
         data = await data.filter(x => x.campaignId!== undefined)
