@@ -5,7 +5,7 @@ const trackinglogs = mongoose.model('trackinglogs')
 const Report = mongoose.model('Report')
 const publisherapps = mongoose.model('publisherapps')
 const adminauth = require('../authenMiddleware/adminauth')
-var ObjectId = require('mongoose').Types.ObjectId; 
+// var ObjectId = require('mongoose').Types.ObjectId; 
 
 router.get('/trackinglogs',adminauth,(req,res)=>{
     trackinglogs.find()
