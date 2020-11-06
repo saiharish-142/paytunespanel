@@ -193,12 +193,12 @@ router.post('/logbtdet/:num',adminauth,(req,res)  =>{
     const num = req.params.num
     const { campaignId } = req.body
     trackinglogs.find({
-        createdOn:{$lte: dat},
-        campaignId:campaignId
+        $and:[
+            {$or:[{'createdOn':{$lte:dat}}]},
+            {$or:[{'createdOn':{$gte:dat2}}]}
+        ]
     })
     .sort('-createdOn')
-    .limit(1000)
-    .skip(1000*num)
     .then(async (result)=>{
         data = await result
         data = await data.filter(x => x.campaignId!== undefined)
@@ -206,10 +206,10 @@ router.post('/logbtdet/:num',adminauth,(req,res)  =>{
         // data = await data.filter(x => x.campaignId.equals(req.body.campaignId))
         data2 = data.map(x => {return {id:x.campaignId, cam:req.body.campaignId , match:x.campaignId.equals(req.body.campaignId)}})
         // data = data.map(x => {x.campaignId,req.body.campaignId,x.campaignId===req.body.campaignId})
-        if(!result.length){
+        if(result.length===0){
             return res.status(422).json({error:"not found",result})
         }
-        await res.json({data,data2})
+        await res.json(data.length)
     })
     .catch(err => console.log(err))
 })
