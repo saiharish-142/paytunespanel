@@ -65,33 +65,22 @@ router.post('/logcamp/:num',adminauth,(req,res)=>{
     })
 })
 
-router.post('/logbtdet/:num',adminauth,(req,res)  =>{
-    var data = [];
-    var data2 = [];
-    var dat = new Date(req.body.date)
-    var dat2 = new Date(req.body.date2)
-    const num = req.params.num
-    const { campaignId } = req.body
-    var ObjectId = require('mongoose').Types.ObjectId; 
-    // var query = { campaign_id: new ObjectId(campaign._id) };
-    // var ob =  new ObjectId(campaignId)
-    trackinglogs.find({
-        createdOn:{$lte:dat},
-        campaignId:new ObjectId(campaignId)
-    })
-    .sort('-createdOn')
-    .limit(1000)
-    .then(async (result)=>{
-        data = await result
-        data = await data.filter(x => x.campaignId!== undefined)
-        data = await data.filter(x => x.campaignId!== null)
-        // data = await data.filter(x => x.campaignId.equals(req.body.campaignId))
-        data2 = data.map(x => {return {id:x.campaignId, cam:req.body.campaignId , match:x.campaignId.equals(req.body.campaignId)}})
-        // data = data.map(x => {x.campaignId,req.body.campaignId,x.campaignId===req.body.campaignId})
-        if(result.length===0){
-            return res.status(422).json({error:"not found",result})
-        }
-        await res.json(data.length)
+router.post('/repotcre',adminauth,async (req,res)  =>{
+    const { date, campaignId, logtype } = req.body
+    var region = await trackinglogs.aggregate([{$match :{date:date,campaignId:campaignId}},{$group:{_id:"$appId"}}])
+    var reg = await trackinglogs.aggregate([{$match :{date:date,campaignId:campaignId}},{$group:{_id:"$appId"}}]).distinct("region")
+    trackinglogs.aggregate([
+        { $match: {
+            "type": logtype, 
+            "campaignId":campaignId,
+            "date":date
+        } },
+        { $group:{
+            _id: "$appId",count:{$sum:1}
+        }}
+    ])
+    .then(result=>{
+        res.json({result,region,reg})
     })
     .catch(err => console.log(err))
 })
