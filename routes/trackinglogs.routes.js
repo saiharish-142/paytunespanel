@@ -67,7 +67,7 @@ router.post('/logcamp/:num',adminauth,(req,res)=>{
 
 router.post('/repotcre',adminauth,async (req,res)  =>{
     const { date, campaignId, logtype } = req.body
-    var region = await trackinglogs.aggregate([{$match :{date:date,campaignId:campaignId}},{$group:{_id:"$appId"}}])
+    var region = await trackinglogs.aggregate([{$match :{date:date,campaignId:campaignId}},{$group:{_id:"$region"}}])
     console.log(region)
     // var reg = await trackinglogs.aggregate([{$match :{date:date,campaignId:campaignId}},{$group:{_id:"$appId"}}]).distinct("region")
     trackinglogs.aggregate([
@@ -79,11 +79,10 @@ router.post('/repotcre',adminauth,async (req,res)  =>{
             _id: {appId: "$appId",region :"$region",type:"$type"},count:{$sum:1}
         }},{$group:{
             _id:"$_id.appId" , ctype:{$push:{region:"$_id.region",type:"$_id.type", count:"$count"}}
-        }},{$group:{
-            _id:"ctype.type", con:{$push:{region:"$ctype.region",count:"$ctype.count"}}
         }}
     ])
     .then(result=>{
+        console.log(result)
         res.json(result)
     })
     .catch(err => console.log(err))
