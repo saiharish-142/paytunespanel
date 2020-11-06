@@ -72,10 +72,10 @@ router.post('/logbtdet/:num',adminauth,(req,res)  =>{
     var dat = new Date(req.body.date)
     var dat2 = new Date(req.body.date2)
     const num = req.params.num
-    const { campaignId } = req.body
+    const { campaignId,date } = req.body
     // var ob =  new ObjectId(campaignId)
     trackinglogs.find({
-        createdOn:dat,
+        date:date,
         campaignId:campaignId
     })
     .sort('-createdOn')
