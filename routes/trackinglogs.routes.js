@@ -191,8 +191,10 @@ router.post('/logbtdet/:num',adminauth,(req,res)  =>{
     var dat = new Date(req.body.date)
     var dat2 = new Date(req.body.date2)
     const num = req.params.num
+    const { campaignId } = req.body
     trackinglogs.find({
-        createdOn:{$gte: dat}
+        createdOn:{$gte: dat},
+        campaignId:campaignId
     })
     .sort('-createdOn')
     .limit(1000)
@@ -201,7 +203,7 @@ router.post('/logbtdet/:num',adminauth,(req,res)  =>{
         data = await result
         data = await data.filter(x => x.campaignId!== undefined)
         data = await data.filter(x => x.campaignId!== null)
-        data = await data.filter(x => x.campaignId.equals(req.body.campaignId))
+        // data = await data.filter(x => x.campaignId.equals(req.body.campaignId))
         data2 = data.map(x => {return {id:x.campaignId, cam:req.body.campaignId , match:x.campaignId.equals(req.body.campaignId)}})
         // data = data.map(x => {x.campaignId,req.body.campaignId,x.campaignId===req.body.campaignId})
         if(!result.length){
