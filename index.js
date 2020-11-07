@@ -1,7 +1,7 @@
 // const fetch = require('node-fetch')
 const express = require('express')
 const app = express()
-const port = process.env.PORT || 5200
+const port = process.env.PORT || 5000
 const mongoose = require('mongoose')
 const cors = require('cors')
 const { MONGOURI } = require('./config/keys')
