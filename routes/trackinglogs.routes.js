@@ -73,7 +73,8 @@ router.post('/repotcre',adminauth,async (req,res)  =>{
     trackinglogs.aggregate([
         { $match: {
             "campaignId":campaignId,
-            "date":date
+            "date":date,
+            "type":{$in:["impression","complete","click","companionclicktracking","clicktracking"]}
         } },
         { $group:{
             _id: {appId: "$appId",region :"$region",type:"$type"},count:{$sum:1}
@@ -86,7 +87,7 @@ router.post('/repotcre',adminauth,async (req,res)  =>{
         }}
     ])
     .then(result=>{
-        console.log(JSON.stringify(result))
+        // console.log(JSON.stringify(result))
         res.json(result)
     })
     .catch(err => console.log(err))
