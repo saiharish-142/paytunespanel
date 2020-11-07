@@ -2,6 +2,7 @@ import React,{ useState, useContext } from 'react'
 import M from 'materialize-css'
 import {UserContext} from '../App'
 import { useHistory } from 'react-router-dom'
+import { Paper } from '@material-ui/core'
 
 function Login() {
     const history = useHistory()
@@ -32,15 +33,17 @@ function Login() {
     }
     return (
         <div className='login'>
-            <form className='login__box' onSubmit={e=>{
-                e.preventDefault()
-                login()
-            }}>
-                <div className='login__title'>Log In</div>
-                <input placeholder='Email' required value={email} onChange={(e)=>setemail(e.target.value)} />
-                <input type='password' placeholder='Password' required value={password} onChange={(e)=>setpassword(e.target.value)} />
-                <button className='btn'>login</button>
-            </form>
+            <Paper>
+                <form className='login__box' onSubmit={e=>{
+                    e.preventDefault()
+                    login()
+                }}>
+                    <div className='login__title'>Log In</div>
+                    <input placeholder='Email' required value={email} onChange={(e)=>setemail(e.target.value)} />
+                    <input type='password' placeholder='Password' required value={password} onChange={(e)=>setpassword(e.target.value)} />
+                    <button className='btn'>login</button>
+                </form>
+            </Paper>
         </div>
     )
 }
