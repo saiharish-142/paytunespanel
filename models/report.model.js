@@ -8,7 +8,7 @@ const reportSchema = new mongoose.Schema({
     mediatype:{type:String},
     dealID:{type:String},
     impressions:{type:Number},
-    Spend:{type:String},
+    spend:{type:String},
     avgSpend:{type:String},
     region:[{type:String}],
     complete:{type:Number},
