@@ -23,7 +23,7 @@ router.put('/reportbydate',adminauth,(req,res)=>{
     .catch(err=>console.log(err))
 })
 
-router.get('/reportbycamp',adminauth,(req,res)=>{
+router.put('/reportbycamp',adminauth,(req,res)=>{
     const { campaignId } = req.body
     Report.find({campaignId:campaignId})
     .sort('-createdAt')
@@ -33,7 +33,7 @@ router.get('/reportbycamp',adminauth,(req,res)=>{
     .catch(err=>console.log(err))
 })
 
-router.get('/detreportbycamp',adminauth,(req,res)=>{
+router.put('/detreportbycamp',adminauth,(req,res)=>{
     const { campaignId, date } = req.body
     Report.find({campaignId:campaignId,date:date})
     .sort('-createdAt')
