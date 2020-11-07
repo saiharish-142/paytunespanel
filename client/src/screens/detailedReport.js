@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -67,17 +67,73 @@ const publisherwise = [
 export default function DetailedTable() {
     const history = useHistory();
     const {state1,dispatch1} = useContext(IdContext)
-    // const normal =(val)=>{
-    //     let v = Math.round(val*100)/100
-    //     // console.log(v)
-    //     return v
-    // }
     const { id } = useParams()
+    const [datelogs, setdatelogs] = useState([])
+    const [publishlogs, setpublishlogs] = useState([])
+    const [currentad, setcurrentad] = useState('')
     useEffect(() => {
         if(id){
             dispatch1({type:"ID",payload:id})
         }
     }, [id])
+    useEffect(()=>{
+        if(id){
+            fetch('/report/reportbycamp',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:id
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                setpublishlogs(result)
+                console.log(result)
+            })
+            .catch(err =>{
+                console.log(err)
+            })
+        }
+    },[id])
+    useEffect(()=>{
+        if(id){
+            fetch(`/streamingads/allads/${id}`,{
+                method:'get',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                }
+            }).then(res=>res.json())
+            .then(result=>{
+                setcurrentad(result[0])
+                console.log(result[0])
+            })
+            .catch(err =>{
+                console.log(err)
+            })
+        }
+    },[id])
+    useEffect(()=>{
+        if(id){
+            fetch('/report/detreportcambydat',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:id
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                setdatelogs(result)
+                console.log(result)
+            })
+            .catch(err =>{
+                console.log(err)
+            })
+        }
+    },[id])
     // console.log(id)
     return (
         <div style={{paddingBottom:'50px'}}>
@@ -96,54 +152,21 @@ export default function DetailedTable() {
             <TableRow>
                 <TableCell>Date</TableCell>
                 <TableCell>Media Type</TableCell>
-                {/* <TableCell>Publisher</TableCell> */}
-                {/* <TableCell>Deal Id</TableCell> */}
-                {/* <TableCell>Deal Name</TableCell> */}
                 <TableCell>impressions</TableCell>
                 <TableCell>Spend</TableCell>
                 <TableCell>Avg spend per<br /> impression</TableCell>
-                {/* <TableCell>Campaign Start Date</TableCell>
-                <TableCell>Campaign End Date</TableCell>
-                <TableCell>Total Impressions to be delivered</TableCell>
-                <TableCell>Total spend planned for the campaign</TableCell>
-                <TableCell>Avg Spend per impression planned</TableCell>
-                <TableCell>Total Days of Campaign</TableCell>
-                <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Total Spend Till date</TableCell>
-                <TableCell>Avg Spend per impression Till Date</TableCell>
-                <TableCell>Balance Impressions</TableCell>
-                <TableCell>Balance Days</TableCell>
-                <TableCell>Balance Spend</TableCell>
-                <TableCell>Avg required</TableCell> */}
             </TableRow>
             </TableHead>
             <TableBody>
-            {rows.map((row,i) => (
+            {datelogs.map((row,i) => (
                 <TableRow key={i}>
                     <TableCell component="th" scope="row">
                         {row.date}
                     </TableCell>
-                    <TableCell>{row.type}</TableCell>
-                    {/* <TableCell>{row.publisher}</TableCell> */}
-                    {/* <TableCell>{row.dealId}</TableCell> */}
-                    {/* <TableCell>{row.dealName}</TableCell> */}
+                    <TableCell></TableCell>
                     <TableCell>{row.impressions}</TableCell>
-                    <TableCell>{row.spend}</TableCell>
-                    <TableCell>{row.avgspent}</TableCell>
-                    {/* <TableCell>{row.start}</TableCell>
-                    <TableCell>{row.end}</TableCell>
-                    <TableCell>{row.totalimpr}</TableCell>
-                    <TableCell>{row.totalSpend}</TableCell>
-                    <TableCell>{row.avgspent}</TableCell>
-                    <TableCell>{row.totalday}</TableCell>
-                    <TableCell>{row.totalimpertobe}</TableCell>
-                    <TableCell>{row.totalspenttobe}</TableCell>
-                    <TableCell>{row.avgspent}</TableCell>
-                    <TableCell>{row.balimp}</TableCell>
-                    <TableCell>{row.baldays}</TableCell>
-                    <TableCell>{row.balspe}</TableCell>
-                    <TableCell>{normal(row.avg)}</TableCell> */}
-                    {/* <TableCell className='mangeads__report'>Detailed Report</TableCell> */}
+                    <TableCell>{row.impressions}</TableCell>
+                    <TableCell></TableCell>
                 </TableRow>
             ))} 
             </TableBody>
@@ -160,52 +183,23 @@ export default function DetailedTable() {
                 <TableCell>Publisher</TableCell>
                 <TableCell>Media Type</TableCell>
                 <TableCell>Deal Id</TableCell>
-                {/* <TableCell>Deal Name</TableCell> */}
                 <TableCell>impressions</TableCell>
                 <TableCell>Spend</TableCell>
                 <TableCell>Avg spend per<br /> impression</TableCell>
-                {/* <TableCell>Campaign Start Date</TableCell>
-                <TableCell>Campaign End Date</TableCell>
-                <TableCell>Total Impressions to be delivered</TableCell>
-                <TableCell>Total spend planned for the campaign</TableCell>
-                <TableCell>Avg Spend per impression planned</TableCell>
-                <TableCell>Total Days of Campaign</TableCell>
-                <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Total Spend Till date</TableCell>
-                <TableCell>Avg Spend per impression Till Date</TableCell>
-                <TableCell>Balance Impressions</TableCell>
-                <TableCell>Balance Days</TableCell>
-                <TableCell>Balance Spend</TableCell>
-                <TableCell>Avg required</TableCell> */}
             </TableRow>
             </TableHead>
             <TableBody>
-            {publisherwise.map((row,i) => (
+            {publishlogs.map((row,i) => (
                 <TableRow key={i}>
                     <TableCell component="th" scope="row">
                         {row.date}
                     </TableCell>
-                    <TableCell>{row.publisher}</TableCell>
-                    <TableCell>{row.type}</TableCell>
-                    <TableCell>{row.dealId}</TableCell>
-                    {/* <TableCell>{row.dealName}</TableCell> */}
+                    <TableCell>{row.Publisher.AppName}</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
                     <TableCell>{row.impressions}</TableCell>
-                    <TableCell>{row.spend}</TableCell>
-                    <TableCell>{row.avgspent}</TableCell>
-                    {/* <TableCell>{row.start}</TableCell>
-                    <TableCell>{row.end}</TableCell>
-                    <TableCell>{row.totalimpr}</TableCell>
-                    <TableCell>{row.totalSpend}</TableCell>
-                    <TableCell>{row.avgspent}</TableCell>
-                    <TableCell>{row.totalday}</TableCell>
-                    <TableCell>{row.totalimpertobe}</TableCell>
-                    <TableCell>{row.totalspenttobe}</TableCell>
-                    <TableCell>{row.avgspent}</TableCell>
-                    <TableCell>{row.balimp}</TableCell>
-                    <TableCell>{row.baldays}</TableCell>
-                    <TableCell>{row.balspe}</TableCell>
-                    <TableCell>{normal(row.avg)}</TableCell> */}
-                    {/* <TableCell className='mangeads__report'>Detailed Report</TableCell> */}
+                    <TableCell>{row.impressions}</TableCell>
+                    <TableCell></TableCell>
                 </TableRow>
             ))} 
             </TableBody>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -9,6 +9,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import { useHistory } from "react-router-dom";
+import { IdContext } from '../App'
 
 const columns = [
     { id: "AdTitle", label: "Name", minWidth: 170 },
@@ -53,7 +54,7 @@ export default function StickyHeadTable({streamingads}) {
     const history = useHistory();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+    const {dispatch1} = useContext(IdContext)
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -94,7 +95,10 @@ export default function StickyHeadTable({streamingads}) {
                         <TableCell align='center'>{row.PricingModel && row.PricingModel}</TableCell>
                         <TableCell align='center'>{row.Category && row.Category}</TableCell>
                         <TableCell align='center'>{row.createdOn ? row.createdOn.substring(0,10) : row.createdAt.substring(0,10)}</TableCell>
-                        <TableCell align='center' className='mangeads__report' onClick={()=>history.push(`/manageAds/report/${row._id}`)}>Report</TableCell>
+                        <TableCell align='center' className='mangeads__report' onClick={()=>{
+                            history.push(`/manageAds/report/${row._id}`)
+                            dispatch1({type:"ID",payload:row._id})
+                        }}>Report</TableCell>
                     </TableRow>
                     );}else{
                         return (<TableRow><TableCell>No aaads to display</TableCell></TableRow>)

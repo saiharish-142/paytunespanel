@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -16,33 +16,12 @@ const useStyles = makeStyles({
     },
 });
 
-const rows =[
-    {
-        date: '23-oct-2020', type:'Audio', publisher:'Gaana', dealId:'PYT-18878-0000b',dealName:'Gaana', 
-        impressions:'100', spend:'30 USD', start:'15-oct-2020', end:'30-oct-2020',
-        totalimpr:'3000', totalSpend:'900 USD', avgspent:'0.3 USD', totalday:'15 days', totalimpertobe:'1000',
-        totalspenttobe:'300 USD', balimp:'2000', baldays:'7 days', balspe:'600 USD', avg:2000/7
-    }
-]
-
-const row2 =[
-    {
-        date: '23-oct-2020', type:'Audio', publisher:'Gaana', dealId:'PYT-18878-0000b',dealName:'Gaana', 
-        impressions:'100', spend:'30 USD', start:'15-oct-2020', end:'30-oct-2020',
-        totalimpr:'3000', totalSpend:'900 USD', avgspent:'0.3 USD', totalday:'15 days', totalimpertobe:'1000',
-        totalspenttobe:'300 USD', balimp:'2000', baldays:'7 days', balspe:'600 USD', avg:2000/7
-    },
-    {
-        date: '23-oct-2020', type:'Audio', publisher:'Jio Saavan', dealId:'PYT-18878-0000b',dealName:'Gaana', 
-        impressions:'100', spend:'30 USD', start:'15-oct-2020', end:'30-oct-2020',
-        totalimpr:'3000', totalSpend:'900 USD', avgspent:'0.3 USD', totalday:'15 days', totalimpertobe:'1000',
-        totalspenttobe:'300 USD', balimp:'2000', baldays:'7 days', balspe:'600 USD', avg:2000/7
-    }
-]
-
 export default function BasicTable() {
     const history = useHistory();
     const {state1} = useContext(IdContext)
+    const [singlead, setsinglead] = useState({})
+    const [logs, setlogs] = useState([])
+    const [impre, setimpre] = useState(0)
     const classes = useStyles();
     // console.log(state1)
     const normal =(val)=>{
@@ -50,20 +29,63 @@ export default function BasicTable() {
         // console.log(v)
         return v
     }
+    useEffect(()=>{
+        if(state1){
+            fetch('/report/sumreportofcam',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:state1
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                var impressions = 0;
+                setlogs(result)
+                result.map((re)=>{
+                    impressions += re.impressions
+                })
+                console.log(result)
+                console.log(impressions)
+                setimpre(impressions)
+            })
+            .catch(err =>{
+                console.log(err)
+            })
+        }
+    },[state1])
+    useEffect(()=>{
+        if(state1){
+            fetch(`/streamingads/allads/${state1}`,{
+                method:'get',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                }
+            }).then(res=>res.json())
+            .then(result=>{
+                setsinglead(result[0])
+                console.log(result[0])
+            })
+            .catch(err =>{
+                console.log(err)
+            })
+        }
+    },[state1])
+    const timefinder = (da1,da2) => {
+        var d1 = new Date(da1)
+        var d2 = new Date(da2)
+        var show = d1.getTime() - d2.getTime();
+        var resula = show/(1000 * 3600 * 24) ;
+        return Math.round(resula*1)/1 ;
+    }
     return (
         <>
         <TableContainer style={{margin:'20px 0'}} component={Paper}>
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
             <TableRow>
-                {/* <TableCell>Date</TableCell>
-                <TableCell>Media Type</TableCell>
-                <TableCell>Publisher</TableCell>
-                <TableCell>Deal Id</TableCell>
-                <TableCell>Deal Name</TableCell>
-                <TableCell>impressions</TableCell>
-                <TableCell>Spend</TableCell>
-                <TableCell>Avg spend per impression</TableCell> */}
                 <TableCell>Campaign Start Date</TableCell>
                 <TableCell>Campaign End Date</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
@@ -77,37 +99,28 @@ export default function BasicTable() {
                 <TableCell>Balance Days</TableCell>
                 <TableCell>Balance Spend</TableCell>
                 <TableCell>Avg required</TableCell>
+                <TableCell></TableCell>
             </TableRow>
             </TableHead>
             <TableBody>
-            {rows.map((row,i) => (
-                <TableRow key={i}>
-                    {/* <TableCell component="th" scope="row">
-                        {row.date}
-                    </TableCell> */}
-                    {/* <TableCell>{row.type}</TableCell>
-                    <TableCell>{row.publisher}</TableCell>
-                    <TableCell>{row.dealId}</TableCell>
-                    <TableCell>{row.dealName}</TableCell>
-                    <TableCell>{row.impressions}</TableCell>
-                    <TableCell>{row.spend}</TableCell>
-                    <TableCell>{row.avgspent}</TableCell> */}
-                    <TableCell>{row.start}</TableCell>
-                    <TableCell>{row.end}</TableCell>
-                    <TableCell>{row.totalimpr}</TableCell>
-                    <TableCell>{row.totalSpend}</TableCell>
-                    <TableCell>{row.avgspent}</TableCell>
-                    <TableCell>{row.totalday}</TableCell>
-                    <TableCell>{row.totalimpertobe}</TableCell>
-                    <TableCell>{row.totalspenttobe}</TableCell>
-                    <TableCell>{row.avgspent}</TableCell>
-                    <TableCell>{row.balimp}</TableCell>
-                    <TableCell>{row.baldays}</TableCell>
-                    <TableCell>{row.balspe}</TableCell>
-                    <TableCell>{normal(row.avg)}</TableCell>
+            {singlead._id ?
+                <TableRow>
+                    <TableCell>{singlead.startDate.slice(0,10)}</TableCell>
+                    <TableCell>{singlead.endDate.slice(0,10)}</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
+                    <TableCell>{impre}</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
                     <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/report/${state1}/detailed`)}>Detailed Report</TableCell>
                 </TableRow>
-            ))} 
+            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
             </TableBody>
         </Table>
         </TableContainer>
@@ -116,14 +129,7 @@ export default function BasicTable() {
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
             <TableRow>
-                {/* <TableCell>Date</TableCell>
-                <TableCell>Media Type</TableCell>*/}
                 <TableCell>Publisher</TableCell>
-                {/*<TableCell>Deal Id</TableCell>
-                <TableCell>Deal Name</TableCell>
-                <TableCell>impressions</TableCell>
-                <TableCell>Spend</TableCell>
-                <TableCell>Avg spend per impression</TableCell> */}
                 <TableCell>Campaign Start Date</TableCell>
                 <TableCell>Campaign End Date</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
@@ -140,34 +146,27 @@ export default function BasicTable() {
             </TableRow>
             </TableHead>
             <TableBody>
-            {row2.map((row,i) => (
-                <TableRow key={i}>
-                    {/* <TableCell component="th" scope="row">
-                        {row.date}
-                    </TableCell> */}
-                    {/* <TableCell>{row.type}</TableCell>*/}
-                    <TableCell>{row.publisher}</TableCell>
-                    {/*<TableCell>{row.dealId}</TableCell>
-                    <TableCell>{row.dealName}</TableCell>
-                    <TableCell>{row.impressions}</TableCell>
-                    <TableCell>{row.spend}</TableCell>
-                    <TableCell>{row.avgspent}</TableCell> */}
-                    <TableCell>{row.start}</TableCell>
-                    <TableCell>{row.end}</TableCell>
-                    <TableCell>{row.totalimpr}</TableCell>
-                    <TableCell>{row.totalSpend}</TableCell>
-                    <TableCell>{row.avgspent}</TableCell>
-                    <TableCell>{row.totalday}</TableCell>
-                    <TableCell>{row.totalimpertobe}</TableCell>
-                    <TableCell>{row.totalspenttobe}</TableCell>
-                    <TableCell>{row.avgspent}</TableCell>
-                    <TableCell>{row.balimp}</TableCell>
-                    <TableCell>{row.baldays}</TableCell>
-                    <TableCell>{row.balspe}</TableCell>
-                    <TableCell>{normal(row.avg)}</TableCell>
-                    <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/report/${state1}/detailed`)}>Detailed Report</TableCell>
-                </TableRow>
-            ))} 
+            {singlead._id ? logs.length && 
+                logs.map((log,i) => {
+                    return <TableRow key={i}>
+                        <TableCell>{log.Publisher.AppName}</TableCell>
+                        <TableCell>{singlead.startDate.slice(0,10)}</TableCell>
+                        <TableCell>{singlead.endDate.slice(0,10)}</TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
+                        <TableCell>{log.impressions}</TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/report/${state1}/detailed`)}>Detailed Report</TableCell>
+                    </TableRow>
+                })
+            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
             </TableBody>
         </Table>
         </TableContainer>

@@ -53,7 +53,7 @@
 .dashmenu{
   float: left;
   width: 250px;
-  background-color: whitesmoke;
+  /* background-color: whitesmoke; */
   border: 1px lightgray solid;
   height: 92vh;
 }

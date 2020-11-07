@@ -57,7 +57,7 @@ function App() {
               /> 
             <Route
               path='/manageAds/report/:id/detailed'
-              component={DetailedTable}
+              render={()=>(state ? (state.usertype === 'admin' && <DetailedTable />) : <Redirect to='/login' />)}
               /> 
           </>}
         </BrowserRouter>
