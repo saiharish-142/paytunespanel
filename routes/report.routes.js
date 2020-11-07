@@ -64,7 +64,7 @@ router.put('/detreportcambydat',adminauth,(req,res)=>{
         }},{$group:{
             _id:{date:"$date"}, impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
         }},{$project:{
-            date:"$_id", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
+            date:"$_id.date", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
         }}
     ])
     .then(reports=>{
