@@ -44,13 +44,13 @@ router.get('/detreportbycamp',adminauth,(req,res)=>{
 })
 
 router.post('/createReport',(req,res)=>{
-    const { date, appId, impressions, completed, region } = req.body
+    const { date, appId, impressions, completed, region, clicks } = req.body
     const report = new Report({
         Date:date,
         Publisher:appId,
         impressions:impressions,
         complete:completed,
-        clicks:clicked.length,
+        clicks:clicks,
         region:region,
         Spend:data.length + ' USD',
         avgSpend:1
