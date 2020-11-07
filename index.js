@@ -1,6 +1,7 @@
+const fetch = require('node-fetch')
 const express = require('express')
 const app = express()
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 5200
 const mongoose = require('mongoose')
 const cors = require('cors')
 const { MONGOURI } = require('./config/keys')
@@ -40,223 +41,157 @@ if(process.env.NODE_ENV==="production"){
         res.sendFile(path.resolve(__dirname,'client','build','index.html'))
     })
 }
-
 // var d = new Date()
-// d.setDate(d.getDate()-1);
-// if(d.getDate() < 10){
-//     var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate() + 'T00:00:00.000Z'
-// }else{
-//     var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate() + 'T00:00:00.000Z'
-// }
-// var yd = new Date(dte)
-// var nd = new Date('2020-10-21T21:02:41.506Z')
-// console.log(yd,dte)
-// console.log(yd > nd)
-
+//     d.setDate(d.getDate()-1);
+//     if(d.getDate() < 10){
+//         var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate() + 'T00:00:00.000Z'
+//     }else{
+//         var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate() + 'T00:00:00.000Z'
+//     }
+//     var yd = new Date(dte)
 app.listen(port, () => console.log(`app listening on port ${port}!`))
-// console.log('stata')
-// cron.schedule('00 23 * * *',function(){
-//     var d = new Date()
-//     d.setDate(d.getDate()-1);
-//     if(d.getDate() < 10){
-//         var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate() + 'T00:00:00.000Z'
-//     }else{
-//         var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate() + 'T00:00:00.000Z'
-//     }
-//     var yd = new Date(dte)
-//     var camIds = []
-//     var appIds = []
-//     const Report = mongoose.model('Report')
-//     const trackinglogs = mongoose.model('trackinglogs')
-//     const StreamingAds = mongoose.model('streamingads')
-//     // const Rtbrequest = mongoose.model('rtbrequests')
-//     const publisherapps = mongoose.model('publisherapps')
-//     // console.log(fd)
-//     StreamingAds.find()
-//     .then(ads=>{
-//         camIds = ads.map(ad => {
-//             return {_id: ad._id}
-//         })
-//         publisherapps.find()
-//         .then(apps => {
-//             appIds = apps.map(publi => {
-//                 return publi._id
-//             })
-//             // console.log(appIds)
-//             // console.log(camIds)
-//             for(var i=0;i<camIds.length;i++){
-//                 for(var j=0;j<appIds.length;j++){
-//                     ReportMaker(yd,camIds[i],appIds[j])
-//                     // console.log(yd,camIds[i],appIds[j])
-//                 }
-//             }
-//         })
-//     })
 
-//     async function ReportMaker(date, campaignId, appId ){
-//         // console.log(date,campaignId,appId)
-//         // console.log(campaignId._id)
-//         var data = [];
-//         var clicked = [];
-//         var clicked2 = [];
-//         var impressions = [];
-//         var completed = [];
-//         var region = [];
-//         trackinglogs.find({
-//             createdOn:{$gte: yd},
-//             campaignId:campaignId._id,
-//             appId:appId
-//         })
-//         // .populate('rtbreqid')
-//         .then(logs=>{
-//             console.log(logs.length)
-//             if(!logs.length){
-//                 console.log('ntg')
-//                 return console.log({Message:'there are no logs on the given information'})
-//             }
-//             data = logs
-//             region = logs.map(log =>{
-//                 return log.region 
-//             })
-//             region = [...new Set(region)];
-//             impressions = data.filter(x => x.type==='impression')
-//             if(appId === '5f91ca4441375c24943f4756'){
-//                 clicked = data.filter(x => x.type==='clicktracking')
-//                 clicked2 = data.filter(x => x.type==='click')
-//                 clicked = data.concat(clicked2)
-//                 // console.log('spotify')
-//             }else{
-//                 clicked = data.filter(x => x.type==='companionclicktracking')
-//                 clicked2 = data.filter(x => x.type==='click')
-//                 clicked = data.concat(clicked2)
-//                 // console.log('not spotify')
-//             }
-//             completed = data.filter(x => x.type==='complete')
-//             // console.log(data)
-//             // data = data.filter(x => x.appId===appId)
-//             // Rtbrequest
-//             const report = new Report({
-//                 Date:date,
-//                 Publisher:appId,
-//                 // mediatype: campaignId.type,
-//                 // dealID,
-//                 impressions:impressions.length,
-//                 complete:completed.length,
-//                 clicks:clicked.length,
-//                 region:region,
-//                 Spend:data.length + ' USD',
-//                 avgSpend:logs.length?1:0
-//             })
-//             // console.log(report)
-//             report.save()
-//             .then(result => {
-//                 console.log(result)
-//             })
-//             .catch(err => console.log(err))
-//         })
-//         .catch(err=>console.log(err))
-//     }
-// // })
-// cron.schedule('02 00 * * *',function(){
-//     var d = new Date()
-//     d.setDate(d.getDate()-1);
-//     if(d.getDate() < 10){
-//         var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate() + 'T00:00:00.000Z'
-//     }else{
-//         var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate() + 'T00:00:00.000Z'
-//     }
-//     var yd = new Date(dte)
-//     var camIds = []
-//     var appIds = []
-//     const Report = mongoose.model('Report')
-//     const trackinglogs = mongoose.model('trackinglogs')
-//     const StreamingAds = mongoose.model('streamingads')
-//     const Rtbrequest = mongoose.model('rtbrequests')
-//     const publisherapps = mongoose.model('publisherapps')
-//     // console.log(fd)
-//     StreamingAds.find()
-//     .then(ads=>{
-//         camIds = ads.map(ad => {
-//             return {_id: ad._id}
-//         })
-//         publisherapps.find()
-//         .then(apps => {
-//             appIds = apps.map(publi => {
-//                 return publi._id
-//             })
-//             // console.log(appIds)
-//             // console.log(camIds)
-//             for(var i=0;i<camIds.length;i++){
-//                 for(var j=0;j<appIds.length;j++){
-//                     ReportMaker(yd,camIds[i],appIds[j])
-//                     // console.log(yd,camIds[i],appIds[j])
-//                 }
-//             }
-//         })
-//     })
-
-//     async function ReportMaker(date, campaignId, appId ){
-//         // console.log(date,campaignId,appId)
-//         var data = [];
-//         var clicked = [];
-//         var clicked2 = [];
-//         var impressions = [];
-//         var completed = [];
-//         var region = [];
-//         trackinglogs.find({
-//             createdOn:{$gte: yd},
-//             campaignId:campaignId._id,
-//             appId:appId
-//         })
-//         // .populate('rtbreqid')
-//         .then(logs=>{
-//             console.log(logs.length)
-//             if(!logs.length){
-//                 console.log('ntg')
-//                 return res.json({Message:'there are no logs on th given information'})
-//             }
-//             data = logs
-//             region = logs.map(log =>{
-//                 return log.region 
-//             })
-//             region = [...new Set(region)];
-//             impressions = data.filter(x => x.type==='impression')
-//             if(appId === '5f91ca4441375c24943f4756'){
-//                 clicked = data.filter(x => x.type==='clicktracking')
-//                 clicked2 = data.filter(x => x.type==='click')
-//                 clicked = data.concat(clicked2)
-//                 // console.log('spotify')
-//             }else{
-//                 clicked = data.filter(x => x.type==='companionclicktracking')
-//                 clicked2 = data.filter(x => x.type==='click')
-//                 clicked = data.concat(clicked2)
-//                 // console.log('not spotify')
-//             }
-//             completed = data.filter(x => x.type==='complete')
-//             // console.log(data)
-//             // data = data.filter(x => x.appId===appId)
-//             // Rtbrequest
-//             const report = new Report({
-//                 Date:date,
-//                 Publisher:appId,
-//                 // mediatype: campaignId.type,
-//                 // dealID,
-//                 impressions:impressions.length,
-//                 complete:completed.length,
-//                 clicks:clicked.length,
-//                 region:region,
-//                 Spend:data.length + ' USD',
-//                 avgSpend:logs.length?1:0
-//             })
-//             // console.log(report)
-//             report.save()
-//             .then(result => {
-//                 console.log(result)
-//             })
-//             .catch(err => console.log(err))
-//         })
-//         .catch(err=>console.log(err))
+// var arr = [
+//     {date:'2020-12-1'},
+//     {date:'2020-12-2'},
+//     {date:'2020-12-3'},
+//     {date:'2020-12-4'},
+//     {date:'2020-12-5'},
+//     {date:'2020-12-6'},
+//     {date:'2020-12-7'},
+//     {date:'2020-12-8'},
+//     {date:'2020-12-9'},
+//     {date:'2020-12-10'},
+// ]
+// var da = new Date('2020-12-05'+'T00:00:00.000Z')
+// console.log(da)
+// arr = arr.filter(x =>{
+//     var d = new Date(x.date)
+//     console.log(d)
+//     if(d<da){
+//         return x;
 //     }
 // })
+// console.log(arr)
+// var ObjectId = require('mongoose').Types.ObjectId; 
+// var ob =  new ObjectId('5f9dc3fb3c1b28429c06c014')
+// console.log(ob==='5f9dc3fb3c1b28429c06c014')
 
-// weqweqw
+// router.post('/creareport',adminauth,(req,res)=>{
+//     const { campaignId, date, tdate } = req.body
+//     var dat = new Date(date)
+//     var tdat = new Date(tdate)
+//     var Ldata = [];
+//     var data = [];
+//     var fdata = [];
+//     var i=0;
+//     console.log('started',dat,tdat)
+//     async function reportMaker(){
+//         trackinglogs.find({createdOn:{$lte:dat}})
+//         .sort('-createdOn')
+//         .limit(1000)
+//         .skip(1000*i)
+//         .then(async (result)=>{
+//             data = result
+//             data = await data.filter(x=>x.campaignId.equals(campaignId))
+//             Ldata = await data.filter(x=>{
+//                 var d = new Date(x.createdOn)
+//                 if(d<=tdat){
+//                     return x;
+//                 }
+//             })
+//             fdata = fdata.concat(data)
+//             console.log(data.length,`completed round ${i} in campaign`,fdata.length)
+//             i++;
+//             // if(result.length===0 || Ldata.length>1){
+//                 // clearInterval(timer)
+//                 if(fdata.length===0)
+//                 console.log('noo logs found')
+//                 if(fdata.length>0){
+//                     // publisherfinder(fdata,date,campaignId)
+//                 }
+//                 return res.json({message:'no more logs available',fdata,data})
+//             // }else{console.log('done')}
+//             // region = await data.map(log => {return log.region })
+//         })
+//         .catch(err => {
+//             console.log(err)
+//             clearInterval(timer)
+//             // publisherfinder(fdata,date,campaignId)
+//         })
+//     }
+//     var timer = setInterval(reportMaker, 300000)
+// })
+
+// async function publisherfinder({logs,date,campaignId}){
+//     var app = [];
+//     var applogs = [];
+//     var i = 0;
+//     function removeDuplicates(originalArray, prop) {
+//         var newArray = [];
+//         var lookupObject  = {};
+//         for(var i in originalArray) {
+//             lookupObject[originalArray[i][prop]] = originalArray[i];
+//         }
+    
+//         for(i in lookupObject) {
+//             newArray.push(lookupObject[i]);
+//         }
+//         return newArray;
+//     }
+    
+//     // var logs = await removeDuplicates(jlogs, "_id");
+//     publisherapps.find()
+//     .then(async (result)=>{
+//         app = await result.map(x => x._id)
+//         async function midware(){
+//             applogs = await logs.filter(x => x.appId.equals(app[i]))
+//             if(app[i]!== undefined){
+//             console.log(app[i],logs)
+//             reportposter(applogs,app[i],date,campaignId)}
+//             if(i>=app.length){
+//                 clearInterval(tim)
+//             }
+//             i++;
+//         }
+//         var tim = setInterval(midware, 3000)
+//     })
+//     .catch(err => console.log(err))
+// }
+
+// async function reportposter({logsFiltered,appid,date,campaignId}){
+//     var region = [];
+//     var complete = [];
+//     var clicked = [];
+//     var clicked2 = [];
+//     var impressions = [];
+//     // var start = [];
+//     region = await logsFiltered.map(x => { return x.region })
+//     region = [...new Set(region)];
+//     complete = await logsFiltered.filter(x => x.type==='complete')
+//     impressions = await data.filter(x => x.type==='impression')
+//     // start = await data.filter(x => x.type==='start')
+//     if(appid.equals('5f91ca4441375c24943f4756')){
+//         clicked = logsFiltered.filter(x=>x.type==='clicktracking')
+//         clicked2 = logsFiltered.filter(x => x.type==='click')
+//         clicked = clicked.concat(clicked2)
+//     }else{
+//         clicked = logsFiltered.filter(x=>x.type==='companionclicktracking')
+//         clicked2 = logsFiltered.filter(x => x.type==='click')
+//         clicked = clicked.concat(clicked2)
+//     }
+//     const report = new Report({
+//         date:date,
+//         Publisher:appid,
+//         campaignId:campaignId,
+//         impressions:impressions.length,
+//         complete:complete.length,
+//         clicks:clicked.length,
+//         region:region,
+//         Spend:logsFiltered.length + ' USD',
+//         avgSpend:logsFiltered.length
+//     })
+//     report.save()
+//     .then(reul => console.log(reul))
+//     .catch(err => console.log(err))
+// }
