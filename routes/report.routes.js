@@ -6,6 +6,7 @@ const adminauth  = require('../authenMiddleware/adminauth')
 
 router.get('/reports',adminauth,(req,res)=>{
     Report.find()
+    .populate('Publisher')
     .sort('-createdAt')
     .then(reports=>{
         res.json(reports)
@@ -16,6 +17,7 @@ router.get('/reports',adminauth,(req,res)=>{
 router.put('/reportbydate',adminauth,(req,res)=>{
     const { date } = req.body
     Report.find({date:date})
+    .populate('Publisher')
     .sort('-createdAt')
     .then(reports=>{
         res.json(reports)
@@ -26,6 +28,7 @@ router.put('/reportbydate',adminauth,(req,res)=>{
 router.put('/reportbycamp',adminauth,(req,res)=>{
     const { campaignId } = req.body
     Report.find({campaignId:campaignId})
+    .populate('Publisher')
     .sort('-createdAt')
     .then(reports=>{
         res.json(reports)
@@ -36,6 +39,7 @@ router.put('/reportbycamp',adminauth,(req,res)=>{
 router.put('/detreportbycamp',adminauth,(req,res)=>{
     const { campaignId, date } = req.body
     Report.find({campaignId:campaignId,date:date})
+    .populate('Publisher')
     .sort('-createdAt')
     .then(reports=>{
         res.json(reports)
