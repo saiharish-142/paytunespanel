@@ -55,6 +55,30 @@ router.put('/sumreportofcam',adminauth,(req,res)=>{
     .catch(err=>console.log(err))
 })
 
+router.put('/detreportcambydat',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var resu = [];
+    Report.aggregate([
+        {$match:{
+            "campaignId":campaignId
+        }},{$group:{
+            _id:{date:"$date"}, impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
+        }},{$project:{
+            date:"$_id", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
+        }}
+    ])
+    .then(reports=>{
+        resu = reports;
+        resu.map((det)=>{
+            var resregion = [].concat.apply([], det.region);
+            resregion = [...new Set(resregion)];
+            det.region = resregion
+        })
+        res.json(resu)
+    })
+    .catch(err=>console.log(err))
+})
+
 router.put('/reportbycamp',adminauth,(req,res)=>{
     const { campaignId } = req.body
     Report.find({campaignId:campaignId})
