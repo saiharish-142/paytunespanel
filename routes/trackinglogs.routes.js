@@ -78,7 +78,9 @@ router.post('/repotcre',adminauth,async (req,res)  =>{
         { $group:{
             _id: {appId: "$appId",region :"$region",type:"$type"},count:{$sum:1}
         }},{$group:{
-            _id:{appp:"$_id.appId",type:"$_id.type"} , ctype:{$push:{region:"$_id.region"}}, count:{$sum:"$count"}
+            _id:{app:"$_id.appId",type:"$_id.type"} , region:{$push:"$_id.region"}, count:{$sum:"$count"}
+        }},{$project:{
+            app_id:"$_id.app", type:"_id.type",region:"$region",cont:"$count"
         }}
     ])
     .then(result=>{
