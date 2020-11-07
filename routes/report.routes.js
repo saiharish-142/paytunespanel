@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 const Report = mongoose.model('Report')
+const publisherapps = mongoose.model('publisherapps')
 const adminauth  = require('../authenMiddleware/adminauth')
 
 router.get('/reports',adminauth,(req,res)=>{
@@ -32,17 +33,17 @@ router.put('/sumreportofcam',adminauth,(req,res)=>{
             "campaignId":campaignId
         }},{$group:{
             _id:"$Publisher", impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
-        }},{$lookup:{
-            from:"Publisher",
-            localField:"_id",
-            foreignField:"_id",
-            as:"Publisher"
         }},{$project:{
-            Publisher:"$Publisher.AppName", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region"
+            Publisher:"$_id", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region"
         }}
     ])
     .then(reports=>{
-        res.json(reports)
+        publisherapps.populate(reports,{path:'Publisher'},function(err,populatedreports){
+            if(err){
+                return res.status(422).json(err)
+            }
+            res.json(populatedreports)
+        })
     })
     .catch(err=>console.log(err))
 })
