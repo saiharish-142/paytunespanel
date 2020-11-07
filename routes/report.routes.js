@@ -25,6 +25,28 @@ router.put('/reportbydate',adminauth,(req,res)=>{
     .catch(err=>console.log(err))
 })
 
+router.put('/sumreportofcam',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    Report.aggregate([
+        {$match:{
+            "campaignId":campaignId
+        }},{$group:{
+            _id:"$Publisher", impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
+        }}{$lookup:{
+            from:"Publisher",
+            localField:"_id",
+            foreignField:"_id",
+            as:"Publisher"
+        }},{$project:{
+            Publisher:"$Publisher.AppName", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region"
+        }}
+    ])
+    .then(reports=>{
+        res.json(reports)
+    })
+    .catch(err=>console.log(err))
+})
+
 router.put('/reportbycamp',adminauth,(req,res)=>{
     const { campaignId } = req.body
     Report.find({campaignId:campaignId})
