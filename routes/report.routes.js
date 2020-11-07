@@ -32,7 +32,7 @@ router.put('/sumreportofcam',adminauth,(req,res)=>{
             "campaignId":campaignId
         }},{$group:{
             _id:"$Publisher", impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
-        }}{$lookup:{
+        }},{$lookup:{
             from:"Publisher",
             localField:"_id",
             foreignField:"_id",
