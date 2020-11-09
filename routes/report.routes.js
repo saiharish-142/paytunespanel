@@ -8,7 +8,7 @@ const adminauth  = require('../authenMiddleware/adminauth')
 router.get('/reports',adminauth,(req,res)=>{
     Report.find()
     .populate('Publisher')
-    .sort('-createdAt')
+    .sort('-date')
     .then(reports=>{
         res.json(reports)
     })
@@ -19,7 +19,7 @@ router.put('/reportbydate',adminauth,(req,res)=>{
     const { date } = req.body
     Report.find({date:date})
     .populate('Publisher')
-    .sort('-createdAt')
+    .sort('-date')
     .then(reports=>{
         res.json(reports)
     })
@@ -65,7 +65,7 @@ router.put('/detreportcambydat',adminauth,(req,res)=>{
             _id:{date:"$date"}, impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
         }},{$project:{
             date:"$_id.date", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
-        }}
+        }},{$sort: {date: -1}}
     ])
     .then(reports=>{
         resu = reports;
@@ -83,7 +83,7 @@ router.put('/reportbycamp',adminauth,(req,res)=>{
     const { campaignId } = req.body
     Report.find({campaignId:campaignId})
     .populate('Publisher')
-    .sort('-createdAt')
+    .sort('-date')
     .then(reports=>{
         res.json(reports)
     })
@@ -94,7 +94,7 @@ router.put('/detreportbycamp',adminauth,(req,res)=>{
     const { campaignId, date } = req.body
     Report.find({campaignId:campaignId,date:date})
     .populate('Publisher')
-    .sort('-createdAt')
+    .sort('-date')
     .then(reports=>{
         res.json(reports)
     })
