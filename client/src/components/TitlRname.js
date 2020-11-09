@@ -11,10 +11,7 @@ function TitlRname({title,settitle,submit,setloading,loading}) {
                     submit(title)
                 }}>
                     <input value={title} placeholder='Ad Title' onChange={e=>settitle(e.target.value)} style={{width:"70%",margin:'0 20px 10px 20px'}} />
-                    <button className='btn' onClick={()=>{
-                        setloading(true)
-                        submit(title)
-                    }}>rename</button></form>
+                    <button className='btn' type="submit">rename</button></form>
                 }
             </Paper>
         </div>
