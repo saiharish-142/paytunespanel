@@ -96,6 +96,74 @@ router.post('/repotcre',adminauth,async (req,res)  =>{
     .catch(err => console.log(err))
 })
 
+router.post('/reportdate',adminauth,async (req,res)  =>{
+    const { date } = req.body
+    var resu = [];
+    trackinglogs.aggregate([
+        { $match: {
+            "date":date,
+            "type":{$in:["impression","complete","click","companionclicktracking","clicktracking"]}
+        } },
+        { $group:{
+            _id: {campaignId:"$campaignId" ,appId: "$appId",region :"$region",type:"$type"},count:{$sum:1}
+        }},{$group:{
+            _id:{campaignId:"$_id.campaignId" ,appId:"$_id.appId",type:"$_id.type"} , region:{$push:"$_id.region"}, count:{$sum:"$count"}
+        }},{$group:{
+            _id:{campaignId:"$_id.campaignId" ,appId:"$_id.appId"}, type:{$push:{type:"$_id.type",count:"$count"}}, region:{$push:"$region"}
+        }},{$group:{
+            _id:"$_id.campaignId", report:{$push:{appId:"$_id.appId", type:"$type", region:"$region"}}
+        }},{$project:{
+            campaignId:"$_id.campaignId", report:"$report", _id:0
+        }}
+    ])
+    .then(result=>{
+        resu = result;
+        resu.map((det)=>{
+            det.report.map(camrepo=>{
+                var resregion = [].concat.apply([], camrepo.region);
+                resregion = [...new Set(resregion)];
+                camrepo.region = resregion
+            })
+        })
+        res.json(resu)
+    })
+    .catch(err => console.log(err))
+})
+
+router.post('/repotcrecamp',adminauth,async (req,res)  =>{
+    const { campaignId } = req.body
+    var resu = [];
+    trackinglogs.aggregate([
+        { $match: {
+            "campaignId":campaignId,
+            "type":{$in:["impression","complete","click","companionclicktracking","clicktracking"]}
+        } },
+        { $group:{
+            _id: {appId: "$appId", date:"$date" ,region :"$region",type:"$type"},count:{$sum:1}
+        }},{$group:{
+            _id:{appId:"$_id.appId", date:"$_id.date", type:"$_id.type"} , region:{$push:"$_id.region"}, count:{$sum:"$count"}
+        }},{$group:{
+            _id:{appId:"$_id.appId", date:"$_id.date"}, type:{$push:{type:"$_id.type",count:"$count"}}, region:{$push:"$region"}
+        }},{$group:{
+            _id:"$_id.date", report:{$push:{appId:"$_id.appId",type:"$type",region:"$region"}}
+        }},{$project:{
+            date:"$_id.date", report:"$report", _id:0
+        }}
+    ])
+    .then(result=>{
+        resu = result;
+        resu.map((daterepo)=>{
+            daterepo.report.map(detapp=>{
+                var resregion = [].concat.apply([], detapp.region);
+                resregion = [...new Set(resregion)];
+                detapp.region = resregion
+            })
+        })
+        res.json(resu)
+    })
+    .catch(err => console.log(err))
+})
+
 
 router.post('/addlogs',adminauth, (req,res)=>{
     const { Type,id,appId, campaignId, rtbreqid, date, region, ifa } = req.body
