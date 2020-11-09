@@ -113,7 +113,7 @@ router.post('/reportdate',adminauth,async (req,res)  =>{
         }},{$group:{
             _id:"$_id.campaignId", report:{$push:{appId:"$_id.appId", type:"$type", region:"$region"}}
         }},{$project:{
-            date: date,campaignId:"$_id.campaignId", report:"$report", _id:0
+            date: `$${date}`,campaignId:"$_id.campaignId", report:"$report", _id:0
         }}
     ])
     .then(result=>{
@@ -148,7 +148,7 @@ router.post('/repotcrecamp',adminauth,async (req,res)  =>{
         }},{$group:{
             _id:"$_id.date", report:{$push:{appId:"$_id.appId",type:"$type",region:"$region"}}
         }},{$project:{
-            campaignId:campaignId,date:"$_id.date", report:"$report", _id:0
+            campaignId:`$${campaignId}`,date:"$_id.date", report:"$report", _id:0
         }}
     ])
     .then(result=>{
