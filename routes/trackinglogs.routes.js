@@ -185,15 +185,15 @@ router.post('/repotcrecamp',adminauth,async (req,res)  =>{
             "type":{$in:["impression","complete","click","companionclicktracking","clicktracking"]}
         } },
         { $group:{
-            _id: {appId: "$appId", date:"$date" ,region :"$region",type:"$type"},count:{$sum:1}
+            _id: {appId: "$appId",campaignId:"$campaignId", date:"$date" ,region :"$region",type:"$type"},count:{$sum:1}
         }},{$group:{
-            _id:{appId:"$_id.appId", date:"$_id.date", type:"$_id.type"} , region:{$push:"$_id.region"}, count:{$sum:"$count"}
+            _id:{appId:"$_id.appId",campaignId:"$_id.campaignId", date:"$_id.date", type:"$_id.type"} , region:{$push:"$_id.region"}, count:{$sum:"$count"}
         }},{$group:{
-            _id:{appId:"$_id.appId", date:"$_id.date"}, type:{$push:{type:"$_id.type",count:"$count"}}, region:{$push:"$region"}
+            _id:{appId:"$_id.appId",campaignId:"$_id.campaignId" ,date:"$_id.date"}, type:{$push:{type:"$_id.type",count:"$count"}}, region:{$push:"$region"}
         }},{$group:{
-            _id:"$_id.date", report:{$push:{appId:"$_id.appId",type:"$type",region:"$region"}}
+            _id:{date:"$_id.date",campaignId:"$_id.campaignId"}, report:{$push:{appId:"$_id.appId",type:"$type",region:"$region"}}
         }},{$project:{
-            campaignId:`$${campaignId}`,date:"$_id", report:"$report", _id:0
+            campaignId:"$_id.campaignId",date:"$_id.date", report:"$report", _id:0
         }}
     ])
     .then(result=>{
