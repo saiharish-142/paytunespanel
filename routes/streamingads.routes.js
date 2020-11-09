@@ -22,6 +22,30 @@ router.get('/allads/:id',adminauth,(req,res)=>{
     .catch(err => console.log(err))
 })
 
+router.put('/updatename/:id',adminauth,(req,res)=>{
+    StreamingAds.findById(req.params.id)
+    .then(streamad=>{
+        if(req.body.adtitle){
+            streamad.AdTitle = req.body.adtitle
+        }
+        streamad.save()
+        .then(result=>{
+            res.json({result,message:"title updated"})
+        })
+        .catch(err => console.log(err))
+    })
+    .catch(err => console.log(err))
+})
+
+// router.put('/grouped',adminauth,(req,res)=>{
+//     StreamingAds.aggregate([
+//         {$project:{
+//             AdTitle:{$split:["$AdTitle","_"]}
+//         }}
+//     ])
+// })
+// ## $split and then $slice it 
+
 router.get('/alladsp',adminauth,(req,res)=>{
     StreamingAds.find({endDate:{$gte:req.body.date}})
     .sort('-createdOn')
@@ -92,3 +116,8 @@ router.post('/addAds',adminauth,(req,res)=>{
 })
 
 module.exports = router
+
+// MyModel.find({$text: {$search: searchString}})
+//        .skip(20)
+//        .limit(10)
+//        .exec(function(err, docs) { ... });

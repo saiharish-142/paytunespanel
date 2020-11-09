@@ -158,12 +158,12 @@ export default function DetailedTable() {
             </TableRow>
             </TableHead>
             <TableBody>
-            {datelogs.map((row,i) => (
+            {datelogs.length && currentad && datelogs.map((row,i) => (
                 <TableRow key={i}>
                     <TableCell component="th" scope="row">
                         {row.date}
                     </TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>{currentad.Linear[0].MediaFiles[0].Type}</TableCell>
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell></TableCell>
@@ -189,13 +189,13 @@ export default function DetailedTable() {
             </TableRow>
             </TableHead>
             <TableBody>
-            {publishlogs.map((row,i) => (
+            {publishlogs.length && currentad && publishlogs.map((row,i) => (
                 <TableRow key={i}>
                     <TableCell component="th" scope="row">
                         {row.date}
                     </TableCell>
                     <TableCell>{row.Publisher.AppName}</TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>{currentad.Linear[0].MediaFiles[0].Type}</TableCell>
                     <TableCell></TableCell>
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell>{row.impressions}</TableCell>

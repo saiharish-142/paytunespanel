@@ -16,10 +16,9 @@ const useStyles = makeStyles({
     },
 });
 
-export default function BasicTable() {
+export default function BasicTable({singlead}) {
     const history = useHistory();
     const {state1} = useContext(IdContext)
-    const [singlead, setsinglead] = useState({})
     const [logs, setlogs] = useState([])
     const [impre, setimpre] = useState(0)
     const classes = useStyles();
@@ -49,24 +48,6 @@ export default function BasicTable() {
                 console.log(result)
                 console.log(impressions)
                 setimpre(impressions)
-            })
-            .catch(err =>{
-                console.log(err)
-            })
-        }
-    },[state1])
-    useEffect(()=>{
-        if(state1){
-            fetch(`/streamingads/allads/${state1}`,{
-                method:'get',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                }
-            }).then(res=>res.json())
-            .then(result=>{
-                setsinglead(result[0])
-                console.log(result[0])
             })
             .catch(err =>{
                 console.log(err)
