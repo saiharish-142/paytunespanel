@@ -113,12 +113,13 @@ router.post('/reportdate',adminauth,async (req,res)  =>{
         }},{$group:{
             _id:"$_id.campaignId", report:{$push:{appId:"$_id.appId", type:"$type", region:"$region"}}
         }},{$project:{
-            campaignId:"$_id.campaignId", report:"$report", _id:0
+            date: date,campaignId:"$_id.campaignId", report:"$report", _id:0
         }}
     ])
     .then(result=>{
         resu = result;
         resu.map((det)=>{
+            console.log(det.campaignId)
             det.report.map(camrepo=>{
                 var resregion = [].concat.apply([], camrepo.region);
                 resregion = [...new Set(resregion)];
@@ -147,7 +148,7 @@ router.post('/repotcrecamp',adminauth,async (req,res)  =>{
         }},{$group:{
             _id:"$_id.date", report:{$push:{appId:"$_id.appId",type:"$type",region:"$region"}}
         }},{$project:{
-            date:"$_id.date", report:"$report", _id:0
+            campaignId:campaignId,date:"$_id.date", report:"$report", _id:0
         }}
     ])
     .then(result=>{
