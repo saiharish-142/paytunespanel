@@ -168,7 +168,7 @@ router.post('/reportdate',adminauth,async (req,res)  =>{
                 report.save()
                 .then(result => {
                     compr.push(result)
-                    console.log(result)
+                    console.log("completed")
                 })
                 .catch(err => console.log(err))
             }
