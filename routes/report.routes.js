@@ -121,4 +121,18 @@ router.post('/createReport',(req,res)=>{
     .catch(err => console.log(err))
 })
 
+router.delete('/deleteallbyadmin',adminauth,(req,res)=>{
+    Report.deleteMany({})
+    .then(repon=>{
+        res.json({relt:repon,mess:"deleted"})
+    })
+})
+
+// router.delete('/deleteMany',adminauth,(req,res)=>{
+//     Report.deleteMany({_id:req.body.id})
+//     .then(repon=>{
+//         res.json({relt:repon,mess:"deleted"})
+//     })
+// })
+
 module.exports = router
