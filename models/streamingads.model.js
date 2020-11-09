@@ -7,7 +7,7 @@ const streamingadsSchema = new mongoose.Schema({
     offset:{type:String},
     Category:{type:String},
     Description:{type:String},
-    Advertiser:{type:String,required:true},
+    Advertiser:{type:String},
     AudioPricing:{type:String},
     BannerPricing:{type:String},
     Pricing:{type:String},
