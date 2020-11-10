@@ -44,154 +44,374 @@ if(process.env.NODE_ENV==="production"){
 // var d = new Date()
 //     d.setDate(d.getDate()-1);
 //     if(d.getDate() < 10){
-//         var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate() + 'T00:00:00.000Z'
+//         var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
 //     }else{
-//         var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate() + 'T00:00:00.000Z'
+//         var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
 //     }
-//     var yd = new Date(dte)
+    // var yd = new Date(dte)
+    // console.log(dte)
 app.listen(port, () => console.log(`app listening on port ${port}!`))
 
-// var arr = [
-//     {date:'2020-12-1'},
-//     {date:'2020-12-2'},
-//     {date:'2020-12-3'},
-//     {date:'2020-12-4'},
-//     {date:'2020-12-5'},
-//     {date:'2020-12-6'},
-//     {date:'2020-12-7'},
-//     {date:'2020-12-8'},
-//     {date:'2020-12-9'},
-//     {date:'2020-12-10'},
-// ]
-// var da = new Date('2020-12-05'+'T00:00:00.000Z')
-// console.log(da)
-// arr = arr.filter(x =>{
-//     var d = new Date(x.date)
-//     console.log(d)
-//     if(d<da){
-//         return x;
-//     }
-// })
-// console.log(arr)
-// var ObjectId = require('mongoose').Types.ObjectId; 
-// var ob =  new ObjectId('5f9dc3fb3c1b28429c06c014')
-// console.log(ob==='5f9dc3fb3c1b28429c06c014')
+cron.schedule('20 00 * * *', function() {
+    var d = new Date()
+    d.setDate(d.getDate()-1);
+    if(d.getDate() < 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
+    }else{
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+    }
+    const trackinglogs = mongoose.model('trackinglogs')
+    var data = [];
+    trackinglogs.aggregate([
+        { $match: {
+            "date":date,
+            "type":{$in:["impression","complete","click","companionclicktracking","clicktracking"]}
+        } },
+        { $group:{
+            _id: {date:"$date" ,campaignId:"$campaignId" ,appId: "$appId",region :"$region",type:"$type"},count:{$sum:1}
+        }},{$group:{
+            _id:{date:"$_id.date" ,campaignId:"$_id.campaignId" ,appId:"$_id.appId",type:"$_id.type"} , region:{$push:"$_id.region"}, count:{$sum:"$count"}
+        }},{$group:{
+            _id:{date:"$_id.date" ,campaignId:"$_id.campaignId" ,appId:"$_id.appId"}, type:{$push:{type:"$_id.type",count:"$count"}}, region:{$push:"$region"}
+        }},{$group:{
+            _id:{date:"$_id.date" ,campaignId:"$_id.campaignId"}, report:{$push:{appId:"$_id.appId", type:"$type", region:"$region"}}
+        }},{$project:{
+            date: "$_id.date",campaignId:"$_id.campaignId", report:"$report", _id:0
+        }}
+    ])
+    .then(result=>{
+        data = result;
+        data.map((det)=>{
+            console.log(det.campaignId)
+            det.report.map(camrepo=>{
+                var resregion = [].concat.apply([], camrepo.region);
+                resregion = [...new Set(resregion)];
+                camrepo.region = resregion
+            })
+        })
+        var compr = [];
+        for(var i=0; i<data.length; i++ ){
+            const Report = mongoose.model('Report')
+            var cam = data[i].campaignId ;
+            var da = data[i].date ;
+            for(var j=0;j<data[i].report.length;j++){
+                var impre = 0;
+                var compl = 0;
+                var click = 0;
+                data[i].report[j].type.map(repo => {
+                    if(repo.type==='impression'){
+                        impre += repo.count
+                    }
+                    if(repo.type==='complete'){
+                        compl += repo.count
+                    }
+                    if(repo.type==='companionclicktracking'){
+                        click += repo.count
+                    }
+                    if(repo.type==='clicktracking'){
+                        click += repo.count
+                    }
+                    if(repo.type==='click'){
+                        click += repo.count
+                    }
+                })
+                const report = new Report({
+                    date:da,
+                    Publisher:data[i].report[j].appId,
+                    campaignId:cam,
+                    impressions:impre,
+                    complete:compl,
+                    clicks:click,
+                    region:data[i].report[j].region,
+                    spend:impre,
+                    avgSpend:impre
+                })
+                report.save()
+                .then(result => {
+                    compr.push(result)
+                    console.log("completed")
+                })
+                .catch(err => console.log(err))
+            }
+        }
+        // res.json(compr)
+    })
+    .catch(err => console.log(err))
+});
 
-// router.post('/creareport',adminauth,(req,res)=>{
-//     const { campaignId, date, tdate } = req.body
-//     var dat = new Date(date)
-//     var tdat = new Date(tdate)
-//     var Ldata = [];
-//     var data = [];
-//     var fdata = [];
-//     var i=0;
-//     console.log('started',dat,tdat)
-//     async function reportMaker(){
-//         trackinglogs.find({createdOn:{$lte:dat}})
-//         .sort('-createdOn')
-//         .limit(1000)
-//         .skip(1000*i)
-//         .then(async (result)=>{
-//             data = result
-//             data = await data.filter(x=>x.campaignId.equals(campaignId))
-//             Ldata = await data.filter(x=>{
-//                 var d = new Date(x.createdOn)
-//                 if(d<=tdat){
-//                     return x;
+// var data = [
+//     {
+//         "report": [
+//             {
+//                 "appId": "5efac6f9aeeeb92b8a1ee056",
+//                 "type": [
+//                     {
+//                         "type": "impression",
+//                         "count": 10851
+//                     },
+//                     {
+//                         "type": "complete",
+//                         "count": 19518
+//                     },
+//                     {
+//                         "type": "companionclicktracking",
+//                         "count": 130
+//                     }
+//                 ],
+//                 "region": [
+//                     "DL",
+//                     "HR",
+//                     "UP"
+//                 ]
+//             }
+//         ],
+//         "campaignId": "5f9f80237124ce17a1764c30",
+//         "date": "2020-11-02"
+//     },
+//     {
+//         "report": [
+//             {
+//                 "appId": "5efac6f9aeeeb92b8a1ee056",
+//                 "type": [
+//                     {
+//                         "type": "companionclicktracking",
+//                         "count": 562
+//                     },
+//                     {
+//                         "type": "complete",
+//                         "count": 85878
+//                     },
+//                     {
+//                         "type": "impression",
+//                         "count": 47577
+//                     }
+//                 ],
+//                 "region": [
+//                     "RJ",
+//                     "UP",
+//                     "DL",
+//                     "HR"
+//                 ]
+//             }
+//         ],
+//         "campaignId": "5f9f80237124ce17a1764c30",
+//         "date": "2020-11-04"
+//     },
+//     {
+//         "report": [
+//             {
+//                 "appId": "5efac6f9aeeeb92b8a1ee056",
+//                 "type": [
+//                     {
+//                         "type": "companionclicktracking",
+//                         "count": 554
+//                     },
+//                     {
+//                         "type": "complete",
+//                         "count": 91213
+//                     },
+//                     {
+//                         "type": "impression",
+//                         "count": 50369
+//                     }
+//                 ],
+//                 "region": [
+//                     "UP",
+//                     "HR",
+//                     "DL",
+//                     "RJ"
+//                 ]
+//             }
+//         ],
+//         "campaignId": "5f9f80237124ce17a1764c30",
+//         "date": "2020-11-05"
+//     },
+//     {
+//         "report": [
+//             {
+//                 "appId": "5efac6f9aeeeb92b8a1ee056",
+//                 "type": [
+//                     {
+//                         "type": "impression",
+//                         "count": 49452
+//                     },
+//                     {
+//                         "type": "complete",
+//                         "count": 89362
+//                     },
+//                     {
+//                         "type": "companionclicktracking",
+//                         "count": 764
+//                     }
+//                 ],
+//                 "region": [
+//                     "RJ",
+//                     "UP",
+//                     "DL",
+//                     "HR"
+//                 ]
+//             }
+//         ],
+//         "campaignId": "5f9f80237124ce17a1764c30",
+//         "date": "2020-11-07"
+//     },
+//     {
+//         "report": [
+//             {
+//                 "appId": "5efac6f9aeeeb92b8a1ee056",
+//                 "type": [
+//                     {
+//                         "type": "complete",
+//                         "count": 99986
+//                     },
+//                     {
+//                         "type": "companionclicktracking",
+//                         "count": 817
+//                     },
+//                     {
+//                         "type": "impression",
+//                         "count": 55572
+//                     }
+//                 ],
+//                 "region": [
+//                     "HR",
+//                     "UP",
+//                     "DL",
+//                     "RJ"
+//                 ]
+//             }
+//         ],
+//         "campaignId": "5f9f80237124ce17a1764c30",
+//         "date": "2020-11-08"
+//     },
+//     {
+//         "report": [
+//             {
+//                 "appId": "5efac6f9aeeeb92b8a1ee056",
+//                 "type": [
+//                     {
+//                         "type": "complete",
+//                         "count": 77691
+//                     },
+//                     {
+//                         "type": "impression",
+//                         "count": 42960
+//                     },
+//                     {
+//                         "type": "companionclicktracking",
+//                         "count": 536
+//                     }
+//                 ],
+//                 "region": [
+//                     "DL",
+//                     "UP",
+//                     "RJ",
+//                     "HR"
+//                 ]
+//             }
+//         ],
+//         "campaignId": "5f9f80237124ce17a1764c30",
+//         "date": "2020-11-03"
+//     },
+//     {
+//         "report": [
+//             {
+//                 "appId": "5efac6f9aeeeb92b8a1ee056",
+//                 "type": [
+//                     {
+//                         "type": "companionclicktracking",
+//                         "count": 640
+//                     },
+//                     {
+//                         "type": "complete",
+//                         "count": 92936
+//                     },
+//                     {
+//                         "type": "impression",
+//                         "count": 51238
+//                     }
+//                 ],
+//                 "region": [
+//                     "UP",
+//                     "DL",
+//                     "HR",
+//                     "RJ"
+//                 ]
+//             }
+//         ],
+//         "campaignId": "5f9f80237124ce17a1764c30",
+//         "date": "2020-11-06"
+//     },
+//     {
+//         "report": [
+//             {
+//                 "appId": "5efac6f9aeeeb92b8a1ee056",
+//                 "type": [
+//                     {
+//                         "type": "companionclicktracking",
+//                         "count": 390
+//                     },
+//                     {
+//                         "type": "complete",
+//                         "count": 67416
+//                     },
+//                     {
+//                         "type": "impression",
+//                         "count": 37218
+//                     }
+//                 ],
+//                 "region": [
+//                     "HR",
+//                     "DL",
+//                     "UP",
+//                     "RJ"
+//                 ]
+//             }
+//         ],
+//         "campaignId": "5f9f80237124ce17a1764c30",
+//         "date": "2020-11-09"
+//     }
+// ]
+
+// const Report = mongoose.model('Report')
+// var compledata = [];
+// async function dataaa() {
+//     await data.forEach(async (daata)=>{
+//         daata.report.forEach(async (re)=>{
+//             var impre = 0;
+//             var compl = 0;
+//             var click = 0;
+//             re.type.forEach(repo=>{
+//                 if(repo.type==='impression'){
+//                     impre += repo.count
+//                 }
+//                 if(repo.type==='complete'){
+//                     compl += repo.count
+//                 }
+//                 if(repo.type==='companionclicktracking'){
+//                     click += repo.count
+//                 }
+//                 if(repo.type==='clicktracking'){
+//                     click += repo.count
+//                 }
+//                 if(repo.type==='click'){
+//                     click += repo.count
 //                 }
 //             })
-//             fdata = fdata.concat(data)
-//             console.log(data.length,`completed round ${i} in campaign`,fdata.length)
-//             i++;
-//             // if(result.length===0 || Ldata.length>1){
-//                 // clearInterval(timer)
-//                 if(fdata.length===0)
-//                 console.log('noo logs found')
-//                 if(fdata.length>0){
-//                     // publisherfinder(fdata,date,campaignId)
-//                 }
-//                 return res.json({message:'no more logs available',fdata,data})
-//             // }else{console.log('done')}
-//             // region = await data.map(log => {return log.region })
+//             const report = new Report({
+//                 date: daata.date,
+//                 campaignId: daata.campaignId,
+//                 appId : re.appId,
+//                 impressions:impre,
+//                 clicks:click,
+//                 complete:compl,
+//                 region: re.region
+//             })
+//             // let postda = await report.save().catch(err => console.log(err))
+//             // compledata.push(postda)
 //         })
-//         .catch(err => {
-//             console.log(err)
-//             clearInterval(timer)
-//             // publisherfinder(fdata,date,campaignId)
-//         })
-//     }
-//     var timer = setInterval(reportMaker, 300000)
-// })
-
-// async function publisherfinder({logs,date,campaignId}){
-//     var app = [];
-//     var applogs = [];
-//     var i = 0;
-//     function removeDuplicates(originalArray, prop) {
-//         var newArray = [];
-//         var lookupObject  = {};
-//         for(var i in originalArray) {
-//             lookupObject[originalArray[i][prop]] = originalArray[i];
-//         }
-    
-//         for(i in lookupObject) {
-//             newArray.push(lookupObject[i]);
-//         }
-//         return newArray;
-//     }
-    
-//     // var logs = await removeDuplicates(jlogs, "_id");
-//     publisherapps.find()
-//     .then(async (result)=>{
-//         app = await result.map(x => x._id)
-//         async function midware(){
-//             applogs = await logs.filter(x => x.appId.equals(app[i]))
-//             if(app[i]!== undefined){
-//             console.log(app[i],logs)
-//             reportposter(applogs,app[i],date,campaignId)}
-//             if(i>=app.length){
-//                 clearInterval(tim)
-//             }
-//             i++;
-//         }
-//         var tim = setInterval(midware, 3000)
 //     })
-//     .catch(err => console.log(err))
+//     await console.log(compledata,1)
 // }
 
-// async function reportposter({logsFiltered,appid,date,campaignId}){
-//     var region = [];
-//     var complete = [];
-//     var clicked = [];
-//     var clicked2 = [];
-//     var impressions = [];
-//     // var start = [];
-//     region = await logsFiltered.map(x => { return x.region })
-//     region = [...new Set(region)];
-//     complete = await logsFiltered.filter(x => x.type==='complete')
-//     impressions = await data.filter(x => x.type==='impression')
-//     // start = await data.filter(x => x.type==='start')
-//     if(appid.equals('5f91ca4441375c24943f4756')){
-//         clicked = logsFiltered.filter(x=>x.type==='clicktracking')
-//         clicked2 = logsFiltered.filter(x => x.type==='click')
-//         clicked = clicked.concat(clicked2)
-//     }else{
-//         clicked = logsFiltered.filter(x=>x.type==='companionclicktracking')
-//         clicked2 = logsFiltered.filter(x => x.type==='click')
-//         clicked = clicked.concat(clicked2)
-//     }
-//     const report = new Report({
-//         date:date,
-//         Publisher:appid,
-//         campaignId:campaignId,
-//         impressions:impressions.length,
-//         complete:complete.length,
-//         clicks:clicked.length,
-//         region:region,
-//         Spend:logsFiltered.length + ' USD',
-//         avgSpend:logsFiltered.length
-//     })
-//     report.save()
-//     .then(reul => console.log(reul))
-//     .catch(err => console.log(err))
-// }
+// dataaa()
