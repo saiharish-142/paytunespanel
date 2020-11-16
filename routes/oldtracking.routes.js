@@ -1,9 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const router = express.Router()
-const trackinglogs = mongoose.model('trackinglogs')
-const Report = mongoose.model('Report')
-const publisherapps = mongoose.model('publisherapps')
+const trackinglogs = mongoose.model('trackinglogs_old')
 const adminauth = require('../authenMiddleware/adminauth')
 
 router.get('/trackinglogs',adminauth,(req,res)=>{
@@ -14,22 +12,6 @@ router.get('/trackinglogs',adminauth,(req,res)=>{
         if(!logs.length){
             return res.status(422).json({error:"not found",result})
         }
-        res.json(logs)
-    })
-    .catch(err => console.log(err))
-})
-
-router.get('/trackinglogsty',adminauth,(req,res)=>{
-    trackinglogs.find()
-    .sort('-createdOn')
-    .limit(200)
-    .then(logs=>{
-        if(!logs.length){
-            return res.status(422).json({error:"not found",result})
-        }
-        logs.map(log => {
-            typeof log.campaignId
-        })
         res.json(logs)
     })
     .catch(err => console.log(err))

@@ -37,13 +37,32 @@ router.put('/updatename/:id',adminauth,(req,res)=>{
     .catch(err => console.log(err))
 })
 
-// router.put('/grouped',adminauth,(req,res)=>{
-//     StreamingAds.aggregate([
-//         {$project:{
-//             AdTitle:{$split:["$AdTitle","_"]}
-//         }}
-//     ])
-// })
+router.put('/grouped',adminauth,(req,res)=>{
+    StreamingAds.aggregate([
+        {$project:{
+            AdTitle:{$split:["$AdTitle","_"]},Category:"$Category"
+        }},{$project:{
+            AdTitle:{$slice:["$AdTitle",2]} ,Category:"$Category"
+        }},{$project:{
+            AdTitle:{
+                '$reduce': {
+                    'input': '$AdTitle',
+                    'initialValue': '',
+                    'in': {
+                        '$concat': [
+                            '$$value',
+                            {'$cond': [{'$eq': ['$$value', '']}, '', '_']}, 
+                            '$$this']
+                    }
+                }
+            }, Category:"$Category"
+        }},{$group:{
+            _id:"$AdTitle", count:{$sum:1}, Category:"$Category"
+        }}
+    ])
+    .then(respo=>res.json(respo))
+    .catch(err => console.log(err))
+})
 // ## $split and then $slice it 
 
 router.get('/alladsp',adminauth,(req,res)=>{
