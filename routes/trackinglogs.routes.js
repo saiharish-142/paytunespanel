@@ -12,7 +12,7 @@ router.get('/trackinglogs',adminauth,(req,res)=>{
     .limit(200)
     .then(logs=>{
         if(!logs.length){
-            return res.status(422).json({error:"not found",result})
+            return res.status(422).json({error:"not found",logs})
         }
         res.json(logs)
     })
@@ -25,7 +25,7 @@ router.get('/trackinglogsty',adminauth,(req,res)=>{
     .limit(200)
     .then(logs=>{
         if(!logs.length){
-            return res.status(422).json({error:"not found",result})
+            return res.status(422).json({error:"not found",logs})
         }
         logs.map(log => {
             typeof log.campaignId
@@ -39,7 +39,7 @@ router.get('/trackinglogs/:id',adminauth,(req,res)=>{
     trackinglogs.find({_id:req.params.id})
     .then(logs=>{
         if(!logs.length){
-            return res.status(422).json({error:"not found",result})
+            return res.status(422).json({error:"not found",logs})
         }
         res.json(logs)
     })

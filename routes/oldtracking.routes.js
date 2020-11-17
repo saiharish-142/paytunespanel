@@ -1,16 +1,16 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const router = express.Router()
-const trackinglogs = mongoose.model('trackinglogs_old')
+const trackinglogs_old = mongoose.model('trackinglogs_old')
 const adminauth = require('../authenMiddleware/adminauth')
 
 router.get('/trackinglogs',adminauth,(req,res)=>{
-    trackinglogs.find()
+    trackinglogs_old.find()
     .sort('-createdOn')
     .limit(200)
     .then(logs=>{
         if(!logs.length){
-            return res.status(422).json({error:"not found",result})
+            return res.status(422).json({error:"not found",logs})
         }
         res.json(logs)
     })
@@ -18,10 +18,10 @@ router.get('/trackinglogs',adminauth,(req,res)=>{
 })
 
 router.get('/trackinglogs/:id',adminauth,(req,res)=>{
-    trackinglogs.find({_id:req.params.id})
+    trackinglogs_old.find({_id:req.params.id})
     .then(logs=>{
         if(!logs.length){
-            return res.status(422).json({error:"not found",result})
+            return res.status(422).json({error:"not found",logs})
         }
         res.json(logs)
     })
@@ -31,7 +31,7 @@ router.get('/trackinglogs/:id',adminauth,(req,res)=>{
 router.post('/logbyDate/:num',adminauth,(req,res)=>{
     const { date, campaignId } = req.body
     const num = req.params.num
-    trackinglogs.find({date:date,campaignId:campaignId})
+    trackinglogs_old.find({date:date,campaignId:campaignId})
     .sort('-createdOn')
     .limit(100)
     .skip(100*num)
@@ -48,7 +48,7 @@ router.post('/logbyDate/:num',adminauth,(req,res)=>{
 
 router.post('/logcamp/:num',adminauth,(req,res)=>{
     const num = req.params.num
-    trackinglogs.find({campaignId:req.body.campaignId})
+    trackinglogs_old.find({campaignId:req.body.campaignId})
     .sort('-createdOn')
     .limit(100)
     .skip(100*num)
@@ -66,7 +66,7 @@ router.post('/logcamp/:num',adminauth,(req,res)=>{
 router.post('/repotcre',adminauth,async (req,res)  =>{
     const { date, campaignId } = req.body
     var resu = [];
-    trackinglogs.aggregate([
+    trackinglogs_old.aggregate([
         { $match: {
             "campaignId":campaignId,
             "date":date,
@@ -99,7 +99,7 @@ router.post('/repotcre',adminauth,async (req,res)  =>{
 router.post('/reportdate',adminauth,async (req,res)  =>{
     const { date } = req.body
     var data = [];
-    trackinglogs.aggregate([
+    trackinglogs_old.aggregate([
         { $match: {
             "date":date,
             "type":{$in:["impression","complete","click","companionclicktracking","clicktracking"]}
@@ -179,7 +179,7 @@ router.post('/reportdate',adminauth,async (req,res)  =>{
 router.post('/repotcrecamp',adminauth,async (req,res)  =>{
     const { campaignId } = req.body
     var resu = [];
-    trackinglogs.aggregate([
+    trackinglogs_old.aggregate([
         { $match: {
             "campaignId":campaignId,
             "type":{$in:["impression","complete","click","companionclicktracking","clicktracking"]}
@@ -216,7 +216,7 @@ router.post('/addlogs',adminauth, (req,res)=>{
     if(!Type || !appId || !campaignId || !rtbreqid || !date){
         return res.status(422).json()
     }
-    const logs = new trackinglogs({
+    const logs = new    trackinglogs_old({
         Type,id,appId,campaignId, rtbreqid, date, region, ifa
     })
     logs.save()
@@ -228,7 +228,7 @@ router.post('/addlogs',adminauth, (req,res)=>{
 
 router.put('/updatelog/:id',adminauth,(req,res)=>{
     const { appId, campaignId, rtbreqid, region, ifa } = req.body
-    trackinglogs.findById(req.params.id)
+    trackinglogs_old.findById(req.params.id)
     .then(log=>{
         if(appId){log.appId = appId}
         if(campaignId){log.campaignId = campaignId}

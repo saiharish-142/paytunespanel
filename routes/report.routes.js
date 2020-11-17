@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
+const StreamingAds = mongoose.model('streamingads')
 const Report = mongoose.model('Report')
 const publisherapps = mongoose.model('publisherapps')
 const adminauth  = require('../authenMiddleware/adminauth')
@@ -22,6 +23,48 @@ router.put('/reportbydate',adminauth,(req,res)=>{
     .sort('-date')
     .then(reports=>{
         res.json(reports)
+    })
+    .catch(err=>console.log(err))
+})
+
+router.put('/sumrepobyjoincamp',adminauth,(req,res)=>{
+    const { adtitle } = req.body
+    StreamingAds.aggregate([
+        {$match:{
+            AdTitle:{$regex:adtitle}
+        }},{$project:{
+            id:"$_id"
+        }}
+    ])
+    .then(resp=>{
+        var ids = [];
+        resp.map(re => {
+            ids.push(re.id)
+        })
+        Report.aggregate([
+            {$match:{
+                "campaignId": {$in : ids}
+            }},{$group:{
+                _id:"$Publisher", impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
+            }},{$project:{
+                Publisher:"$_id", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
+            }}
+        ])
+        .then(reports=>{
+            publisherapps.populate(reports,{path:'Publisher'},function(err,populatedreports){
+                if(err){
+                    return res.status(422).json(err)
+                }
+                resu = populatedreports;
+                resu.map((det)=>{
+                    var resregion = [].concat.apply([], det.region);
+                    resregion = [...new Set(resregion)];
+                    det.region = resregion
+                })
+                res.json(resu)
+            })
+        })
+        .catch(err=>console.log(err))
     })
     .catch(err=>console.log(err))
 })
