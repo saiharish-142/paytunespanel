@@ -130,8 +130,10 @@ router.get('/grouped',adminauth,(req,res)=>{
 router.put('/getids',adminauth, (req,res)=>{
     const { adtitle } = req.body
     StreamingAds.aggregate([
-        {$match:{
-            AdTitle:{$regex:adtitle}
+        {$project:{
+            _id:"$_id", AdTitle:{$toLower:"$AdTitle"}
+        }},{$match:{
+            AdTitle:{$regex:adtitle.toLowerCase()}
         }},{$project:{
             id:"$_id"
         }}
