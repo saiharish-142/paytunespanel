@@ -110,7 +110,7 @@ router.get('/grouped',adminauth,(req,res)=>{
             rescreatedOn = [...new Set(rescreatedOn)];
             ad.createdOn = rescreatedOn
             ad.createdOn.map(dat=>{
-                dat.slice(0,10)
+                dat.substring(0,10)
             })
             // console.log(rescreatedOn,ad.createdOn)
             return ad;
