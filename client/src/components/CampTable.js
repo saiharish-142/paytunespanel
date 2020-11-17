@@ -63,7 +63,11 @@ export default function StickyHeadTable({streamingads}) {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-
+    const dateformatchanger = (date) => {
+        var dategot = date.toString();
+        var datechanged = dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
+        return datechanged;
+    }
     return (
         <Paper className={classes.root}>
         <TableContainer className={classes.container}>
@@ -94,7 +98,7 @@ export default function StickyHeadTable({streamingads}) {
                         <TableCell align='center'>{row.ro && row.ro}</TableCell>
                         <TableCell align='center'>{row.PricingModel && row.PricingModel}</TableCell>
                         <TableCell align='center'>{row.Category && row.Category}</TableCell>
-                        <TableCell align='center'>{row.createdOn ? row.createdOn.substring(0,10) : row.createdAt.substring(0,10)}</TableCell>
+                        <TableCell align='center'>{row.createdOn ? dateformatchanger(row.createdOn.substring(0,10)) : dateformatchanger(row.createdAt.substring(0,10))}</TableCell>
                         <TableCell align='center' className='mangeads__report' onClick={()=>{
                             history.push(`/manageAds/report/${row._id}`)
                             dispatch1({type:"ID",payload:row._id})

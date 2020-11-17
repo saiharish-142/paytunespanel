@@ -57,9 +57,17 @@ export default function BasicTable({singlead}) {
     const timefinder = (da1,da2) => {
         var d1 = new Date(da1)
         var d2 = new Date(da2)
+        if(d1<d2){
+            return 'completed campaign'
+        }
         var show = d1.getTime() - d2.getTime();
         var resula = show/(1000 * 3600 * 24) ;
         return Math.round(resula*1)/1 ;
+    }
+    const dateformatchanger = (date) => {
+        var dategot = date.toString();
+        var datechanged = dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
+        return datechanged;
     }
     return (
         <>
@@ -86,16 +94,16 @@ export default function BasicTable({singlead}) {
             <TableBody>
             {singlead._id ?
                 <TableRow>
-                    <TableCell>{singlead.startDate.slice(0,10)}</TableCell>
-                    <TableCell>{singlead.endDate.slice(0,10)}</TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>{dateformatchanger(singlead.startDate.slice(0,10))}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate.slice(0,10))}</TableCell>
+                    <TableCell>{singlead.TargetImpressions && singlead.TargetImpressions}</TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{impre}</TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>{singlead.TargetImpressions&& singlead.TargetImpressions-impre}</TableCell>
                     <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
@@ -131,16 +139,16 @@ export default function BasicTable({singlead}) {
                 logs.map((log,i) => {
                     return <TableRow key={i}>
                         <TableCell>{log.Publisher.AppName}</TableCell>
-                        <TableCell>{singlead.startDate.slice(0,10)}</TableCell>
-                        <TableCell>{singlead.endDate.slice(0,10)}</TableCell>
-                        <TableCell></TableCell>
+                        <TableCell>{dateformatchanger(singlead.startDate.slice(0,10))}</TableCell>
+                        <TableCell>{dateformatchanger(singlead.endDate.slice(0,10))}</TableCell>
+                        <TableCell>{singlead.TargetImpressions && singlead.TargetImpressions}</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                         <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                         <TableCell>{log.impressions}</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
-                        <TableCell></TableCell>
+                        <TableCell>{singlead.TargetImpressions&& singlead.TargetImpressions-impre}</TableCell>
                         <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
