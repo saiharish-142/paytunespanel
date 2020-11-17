@@ -83,31 +83,31 @@ router.get('/grouped',adminauth,(req,res)=>{
     .then((respo)=>{
         var data = [];
         data = respo
-        console.log(data)
+        // console.log(data)
         data.forEach(ad => {
             var resCategory = [].concat.apply([], ad.Category);
             resCategory = [...new Set(resCategory)];
             ad.Category = resCategory
-            console.log(resCategory)
+            // console.log(resCategory)
             var resAdvertiser = [].concat.apply([], ad.Advertiser);
             resAdvertiser = [...new Set(resAdvertiser)];
             ad.Advertiser = resAdvertiser
-            console.log(resAdvertiser)
+            // console.log(resAdvertiser)
             var resPricing = [].concat.apply([], ad.Pricing);
             resPricing = [...new Set(resPricing)];
             ad.Pricing = resPricing
-            console.log(resPricing)
+            // console.log(resPricing)
             var resPricingModel = [].concat.apply([], ad.PricingModel);
             resPricingModel = [...new Set(resPricingModel)];
             ad.PricingModel = resPricingModel
-            console.log(resPricingModel)
+            // console.log(resPricingModel)
             var rescreatedOn = [].concat.apply([], ad.createdOn);
             rescreatedOn = [...new Set(rescreatedOn)];
             ad.createdOn = rescreatedOn
-            console.log(rescreatedOn,ad.createdOn)
+            // console.log(rescreatedOn,ad.createdOn)
             return ad;
         })
-        console.log('completed',data)
+        // console.log('completed',data)
         res.json(data)
     })
     .catch(err => console.log(err))
