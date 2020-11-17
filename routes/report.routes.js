@@ -107,10 +107,6 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
                 "5fb39868eea81737d0957c74",
                 "5fb3997353ef8938c22df6f7"
             ]}
-        }},{$group:{
-            _id:"$Publisher", impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
-        }},{$project:{
-            Publisher:"$_id", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
         }}
     ])
     .then(reports=>{
