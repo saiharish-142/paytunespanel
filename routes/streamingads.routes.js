@@ -39,7 +39,7 @@ router.put('/updatename/:id',adminauth,(req,res)=>{
 
 router.get('/grouped',adminauth,(req,res)=>{
     StreamingAds.aggregate([
-        {$sort: {createdOn: -1}},{$project:{
+        {$project:{
             AdTitle:{$split:["$AdTitle","_"]},
             Category:"$Category",
             Advertiser:"$Advertiser",
@@ -52,7 +52,7 @@ router.get('/grouped',adminauth,(req,res)=>{
             Advertiser:"$Advertiser",
             Pricing:"$Pricing", 
             PricingModel:"$PricingModel",
-            createdOn:"$createdOn"
+            createdOn:{$substr:["$createdOn",0,10]}
         }},{$project:{
             AdTitle:{
                 '$reduce': {
@@ -71,7 +71,7 @@ router.get('/grouped',adminauth,(req,res)=>{
             Pricing:"$Pricing", 
             PricingModel:"$PricingModel",
             createdOn:"$createdOn"
-        }},{$group:{
+        }},{$sort: {createdOn: -1}},{$group:{
             _id:"$AdTitle",
             Category:{$push : "$Category"},
             Advertiser:{$push : "$Advertiser"},
@@ -84,8 +84,8 @@ router.get('/grouped',adminauth,(req,res)=>{
         var data = [];
         data = respo
         function Comparator(a, b) {
-            if (a.createdOn[0] < b.createdOn[0]) return -1;
-            if (a.createdOn[0] > b.createdOn[0]) return 1;
+            if (a.createdOn[1] < b.createdOn[1]) return -1;
+            if (a.createdOn[1] > b.createdOn[1]) return 1;
             return 0;
         }
         // console.log(data)
@@ -109,9 +109,6 @@ router.get('/grouped',adminauth,(req,res)=>{
             var rescreatedOn = [].concat.apply([], ad.createdOn);
             rescreatedOn = [...new Set(rescreatedOn)];
             ad.createdOn = rescreatedOn
-            ad.createdOn.map(dat=>{
-                dat.substring(0,10)
-            })
             // console.log(rescreatedOn,ad.createdOn)
             return ad;
         })
