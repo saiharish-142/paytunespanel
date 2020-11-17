@@ -46,7 +46,7 @@ router.get('/grouped',adminauth,(req,res)=>{
             Pricing:"$Pricing", 
             PricingModel:"$PricingModel",
             createdOn:"$createdOn"
-        }},{$project:{
+        }},{$sort: {createdOn: -1}},{$project:{
             AdTitle:{$slice:["$AdTitle",2]} ,
             Category:"$Category",
             Advertiser:"$Advertiser",

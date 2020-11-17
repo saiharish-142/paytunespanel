@@ -43,7 +43,7 @@ router.put('/sumrepobyjoincamp',adminauth,(req,res)=>{
         })
         Report.aggregate([
             {$match:{
-                "campaignId": {$in : ids}
+                "campaignId": {$in : [ids]}
             }},{$group:{
                 _id:"$Publisher", impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
             }},{$project:{
