@@ -103,7 +103,7 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
     var resu = [];
     Report.aggregate([
         {$match:{
-            "campaignId":{$in:[campaignId]}
+            "campaignId":{$in:campaignId}
         }},{$group:{
             _id:"$Publisher", impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
         }},{$project:{
