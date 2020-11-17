@@ -39,14 +39,14 @@ router.put('/updatename/:id',adminauth,(req,res)=>{
 
 router.get('/grouped',adminauth,(req,res)=>{
     StreamingAds.aggregate([
-        {$project:{
+        {$sort: {createdOn: -1}},{$project:{
             AdTitle:{$split:["$AdTitle","_"]},
             Category:"$Category",
             Advertiser:"$Advertiser",
             Pricing:"$Pricing", 
             PricingModel:"$PricingModel",
             createdOn:"$createdOn"
-        }},{$sort: {createdOn: -1}},{$project:{
+        }},{$project:{
             AdTitle:{$slice:["$AdTitle",2]} ,
             Category:"$Category",
             Advertiser:"$Advertiser",
