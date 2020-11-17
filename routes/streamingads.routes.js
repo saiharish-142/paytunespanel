@@ -84,8 +84,8 @@ router.get('/grouped',adminauth,(req,res)=>{
         var data = [];
         data = respo
         function Comparator(a, b) {
-            if (a.createdOn[1] < b.createdOn[1]) return -1;
-            if (a.createdOn[1] > b.createdOn[1]) return 1;
+            if (a.createdOn[1].slice(0,10) < b.createdOn[1].slice(0,10)) return -1;
+            if (a.createdOn[1].slice(0,10) > b.createdOn[1].slice(0,10)) return 1;
             return 0;
         }
         // console.log(data)
