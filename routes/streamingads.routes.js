@@ -78,16 +78,23 @@ router.get('/grouped',adminauth,(req,res)=>{
             Pricing:{$push : "$Pricing"}, 
             PricingModel:{$push : "$PricingModel"},
             createdOn:{$push : "$createdOn"}
+        }},{$project:{
+            Adtitle:"$_id",
+            Category:"$Category",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            PricingModel:"$PricingModel",
+            createdOn:{$arrayElemAt : ["$createdOn",0]}
         }},{$sort: {createdOn: -1}}
     ])
     .then((respo)=>{
         var data = [];
         data = respo
-        function Comparator(a, b) {
-            if (a.createdOn[1] < b.createdOn[1]) return -1;
-            if (a.createdOn[1] > b.createdOn[1]) return 1;
-            return 0;
-        }
+        // function Comparator(a, b) {
+        //     if (a.createdOn[1] < b.createdOn[1]) return -1;
+        //     if (a.createdOn[1] > b.createdOn[1]) return 1;
+        //     return 0;
+        // }
         // console.log(data)
         data.forEach(ad => {
             var resCategory = [].concat.apply([], ad.Category);
@@ -106,13 +113,13 @@ router.get('/grouped',adminauth,(req,res)=>{
             resPricingModel = [...new Set(resPricingModel)];
             ad.PricingModel = resPricingModel
             // console.log(resPricingModel)
-            var rescreatedOn = [].concat.apply([], ad.createdOn);
-            rescreatedOn = [...new Set(rescreatedOn)];
-            ad.createdOn = rescreatedOn
+            // var rescreatedOn = [].concat.apply([], ad.createdOn);
+            // rescreatedOn = [...new Set(rescreatedOn)];
+            // ad.createdOn = rescreatedOn
             // console.log(rescreatedOn,ad.createdOn)
             return ad;
         })
-        data = data.sort(Comparator);
+        // data = data.sort(Comparator);
         // console.log('completed',data)
         res.json(data)
     })
