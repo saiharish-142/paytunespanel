@@ -103,10 +103,7 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
     var resu = [];
     Report.aggregate([
         {$match:{
-            "campaignId":{$in:[
-                "5fb39868eea81737d0957c74",
-                "5fb3997353ef8938c22df6f7"
-            ]}
+            "campaignId":{$in:campaignId}
         }}
     ])
     .then(reports=>{
