@@ -40,6 +40,13 @@ router.put('/updatename/:id',adminauth,(req,res)=>{
 router.get('/grouped',adminauth,(req,res)=>{
     StreamingAds.aggregate([
         {$project:{
+            AdTitle:{$toLower:"$AdTitle"},
+            Category:"$Category",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            PricingModel:"$PricingModel",
+            createdOn:"$createdOn"
+        }},{$project:{
             AdTitle:{$split:["$AdTitle","_"]},
             Category:"$Category",
             Advertiser:"$Advertiser",
