@@ -122,26 +122,23 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
     StreamingAds.aggregate([
         {$project:{
             AdTitle:{$toLower:"$AdTitle"},
-            Category:"$Category",
-            Advertiser:"$Advertiser",
-            Pricing:"$Pricing", 
-            PricingModel:"$PricingModel",
+            startDate:"$startDate",
+            endDate:"$endDate",
+            TargetImpressions:"$TargetImpressions",
             createdOn:"$createdOn"
         }},{$match:{
             AdTitle:{$regex:adtitle.toLowerCase()}
         }},{$project:{
             AdTitle:{$split:["$AdTitle","_"]},
-            Category:"$Category",
-            Advertiser:"$Advertiser",
-            Pricing:"$Pricing", 
-            PricingModel:"$PricingModel",
+            startDate:"$startDate",
+            endDate:"$endDate",
+            TargetImpressions:"$TargetImpressions",
             createdOn:"$createdOn"
         }},{$project:{
             AdTitle:{$slice:["$AdTitle",2]} ,
-            Category:"$Category",
-            Advertiser:"$Advertiser",
-            Pricing:"$Pricing", 
-            PricingModel:"$PricingModel",
+            startDate:"$startDate",
+            endDate:"$endDate",
+            TargetImpressions:"$TargetImpressions",
             createdOn:{$substr:["$createdOn",0,10]}
         }},{$project:{
             AdTitle:{
@@ -156,10 +153,9 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     }
                 }
             },
-            Category:"$Category",
-            Advertiser:"$Advertiser",
-            Pricing:"$Pricing", 
-            PricingModel:"$PricingModel",
+            startDate:"$startDate",
+            endDate:"$endDate",
+            TargetImpressions:"$TargetImpressions",
             createdOn:"$createdOn"
         }},{$sort: {createdOn: -1}},{$group:{
             _id:"$AdTitle",
@@ -170,10 +166,9 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
             createdOn:{$push : "$createdOn"}
         }},{$project:{
             Adtitle:"$_id",
-            Category:"$Category",
-            Advertiser:"$Advertiser",
-            Pricing:"$Pricing", 
-            PricingModel:"$PricingModel",
+            startDate:"$startDate",
+            endDate:"$endDate",
+            TargetImpressions:"$TargetImpressions",
             createdOn:{$arrayElemAt : ["$createdOn",0]}
         }},{$sort: {createdOn: -1}}
     ])
