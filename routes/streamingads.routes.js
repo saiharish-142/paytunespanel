@@ -97,37 +97,104 @@ router.get('/grouped',adminauth,(req,res)=>{
     .then((respo)=>{
         var data = [];
         data = respo
-        // function Comparator(a, b) {
-        //     if (a.createdOn[1] < b.createdOn[1]) return -1;
-        //     if (a.createdOn[1] > b.createdOn[1]) return 1;
-        //     return 0;
-        // }
-        // console.log(data)
         data.forEach(ad => {
             var resCategory = [].concat.apply([], ad.Category);
             resCategory = [...new Set(resCategory)];
             ad.Category = resCategory
-            // console.log(resCategory)
             var resAdvertiser = [].concat.apply([], ad.Advertiser);
             resAdvertiser = [...new Set(resAdvertiser)];
             ad.Advertiser = resAdvertiser
-            // console.log(resAdvertiser)
             var resPricing = [].concat.apply([], ad.Pricing);
             resPricing = [...new Set(resPricing)];
             ad.Pricing = resPricing
-            // console.log(resPricing)
             var resPricingModel = [].concat.apply([], ad.PricingModel);
             resPricingModel = [...new Set(resPricingModel)];
             ad.PricingModel = resPricingModel
-            // console.log(resPricingModel)
-            // var rescreatedOn = [].concat.apply([], ad.createdOn);
-            // rescreatedOn = [...new Set(rescreatedOn)];
-            // ad.createdOn = rescreatedOn
-            // console.log(rescreatedOn,ad.createdOn)
             return ad;
         })
-        // data = data.sort(Comparator);
-        // console.log('completed',data)
+        res.json(data)
+    })
+    .catch(err => console.log(err))
+})
+
+router.put('/groupedsingle',adminauth,(req,res)=>{
+    const { adtitle } = req.body
+    StreamingAds.aggregate([
+        {$project:{
+            AdTitle:{$toLower:"$AdTitle"},
+            Category:"$Category",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            PricingModel:"$PricingModel",
+            createdOn:"$createdOn"
+        }},{$match:{
+            AdTitle:{$regex:adtitle.toLowerCase()}
+        }},{$project:{
+            AdTitle:{$split:["$AdTitle","_"]},
+            Category:"$Category",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            PricingModel:"$PricingModel",
+            createdOn:"$createdOn"
+        }},{$project:{
+            AdTitle:{$slice:["$AdTitle",2]} ,
+            Category:"$Category",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            PricingModel:"$PricingModel",
+            createdOn:{$substr:["$createdOn",0,10]}
+        }},{$project:{
+            AdTitle:{
+                '$reduce': {
+                    'input': '$AdTitle',
+                    'initialValue': '',
+                    'in': {
+                        '$concat': [
+                            '$$value',
+                            {'$cond': [{'$eq': ['$$value', '']}, '', '_']}, 
+                            '$$this']
+                    }
+                }
+            },
+            Category:"$Category",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            PricingModel:"$PricingModel",
+            createdOn:"$createdOn"
+        }},{$sort: {createdOn: -1}},{$group:{
+            _id:"$AdTitle",
+            Category:{$push : "$Category"},
+            Advertiser:{$push : "$Advertiser"},
+            Pricing:{$push : "$Pricing"}, 
+            PricingModel:{$push : "$PricingModel"},
+            createdOn:{$push : "$createdOn"}
+        }},{$project:{
+            Adtitle:"$_id",
+            Category:"$Category",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            PricingModel:"$PricingModel",
+            createdOn:{$arrayElemAt : ["$createdOn",0]}
+        }},{$sort: {createdOn: -1}}
+    ])
+    .then((respo)=>{
+        var data = [];
+        data = respo
+        data.forEach(ad => {
+            var resCategory = [].concat.apply([], ad.Category);
+            resCategory = [...new Set(resCategory)];
+            ad.Category = resCategory
+            var resAdvertiser = [].concat.apply([], ad.Advertiser);
+            resAdvertiser = [...new Set(resAdvertiser)];
+            ad.Advertiser = resAdvertiser
+            var resPricing = [].concat.apply([], ad.Pricing);
+            resPricing = [...new Set(resPricing)];
+            ad.Pricing = resPricing
+            var resPricingModel = [].concat.apply([], ad.PricingModel);
+            resPricingModel = [...new Set(resPricingModel)];
+            ad.PricingModel = resPricingModel
+            return ad;
+        })
         res.json(data)
     })
     .catch(err => console.log(err))
