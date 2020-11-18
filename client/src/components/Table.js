@@ -92,9 +92,22 @@ export default function BasicTable({singlead}) {
         var datechanged = dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
         return datechanged;
     }
+    const colorfinder = (target,response) => {
+        console.log(target)
+        console.log(response)
+        if(target>response){
+            return '#ff6969'
+        }
+        if(target<response){
+            return 'white'
+        }
+        if(target === response){
+            return 'white'
+        }
+    }
     return (
         <>
-        <TableContainer style={{margin:'20px 0'}} component={Paper}>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
             <TableRow>
@@ -117,7 +130,14 @@ export default function BasicTable({singlead}) {
             </TableHead>
             <TableBody>
             {singlead._id ?
-                <TableRow>
+                <TableRow 
+                    style={{
+                        background: colorfinder(
+                            singlead.TargetImpressions ? singlead.TargetImpressions/timefinder(singlead.endDate[0],singlead.startDate[0]) : 0,
+                            singlead.TargetImpressions ? impre/timefinder(Date.now(),singlead.startDate[0]) : 0
+                        )
+                    }}
+                >
                     <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
                     <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
                     <TableCell>{singlead.TargetImpressions && singlead.TargetImpressions}</TableCell>
@@ -131,14 +151,14 @@ export default function BasicTable({singlead}) {
                     <TableCell>{singlead.TargetImpressions&& singlead.TargetImpressions-impre}</TableCell>
                     <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
                     <TableCell></TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>{singlead.TargetImpressions && Math.round(singlead.TargetImpressions/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                 </TableRow>
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
             </TableBody>
         </Table>
         </TableContainer>
-        <TableContainer style={{margin:'20px 0'}} component={Paper}>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
         <div style={{margin:'0 auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Publisher Wise Summary Report</div>
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
@@ -163,7 +183,14 @@ export default function BasicTable({singlead}) {
             <TableBody>
             {singlead._id ? logs.length && 
                 logs.map((log,i) => {
-                    return <TableRow key={i}>
+                    return <TableRow key={i}
+                        style={{
+                            background: colorfinder(
+                                log.campaignId.TargetImpressions ? log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate[0],log.campaignId.startDate[0]) : 0,
+                                log.campaignId.TargetImpressions ? log.impressions/timefinder(Date.now(),log.campaignId.startDate[0]) : 0
+                            )
+                        }}
+                    >
                         <TableCell>{log.Publisher.AppName}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
@@ -178,7 +205,7 @@ export default function BasicTable({singlead}) {
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
                         <TableCell></TableCell>
-                        <TableCell></TableCell>
+                        <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                     </TableRow>
                 })

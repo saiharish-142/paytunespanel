@@ -33,7 +33,7 @@ function Login() {
     }
     return (
         <div className='login'>
-            <Paper>
+            <Paper elevation={3}>
                 <form className='login__box' onSubmit={e=>{
                     e.preventDefault()
                     login()
