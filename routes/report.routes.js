@@ -161,7 +161,7 @@ router.put('/detreportcambydat',adminauth,(req,res)=>{
 
 router.put('/reportbycamp',adminauth,(req,res)=>{
     const { campaignId } = req.body
-    Report.find({campaignId:campaignId})
+    Report.find({campaignId:{$in : campaignId}})
     .populate('Publisher')
     .sort('-date')
     .then(reports=>{
