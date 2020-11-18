@@ -140,7 +140,7 @@ router.put('/detreportcambydat',adminauth,(req,res)=>{
     var resu = [];
     Report.aggregate([
         {$match:{
-            "campaignId":campaignId
+            "campaignId":{$in : campaignId}
         }},{$group:{
             _id:{date:"$date"}, impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
         }},{$project:{
