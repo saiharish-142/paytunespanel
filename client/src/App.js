@@ -51,12 +51,12 @@ function App() {
               render={()=>(state ? (state.usertype === 'admin' && <Dashboard />) : <Redirect to='/login' />)}
               /> 
             <Route
-              path='/manageAds/report/:id'
+              path='/manageAds/:campname'
               exact
               render={()=>(state ? (state.usertype === 'admin' && <Report />) : <Redirect to='/login' />)}
               /> 
             <Route
-              path='/manageAds/report/:id/detailed'
+              path='/manageAds/:campname/detailed'
               render={()=>(state ? (state.usertype === 'admin' && <DetailedTable />) : <Redirect to='/login' />)}
               /> 
           </>}

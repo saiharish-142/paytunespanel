@@ -54,11 +54,10 @@ export default function StickyHeadTable({streamingads}) {
     const history = useHistory();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const {dispatch1} = useContext(IdContext)
+    const {state1,dispatch1} = useContext(IdContext)
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
-
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
@@ -92,7 +91,7 @@ export default function StickyHeadTable({streamingads}) {
                     if(typeof row !== 'undefined'){
                     return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
-                        <TableCell align='left'>{row.AdTitle && row.AdTitle}</TableCell>
+                        <TableCell align='left'>{row.Adtitle && row.Adtitle}</TableCell>
                         <TableCell align='left'>{row.Advertiser && row.Advertiser}</TableCell>
                         <TableCell align='center'>{row.Pricing && row.Pricing}</TableCell>
                         <TableCell align='center'>{row.ro && row.ro}</TableCell>
@@ -100,7 +99,7 @@ export default function StickyHeadTable({streamingads}) {
                         <TableCell align='center'>{row.Category && row.Category}</TableCell>
                         <TableCell align='center'>{row.createdOn ? dateformatchanger(row.createdOn.substring(0,10)) : dateformatchanger(row.createdAt.substring(0,10))}</TableCell>
                         <TableCell align='center' className='mangeads__report' onClick={()=>{
-                            history.push(`/manageAds/report/${row._id}`)
+                            history.push(`/manageAds/${row._id}`)
                             dispatch1({type:"ID",payload:row._id})
                         }}>Report</TableCell>
                     </TableRow>

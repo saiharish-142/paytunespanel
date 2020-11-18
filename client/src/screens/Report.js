@@ -7,25 +7,27 @@ import TitlRname from '../components/TitlRname'
 import M from 'materialize-css'
 
 function Report() {
-    const {id} = useParams()
+    const {campname} = useParams()
     const history = useHistory();
     const {dispatch1} = useContext(IdContext)
     const [singlead, setsinglead] = useState({})
     const [title, settitle] = useState('')
     const [loading, setloading] = useState(true)
     useEffect(() => {
-        if(id){
-            dispatch1({type:"ID",payload:id})
+        if(campname){
+            dispatch1({type:"ID",payload:campname})
         }
-    }, [id])
+    }, [campname])
     useEffect(()=>{
-        if(id){
-            fetch(`/streamingads/allads/${id}`,{
-                method:'get',
+        if(campname){
+            fetch(`/streamingads/groupedsingle`,{
+                method:'put',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                }
+                },body:JSON.stringify({
+                    adtitle:campname
+                })
             }).then(res=>res.json())
             .then(result=>{
                 settitle(result[0].AdTitle)
@@ -38,10 +40,10 @@ function Report() {
                 console.log(err)
             })
         }
-    },[id])
+    },[campname])
     const submitTitle = (adtitle) =>{
         if(adtitle){
-            fetch(`/streamingads/updatename/${id}`,{
+            fetch(`/streamingads/updatename/${campname}`,{
                 method:'put',
                 headers:{
                     "Content-Type":"application/json",

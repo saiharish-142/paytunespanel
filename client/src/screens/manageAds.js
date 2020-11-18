@@ -10,7 +10,7 @@ function Dashboard() {
     const [streamingads, setStreamingads] = useState([])
     const [streamingadsSearched, setStreamingadsSearched] = useState([])
     useEffect(() => {
-        fetch('/streamingads/allads',{
+        fetch('/streamingads/grouped',{
             method:'get',
             headers:{
                 "Content-Type":"application/json",

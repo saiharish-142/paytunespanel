@@ -20,7 +20,9 @@ export default function BasicTable({singlead}) {
     const history = useHistory();
     const {state1} = useContext(IdContext)
     const [logs, setlogs] = useState([])
+    const [ids, setids] = useState([])
     const [impre, setimpre] = useState(0)
+    const [click, setclick] = useState(0)
     const classes = useStyles();
     // console.log(state1)
     const normal =(val)=>{
@@ -30,30 +32,51 @@ export default function BasicTable({singlead}) {
     }
     useEffect(()=>{
         if(state1){
-            fetch('/report/sumreportofcam',{
+            fetch('/streamingads/getids',{
                 method:'put',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
                 },body:JSON.stringify({
-                    campaignId:state1
+                    adtitle:state1
+                })
+            }).then(res=>res.json())
+            .then(idds=>{
+                setids(idds)
+                console.log(idds)
+            })
+            .catch(err=>console.log(err))
+        }
+    },[state1])
+    useEffect(()=>{
+        if(ids){
+            fetch('/report/sumreportofcam22',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:ids
                 })
             }).then(res=>res.json())
             .then(result=>{
                 var impressions = 0;
+                var clicks = 0;
                 setlogs(result)
                 result.map((re)=>{
                     impressions += re.impressions
+                    clicks += re.clicks
                 })
                 console.log(result)
                 console.log(impressions)
                 setimpre(impressions)
+                setclick(clicks)
             })
             .catch(err =>{
                 console.log(err)
             })
         }
-    },[state1])
+    },[ids])
     const timefinder = (da1,da2) => {
         var d1 = new Date(da1)
         var d2 = new Date(da2)
@@ -82,6 +105,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Avg Spend per impression planned</TableCell>
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
                 <TableCell>Total Spend Till date</TableCell>
                 <TableCell>Avg Spend per impression Till Date</TableCell>
                 <TableCell>Balance Impressions</TableCell>
@@ -94,20 +118,21 @@ export default function BasicTable({singlead}) {
             <TableBody>
             {singlead._id ?
                 <TableRow>
-                    <TableCell>{dateformatchanger(singlead.startDate.slice(0,10))}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate.slice(0,10))}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
                     <TableCell>{singlead.TargetImpressions && singlead.TargetImpressions}</TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
-                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
+                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
                     <TableCell>{impre}</TableCell>
+                    <TableCell>{click}</TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell>{singlead.TargetImpressions&& singlead.TargetImpressions-impre}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
+                    <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
-                    <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/report/${state1}/detailed`)}>Detailed Report</TableCell>
+                    <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                 </TableRow>
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
             </TableBody>
@@ -126,6 +151,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Avg Spend per impression planned</TableCell>
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
                 <TableCell>Total Spend Till date</TableCell>
                 <TableCell>Avg Spend per impression Till Date</TableCell>
                 <TableCell>Balance Impressions</TableCell>
@@ -139,20 +165,21 @@ export default function BasicTable({singlead}) {
                 logs.map((log,i) => {
                     return <TableRow key={i}>
                         <TableCell>{log.Publisher.AppName}</TableCell>
-                        <TableCell>{dateformatchanger(singlead.startDate.slice(0,10))}</TableCell>
-                        <TableCell>{dateformatchanger(singlead.endDate.slice(0,10))}</TableCell>
-                        <TableCell>{singlead.TargetImpressions && singlead.TargetImpressions}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
+                        <TableCell>{log.campaignId.TargetImpressions && log.campaignId.TargetImpressions}</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
-                        <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
                         <TableCell>{log.impressions}</TableCell>
+                        <TableCell>{log.clicks}</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
-                        <TableCell>{singlead.TargetImpressions&& singlead.TargetImpressions-impre}</TableCell>
-                        <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
+                        <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
-                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/report/${state1}/detailed`)}>Detailed Report</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                     </TableRow>
                 })
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 

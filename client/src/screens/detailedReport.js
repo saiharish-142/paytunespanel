@@ -10,81 +10,46 @@ import { useHistory, useParams } from 'react-router-dom';
 import { IdContext } from '../App';
 import { Typography } from '@material-ui/core';
 
-const rows =[
-    {
-        date: '23-oct-2020', type:'Audio', 
-        impressions:'1000', spend:'300 USD',
-        totalimpr:'3000', totalSpend:'900 USD', avgspent:'0.3 USD', totalday:'15 days', totalimpertobe:'1000',
-        totalspenttobe:'300 USD', balimp:'2000', baldays:'7 days', balspe:'600 USD', avg:2000/7
-    },
-    {
-        date: '22-oct-2020', type:'Audio', 
-        impressions:'1000', spend:'300 USD',
-        totalimpr:'3000', totalSpend:'900 USD', avgspent:'0.3 USD', totalday:'15 days', totalimpertobe:'1000',
-        totalspenttobe:'300 USD', balimp:'2000', baldays:'7 days', balspe:'600 USD', avg:2000/7
-    },
-    {
-        date: '21-oct-2020', type:'Audio', 
-        impressions:'1000', spend:'300 USD',
-        totalimpr:'3000', totalSpend:'900 USD', avgspent:'0.3 USD', totalday:'15 days', totalimpertobe:'1000',
-        totalspenttobe:'300 USD', balimp:'2000', baldays:'7 days', balspe:'600 USD', avg:2000/7
-    },
-    {
-        date: '20-oct-2020', type:'Audio', 
-        impressions:'1000', spend:'300 USD',
-        totalimpr:'3000', totalSpend:'900 USD', avgspent:'0.3 USD', totalday:'15 days', totalimpertobe:'1000',
-        totalspenttobe:'300 USD', balimp:'2000', baldays:'7 days', balspe:'600 USD', avg:2000/7
-    }
-]
-
-const publisherwise = [
-    {
-        date: '23-oct-2020', type:'Audio', publisher:'Gaana', dealId:'PYT-18878-0000b',dealName:'Gaana', 
-        impressions:'100', spend:'30 USD', start:'15-oct-2020', end:'30-oct-2020',
-        totalimpr:'3000', totalSpend:'900 USD', avgspent:'0.3 USD', totalday:'15 days', totalimpertobe:'1000',
-        totalspenttobe:'300 USD', balimp:'2000', baldays:'7 days', balspe:'600 USD', avg:2000/7
-    },
-    {
-        date: '23-oct-2020', type:'Audio', publisher:'Jio Saavan', dealId:'PYT-18878-0000b',dealName:'Gaana', 
-        impressions:'200', spend:'60 USD', start:'15-oct-2020', end:'30-oct-2020',
-        totalimpr:'3000', totalSpend:'900 USD', avgspent:'0.3 USD', totalday:'15 days', totalimpertobe:'1000',
-        totalspenttobe:'300 USD', balimp:'2000', baldays:'7 days', balspe:'600 USD', avg:2000/7
-    },
-    {
-        date: '23-oct-2020', type:'Audio', publisher:'Spotify', dealId:'PYT-18878-0000b',dealName:'Gaana', 
-        impressions:'150', spend:'45 USD', start:'15-oct-2020', end:'30-oct-2020',
-        totalimpr:'3000', totalSpend:'900 USD', avgspent:'0.3 USD', totalday:'15 days', totalimpertobe:'1000',
-        totalspenttobe:'300 USD', balimp:'2000', baldays:'7 days', balspe:'600 USD', avg:2000/7
-    },
-    {
-        date: '23-oct-2020', type:'Audio', publisher:'Wynk', dealId:'PYT-18878-0000b',dealName:'Gaana', 
-        impressions:'100', spend:'30 USD', start:'15-oct-2020', end:'30-oct-2020',
-        totalimpr:'3000', totalSpend:'900 USD', avgspent:'0.3 USD', totalday:'15 days', totalimpertobe:'1000',
-        totalspenttobe:'300 USD', balimp:'2000', baldays:'7 days', balspe:'600 USD', avg:2000/7
-    }
-]
-
 export default function DetailedTable() {
     const history = useHistory();
     const {state1,dispatch1} = useContext(IdContext)
-    const { id } = useParams()
+    const { campname } = useParams()
+    const [ids, setids] = useState([])
     const [datelogs, setdatelogs] = useState([])
     const [publishlogs, setpublishlogs] = useState([])
     const [currentad, setcurrentad] = useState('')
     useEffect(() => {
-        if(id){
-            dispatch1({type:"ID",payload:id})
+        if(campname){
+            dispatch1({type:"ID",payload:campname})
         }
-    }, [id])
+    }, [campname])
     useEffect(()=>{
-        if(id){
+        if(campname){
+            fetch('/streamingads/getids',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    adtitle:campname
+                })
+            }).then(res=>res.json())
+            .then(idds=>{
+                setids(idds)
+                console.log(idds)
+            })
+            .catch(err=>console.log(err))
+        }
+    },[campname])
+    useEffect(()=>{
+        if(ids.length){
             fetch('/report/reportbycamp',{
                 method:'put',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
                 },body:JSON.stringify({
-                    campaignId:id
+                    campaignId:ids
                 })
             }).then(res=>res.json())
             .then(result=>{
@@ -95,15 +60,17 @@ export default function DetailedTable() {
                 console.log(err)
             })
         }
-    },[id])
+    },[ids])
     useEffect(()=>{
-        if(id){
-            fetch(`/streamingads/allads/${id}`,{
-                method:'get',
+        if(campname){
+            fetch(`/streamingads/groupedsingle`,{
+                method:'put',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                }
+                },body:JSON.stringify({
+                    adtitle:campname
+                })
             }).then(res=>res.json())
             .then(result=>{
                 setcurrentad(result[0])
@@ -113,16 +80,16 @@ export default function DetailedTable() {
                 console.log(err)
             })
         }
-    },[id])
+    },[campname])
     useEffect(()=>{
-        if(id){
+        if(ids){
             fetch('/report/detreportcambydat',{
                 method:'put',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
                 },body:JSON.stringify({
-                    campaignId:id
+                    campaignId:ids
                 })
             }).then(res=>res.json())
             .then(result=>{
@@ -133,13 +100,18 @@ export default function DetailedTable() {
                 console.log(err)
             })
         }
-    },[id])
+    },[ids])
     // console.log(id)
+    const dateformatchanger = (date) => {
+        var dategot = date.toString();
+        var datechanged = dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
+        return datechanged;
+    }
     return (
         <div style={{paddingBottom:'50px'}}>
         <div style={{margin:'0px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Detailed Report</div>
         <button 
-            onClick={()=>history.push(`/manageAds/report/${state1}`)} 
+            onClick={()=>history.push(`/manageAds/${state1}`)} 
             className='btn #424242 grey darken-3'
             style={{margin:'-20px 20px',float:'left'}}
         >Back</button><br />
@@ -153,6 +125,7 @@ export default function DetailedTable() {
                 <TableCell>Date</TableCell>
                 <TableCell>Media Type</TableCell>
                 <TableCell>impressions</TableCell>
+                <TableCell>Clicks</TableCell>
                 <TableCell>Spend</TableCell>
                 <TableCell>Avg spend per<br /> impression</TableCell>
             </TableRow>
@@ -161,10 +134,11 @@ export default function DetailedTable() {
             {datelogs.length && currentad && datelogs.map((row,i) => (
                 <TableRow key={i}>
                     <TableCell component="th" scope="row">
-                        {row.date}
+                        {dateformatchanger(row.date)}
                     </TableCell>
-                    <TableCell>{currentad.Linear[0].MediaFiles[0].Type}</TableCell>
+                    <TableCell></TableCell>
                     <TableCell>{row.impressions}</TableCell>
+                    <TableCell>{row.clicks}</TableCell>
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>
@@ -184,6 +158,7 @@ export default function DetailedTable() {
                 <TableCell>Media Type</TableCell>
                 <TableCell>Deal Id</TableCell>
                 <TableCell>impressions</TableCell>
+                <TableCell>Clicks</TableCell>
                 <TableCell>Spend</TableCell>
                 <TableCell>Avg spend per<br /> impression</TableCell>
             </TableRow>
@@ -192,12 +167,13 @@ export default function DetailedTable() {
             {publishlogs.length && currentad && publishlogs.map((row,i) => (
                 <TableRow key={i}>
                     <TableCell component="th" scope="row">
-                        {row.date}
+                        {dateformatchanger(row.date)}
                     </TableCell>
                     <TableCell>{row.Publisher.AppName}</TableCell>
-                    <TableCell>{currentad.Linear[0].MediaFiles[0].Type}</TableCell>
+                    <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell>{row.impressions}</TableCell>
+                    <TableCell>{row.clicks}</TableCell>
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>
