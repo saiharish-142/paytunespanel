@@ -105,9 +105,9 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
         {$match:{
             "campaignId":{$in:campaignId}
         }},{$group:{
-            _id:"$Publisher", impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
+            _id:"$Publisher", camp:{$push:"$campaignId"} , impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
         }},{$project:{
-            Publisher:"$_id", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
+            Publisher:"$_id", campaignId:"$camp", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
         }}
     ])
     .then(reports=>{
@@ -120,8 +120,16 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
                 var resregion = [].concat.apply([], det.region);
                 resregion = [...new Set(resregion)];
                 det.region = resregion
+                var rescampaignId = [].concat.apply([], det.campaignId);
+                rescampaignId = [...new Set(rescampaignId)];
+                det.campaignId = rescampaignId[0]
             })
-            res.json(resu)
+            StreamingAds.populate(resu,{path:'campaignId'},function(err,populatedres){
+                if(err){
+                    return res.status(422).json(resu)
+                }
+                res.json(populatedres)
+            })
         })
     })
     .catch(err=>console.log(err))
