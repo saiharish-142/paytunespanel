@@ -159,10 +159,9 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
             createdOn:"$createdOn"
         }},{$sort: {createdOn: -1}},{$group:{
             _id:"$AdTitle",
-            Category:{$push : "$Category"},
-            Advertiser:{$push : "$Advertiser"},
-            Pricing:{$push : "$Pricing"}, 
-            PricingModel:{$push : "$PricingModel"},
+            startDate:{$push : "$startDate"},
+            endDate:{$push : "$endDate"},
+            TargetImpressions:{$sum : "$TargetImpressions"}, 
             createdOn:{$push : "$createdOn"}
         }},{$project:{
             Adtitle:"$_id",
@@ -175,21 +174,21 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
     .then((respo)=>{
         var data = [];
         data = respo
-        data.forEach(ad => {
-            var resCategory = [].concat.apply([], ad.Category);
-            resCategory = [...new Set(resCategory)];
-            ad.Category = resCategory
-            var resAdvertiser = [].concat.apply([], ad.Advertiser);
-            resAdvertiser = [...new Set(resAdvertiser)];
-            ad.Advertiser = resAdvertiser
-            var resPricing = [].concat.apply([], ad.Pricing);
-            resPricing = [...new Set(resPricing)];
-            ad.Pricing = resPricing
-            var resPricingModel = [].concat.apply([], ad.PricingModel);
-            resPricingModel = [...new Set(resPricingModel)];
-            ad.PricingModel = resPricingModel
-            return ad;
-        })
+        // data.forEach(ad => {
+        //     var resCategory = [].concat.apply([], ad.Category);
+        //     resCategory = [...new Set(resCategory)];
+        //     ad.Category = resCategory
+        //     var resAdvertiser = [].concat.apply([], ad.Advertiser);
+        //     resAdvertiser = [...new Set(resAdvertiser)];
+        //     ad.Advertiser = resAdvertiser
+        //     var resPricing = [].concat.apply([], ad.Pricing);
+        //     resPricing = [...new Set(resPricing)];
+        //     ad.Pricing = resPricing
+        //     var resPricingModel = [].concat.apply([], ad.PricingModel);
+        //     resPricingModel = [...new Set(resPricingModel)];
+        //     ad.PricingModel = resPricingModel
+        //     return ad;
+        // })
         res.json(data)
     })
     .catch(err => console.log(err))
