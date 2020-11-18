@@ -161,7 +161,7 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
             _id:"$AdTitle",
             startDate:{$push : "$startDate"},
             endDate:{$push : "$endDate"},
-            TargetImpressions:{$sum : "$TargetImpressions"}, 
+            TargetImpressions:{$push : "$TargetImpressions"}, 
             createdOn:{$push : "$createdOn"}
         }},{$project:{
             Adtitle:"$_id",
@@ -174,21 +174,18 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
     .then((respo)=>{
         var data = [];
         data = respo
-        // data.forEach(ad => {
-        //     var resCategory = [].concat.apply([], ad.Category);
-        //     resCategory = [...new Set(resCategory)];
-        //     ad.Category = resCategory
-        //     var resAdvertiser = [].concat.apply([], ad.Advertiser);
-        //     resAdvertiser = [...new Set(resAdvertiser)];
-        //     ad.Advertiser = resAdvertiser
-        //     var resPricing = [].concat.apply([], ad.Pricing);
-        //     resPricing = [...new Set(resPricing)];
-        //     ad.Pricing = resPricing
-        //     var resPricingModel = [].concat.apply([], ad.PricingModel);
-        //     resPricingModel = [...new Set(resPricingModel)];
-        //     ad.PricingModel = resPricingModel
-        //     return ad;
-        // })
+        data.forEach(ad => {
+            var resstartDate = [].concat.apply([], ad.startDate);
+            resstartDate = [...new Set(resstartDate)];
+            ad.startDate = resstartDate
+            var resendDate = [].concat.apply([], ad.endDate);
+            resendDate = [...new Set(resendDate)];
+            ad.endDate = resendDate
+            var tottar = 0;
+            ad.TargetImpressions.forEach(num=> tottar += parseInt(num))
+            ad.TargetImpressions = tottar
+            return ad;
+        })
         res.json(data)
     })
     .catch(err => console.log(err))
