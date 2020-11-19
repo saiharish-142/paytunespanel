@@ -92,17 +92,21 @@ export default function BasicTable({singlead}) {
         var datechanged = dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
         return datechanged;
     }
-    const colorfinder = (target,response) => {
-        console.log(target)
-        console.log(response)
-        if(target>response){
-            return '#ff6969'
-        }
-        if(target<response){
-            return 'white'
-        }
-        if(target === response){
-            return 'white'
+    const colorfinder = (target,response,impress,tobeimpress) => {
+        if(impress && tobeimpress){
+            if(impress <= tobeimpress){
+                if(target>response){
+                    return 'yellow'
+                }
+                if(target<response){
+                    return 'white'
+                }
+                if(target === response){
+                    return 'white'
+                }
+            }else{
+                return '#ff6969'
+            }
         }
     }
     return (
@@ -113,18 +117,14 @@ export default function BasicTable({singlead}) {
             <TableRow>
                 <TableCell>Campaign Start Date</TableCell>
                 <TableCell>Campaign End Date</TableCell>
-                <TableCell>Total Impressions to be delivered</TableCell>
-                <TableCell>Total spend planned for the campaign</TableCell>
-                <TableCell>Avg Spend per impression planned</TableCell>
                 <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Avg required</TableCell>
+                <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total Clicks Delivered till date</TableCell>
-                <TableCell>Total Spend Till date</TableCell>
-                <TableCell>Avg Spend per impression Till Date</TableCell>
                 <TableCell>Balance Impressions</TableCell>
                 <TableCell>Balance Days</TableCell>
-                <TableCell>Balance Spend</TableCell>
-                <TableCell>Avg required</TableCell>
                 <TableCell></TableCell>
             </TableRow>
             </TableHead>
@@ -134,24 +134,22 @@ export default function BasicTable({singlead}) {
                     style={{
                         background: colorfinder(
                             singlead.TargetImpressions ? singlead.TargetImpressions/timefinder(singlead.endDate[0],singlead.startDate[0]) : 0,
-                            singlead.TargetImpressions ? impre/timefinder(Date.now(),singlead.startDate[0]) : 0
+                            singlead.TargetImpressions ? impre/timefinder(Date.now(),singlead.startDate[0]) : 0,
+                            singlead.TargetImpressions && singlead.TargetImpressions,
+                            impre
                         )
                     }}
                 >
                     <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
                     <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
-                    <TableCell>{singlead.TargetImpressions && singlead.TargetImpressions}</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
                     <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{singlead.TargetImpressions && singlead.TargetImpressions}</TableCell>
                     <TableCell>{impre}</TableCell>
+                    <TableCell>{singlead.TargetImpressions && Math.round(singlead.TargetImpressions/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{singlead.TargetImpressions && Math.round(impre/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{click}</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
                     <TableCell>{singlead.TargetImpressions&& singlead.TargetImpressions-impre}</TableCell>
                     <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell>{singlead.TargetImpressions && Math.round(singlead.TargetImpressions/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                 </TableRow>
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
@@ -166,18 +164,15 @@ export default function BasicTable({singlead}) {
                 <TableCell>Publisher</TableCell>
                 <TableCell>Campaign Start Date</TableCell>
                 <TableCell>Campaign End Date</TableCell>
-                <TableCell>Total Impressions to be delivered</TableCell>
-                <TableCell>Total spend planned for the campaign</TableCell>
-                <TableCell>Avg Spend per impression planned</TableCell>
                 <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Avg required</TableCell>
+                <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total Clicks Delivered till date</TableCell>
-                <TableCell>Total Spend Till date</TableCell>
-                <TableCell>Avg Spend per impression Till Date</TableCell>
                 <TableCell>Balance Impressions</TableCell>
                 <TableCell>Balance Days</TableCell>
-                <TableCell>Balance Spend</TableCell>
-                <TableCell>Avg required</TableCell>
+                <TableCell></TableCell>
             </TableRow>
             </TableHead>
             <TableBody>
@@ -187,25 +182,23 @@ export default function BasicTable({singlead}) {
                         style={{
                             background: colorfinder(
                                 log.campaignId.TargetImpressions ? log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate[0],log.campaignId.startDate[0]) : 0,
-                                log.campaignId.TargetImpressions ? log.impressions/timefinder(Date.now(),log.campaignId.startDate[0]) : 0
+                                log.campaignId.TargetImpressions ? log.impressions/timefinder(Date.now(),log.campaignId.startDate[0]) : 0,
+                                log.campaignId.TargetImpressions && log.campaignId.TargetImpressions,
+                                log.impressions
                             )
                         }}
                     >
                         <TableCell>{log.Publisher.AppName}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
-                        <TableCell>{log.campaignId.TargetImpressions && log.campaignId.TargetImpressions}</TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
+                        <TableCell>{log.campaignId.TargetImpressions && log.campaignId.TargetImpressions}</TableCell>
                         <TableCell>{log.impressions}</TableCell>
+                        <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
+                        <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate[0]) *10)/10}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                     </TableRow>
                 })
