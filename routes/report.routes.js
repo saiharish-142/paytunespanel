@@ -27,6 +27,17 @@ router.put('/reportbydate',adminauth,(req,res)=>{
     .catch(err=>console.log(err))
 })
 
+router.put('/reportbydatereq',adminauth,(req,res)=>{
+    const { date, campaignId, appId } = req.body
+    Report.find({date:date, campaignId:campaignId, appId:appId})
+    .populate('Publisher')
+    .sort('-date')
+    .then(reports=>{
+        res.json(reports)
+    })
+    .catch(err=>console.log(err))
+})
+
 router.put('/sumrepobyjoincamp',adminauth,(req,res)=>{
     const { adtitle } = req.body
     StreamingAds.aggregate([
