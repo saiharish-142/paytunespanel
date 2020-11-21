@@ -67,7 +67,8 @@ router.post('/logbyDate/:num',adminauth,(req,res)=>{
 router.post('/suspect',adminauth,(req,res)=>{
     const { date, campaignId, createdOn } = req.body
     // const num = req.params.num
-    trackinglogs.find({date:date,campaignId:campaignId, createdOn:createdOn})
+    const da = new Date(createdOn)
+    trackinglogs.find({date:date,campaignId:campaignId, createdOn:da})
     .sort('-createdOn')
     .then(result=>{
         if(!result.length){
