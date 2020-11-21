@@ -176,6 +176,11 @@ router.put('/detreportbycamp',adminauth,(req,res)=>{
     .populate('Publisher')
     .sort('-date')
     .then(reports=>{
+        if(!reports){
+            console.log('good')
+        }else{
+            console.log('bad')
+        }
         res.json(reports)
     })
     .catch(err=>console.log(err))
