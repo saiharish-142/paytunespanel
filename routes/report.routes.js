@@ -207,7 +207,8 @@ router.post('/createReport',(req,res)=>{
 })
 
 router.delete('/deleteallbyadmin',adminauth,(req,res)=>{
-    Report.deleteMany({})
+    const {date} = req.body
+    Report.deleteMany({date:date})
     .then(repon=>{
         res.json({relt:repon,mess:"deleted"})
     })
