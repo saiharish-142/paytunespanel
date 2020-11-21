@@ -127,7 +127,7 @@ router.put('/repotest',adminauth,(req,res)=>{
                 camrepo.region = resregion
             })
         })
-        console.log(data)
+        console.log(JSON.stringify(data))
         var compr = [];
         for(var i=0; i<data.length; i++ ){
             const Report = mongoose.model('Report')
