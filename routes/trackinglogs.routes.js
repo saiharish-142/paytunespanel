@@ -99,6 +99,10 @@ router.put('/repotest',adminauth,(req,res)=>{
     console.log(date,ISTTime)
     const trackinglogs = mongoose.model('trackinglogs')
     var data = [];
+    Report.deleteMany({date:date})
+    .then(repon=>{
+        console.log({relt:repon,mess:"deleted"})
+    })
     trackinglogs.aggregate([
         { $match: {
             "date":date,
