@@ -43,7 +43,7 @@ export default function BasicTable({singlead}) {
             }).then(res=>res.json())
             .then(idds=>{
                 setids(idds)
-                console.log(idds)
+                // console.log(idds)
             })
             .catch(err=>console.log(err))
         }
@@ -67,8 +67,8 @@ export default function BasicTable({singlead}) {
                     impressions += re.impressions
                     clicks += re.clicks
                 })
-                console.log(result)
-                console.log(impressions)
+                // console.log(result)
+                // console.log(impressions)
                 setimpre(impressions)
                 setclick(clicks)
             })
@@ -92,8 +92,9 @@ export default function BasicTable({singlead}) {
         var datechanged = dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
         return datechanged;
     }
-    const colorfinder = (target,response,impress,tobeimpress) => {
+    const colorfinder = (target,response,tobeimpress,impress) => {
         if(impress && tobeimpress){
+            // console.log(tobeimpress,impress)
             if(impress <= tobeimpress){
                 if(target>response){
                     return 'yellow'
@@ -105,7 +106,7 @@ export default function BasicTable({singlead}) {
                     return 'white'
                 }
             }else{
-                return '#ff6969'
+                return 'brown'
             }
         }
     }
@@ -133,9 +134,9 @@ export default function BasicTable({singlead}) {
                 <TableRow 
                     style={{
                         background: colorfinder(
-                            singlead.TargetImpressions ? singlead.TargetImpressions/timefinder(singlead.endDate[0],singlead.startDate[0]) : 0,
-                            singlead.TargetImpressions ? impre/timefinder(Date.now(),singlead.startDate[0]) : 0,
-                            singlead.TargetImpressions && singlead.TargetImpressions,
+                            singlead.TargetImpressions && singlead.TargetImpressions/timefinder(singlead.endDate[0],singlead.startDate[0]) ,
+                            singlead.TargetImpressions && impre/timefinder(Date.now(),singlead.startDate[0]) ,
+                            singlead.TargetImpressions && parseInt(singlead.TargetImpressions),
                             impre
                         )
                     }}

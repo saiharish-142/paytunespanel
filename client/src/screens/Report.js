@@ -33,7 +33,7 @@ function Report() {
                 settitle(result[0].AdTitle)
                 setloading(false)
                 setsinglead(result[0])
-                console.log(result[0])
+                // console.log(result[0])
             })
             .catch(err =>{
                 setloading(false)

@@ -36,7 +36,7 @@ export default function DetailedTable() {
             }).then(res=>res.json())
             .then(idds=>{
                 setids(idds)
-                console.log(idds)
+                // console.log(idds)
             })
             .catch(err=>console.log(err))
         }
@@ -54,7 +54,7 @@ export default function DetailedTable() {
             }).then(res=>res.json())
             .then(result=>{
                 setpublishlogs(result)
-                console.log(result)
+                // console.log(result)
             })
             .catch(err =>{
                 console.log(err)
@@ -74,7 +74,7 @@ export default function DetailedTable() {
             }).then(res=>res.json())
             .then(result=>{
                 setcurrentad(result[0])
-                console.log(result[0])
+                // console.log(result[0])
             })
             .catch(err =>{
                 console.log(err)
@@ -94,7 +94,7 @@ export default function DetailedTable() {
             }).then(res=>res.json())
             .then(result=>{
                 setdatelogs(result)
-                console.log(result)
+                // console.log(result)
             })
             .catch(err =>{
                 console.log(err)
