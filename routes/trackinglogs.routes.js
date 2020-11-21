@@ -96,7 +96,7 @@ router.put('/repotest',adminauth,(req,res)=>{
     var ISTTime = new Date(currentTime.getTime() + (ISTOffset*2 + currentOffset -5)*60000);
     console.log(ISTTime)
     // ReportsRefresher(date,ISTTime)
-    console.log(date,credate)
+    console.log(date,ISTTime)
     const trackinglogs = mongoose.model('trackinglogs')
     var data = [];
     trackinglogs.aggregate([
