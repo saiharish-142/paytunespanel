@@ -29,7 +29,7 @@ router.put('/reportbydate',adminauth,(req,res)=>{
 
 router.put('/reportbydatereq',adminauth,(req,res)=>{
     const { date, campaignId, appId } = req.body
-    Report.find({date:date, campaignId:campaignId, appId:appId})
+    Report.find({date:date, campaignId:campaignId, Publisher:appId})
     .populate('Publisher')
     .sort('-date')
     .then(reports=>{
