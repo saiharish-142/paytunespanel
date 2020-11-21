@@ -156,7 +156,8 @@ router.put('/repotest',adminauth,(req,res)=>{
                         click += repo.count
                     }
                 })
-                Report.findOneAndUpdate({campaignId:cam,date:da,Publisher:appId})
+                console.log(cam,da,appId)
+                Report.findOne({campaignId:cam,date:da,Publisher:appId})
                 .then(foundreport=>{
                     if(!foundreport){
                         console.log(data[i])
