@@ -344,14 +344,18 @@ function ReportsRefresher(date,credate){
     // }else{
     //     var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
     // }
+    const Report = mongoose.model('Report')
+    Report.deleteMany({date:date})
+    .then(repon=>{
+        console.log({relt:repon,mess:"deleted"})
+    })
     console.log(date,credate)
     const trackinglogs = mongoose.model('trackinglogs')
     var data = [];
     trackinglogs.aggregate([
         { $match: {
             "date":date,
-            "type":{$in:["impression","complete","click","companionclicktracking","clicktracking"]},
-            "createdOn":{$lte : credate}
+            "type":{$in:["impression","complete","click","companionclicktracking","clicktracking"]}
         } },
         { $group:{
             _id: {date:"$date" ,campaignId:"$campaignId" ,appId: "$appId",region :"$region",type:"$type"},count:{$sum:1}
