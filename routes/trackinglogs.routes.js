@@ -175,6 +175,7 @@ router.put('/repotest',adminauth,(req,res)=>{
                         })
                         .catch(err => console.log(err))
                     }else{
+                        console.log(data[i])
                         foundreport.date = da;
                         foundreport.Publisher = data[i].report[j].appId;
                         foundreport.campaignId = cam;
