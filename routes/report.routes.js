@@ -214,6 +214,14 @@ router.delete('/deleteallbyadmin',adminauth,(req,res)=>{
     })
 })
 
+router.delete('/singedelte',adminauth,(req,res)=>{
+    const {id} = req.body
+    Report.deleteOne({_id:id})
+    .then(repon=>{
+        res.json({relt:repon,mess:"deleted"})
+    })
+})
+
 // router.delete('/deleteMany',adminauth,(req,res)=>{
 //     Report.deleteMany({_id:req.body.id})
 //     .then(repon=>{
