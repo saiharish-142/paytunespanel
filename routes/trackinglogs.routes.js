@@ -64,6 +64,22 @@ router.post('/logbyDate/:num',adminauth,(req,res)=>{
     })
 })
 
+router.post('/suspect',adminauth,(req,res)=>{
+    const { date, campaignId, createdOn } = req.body
+    // const num = req.params.num
+    trackinglogs.find({date:date,campaignId:campaignId, createdOn:createdOn})
+    .sort('-createdOn')
+    .then(result=>{
+        if(!result.length){
+            return res.status(422).json({error:"not found",result})
+        }
+        res.json(result)
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+})
+
 router.post('/logcamp/:num',adminauth,(req,res)=>{
     const num = req.params.num
     trackinglogs.find({campaignId:req.body.campaignId})
