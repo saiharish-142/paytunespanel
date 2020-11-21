@@ -160,7 +160,7 @@ router.put('/repotest',adminauth,(req,res)=>{
                 Report.findOne({campaignId:cam,date:da,Publisher:appId})
                 .then(foundreport=>{
                     if(!foundreport){
-                        console.log(data[i])
+                        // console.log(data[i])
                         const report = new Report({
                             date:da,
                             Publisher:appId,
