@@ -384,6 +384,8 @@ function ReportsRefresher(date,credate){
                 var impre = 0;
                 var compl = 0;
                 var click = 0;
+                var region = data[i].report[j].region;
+                var appId = data[i].report[j].appId;
                 data[i].report[j].type.map(repo => {
                     if(repo.type==='impression'){
                         impre += repo.count
@@ -401,17 +403,19 @@ function ReportsRefresher(date,credate){
                         click += repo.count
                     }
                 })
-                Report.findOneAndUpdate({campaignId:cam,date:da})
+                console.log(cam,da,appId)
+                Report.findOne({campaignId:cam,date:da,Publisher:appId})
                 .then(foundreport=>{
                     if(!foundreport){
+                        // console.log(data[i])
                         const report = new Report({
                             date:da,
-                            Publisher:data[i].report[j].appId,
+                            Publisher:appId,
                             campaignId:cam,
                             impressions:impre,
                             complete:compl,
                             clicks:click,
-                            region:data[i].report[j].region,
+                            region:region,
                             spend:impre,
                             avgSpend:impre
                         })
@@ -423,12 +427,12 @@ function ReportsRefresher(date,credate){
                         .catch(err => console.log(err))
                     }else{
                         foundreport.date = da;
-                        foundreport.Publisher = data[i].report[j].appId;
+                        foundreport.Publisher = appId;
                         foundreport.campaignId = cam;
                         foundreport.impressions = impre;
                         foundreport.complete = compl;
                         foundreport.clicks = click;
-                        foundreport.region = data[i].report[j].region;
+                        foundreport.region = region;
                         foundreport.spend = impre;
                         foundreport.avgSpend = impre;
                         foundreport.save()
