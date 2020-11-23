@@ -107,6 +107,11 @@ export default function DetailedTable() {
         var datechanged = dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
         return datechanged;
     }
+    const updatedatetimeseter = (date) => {
+        var datee = new Date(date);
+        var datee = datee.toString();
+        return datee.slice(0,25)
+    }
     return (
         <div style={{paddingBottom:'50px'}}>
         <div style={{margin:'0px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Detailed Report</div>
@@ -119,6 +124,7 @@ export default function DetailedTable() {
         <Typography variant="h6" id="tableTitle" component="div">
             Summary
         </Typography>
+        <div>last updated at - {datelogs.length ? (datelogs[0].updatedAt ? updatedatetimeseter(datelogs[0].updatedAt) : 'not found') : 'no reports found'}</div>
         <Table style={{margin:'20px',width:'fit-content',border:'1px lightgray solid'}} aria-label="simple table">
             <TableHead>
             <TableRow>
@@ -140,7 +146,7 @@ export default function DetailedTable() {
                     <TableCell></TableCell>
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell>{row.clicks}</TableCell>
-                    <TableCell>{Math.round(row.clicks*100/row.impressions*10)/10}</TableCell>
+                    <TableCell>{Math.round(row.clicks*100/row.impressions*100)/100}%</TableCell>
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>
@@ -152,6 +158,7 @@ export default function DetailedTable() {
         <Typography variant="h6" id="tableTitle" component="div">
             Publishers wise Report
         </Typography>
+        <div>last updated at - {publishlogs.length ? (publishlogs[0].updatedAt ? updatedatetimeseter(publishlogs[0].updatedAt) : 'not found') : 'no reports found'}</div>
         <Table style={{margin:'20px',width:'fit-content',border:'1px lightgray solid'}} aria-label="simple table">
             <TableHead>
             <TableRow>
@@ -177,7 +184,7 @@ export default function DetailedTable() {
                     <TableCell></TableCell>
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell>{row.clicks}</TableCell>
-                    <TableCell>{Math.round(row.clicks*100/row.impressions *10)/10}</TableCell>
+                    <TableCell>{Math.round(row.clicks*100/row.impressions *100)/100}%</TableCell>
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>

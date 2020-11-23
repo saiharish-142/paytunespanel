@@ -56,9 +56,9 @@ router.put('/sumrepobyjoincamp',adminauth,(req,res)=>{
             {$match:{
                 "campaignId": {$in : ids}
             }},{$group:{
-                _id:"$Publisher", impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
+                _id:"$Publisher", updatedAt:{$push:"$updatedAt"}, impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
             }},{$project:{
-                Publisher:"$_id", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
+                Publisher:"$_id", updatedAt:{$push:"$updatedAt"}, impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
             }}
         ])
         .then(reports=>{
@@ -71,6 +71,11 @@ router.put('/sumrepobyjoincamp',adminauth,(req,res)=>{
                     var resregion = [].concat.apply([], det.region);
                     resregion = [...new Set(resregion)];
                     det.region = resregion
+                    var updatedDate = det.updatedAt
+                    updatedDate.sort(function(a,b){
+                        return new Date(b) - new Date(a);
+                    });
+                    det.updatedAt = updatedDate && updatedDate[0]
                 })
                 res.json(resu)
             })
@@ -87,9 +92,9 @@ router.put('/sumreportofcam',adminauth,(req,res)=>{
         {$match:{
             "campaignId":campaignId
         }},{$group:{
-            _id:"$Publisher", impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
+            _id:"$Publisher", updatedAt:{$push:"$updatedAt"}, impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
         }},{$project:{
-            Publisher:"$_id", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
+            Publisher:"$_id", updatedAt:{$push:"$updatedAt"}, impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
         }}
     ])
     .then(reports=>{
@@ -102,6 +107,11 @@ router.put('/sumreportofcam',adminauth,(req,res)=>{
                 var resregion = [].concat.apply([], det.region);
                 resregion = [...new Set(resregion)];
                 det.region = resregion
+                var updatedDate = det.updatedAt
+                updatedDate.sort(function(a,b){
+                    return new Date(b) - new Date(a);
+                });
+                det.updatedAt = updatedDate && updatedDate[0]
             })
             res.json(resu)
         })
@@ -116,9 +126,9 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
         {$match:{
             "campaignId":{$in:campaignId}
         }},{$group:{
-            _id:"$Publisher", camp:{$push:"$campaignId"} , impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
+            _id:"$Publisher", updatedAt:{$push:"$updatedAt"}, camp:{$push:"$campaignId"} , impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
         }},{$project:{
-            Publisher:"$_id", campaignId:"$camp", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
+            Publisher:"$_id", updatedAt:{$push:"$updatedAt"}, campaignId:"$camp", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
         }}
     ])
     .then(reports=>{
@@ -134,6 +144,11 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
                 var rescampaignId = [].concat.apply([], det.campaignId);
                 rescampaignId = [...new Set(rescampaignId)];
                 det.campaignId = rescampaignId[0]
+                var updatedDate = det.updatedAt
+                updatedDate.sort(function(a,b){
+                    return new Date(b) - new Date(a);
+                });
+                det.updatedAt = updatedDate && updatedDate[0]
             })
             StreamingAds.populate(resu,{path:'campaignId'},function(err,populatedres){
                 if(err){
@@ -153,9 +168,9 @@ router.put('/detreportcambydat',adminauth,(req,res)=>{
         {$match:{
             "campaignId":{$in : campaignId}
         }},{$group:{
-            _id:{date:"$date"}, impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
+            _id:{date:"$date"},updatedAt:{$push:'$updatedAt'}, impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
         }},{$project:{
-            date:"$_id.date", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
+            date:"$_id.date", updatedAt:"$updatedAt", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
         }},{$sort: {date: -1}}
     ])
     .then(reports=>{
@@ -164,6 +179,11 @@ router.put('/detreportcambydat',adminauth,(req,res)=>{
             var resregion = [].concat.apply([], det.region);
             resregion = [...new Set(resregion)];
             det.region = resregion
+            var updatedDate = det.updatedAt
+            updatedDate.sort(function(a,b){
+                return new Date(b) - new Date(a);
+            });
+            det.updatedAt = updatedDate && updatedDate[0]
         })
         res.json(resu)
     })

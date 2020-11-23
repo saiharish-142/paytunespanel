@@ -67,8 +67,6 @@ export default function BasicTable({singlead}) {
                     impressions += re.impressions
                     clicks += re.clicks
                 })
-                // console.log(result)
-                // console.log(impressions)
                 setimpre(impressions)
                 setclick(clicks)
             })
@@ -110,9 +108,16 @@ export default function BasicTable({singlead}) {
             }
         }
     }
+    const updatedatetimeseter = (date) => {
+        var datee = new Date(date);
+        var datee = datee.toString();
+        return datee.slice(0,25)
+    }
     return (
         <>
         <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div>
+        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt) : 'not found') : 'no reports found'}</div>
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
             <TableRow>
@@ -150,7 +155,7 @@ export default function BasicTable({singlead}) {
                     <TableCell>{singlead.TargetImpressions && Math.round(singlead.TargetImpressions/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{click}</TableCell>
-                    <TableCell>{Math.round(click*100/impre *10)/10}%</TableCell>
+                    <TableCell>{Math.round(click*100/impre *100)/100}%</TableCell>
                     <TableCell>{singlead.TargetImpressions&& singlead.TargetImpressions-impre}</TableCell>
                     <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
                     <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
@@ -160,7 +165,8 @@ export default function BasicTable({singlead}) {
         </Table>
         </TableContainer>
         <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
-        <div style={{margin:'0 auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Publisher Wise Summary Report</div>
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Publisher Wise Summary Report</div>
+        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt) : 'not found') : 'no reports found'}</div>
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
             <TableRow>
@@ -201,7 +207,7 @@ export default function BasicTable({singlead}) {
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
-                        <TableCell>{Math.round(log.clicks*100/log.impressions *10)/10}%</TableCell>
+                        <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
                         <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
