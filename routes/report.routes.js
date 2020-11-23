@@ -58,7 +58,7 @@ router.put('/sumrepobyjoincamp',adminauth,(req,res)=>{
             }},{$group:{
                 _id:"$Publisher", updatedAt:{$push:"$updatedAt"}, impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
             }},{$project:{
-                Publisher:"$_id", updatedAt:{$push:"$updatedAt"}, impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
+                Publisher:"$_id", updatedAt:"$updatedAt", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
             }}
         ])
         .then(reports=>{
@@ -94,7 +94,7 @@ router.put('/sumreportofcam',adminauth,(req,res)=>{
         }},{$group:{
             _id:"$Publisher", updatedAt:{$push:"$updatedAt"}, impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
         }},{$project:{
-            Publisher:"$_id", updatedAt:{$push:"$updatedAt"}, impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
+            Publisher:"$_id", updatedAt:"$updatedAt", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
         }}
     ])
     .then(reports=>{
@@ -128,7 +128,7 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
         }},{$group:{
             _id:"$Publisher", updatedAt:{$push:"$updatedAt"}, camp:{$push:"$campaignId"} , impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
         }},{$project:{
-            Publisher:"$_id", updatedAt:{$push:"$updatedAt"}, campaignId:"$camp", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
+            Publisher:"$_id", updatedAt:"$updatedAt", campaignId:"$camp", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
         }}
     ])
     .then(reports=>{
