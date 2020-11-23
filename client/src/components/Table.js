@@ -124,6 +124,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
                 <TableCell>Balance Impressions</TableCell>
                 <TableCell>Balance Days</TableCell>
                 <TableCell></TableCell>
@@ -147,8 +148,9 @@ export default function BasicTable({singlead}) {
                     <TableCell>{singlead.TargetImpressions && singlead.TargetImpressions}</TableCell>
                     <TableCell>{impre}</TableCell>
                     <TableCell>{singlead.TargetImpressions && Math.round(singlead.TargetImpressions/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{singlead.TargetImpressions && Math.round(impre/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{click}</TableCell>
+                    <TableCell>{Math.round(click*100/impre *10)/10}%</TableCell>
                     <TableCell>{singlead.TargetImpressions&& singlead.TargetImpressions-impre}</TableCell>
                     <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
                     <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
@@ -171,6 +173,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
                 <TableCell>Balance Impressions</TableCell>
                 <TableCell>Balance Days</TableCell>
                 <TableCell></TableCell>
@@ -196,8 +199,9 @@ export default function BasicTable({singlead}) {
                         <TableCell>{log.campaignId.TargetImpressions && log.campaignId.TargetImpressions}</TableCell>
                         <TableCell>{log.impressions}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
-                        <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate[0]) *10)/10}</TableCell>
+                        <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
+                        <TableCell>{Math.round(log.clicks*100/log.impressions *10)/10}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
                         <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>

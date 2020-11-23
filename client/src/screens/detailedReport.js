@@ -126,6 +126,7 @@ export default function DetailedTable() {
                 <TableCell>Media Type</TableCell>
                 <TableCell>impressions</TableCell>
                 <TableCell>Clicks</TableCell>
+                <TableCell>CTR</TableCell>
                 <TableCell>Spend</TableCell>
                 <TableCell>Avg spend per<br /> impression</TableCell>
             </TableRow>
@@ -139,6 +140,7 @@ export default function DetailedTable() {
                     <TableCell></TableCell>
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell>{row.clicks}</TableCell>
+                    <TableCell>{Math.round(row.clicks*100/row.impressions*10)/10}</TableCell>
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>
@@ -159,6 +161,7 @@ export default function DetailedTable() {
                 <TableCell>Deal Id</TableCell>
                 <TableCell>impressions</TableCell>
                 <TableCell>Clicks</TableCell>
+                <TableCell>CTR</TableCell>
                 <TableCell>Spend</TableCell>
                 <TableCell>Avg spend per<br /> impression</TableCell>
             </TableRow>
@@ -174,6 +177,7 @@ export default function DetailedTable() {
                     <TableCell></TableCell>
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell>{row.clicks}</TableCell>
+                    <TableCell>{Math.round(row.clicks*100/row.impressions *10)/10}</TableCell>
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>
