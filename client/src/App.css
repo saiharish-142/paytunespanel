@@ -84,6 +84,16 @@
   /* font-size: medium; */
 }
 
+.breed_paper{
+  display: flex;
+  height: 40px;
+  width: 50%;
+  padding: 5px 20px;
+  margin-top: -57px;
+  margin-left: 150px;
+  overflow: auto;
+}
+
 @media screen and (max-width: 700px){
   .navbar{
     height: 10vh;
@@ -106,5 +116,9 @@
   .dashboard{
     overflow: auto;
     width: 90vw;
+  }
+  .breed_paper{
+    margin-left: 100px;
+    width: 65%;
   }
 }

@@ -9,6 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { useHistory } from 'react-router-dom';
 import { IdContext } from '../App';
+import IconBreadcrumbs from './breadBreed';
 
 const useStyles = makeStyles({
     table: {
@@ -43,7 +44,7 @@ export default function BasicTable({singlead}) {
             }).then(res=>res.json())
             .then(idds=>{
                 setids(idds)
-                // console.log(idds)
+                console.log(idds)
             })
             .catch(err=>console.log(err))
         }
@@ -67,6 +68,7 @@ export default function BasicTable({singlead}) {
                     impressions += re.impressions
                     clicks += re.clicks
                 })
+                console.log(result)
                 setimpre(impressions)
                 setclick(clicks)
             })
@@ -115,9 +117,11 @@ export default function BasicTable({singlead}) {
     }
     return (
         <>
-        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+        <IconBreadcrumbs />
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{state1 && state1.toUpperCase()} Campaign</div>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div>
         <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt) : 'not found') : 'no reports found'}</div>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
             <TableRow>
@@ -164,9 +168,9 @@ export default function BasicTable({singlead}) {
             </TableBody>
         </Table>
         </TableContainer>
-        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Publisher Wise Summary Report</div>
         <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt) : 'not found') : 'no reports found'}</div>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
             <TableRow>

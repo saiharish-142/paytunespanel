@@ -9,6 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import { useHistory, useParams } from 'react-router-dom';
 import { IdContext } from '../App';
 import { Typography } from '@material-ui/core';
+import IconBreadcrumbs from '../components/breadBreed';
 
 export default function DetailedTable() {
     const history = useHistory();
@@ -36,7 +37,7 @@ export default function DetailedTable() {
             }).then(res=>res.json())
             .then(idds=>{
                 setids(idds)
-                // console.log(idds)
+                console.log(idds)
             })
             .catch(err=>console.log(err))
         }
@@ -114,12 +115,14 @@ export default function DetailedTable() {
     }
     return (
         <div style={{paddingBottom:'50px'}}>
+        <div style={{width:'10vw'}}><button 
+                onClick={()=>history.push(`/manageAds/${state1}`)} 
+                className='btn #424242 grey darken-3'
+                style={{margin:'10px 0 20px 0',textAlign:'left'}}
+            >Back</button></div><br />
+        <IconBreadcrumbs />
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{state1 && state1.toUpperCase()} Campaign</div>
         <div style={{margin:'0px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Detailed Report</div>
-        <button 
-            onClick={()=>history.push(`/manageAds/${state1}`)} 
-            className='btn #424242 grey darken-3'
-            style={{margin:'-20px 20px',float:'left'}}
-        >Back</button><br />
         <TableContainer style={{margin:'10px auto',width:'fit-content'}} component={Paper}>
         <Typography variant="h6" id="tableTitle" component="div">
             Summary

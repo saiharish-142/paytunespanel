@@ -9,7 +9,7 @@ import M from 'materialize-css'
 function Report() {
     const {campname} = useParams()
     const history = useHistory();
-    const {dispatch1} = useContext(IdContext)
+    const {state1,dispatch1} = useContext(IdContext)
     const [singlead, setsinglead] = useState({})
     const [title, settitle] = useState('')
     const [loading, setloading] = useState(true)
@@ -68,12 +68,12 @@ function Report() {
     // console.log(id)
     return (
         <div style={{padding:'20px'}}>
-            <button 
+            <div style={{width:'10vw'}}><button 
                 onClick={()=>history.push(`/manageAds`)} 
                 className='btn #424242 grey darken-3'
-                style={{margin:'20px',float:'left'}}
-            >Back</button><br />
-            <TitlRname title={title} settitle={settitle} submit={submitTitle} setloading={setloading} loading={loading} />
+                style={{margin:'20px',textAlign:'left'}}
+            >Back</button></div>
+            {/* <TitlRname title={title} settitle={settitle} submit={submitTitle} setloading={setloading} loading={loading} /> */}
             {/* <div style={{margin:'0 auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div> */}
             <EnhancedTable singlead={singlead} />
         </div>
