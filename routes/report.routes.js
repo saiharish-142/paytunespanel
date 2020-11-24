@@ -137,7 +137,7 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
                 return res.status(422).json(err)
             }
             resu = populatedreports;
-            console.log(populatedreports)
+            // console.log(populatedreports)
             resu.map((det)=>{
                 var resregion = [].concat.apply([], det.region);
                 resregion = [...new Set(resregion)];
