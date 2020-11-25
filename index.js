@@ -26,6 +26,7 @@ require('./models/oldtracking.model')
 require('./models/wrappers.model')
 require('./models/rtbrequests.model')
 require('./models/report.model')
+require('./models/campaignwisereports.model')
 
 app.use('/auth',require('./routes/user.routes'))
 app.use('/streamingads',require('./routes/streamingads.routes'))
@@ -34,6 +35,7 @@ app.use('/logs',require('./routes/trackinglogs.routes'))
 app.use('/oldlogs',require('./routes/oldtracking.routes'))
 app.use('/wrapper',require('./routes/wrapper.routes'))
 app.use('/report',require('./routes/report.routes'))
+app.use('/offreport',require('./routes/campaignwisereports.routes'))
 app.use('/rtbreq',require('./routes/rtbrequest.routes'))
 
 if(process.env.NODE_ENV==="production"){
