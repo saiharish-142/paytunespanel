@@ -95,8 +95,8 @@ export default function BasicTable({singlead}) {
             // console.log(result)
             result.map((re)=>{
                 re.nameads = 'Offline'
-                impressions1 += re.impression
-                clicks1 += re.CompanionClickTracking
+                impressions1 += re.impressions
+                clicks1 += re.clicks
             })
             logss = logss.concat(logs)
             // console.log(logss,impressions1,clicks1)
