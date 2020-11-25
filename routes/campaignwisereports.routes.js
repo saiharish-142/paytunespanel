@@ -31,7 +31,8 @@ router.put('/reportbydate',adminauth,(req,res)=>{
 
 router.put('/reportbydatereq',adminauth,(req,res)=>{
     const { date, campaignId, appId } = req.body
-    campaignwisereports.find({date:date, campaignId:campaignId, appId:appId})
+    var id = mongoose.Types.ObjectId(campaignId)
+    campaignwisereports.find({date:date, campaignId:id, appId:appId})
     .sort('-date')
     .then(reports=>{
         publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
@@ -46,10 +47,11 @@ router.put('/reportbydatereq',adminauth,(req,res)=>{
 
 router.put('/detreportcambydat',adminauth,(req,res)=>{
     const { campaignId } = req.body
+    var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
     var resu = [];
     campaignwisereports.aggregate([
         {$match:{
-            "campaignId":{$in : campaignId}
+            "campaignId":{$in : ids}
         }},{$group:{
             _id:{date:"$date"},updatedAt:{$push:'$createdOn'}, impressions:{$sum:"$servedAudioImpressions"}, complete:{$sum:"$completedAudioImpressions"}, clicks:{$sum:"$CompanionClickTracking"}, region:{$push:"$region"}
         }},{$project:{
@@ -75,14 +77,15 @@ router.put('/detreportcambydat',adminauth,(req,res)=>{
 
 router.put('/sumreportofcam22',adminauth,(req,res)=>{
     const { campaignId } = req.body
+    var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
     var resu = [];
     campaignwisereports.aggregate([
         {$match:{
-            "campaignId":{$in:campaignId}
+            "campaignId":{$in:ids}
         }},{$group:{
-            _id:"$appId", updatedAt:{$push:"$createdOn"}, camp:{$push:"$campaignId"} , impressions:{$sum:"$servedAudioImpressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$CompanionClickTracking"}, region:{$push:"$region"}
+            _id:"$appId", updatedAt:{$push:"$createdOn"}, camp:{$push:"$campaignId"} , impressions:{$sum:"$servedAudioImpressions"}, complete:{$sum:"$completedAudioImpressions"}, clicks:{$sum:"$CompanionClickTracking"}
         }},{$project:{
-            Publisher:"$_id", updatedAt:"$updatedAt", campaignId:"$camp", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
+            Publisher:"$_id", updatedAt:"$updatedAt", campaignId:"$camp", impressions:"$impressions", complete:"$complete", clicks:"$clicks" ,_id:0
         }}
     ])
     .then(reports=>{
@@ -119,7 +122,8 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
 
 router.put('/reportbycamp',adminauth,(req,res)=>{
     const { campaignId } = req.body
-    campaignwisereports.find({campaignId:{$in : campaignId}})
+    var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
+    campaignwisereports.find({campaignId:{$in : ids}})
     .sort('-date')
     .then(reports=>{
         publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
@@ -134,7 +138,8 @@ router.put('/reportbycamp',adminauth,(req,res)=>{
 
 router.put('/detreportbycamp',adminauth,(req,res)=>{
     const { campaignId, date } = req.body
-    campaignwisereports.findOneAndUpdate({campaignId:campaignId,date:date})
+    var id = mongoose.Types.ObjectId(campaignId)
+    campaignwisereports.findOneAndUpdate({campaignId:id,date:date})
     .sort('-date')
     .then(reports=>{
         publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
