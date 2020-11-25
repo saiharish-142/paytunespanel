@@ -37,7 +37,7 @@ export default function DetailedTable() {
             }).then(res=>res.json())
             .then(idds=>{
                 setids(idds)
-                console.log(idds)
+                // console.log(idds)
             })
             .catch(err=>console.log(err))
         }
@@ -75,8 +75,14 @@ export default function DetailedTable() {
         }).then(res=>res.json())
         .then(result=>{
             var plogs = result
+            // console.log(result)
             plogs = plogs.concat(logs)
-            console.log(plogs)
+            plogs = plogs.sort(function(a,b){
+                var d1 = new Date(a.date)
+                var d2 = new Date(b.date)
+                return d2 - d1
+            })
+            // console.log(plogs)
             setpublishlogs(plogs)
             // console.log(result)
         })
@@ -135,10 +141,16 @@ export default function DetailedTable() {
                 campaignId:ids
             })
         }).then(res=>res.json())
-        .then(result=>{
+        .then(async(result)=>{
             var dlogs = result
+            // console.log(result,'re')
             dlogs = dlogs.concat(logs)
-            console.log(dlogs)
+            dlogs = await dlogs.sort(function(a,b){
+                var d1 = new Date(a.date)
+                var d2 = new Date(b.date)
+                return d2 - d1
+            })
+            // console.log(dlogs)
             setdatelogs(dlogs)
         })
         .catch(err =>{
@@ -156,6 +168,9 @@ export default function DetailedTable() {
         var datee = datee.toString();
         return datee.slice(0,25)
     }
+    // console.log(publishlogs.length ? 
+    //     publishlogs[0]
+    //     : 'notfound.........')
     return (
         <div style={{paddingBottom:'50px'}}>
         <div style={{width:'10vw'}}><button 
@@ -170,7 +185,7 @@ export default function DetailedTable() {
         <Typography variant="h6" id="tableTitle" component="div">
             Summary
         </Typography>
-        <div>last updated at - {datelogs.length ? (datelogs[0].updatedAt ? updatedatetimeseter(datelogs[0].updatedAt) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datelogs.length ? (datelogs[0].updatedAt ? updatedatetimeseter(datelogs[0].updatedAt) : (datelogs[0].createdOn ? updatedatetimeseter(datelogs[0].createdOn):'not found')) : 'no reports found'}</div>
         <Table style={{margin:'20px',width:'fit-content',border:'1px lightgray solid'}} aria-label="simple table">
             <TableHead>
             <TableRow>
@@ -204,7 +219,7 @@ export default function DetailedTable() {
         <Typography variant="h6" id="tableTitle" component="div">
             Publishers wise Report
         </Typography>
-        <div>last updated at - {publishlogs.length ? (publishlogs[0].updatedAt ? updatedatetimeseter(publishlogs[0].updatedAt) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {publishlogs.length ? (publishlogs[0].updatedAt ? updatedatetimeseter(publishlogs[0].updatedAt) : (publishlogs[0].createdOn ? updatedatetimeseter(publishlogs[0].createdOn):'not found')) : 'no reports found'}</div>
         <Table style={{margin:'20px',width:'fit-content',border:'1px lightgray solid'}} aria-label="simple table">
             <TableHead>
             <TableRow>
@@ -225,13 +240,13 @@ export default function DetailedTable() {
                     <TableCell component="th" scope="row">
                         {dateformatchanger(row.date)}
                     </TableCell>
-                    <TableCell>{row.Publisher.AppName}</TableCell>
+                    <TableCell>{row.Publisher? row.Publisher.AppName : row.appId.AppName}</TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
-                    <TableCell>{row.impressions}</TableCell>
-                    <TableCell>{row.clicks}</TableCell>
-                    <TableCell>{Math.round(row.clicks*100/row.impressions *100)/100}%</TableCell>
-                    <TableCell>{row.impressions}</TableCell>
+                    <TableCell>{row.impressions>=0 ? row.impressions : row.servedAudioImpressions}</TableCell>
+                    <TableCell>{row.clicks>=0 ? row.clicks : row.CompanionClickTracking}</TableCell>
+                    <TableCell>{row.clicks>=0 ?  Math.round(row.clicks*100/row.impressions *100)/100 : Math.round(row.CompanionClickTracking*100/row.servedAudioImpressions *100)/100 }%</TableCell>
+                    <TableCell>{row.impressions ? row.impressions : row.servedAudioImpressions}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>
             ))} 

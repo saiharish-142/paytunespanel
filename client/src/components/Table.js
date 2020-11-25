@@ -44,7 +44,7 @@ export default function BasicTable({singlead}) {
             }).then(res=>res.json())
             .then(idds=>{
                 setids(idds)
-                console.log(idds)
+                // console.log(idds)
             })
             .catch(err=>console.log(err))
         }
@@ -68,7 +68,7 @@ export default function BasicTable({singlead}) {
                     impressions += re.impressions
                     clicks += re.clicks
                 })
-                console.log(result)
+                // console.log(result)
                 offlineReports(result,impressions,clicks)
                 setimpre(impressions)
                 setclick(clicks)
@@ -92,7 +92,7 @@ export default function BasicTable({singlead}) {
             var impressions1 = imp;
             var clicks1 = clck;
             var logss = result;
-            console.log(result)
+            // console.log(result)
             result.map((re)=>{
                 impressions1 += re.impressions
                 clicks1 += re.clicks
