@@ -244,10 +244,10 @@ export default function DetailedTable() {
                     <TableCell>{row.Publisher? row.Publisher.AppName : row.appId.AppName} {row.nameads && row.nameads}</TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
-                    <TableCell>{row.impressions>=0 ? row.impressions : row.servedAudioImpressions}</TableCell>
+                    <TableCell>{row.impressions>=0 ? row.impressions : row.impression}</TableCell>
                     <TableCell>{row.clicks>=0 ? row.clicks : row.CompanionClickTracking}</TableCell>
-                    <TableCell>{row.clicks>=0 ?  Math.round(row.clicks*100/row.impressions *100)/100 : Math.round(row.CompanionClickTracking*100/row.servedAudioImpressions *100)/100 }%</TableCell>
-                    <TableCell>{row.impressions ? row.impressions : row.servedAudioImpressions}</TableCell>
+                    <TableCell>{row.clicks>=0 ?  Math.round(row.clicks*100/row.impressions *100)/100 : Math.round(row.CompanionClickTracking*100/row.impression *100)/100 }%</TableCell>
+                    <TableCell>{row.impressions ? row.impressions : row.impression}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>
             ))} 
