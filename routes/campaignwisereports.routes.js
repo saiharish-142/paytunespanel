@@ -17,7 +17,6 @@ router.get('/reports',adminauth,(req,res)=>{
 router.put('/reportbydate',adminauth,(req,res)=>{
     const { date } = req.body
     campaignwisereports.find({date:date})
-    .populate('appId')
     .sort('-date')
     .then(reports=>{
         publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
@@ -33,7 +32,6 @@ router.put('/reportbydate',adminauth,(req,res)=>{
 router.put('/reportbydatereq',adminauth,(req,res)=>{
     const { date, campaignId, appId } = req.body
     campaignwisereports.find({date:date, campaignId:campaignId, appId:appId})
-    .populate('appId')
     .sort('-date')
     .then(reports=>{
         publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
@@ -122,7 +120,6 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
 router.put('/reportbycamp',adminauth,(req,res)=>{
     const { campaignId } = req.body
     campaignwisereports.find({campaignId:{$in : campaignId}})
-    .populate('appId')
     .sort('-date')
     .then(reports=>{
         publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
@@ -138,7 +135,6 @@ router.put('/reportbycamp',adminauth,(req,res)=>{
 router.put('/detreportbycamp',adminauth,(req,res)=>{
     const { campaignId, date } = req.body
     campaignwisereports.findOneAndUpdate({campaignId:campaignId,date:date})
-    .populate('appId')
     .sort('-date')
     .then(reports=>{
         publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
