@@ -55,6 +55,7 @@ export default function DetailedTable() {
             }).then(res=>res.json())
             .then(result=>{
                 setpublishlogs(result)
+                offlinereportspublisher(result)
                 // console.log(result)
             })
             .catch(err =>{
@@ -62,6 +63,27 @@ export default function DetailedTable() {
             })
         }
     },[ids])
+    const offlinereportspublisher = (logs) => {
+        fetch('/offreport/reportbycamp',{
+            method:'put',
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization" :"Bearer "+localStorage.getItem("jwt")
+            },body:JSON.stringify({
+                campaignId:ids
+            })
+        }).then(res=>res.json())
+        .then(result=>{
+            var plogs = result
+            plogs = plogs.concat(logs)
+            console.log(plogs)
+            setpublishlogs(plogs)
+            // console.log(result)
+        })
+        .catch(err =>{
+            console.log(err)
+        })
+    }
     useEffect(()=>{
         if(campname){
             fetch(`/streamingads/groupedsingle`,{
@@ -95,6 +117,7 @@ export default function DetailedTable() {
             }).then(res=>res.json())
             .then(result=>{
                 setdatelogs(result)
+                offlinereportsdate(result)
                 // console.log(result)
             })
             .catch(err =>{
@@ -102,6 +125,26 @@ export default function DetailedTable() {
             })
         }
     },[ids])
+    const offlinereportsdate = (logs) => {
+        fetch('/offreport/detreportcambydat',{
+            method:'put',
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization" :"Bearer "+localStorage.getItem("jwt")
+            },body:JSON.stringify({
+                campaignId:ids
+            })
+        }).then(res=>res.json())
+        .then(result=>{
+            var dlogs = result
+            dlogs = dlogs.concat(logs)
+            console.log(dlogs)
+            setdatelogs(dlogs)
+        })
+        .catch(err =>{
+            console.log(err)
+        })
+    }
     // console.log(id)
     const dateformatchanger = (date) => {
         var dategot = date.toString();

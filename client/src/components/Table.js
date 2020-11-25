@@ -69,6 +69,7 @@ export default function BasicTable({singlead}) {
                     clicks += re.clicks
                 })
                 console.log(result)
+                offlineReports(result,impressions,clicks)
                 setimpre(impressions)
                 setclick(clicks)
             })
@@ -77,6 +78,38 @@ export default function BasicTable({singlead}) {
             })
         }
     },[ids])
+    const offlineReports = (logs,imp,clck) => {
+        fetch('/offreport/sumreportofcam22',{
+            method:'put',
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization" :"Bearer "+localStorage.getItem("jwt")
+            },body:JSON.stringify({
+                campaignId:ids
+            })
+        }).then(res=>res.json())
+        .then(result=>{
+            var impressions1 = imp;
+            var clicks1 = clck;
+            var logss = result;
+            console.log(result)
+            result.map((re)=>{
+                impressions1 += re.impressions
+                clicks1 += re.clicks
+            })
+            logss = logss.concat(logs)
+            // console.log(logss,impressions1,clicks1)
+            if(logss.length)
+            setlogs(logss)
+            if(impressions1)
+            setimpre(impressions1)
+            if(clicks1)
+            setclick(clicks1)
+        })
+        .catch(err =>{
+            console.log(err)
+        })
+    }
     const timefinder = (da1,da2) => {
         var d1 = new Date(da1)
         var d2 = new Date(da2)
@@ -106,7 +139,7 @@ export default function BasicTable({singlead}) {
                     return 'white'
                 }
             }else{
-                return 'brown'
+                return '#ff6666'
             }
         }
     }

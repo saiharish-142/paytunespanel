@@ -16,8 +16,8 @@ router.get('/reports',adminauth,(req,res)=>{
 
 router.put('/reportbydate',adminauth,(req,res)=>{
     const { date } = req.body
-    Report.find({date:date})
-    .populate('Publisher')
+    campaignwisereports.find({date:date})
+    .populate('appId')
     .sort('-date')
     .then(reports=>{
         res.json(reports)
@@ -27,8 +27,8 @@ router.put('/reportbydate',adminauth,(req,res)=>{
 
 router.put('/reportbydatereq',adminauth,(req,res)=>{
     const { date, campaignId, appId } = req.body
-    Report.find({date:date, campaignId:campaignId, Publisher:appId})
-    .populate('Publisher')
+    campaignwisereports.find({date:date, campaignId:campaignId, appId:appId})
+    .populate('appId')
     .sort('-date')
     .then(reports=>{
         res.json(reports)
@@ -72,7 +72,7 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
         {$match:{
             "campaignId":{$in:campaignId}
         }},{$group:{
-            _id:"$Publisher", updatedAt:{$push:"$createdOn"}, camp:{$push:"$campaignId"} , impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
+            _id:"$appId", updatedAt:{$push:"$createdOn"}, camp:{$push:"$campaignId"} , impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
         }},{$project:{
             Publisher:"$_id", updatedAt:"$updatedAt", campaignId:"$camp", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
         }}
@@ -112,7 +112,7 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
 router.put('/reportbycamp',adminauth,(req,res)=>{
     const { campaignId } = req.body
     campaignwisereports.find({campaignId:{$in : campaignId}})
-    .populate('Publisher')
+    .populate('appId')
     .sort('-date')
     .then(reports=>{
         res.json(reports)
@@ -123,7 +123,7 @@ router.put('/reportbycamp',adminauth,(req,res)=>{
 router.put('/detreportbycamp',adminauth,(req,res)=>{
     const { campaignId, date } = req.body
     campaignwisereports.findOneAndUpdate({campaignId:campaignId,date:date})
-    .populate('Publisher')
+    .populate('appId')
     .sort('-date')
     .then(reports=>{
         if(!reports){
