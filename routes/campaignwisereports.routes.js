@@ -53,7 +53,7 @@ router.put('/detreportcambydat',adminauth,(req,res)=>{
         {$match:{
             "campaignId":{$in : ids}
         }},{$group:{
-            _id:{date:"$date"},updatedAt:{$push:'$createdOn'}, impressions:{$sum:"$servedAudioImpressions"}, complete:{$sum:"$completedAudioImpressions"}, clicks:{$sum:"$CompanionClickTracking"}, region:{$push:"$region"}
+            _id:{date:"$date"},updatedAt:{$push:'$createdOn'}, impressions:{$sum:"$impression"}, complete:{$sum:"$completedAudioImpressions"}, clicks:{$sum:"$CompanionClickTracking"}, region:{$push:"$region"}
         }},{$project:{
             date:"$_id.date", updatedAt:"$updatedAt", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
         }},{$sort: {date: -1}}
@@ -83,7 +83,7 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
         {$match:{
             "campaignId":{$in:ids}
         }},{$group:{
-            _id:"$appId", updatedAt:{$push:"$createdOn"}, camp:{$push:"$campaignId"} , impressions:{$sum:"$servedAudioImpressions"}, complete:{$sum:"$completedAudioImpressions"}, clicks:{$sum:"$CompanionClickTracking"}
+            _id:"$appId", updatedAt:{$push:"$createdOn"}, camp:{$push:"$campaignId"} , impressions:{$sum:"$impression"}, complete:{$sum:"$completedAudioImpressions"}, clicks:{$sum:"$CompanionClickTracking"}
         }},{$project:{
             Publisher:"$_id", updatedAt:"$updatedAt", campaignId:"$camp", impressions:"$impressions", complete:"$complete", clicks:"$clicks" ,_id:0
         }}
