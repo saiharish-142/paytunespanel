@@ -20,7 +20,12 @@ router.put('/reportbydate',adminauth,(req,res)=>{
     .populate('appId')
     .sort('-date')
     .then(reports=>{
-        res.json(reports)
+        publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
+            if(err){
+                res.status(422).json(err)
+            }
+            res.json(populatedreports)
+        })
     })
     .catch(err=>console.log(err))
 })
@@ -31,7 +36,12 @@ router.put('/reportbydatereq',adminauth,(req,res)=>{
     .populate('appId')
     .sort('-date')
     .then(reports=>{
-        res.json(reports)
+        publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
+            if(err){
+                res.status(422).json(err)
+            }
+            res.json(populatedreports)
+        })
     })
     .catch(err=>console.log(err))
 })
@@ -115,7 +125,12 @@ router.put('/reportbycamp',adminauth,(req,res)=>{
     .populate('appId')
     .sort('-date')
     .then(reports=>{
-        res.json(reports)
+        publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
+            if(err){
+                res.status(422).json(err)
+            }
+            res.json(populatedreports)
+        })
     })
     .catch(err=>console.log(err))
 })
@@ -126,12 +141,12 @@ router.put('/detreportbycamp',adminauth,(req,res)=>{
     .populate('appId')
     .sort('-date')
     .then(reports=>{
-        if(!reports){
-            console.log('good')
-        }else{
-            console.log('bad')
-        }
-        res.json(reports)
+        publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
+            if(err){
+                res.status(422).json(err)
+            }
+            res.json(populatedreports)
+        })
     })
     .catch(err=>console.log(err))
 })
