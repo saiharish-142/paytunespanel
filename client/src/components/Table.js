@@ -94,6 +94,7 @@ export default function BasicTable({singlead}) {
             var logss = result;
             // console.log(result)
             result.map((re)=>{
+                re.nameads = 'Offline'
                 impressions1 += re.impressions
                 clicks1 += re.clicks
             })
@@ -235,7 +236,7 @@ export default function BasicTable({singlead}) {
                             )
                         }}
                     >
-                        <TableCell>{log.Publisher.AppName}</TableCell>
+                        <TableCell>{log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>

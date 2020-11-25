@@ -75,6 +75,7 @@ export default function DetailedTable() {
         }).then(res=>res.json())
         .then(result=>{
             var plogs = result
+            result.map(adad => {adad.appId.AppName += ' offline'})
             // console.log(result)
             plogs = plogs.concat(logs)
             plogs = plogs.sort(function(a,b){
@@ -219,7 +220,7 @@ export default function DetailedTable() {
         <Typography variant="h6" id="tableTitle" component="div">
             Publishers wise Report
         </Typography>
-        <div>last updated at - {publishlogs.length ? (publishlogs[0].updatedAt ? updatedatetimeseter(publishlogs[0].updatedAt) : (publishlogs[0].createdOn ? updatedatetimeseter(publishlogs[0].createdOn):'not found')) : 'no reports found'}</div>
+        <div>last updated at - {publishlogs.length ? (publishlogs[0] && publishlogs[0].updatedAt ? updatedatetimeseter(publishlogs[0].updatedAt) : (publishlogs[0] && publishlogs[0].createdOn ? updatedatetimeseter(publishlogs[0].createdOn):'not found')) : 'no reports found'}</div>
         <Table style={{margin:'20px',width:'fit-content',border:'1px lightgray solid'}} aria-label="simple table">
             <TableHead>
             <TableRow>
@@ -236,11 +237,11 @@ export default function DetailedTable() {
             </TableHead>
             <TableBody>
             {publishlogs.length && currentad && publishlogs.map((row,i) => (
-                <TableRow key={i}>
+                row && <TableRow key={i}>
                     <TableCell component="th" scope="row">
                         {dateformatchanger(row.date)}
                     </TableCell>
-                    <TableCell>{row.Publisher? row.Publisher.AppName : row.appId.AppName}</TableCell>
+                    <TableCell>{row.Publisher? row.Publisher.AppName : row.appId.AppName} {row.nameads && row.nameads}</TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell>{row.impressions>=0 ? row.impressions : row.servedAudioImpressions}</TableCell>
