@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import { useHistory } from 'react-router-dom';
 import { IdContext } from '../App';
 import IconBreadcrumbs from './breadBreed';
+import { yellow } from '@material-ui/core/colors';
 
 const useStyles = makeStyles({
     table: {
@@ -99,7 +100,7 @@ export default function BasicTable({singlead}) {
                 clicks1 += re.clicks
             })
             logss = logss.concat(logs)
-            // console.log(logss,impressions1,clicks1)
+            console.log(logss)
             if(logss.length)
             setlogs(logss)
             if(impressions1)
@@ -126,18 +127,17 @@ export default function BasicTable({singlead}) {
         var datechanged = dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
         return datechanged;
     }
-    const colorfinder = (target,response,tobeimpress,impress) => {
-        if(impress && tobeimpress){
-            // console.log(tobeimpress,impress)
+    const colorfinder = (totaltime,lefttime,tobeimpress,impress) => {
+        if(tobeimpress > 0){
             if(impress <= tobeimpress){
-                if(target>response){
-                    return 'yellow'
-                }
-                if(target<response){
+                if(impress === 0){
                     return 'white'
                 }
-                if(target === response){
+                if((tobeimpress/totaltime) <= (impress/lefttime)){
                     return 'white'
+                }
+                if((tobeimpress/totaltime) > (impress/lefttime)){
+                    return 'yellow';
                 }
             }else{
                 return '#ff6666'
@@ -145,16 +145,17 @@ export default function BasicTable({singlead}) {
         }
     }
     const updatedatetimeseter = (date) => {
-        var datee = new Date(date);
+        var datee = new Date(date) + 5;
         var datee = datee.toString();
         return datee.slice(0,25)
     }
+    console.log(updatedatetimeseter('2020-11-28T18:30:00.541Z'))
     return (
         <>
         <IconBreadcrumbs />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{state1 && state1.toUpperCase()} Campaign</div>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
         <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
@@ -178,9 +179,9 @@ export default function BasicTable({singlead}) {
                 <TableRow 
                     style={{
                         background: colorfinder(
-                            singlead.TargetImpressions && singlead.TargetImpressions/timefinder(singlead.endDate[0],singlead.startDate[0]) ,
-                            singlead.TargetImpressions && impre/timefinder(Date.now(),singlead.startDate[0]) ,
-                            singlead.TargetImpressions && parseInt(singlead.TargetImpressions),
+                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
+                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            singlead.TargetImpressions && singlead.TargetImpressions,
                             impre
                         )
                     }}
@@ -203,7 +204,7 @@ export default function BasicTable({singlead}) {
         </Table>
         </TableContainer>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Publisher Wise Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
         <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
@@ -229,8 +230,8 @@ export default function BasicTable({singlead}) {
                     return <TableRow key={i}
                         style={{
                             background: colorfinder(
-                                log.campaignId.TargetImpressions ? log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate[0],log.campaignId.startDate[0]) : 0,
-                                log.campaignId.TargetImpressions ? log.impressions/timefinder(Date.now(),log.campaignId.startDate[0]) : 0,
+                                timefinder(log.campaignId.endDate,log.campaignId.startDate),
+                                timefinder(Date.now(),log.campaignId.startDate),
                                 log.campaignId.TargetImpressions && log.campaignId.TargetImpressions,
                                 log.impressions
                             )

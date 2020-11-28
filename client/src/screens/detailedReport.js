@@ -186,7 +186,7 @@ export default function DetailedTable() {
         <Typography variant="h6" id="tableTitle" component="div">
             Summary
         </Typography>
-        <div>last updated at - {datelogs.length ? (datelogs[0].updatedAt ? updatedatetimeseter(datelogs[0].updatedAt) : (datelogs[0].createdOn ? updatedatetimeseter(datelogs[0].createdOn):'not found')) : 'no reports found'}</div>
+        <div>last updated at - {datelogs.length ? (datelogs[0].updatedAt ? updatedatetimeseter(datelogs[0].updatedAt[0]) : (datelogs[0].createdOn ? updatedatetimeseter(datelogs[0].createdOn):'not found')) : 'no reports found'}</div>
         <Table style={{margin:'20px',width:'fit-content',border:'1px lightgray solid'}} aria-label="simple table">
             <TableHead>
             <TableRow>
