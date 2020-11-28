@@ -75,7 +75,7 @@ router.put('/sumrepobyjoincamp',adminauth,(req,res)=>{
                     updatedDate.sort(function(a,b){
                         return new Date(b) - new Date(a);
                     });
-                    det.updatedAt = updatedDate && updatedDate[0]
+                    det.updatedAt = updatedDate
                 })
                 res.json(resu)
             })
@@ -111,7 +111,7 @@ router.put('/sumreportofcam',adminauth,(req,res)=>{
                 updatedDate.sort(function(a,b){
                     return new Date(b) - new Date(a);
                 });
-                det.updatedAt = updatedDate && updatedDate[0]
+                det.updatedAt = updatedDate
             })
             res.json(resu)
         })
@@ -149,7 +149,7 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
                 updatedDate.sort(function(a,b){
                     return new Date(b) - new Date(a);
                 });
-                det.updatedAt = updatedDate && updatedDate[0]
+                det.updatedAt = updatedDate
             })
             StreamingAds.populate(resu,{path:'campaignId'},function(err,populatedres){
                 if(err){
@@ -184,7 +184,7 @@ router.put('/detreportcambydat',adminauth,(req,res)=>{
             updatedDate.sort(function(a,b){
                 return new Date(b) - new Date(a);
             });
-            det.updatedAt = updatedDate && updatedDate[0]
+            det.updatedAt = updatedDate
         })
         res.json(resu)
     })
