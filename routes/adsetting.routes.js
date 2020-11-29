@@ -24,7 +24,16 @@ router.put('/addetails',adminauth,(req,res)=>{
         }}
     ])
     .then(result=>{
-        res.json(result)
+        var doodle = result;
+        var audio = [];
+        var display = [];
+        doodle.map(sub=>{
+            if(sub.type === 'audio')
+            audio = audio.concat(sub.ids)
+            if(sub.type === 'display')
+            display = display.concat(sub.ids)
+        })
+        res.json({audio,display})
     })
     .catch(err => res.status(400).json(err))
 })
