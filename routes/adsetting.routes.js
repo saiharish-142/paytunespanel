@@ -13,7 +13,10 @@ router.get('/all',adminauth,(req,res)=>{
 
 router.put('/addetails',adminauth,(req,res)=>{
     const { campaignId } = req.body
-    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    var ids = (typeof campaignId !== 'undefined' && 
+                typeof campaignId !== 'string' && 
+                typeof campaignId !== 'object') ? 
+                campaignId.map(id=>mongoose.Types.ObjectId(id)) : campaignId
     adsetting.aggregate([
         {$match:{
             "campaignId":{$in:ids}
