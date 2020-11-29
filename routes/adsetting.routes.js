@@ -33,7 +33,7 @@ router.put('/addetailt',adminauth,(req,res)=>{
                 campaignId.map(id=>mongoose.Types.ObjectId(id)) : campaignId
     adsetting.aggregate([
         {$match:{
-            campaignId:{$in:[ids]}
+            campaignId:{$in:ids}
         }}
     ])
     .then(result=>{
