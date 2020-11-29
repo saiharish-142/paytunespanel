@@ -46,10 +46,12 @@ router.put('/addetailt',adminauth,(req,res)=>{
                     if(rrr.type==='audio'){
                         audio.push(id)
                         audimpression += parseInt(rrr.targetImpression)
+                        console.log('audio',rrr.targetImpression)
                     }
                     if(rrr.type==='display'){
                         display.push(id)
                         disimpression += parseInt(rrr.targetImpression)
+                        console.log('display',rrr.targetImpression)
                     }
                 }
             })
