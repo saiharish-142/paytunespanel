@@ -44,16 +44,16 @@ router.put('/addetailt',adminauth,(req,res)=>{
             reu.map(rrr=>{
                 // console.log(rrr.campaignId.equals(id))
                 if(rrr.campaignId.equals(id)){
-                    console.log('type',rrr.adCategory,rrr.type,rrr.campaignId)
+                    // console.log('type',rrr.adCategory,rrr.type,rrr.campaignId)
                     if(rrr.type==='audio'){
                         audio.push(id)
                         audimpression += parseInt(rrr.targetImpression)
-                        console.log('audio',rrr.targetImpression)
+                        // console.log('audio',rrr.targetImpression)
                     }
                     if(rrr.type==='display'){
                         display.push(id)
                         disimpression += parseInt(rrr.targetImpression)
-                        console.log('display',rrr.targetImpression)
+                        // console.log('display',rrr.targetImpression)
                     }
                 }
             })
@@ -63,7 +63,7 @@ router.put('/addetailt',adminauth,(req,res)=>{
                     await StreamingAds.findById(id)
                     .then(resus=>{
                         var dadad =audimpression + parseInt(resus.TargetImpressions)
-                        console.log(dadad)
+                        // console.log(dadad)
                         audimpression = dadad
                     }).catch(err=>console.log(err))
                 }
