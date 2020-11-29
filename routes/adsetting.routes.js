@@ -11,6 +11,16 @@ router.get('/all',adminauth,(req,res)=>{
     .catch(err=>res.status(400).json(err))
 })
 
+router.put('/addetail',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    adsetting.find({campaignId:{$in:campaignId}})
+    .sort('-createdOn')
+    .then(result=>{
+        res.json(result)
+    })
+    .catch(err => res.status(400).json(err))
+})
+
 router.put('/addetails',adminauth,(req,res)=>{
     const { campaignId } = req.body
     var ids = (typeof campaignId !== 'undefined' && 
