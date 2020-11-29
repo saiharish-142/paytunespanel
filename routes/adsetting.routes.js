@@ -55,7 +55,7 @@ router.put('/addetails',adminauth,(req,res)=>{
     .catch(err => res.status(400).json(err))
 })
 
-router.put('/addetails',adminauth,(req,res)=>{
+router.put('/addetailst',adminauth,(req,res)=>{
     const { campaignId } = req.body
     adsetting.aggregate([
         {$match:{
