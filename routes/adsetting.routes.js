@@ -50,7 +50,7 @@ router.put('/addetails',adminauth,(req,res)=>{
             if(sub.type === 'display')
             display = display.concat(sub.ids)
         })
-        res.json({audio,display,result})
+        res.json({audio,display,result,ids})
     })
     .catch(err => res.status(400).json(err))
 })
