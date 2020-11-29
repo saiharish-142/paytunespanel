@@ -40,7 +40,7 @@ router.put('/addetailt',adminauth,(req,res)=>{
         var audimpression = 0;
         var display = [];
         var disimpression = 0;
-        ids = await ids.map(id=>{
+        ids = await ids.map(async(id)=>{
             reu.map(rrr=>{
                 // console.log(rrr.campaignId.equals(id))
                 if(rrr.campaignId.equals(id)){
@@ -60,7 +60,7 @@ router.put('/addetailt',adminauth,(req,res)=>{
             if(!audio.includes(id)){
                 if(!display.includes(id)){
                     audio.push(id)
-                    StreamingAds.findById(id)
+                    await StreamingAds.findById(id)
                     .then(resus=>{
                         var dadad =audimpression + parseInt(resus.TargetImpressions)
                         console.log(dadad)
@@ -70,7 +70,9 @@ router.put('/addetailt',adminauth,(req,res)=>{
             }
             return id;
         })
-        res.json({reu,audio,display,audimpression,disimpression})
+        setTimeout(resultting,1000)
+        // console.log(audimpression)
+        function resultting(){res.json({reu,audio,display,audimpression,disimpression})}
     })
     .catch(err => res.status(400).json(err))
 })
