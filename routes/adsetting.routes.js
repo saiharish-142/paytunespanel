@@ -3,6 +3,7 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const adminauth  = require('../authenMiddleware/adminauth')
 const adsetting = mongoose.model('adsetting')
+const StreamingAds = mongoose.model('streamingads')
 
 router.get('/all',adminauth,(req,res)=>{
     adsetting.find()
@@ -36,26 +37,34 @@ router.put('/addetailt',adminauth,(req,res)=>{
     .then(async (result)=>{
         var reu = result;
         var audio = [];
+        var audimpression = 0;
         var display = [];
+        var disimpression = 0;
         ids = await ids.map(id=>{
             reu.map(rrr=>{
                 if(rrr.campaignId === mongoose.Types.ObjectId(id)){
                     if(rrr.type==='audio'){
                         audio.push(id)
+                        audimpression += rrr.targetImpression
                     }
                     if(rrr.type==='display'){
                         display.push(id)
+                        disimpression += rrr.targetImpression
                     }
                 }
             })
             if(!audio.includes(id)){
                 if(!display.includes(id)){
                     audio.push(id)
+                    StreamingAds.findById(id)
+                    .then(resus=>{
+                        audimpression += parseInt(resus.TargetImpressions)
+                    }).catch(err=>console.log(err))
                 }
             }
             return id;
         })
-        res.json({result,audio,display})
+        res.json({audio,display,audimpression,disimpression})
     })
     .catch(err => res.status(400).json(err))
 })
