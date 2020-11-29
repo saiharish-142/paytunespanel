@@ -67,7 +67,7 @@ router.put('/addetailt',adminauth,(req,res)=>{
             }
             return id;
         })
-        res.json({audio,display,audimpression,disimpression})
+        res.json({reu,audio,display,audimpression,disimpression})
     })
     .catch(err => res.status(400).json(err))
 })
