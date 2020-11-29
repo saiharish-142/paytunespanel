@@ -42,8 +42,8 @@ router.put('/addetailt',adminauth,(req,res)=>{
         var disimpression = 0;
         ids = await ids.map(id=>{
             reu.map(rrr=>{
-                console.log(typeof rrr.campaignId.toString(),typeof id)
-                if(rrr.campaignId.equals(id.toString())){
+                console.log(rrr.campaignId.equals(id))
+                if(rrr.campaignId.equals(id)){
                     if(rrr.type==='audio'){
                         audio.push(id)
                         audimpression += parseInt(rrr.targetImpression)
