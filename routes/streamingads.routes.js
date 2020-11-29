@@ -35,7 +35,7 @@ router.put('/updatename/:id',adminauth,(req,res)=>{
         .catch(err => console.log(err))
     })
     .catch(err => console.log(err))
-})
+})              
 
 router.get('/grouped',adminauth,(req,res)=>{
     StreamingAds.aggregate([
@@ -193,6 +193,27 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
 // ## $split and then $slice it 
 
 router.put('/getids',adminauth, (req,res)=>{
+    const { adtitle } = req.body
+    StreamingAds.aggregate([
+        {$project:{
+            _id:"$_id", AdTitle:{$toLower:"$AdTitle"}
+        }},{$match:{
+            AdTitle:{$regex:adtitle.toLowerCase()}
+        }},{$project:{
+            id:"$_id"
+        }}
+    ])
+    .then(resp=>{
+        var ids = [];
+        resp.map(re => {
+            ids.push(re.id)
+        })
+        res.json(ids)
+    })
+    .catch(err=>console.log(err))
+})
+
+router.put('/getidsbs',adminauth, (req,res)=>{
     const { adtitle } = req.body
     StreamingAds.aggregate([
         {$project:{
