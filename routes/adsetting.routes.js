@@ -64,7 +64,7 @@ router.put('/addetailt',adminauth,(req,res)=>{
                     .then(resus=>{
                         var dadad =audimpression + parseInt(resus.TargetImpressions)
                         console.log(dadad)
-                        audimpression = audimpression + parseInt(resus.TargetImpressions)
+                        audimpression = dadad
                     }).catch(err=>console.log(err))
                 }
             }
