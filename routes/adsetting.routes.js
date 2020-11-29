@@ -18,7 +18,9 @@ router.put('/addetails',adminauth,(req,res)=>{
         {$match:{
             "campaignId":{$in:ids}
         }},{$group:{
-            _id:"$_id", type:{$push:"$type"}
+            _id:"$type", ids:{$push:"$_id"}
+        }},{$project:{
+            type:"$_id",_id:0, ids:"$ids"
         }}
     ])
     .then(result=>{
