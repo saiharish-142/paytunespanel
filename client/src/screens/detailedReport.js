@@ -83,7 +83,13 @@ export default function DetailedTable() {
                 var d2 = new Date(b.date)
                 return d2 - d1
             })
-            // console.log(plogs)
+            plogs = plogs.sort(function(a,b){
+                var d1 = new Date(a.createdAt ? a.createdAt : a.createdOn)
+                var d2 = new Date(b.createdAt ? b.createdAt : b.createdOn)
+                if(a.date === b.date)
+                return d2 - d1;
+            })
+            console.log(plogs)
             setpublishlogs(plogs)
             // console.log(result)
         })
@@ -151,7 +157,13 @@ export default function DetailedTable() {
                 var d2 = new Date(b.date)
                 return d2 - d1
             })
-            // console.log(dlogs)
+            dlogs = dlogs.sort(function(a,b){
+                var d1 = new Date(a.updatedAt[0])
+                var d2 = new Date(b.updatedAt[0])
+                if(a.date === b.date)
+                return d2 - d1;
+            })
+            console.log(dlogs)
             setdatelogs(dlogs)
         })
         .catch(err =>{
@@ -165,9 +177,11 @@ export default function DetailedTable() {
         return datechanged;
     }
     const updatedatetimeseter = (date) => {
-        var datee = new Date(date);
-        var datee = datee.toString();
-        return datee.slice(0,25)
+        // var datee = new Date(date);
+        // var datee = datee.toString();
+        var s = new Date(date).toLocaleString(undefined, {timeZone: 'Asia/Kolkata'});
+        // console.log(s,date)
+        return s.slice(3,5) + '/' + s.slice(0,2) + '/' + s.slice(6,10) + ' ' + s.slice(11,)
     }
     // console.log(publishlogs.length ? 
     //     publishlogs[0]

@@ -100,6 +100,11 @@ export default function BasicTable({singlead}) {
                 clicks1 += re.clicks
             })
             logss = logss.concat(logs)
+            logss = logss.sort(function(a,b){
+                var d1 = new Date(a.updatedAt[0])
+                var d2 = new Date(b.updatedAt[0])
+                return d2 - d1
+            })
             console.log(logss)
             if(logss.length)
             setlogs(logss)
@@ -145,11 +150,16 @@ export default function BasicTable({singlead}) {
         }
     }
     const updatedatetimeseter = (date) => {
-        var datee = new Date(date) + 5;
-        var datee = datee.toString();
-        return datee.slice(0,25)
+        // console.log(date)
+        // var datee = new Date(date);
+        var s = new Date(date).toLocaleString(undefined, {timeZone: 'Asia/Kolkata'});
+        // var datee = datee.toString();
+        // console.log(s,date)
+        return s.slice(3,5) + '/' + s.slice(0,2) + '/' + s.slice(6,10) + ' ' + s.slice(11,)
     }
-    console.log(updatedatetimeseter('2020-11-28T18:30:00.541Z'))
+    // console.log(Date('2020-11-28T18:30:00.541Z').toString())
+    // console.log(Date('2020-11-28T18:30:00.541Z'))
+    // console.log(Date('2020-11-28T18:30:00.541Z'))
     return (
         <>
         <IconBreadcrumbs />
