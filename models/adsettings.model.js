@@ -8,6 +8,7 @@ const adsettingsSchema = new mongoose.Schema({
     priority:{type:String},
     campaignId:{type:ObjectId},
     publisherId:{type:String},
+    type:{type:String},
     authorizationKey:{type:String},
     targetImpression:{type:Number},
     impressionLimit:{type:Number},
