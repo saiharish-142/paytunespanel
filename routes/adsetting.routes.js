@@ -58,6 +58,7 @@ router.put('/addetailt',adminauth,(req,res)=>{
                     audio.push(id)
                     StreamingAds.findById(id)
                     .then(resus=>{
+                        console.log(resus.TargetImpressions)
                         audimpression += parseInt(resus.TargetImpressions)
                     }).catch(err=>console.log(err))
                 }
