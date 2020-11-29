@@ -42,7 +42,7 @@ router.put('/addetailt',adminauth,(req,res)=>{
         var disimpression = 0;
         ids = await ids.map(id=>{
             reu.map(rrr=>{
-                if(rrr.campaignId === mongoose.Types.ObjectId(id)){
+                if(rrr.campaignId.toString() === id){
                     if(rrr.type==='audio'){
                         audio.push(id)
                         audimpression += parseInt(rrr.targetImpression)
