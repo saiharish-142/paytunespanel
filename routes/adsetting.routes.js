@@ -45,11 +45,11 @@ router.put('/addetailt',adminauth,(req,res)=>{
                 if(rrr.campaignId === mongoose.Types.ObjectId(id)){
                     if(rrr.type==='audio'){
                         audio.push(id)
-                        audimpression += rrr.targetImpression
+                        audimpression += parseInt(rrr.targetImpression)
                     }
                     if(rrr.type==='display'){
                         display.push(id)
-                        disimpression += rrr.targetImpression
+                        disimpression += parseInt(rrr.targetImpression)
                     }
                 }
             })
