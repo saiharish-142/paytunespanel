@@ -31,13 +31,31 @@ router.put('/addetailt',adminauth,(req,res)=>{
                 typeof campaignId !== 'string' && 
                 typeof campaignId !== 'object') ? 
                 campaignId.map(id=>mongoose.Types.ObjectId(id)) : campaignId
-    adsetting.aggregate([
-        {$match:{
-            campaignId:{$in:ids}
-        }}
-    ])
-    .then(result=>{
-        res.json(result)
+    adsetting.find({campaignId:{$in:ids}})
+    .sort('-createdOn')
+    .then(async (result)=>{
+        var reu = result;
+        var audio = [];
+        var display = [];
+        ids = await ids.map(id=>{
+            reu.map(rrr=>{
+                if(rrr.campaignId === mongoose.Types.ObjectId(id)){
+                    if(rrr.type==='audio'){
+                        audio.push(id)
+                    }
+                    if(rrr.type==='display'){
+                        display.push(id)
+                    }
+                }
+            })
+            if(!audio.includes(id)){
+                if(!display.includes(id)){
+                    audio.push(id)
+                }
+            }
+            return id;
+        })
+        res.json(result,audio,display)
     })
     .catch(err => res.status(400).json(err))
 })
