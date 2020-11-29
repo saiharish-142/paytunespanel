@@ -44,7 +44,7 @@ router.put('/addetailt',adminauth,(req,res)=>{
             reu.map(rrr=>{
                 // console.log(rrr.campaignId.equals(id))
                 if(rrr.campaignId.equals(id)){
-                    console.log(rrr.type,'type',rrr)
+                    console.log('type',rrr.adCategory,rrr.type,rrr.campaignId)
                     if(rrr.type==='audio'){
                         audio.push(id)
                         audimpression += parseInt(rrr.targetImpression)
