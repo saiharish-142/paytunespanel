@@ -13,8 +13,13 @@ router.get('/all',adminauth,(req,res)=>{
 
 router.put('/addetails',adminauth,(req,res)=>{
     const { campaignId } = req.body
-    adsetting.find({campaignId:{$in:campaignId}})
-    .sort('-createdOn')
+    adsetting.aggregate([
+        {$match:{
+            "campaignId":{$in:campaignId}
+        }},{$group:{
+            _id:"$_id", type:"$type"
+        }}
+    ])
     .then(result=>{
         res.json(result)
     })

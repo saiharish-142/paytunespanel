@@ -213,27 +213,6 @@ router.put('/getids',adminauth, (req,res)=>{
     .catch(err=>console.log(err))
 })
 
-router.put('/getidsbs',adminauth, (req,res)=>{
-    const { adtitle } = req.body
-    StreamingAds.aggregate([
-        {$project:{
-            _id:"$_id", AdTitle:{$toLower:"$AdTitle"}
-        }},{$match:{
-            AdTitle:{$regex:adtitle.toLowerCase()}
-        }},{$project:{
-            id:"$_id"
-        }}
-    ])
-    .then(resp=>{
-        var ids = [];
-        resp.map(re => {
-            ids.push(re.id)
-        })
-        res.json(ids)
-    })
-    .catch(err=>console.log(err))
-})
-
 router.get('/alladsp',adminauth,(req,res)=>{
     StreamingAds.find({endDate:{$gte:req.body.date}})
     .sort('-createdOn')
