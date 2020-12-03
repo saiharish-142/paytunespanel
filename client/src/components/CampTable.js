@@ -83,6 +83,66 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
             setadss(datareq)
             settingcamp(datareq)
         }
+        if(cmd=== 'cat'){
+            datareq = datareq.sort(function(a,b){
+                if(a.Adtitle < b.Adtitle) { return -1; }
+                if(a.Adtitle > b.Adtitle) { return 1; }
+                return 0;
+            })
+            setsa('cat')
+            setadss(datareq)
+            settingcamp(datareq)
+        }
+        if(cmd=== 'adv'){
+            datareq = datareq.sort(function(a,b){
+                if(a.Advertiser < b.Advertiser) { return -1; }
+                if(a.Advertiser > b.Advertiser) { return 1; }
+                return 0;
+            })
+            setsa('adv')
+            setadss(datareq)
+            settingcamp(datareq)
+        }
+        if(cmd=== 'pri'){
+            datareq = datareq.sort(function(b,a){
+                if(a.Pricing < b.Pricing) { return -1; }
+                if(a.Pricing > b.Pricing) { return 1; }
+                return 0;
+            })
+            setsa('pri')
+            setadss(datareq)
+            settingcamp(datareq)
+        }
+        if(cmd=== 'RO'){
+            datareq = datareq.sort(function(a,b){
+                if(a.ro < b.ro) { return -1; }
+                if(a.ro > b.ro) { return 1; }
+                return 0;
+            })
+            setsa('RO')
+            setadss(datareq)
+            settingcamp(datareq)
+        }
+        if(cmd=== 'pm'){
+            datareq = datareq.sort(function(b,a){
+                if(a.PricingModel < b.PricingModel) { return -1; }
+                if(a.PricingModel > b.PricingModel) { return 1; }
+                return 0;
+            })
+            setsa('pm')
+            setadss(datareq)
+            settingcamp(datareq)
+        }
+        if(cmd=== 'cag'){
+            datareq = datareq.sort(function(a,b){
+                if(b.Category < a.Category) { return -1; }
+                if(b.Category > a.Category) { return 1; }
+                return 0;
+            })
+            setsa('cag')
+            setadss(datareq)
+            settingcamp(datareq)
+        }
     }
     return (
         <Paper className={classes.root}>
@@ -90,12 +150,12 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
             <Table stickyHeader aria-label="sticky table">
             <TableHead>
                 <TableRow>
-                    <TableCell align='left'>Name</TableCell>
-                    <TableCell align='left'>Advertiser</TableCell>
-                    <TableCell align='center'>Pricing</TableCell>
-                    <TableCell align='center'>RO from Advertiser</TableCell>
-                    <TableCell align='center'>Pricing Model</TableCell>
-                    <TableCell align='center'>Category</TableCell>
+                    <TableCell align='left' onClick={()=>campaignssorter('cat')} style={{cursor:'pointer'}}>Name {sa==='cat' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                    <TableCell align='left' onClick={()=>campaignssorter('adv')} style={{cursor:'pointer'}}>Advertiser {sa==='adv' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                    <TableCell align='center' onClick={()=>campaignssorter('pri')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Pricing {sa==='pri' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                    <TableCell align='center' onClick={()=>campaignssorter('RO')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>RO from Advertiser {sa==='RO' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                    <TableCell align='center' onClick={()=>campaignssorter('pm')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Pricing Model {sa==='pm' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                    <TableCell align='center' onClick={()=>campaignssorter('cag')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Category {sa==='cag' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
                     <TableCell align='center' onClick={()=>campaignssorter('create')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Created On {sa==='create' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
                     <TableCell align='center' onClick={()=>campaignssorter('start')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Start Date {sa==='start' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
                     <TableCell align='center' onClick={()=>campaignssorter('end')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>End Date {sa==='end' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
