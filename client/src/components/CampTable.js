@@ -45,10 +45,10 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
         setadss(streamingads)
     }, [streamingads])
     useEffect(() => {
-        console.log('changed')
+        // console.log('changed')
     }, [adss])
     useEffect(() => {
-        console.log('changed')
+        // console.log('changed')
     }, [sa])
     const campaignssorter = (cmd) => {
         var datareq = streamingads;
@@ -85,8 +85,10 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
         }
         if(cmd=== 'cat'){
             datareq = datareq.sort(function(a,b){
-                if(a.Adtitle < b.Adtitle) { return -1; }
-                if(a.Adtitle > b.Adtitle) { return 1; }
+                var aa = a.Adtitle === "" ? null : a.Adtitle;
+                var ba = b.Adtitle === "" ? null : b.Adtitle;
+                if(aa < ba) { return -1; }
+                if(aa > ba) { return 1; }
                 return 0;
             })
             setsa('cat')
@@ -95,8 +97,10 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
         }
         if(cmd=== 'adv'){
             datareq = datareq.sort(function(a,b){
-                if(a.Advertiser < b.Advertiser) { return -1; }
-                if(a.Advertiser > b.Advertiser) { return 1; }
+                var aa = a.Advertiser ?a.Advertiser : null;
+                var ba = b.Advertiser ?b.Advertiser : null;
+                if(aa < ba) { return -1; }
+                if(aa > ba) { return 1; }
                 return 0;
             })
             setsa('adv')
@@ -104,9 +108,11 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
             settingcamp(datareq)
         }
         if(cmd=== 'pri'){
-            datareq = datareq.sort(function(b,a){
-                if(a.Pricing < b.Pricing) { return -1; }
-                if(a.Pricing > b.Pricing) { return 1; }
+            datareq = datareq.sort(function(a,b){
+                var aa = a.Pricing;
+                var ba = b.Pricing;
+                if(aa < ba) { return -1; }
+                if(aa > ba) { return 1; }
                 return 0;
             })
             setsa('pri')
@@ -125,8 +131,10 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
         }
         if(cmd=== 'pm'){
             datareq = datareq.sort(function(b,a){
-                if(a.PricingModel < b.PricingModel) { return -1; }
-                if(a.PricingModel > b.PricingModel) { return 1; }
+                var aa = a.PricingModel === "" ? null : a.PricingModel;
+                var ba = b.PricingModel === "" ? null : b.PricingModel;
+                if(aa < ba) { return -1; }
+                if(aa > ba) { return 1; }
                 return 0;
             })
             setsa('pm')
@@ -135,8 +143,10 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
         }
         if(cmd=== 'cag'){
             datareq = datareq.sort(function(a,b){
-                if(b.Category < a.Category) { return -1; }
-                if(b.Category > a.Category) { return 1; }
+                var aa = a.Category === "" ? null : a.Category;
+                var ba = b.Category === "" ? null : b.Category;
+                if(ba < aa) { return -1; }
+                if(ba > aa) { return 1; }
                 return 0;
             })
             setsa('cag')
