@@ -42,6 +42,8 @@ router.get('/grouped',adminauth,(req,res)=>{
         {$project:{
             AdTitle:{$toLower:"$AdTitle"},
             Category:"$Category",
+            startDate:"$startDate",
+            endDate:"$endDate",
             Advertiser:"$Advertiser",
             Pricing:"$Pricing", 
             PricingModel:"$PricingModel",
@@ -51,6 +53,8 @@ router.get('/grouped',adminauth,(req,res)=>{
             Category:"$Category",
             Advertiser:"$Advertiser",
             Pricing:"$Pricing", 
+            startDate:"$startDate",
+            endDate:"$endDate",
             PricingModel:"$PricingModel",
             createdOn:"$createdOn"
         }},{$project:{
@@ -58,6 +62,8 @@ router.get('/grouped',adminauth,(req,res)=>{
             Category:"$Category",
             Advertiser:"$Advertiser",
             Pricing:"$Pricing", 
+            startDate:"$startDate",
+            endDate:"$endDate",
             PricingModel:"$PricingModel",
             createdOn:{$substr:["$createdOn",0,10]}
         }},{$project:{
@@ -74,6 +80,8 @@ router.get('/grouped',adminauth,(req,res)=>{
                 }
             },
             Category:"$Category",
+            startDate:"$startDate",
+            endDate:"$endDate",
             Advertiser:"$Advertiser",
             Pricing:"$Pricing", 
             PricingModel:"$PricingModel",
@@ -82,7 +90,9 @@ router.get('/grouped',adminauth,(req,res)=>{
             _id:"$AdTitle",
             Category:{$push : "$Category"},
             Advertiser:{$push : "$Advertiser"},
-            Pricing:{$push : "$Pricing"}, 
+            Pricing:{$push : "$Pricing"},
+            startDate:{$push : "$startDate"},
+            endDate:{$push : "$endDate"}, 
             PricingModel:{$push : "$PricingModel"},
             createdOn:{$push : "$createdOn"}
         }},{$project:{
@@ -90,6 +100,8 @@ router.get('/grouped',adminauth,(req,res)=>{
             Category:"$Category",
             Advertiser:"$Advertiser",
             Pricing:"$Pricing", 
+            startDate:"$startDate",
+            endDate:"$endDate",
             PricingModel:"$PricingModel",
             createdOn:{$arrayElemAt : ["$createdOn",0]}
         }},{$sort: {createdOn: -1}}
