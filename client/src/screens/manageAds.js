@@ -18,7 +18,7 @@ function Dashboard() {
             }
         }).then(res=>res.json())
         .then(result =>{
-            // console.log(result)
+            console.log(result)
             setloading(false)
             setStreamingads(result)
             setStreamingadsSearched(result)
@@ -48,7 +48,7 @@ function Dashboard() {
     return (
         <div className='dashboard'>
             <SearchCampagin inval={searchval} setInval={onChange} />
-            {!loading ? <DataTable streamingads={streamingadsSearched} />: <div> loading... </div>}
+            {!loading ? <DataTable streamingads={streamingadsSearched} settingcamp={setStreamingadsSearched} />: <div> loading... </div>}
             {/* {streamingads.length ? "": <div> Loading... </div>} */}
         </div>
     )

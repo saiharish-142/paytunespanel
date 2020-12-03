@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -10,35 +10,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import { useHistory } from "react-router-dom";
 import { IdContext } from '../App'
-
-const columns = [
-    { id: "AdTitle", label: "Name", minWidth: 170 },
-    { id: "Advertiser", label: "Advertiser",align: "left", minWidth: 170 },
-    {
-        id: "Pricing",
-        label: "Pricing",
-        minWidth: 50,
-        align: "center"
-        // format: (value) => value.toLocaleString("en-US")
-    },
-    {
-        id: "ro",
-        label: "RO from Advertiser",
-        minWidth: 50,
-        align: "center"
-        // format: (value) => value.toLocaleString("en-US")
-    },
-    {
-        id: "PricingModel",
-        label: "Pricing Model",
-        minWidth: 50,
-        align: "center"
-        // format: (value) => value.toFixed(2)
-    },
-    { id: "Category", label: "Category",align: "center", minWidth: 50 },
-    { id: "createdOn", label: "Created On",align: "center", minWidth: 120 },
-    { id: "Report", label: "", align: "center", minWidth: 50 },
-];
+import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 
 const useStyles = makeStyles({
     root: {
@@ -49,10 +21,12 @@ const useStyles = makeStyles({
     }
 });
 
-export default function StickyHeadTable({streamingads}) {
+export default function StickyHeadTable({streamingads,settingcamp}) {
     const classes = useStyles();
     const history = useHistory();
     const [page, setPage] = React.useState(0);
+    const [sa, setsa] = useState('create')
+    const [adss, setadss] = useState(streamingads)
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const {state1,dispatch1} = useContext(IdContext)
     const handleChangePage = (event, newPage) => {
@@ -67,25 +41,69 @@ export default function StickyHeadTable({streamingads}) {
         var datechanged = dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
         return datechanged;
     }
+    useEffect(() => {
+        setadss(streamingads)
+    }, [streamingads])
+    useEffect(() => {
+        console.log('changed')
+    }, [adss])
+    useEffect(() => {
+        console.log('changed')
+    }, [sa])
+    const campaignssorter = (cmd) => {
+        var datareq = streamingads;
+        if(cmd === 'start'){
+            datareq = datareq.sort(function(a,b){
+                var d1 = new Date(a.startDate[0])
+                var d2 = new Date(b.startDate[0])
+                return d2 - d1;
+            })
+            // console.log(datareq)
+            setsa('start')
+            setadss(datareq)
+            settingcamp(datareq)
+        }
+        if(cmd === 'end'){
+            datareq = datareq.sort(function(a,b){
+                var d1 = new Date(a.endDate[0])
+                var d2 = new Date(b.endDate[0])
+                return d2 - d1;
+            })
+            setsa('end')
+            setadss(datareq)
+            settingcamp(datareq)
+        }
+        if(cmd === 'create'){
+            datareq = datareq.sort(function(a,b){
+                var d1 = new Date(a.createdOn)
+                var d2 = new Date(b.createdOn)
+                return d2 - d1;
+            })
+            setsa('create')
+            setadss(datareq)
+            settingcamp(datareq)
+        }
+    }
     return (
         <Paper className={classes.root}>
         <TableContainer className={classes.container}>
             <Table stickyHeader aria-label="sticky table">
             <TableHead>
                 <TableRow>
-                {columns.map((column) => (
-                    <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                    >
-                    {column.label}
-                    </TableCell>
-                ))}
+                    <TableCell align='left'>Name</TableCell>
+                    <TableCell align='left'>Advertiser</TableCell>
+                    <TableCell align='center'>Pricing</TableCell>
+                    <TableCell align='center'>RO from Advertiser</TableCell>
+                    <TableCell align='center'>Pricing Model</TableCell>
+                    <TableCell align='center'>Category</TableCell>
+                    <TableCell align='center' onClick={()=>campaignssorter('create')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Created On {sa==='create' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                    <TableCell align='center' onClick={()=>campaignssorter('start')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Start Date {sa==='start' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                    <TableCell align='center' onClick={()=>campaignssorter('end')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>End Date {sa==='end' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                    <TableCell></TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
-                {streamingads.length >= 1 ? streamingads
+                {adss.length >= 1 ? adss
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) =>{ 
                     if(typeof row !== 'undefined'){
@@ -98,6 +116,8 @@ export default function StickyHeadTable({streamingads}) {
                         <TableCell align='center'>{row.PricingModel && row.PricingModel}</TableCell>
                         <TableCell align='center'>{row.Category && row.Category}</TableCell>
                         <TableCell align='center'>{row.createdOn ? dateformatchanger(row.createdOn.substring(0,10)) : dateformatchanger(row.createdAt.substring(0,10))}</TableCell>
+                        <TableCell align='center'>{row.startDate && dateformatchanger(row.startDate[0])}</TableCell>
+                        <TableCell align='center'>{row.endDate && dateformatchanger(row.endDate[0])}</TableCell>
                         <TableCell align='center' className='mangeads__report' onClick={()=>{
                             history.push(`/manageAds/${row._id}`)
                             dispatch1({type:"ID",payload:row._id})
@@ -113,7 +133,7 @@ export default function StickyHeadTable({streamingads}) {
         <TablePagination
             rowsPerPageOptions={[5, 10, 25, 100]}
             component="div"
-            count={streamingads.length}
+            count={adss.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onChangePage={handleChangePage}
