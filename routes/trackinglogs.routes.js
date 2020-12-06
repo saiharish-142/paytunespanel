@@ -343,7 +343,7 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
             "campaignId":campaignId
         } },
         {$group:{
-            _id:"$appId",result:"$appId"
+            _id:"$appId",result:{$push:"$appId"}
         }}
     ])
     .then(result=>{
