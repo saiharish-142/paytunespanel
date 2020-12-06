@@ -343,7 +343,7 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
             "campaignId":campaignId
         } },
         {$group:{
-            _id:"$appId",result:{$push:"$appId"},respo:{$facet:{
+            _id:"$appId",result:{$push:"$appId"},respo:[{$facet:{
                 "typeValues":[
                     {$group:{_id:{type:"$type",appId:"$appId"}, count:{$sum:1}}},
                     {$group:{_id:"$_id.appId", result:{$push:{type:"$_id.type",count:"$count"}}}},
@@ -357,7 +357,7 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
                     {$group:{_id:{appId:"$_id.appId",language:"$_id.language"}, result:{$push:{type:"_id.type",count:"$count"}}}},
                     {$project:{_id:0,appId:"$_id.appId",region:"$_id.region",res:"$result"}}
                 ]
-            }}
+            }}]
         }}
     ])
     .then(result=>{
