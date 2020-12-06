@@ -346,7 +346,7 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
             "typeValues":[
                 {$group:{_id:"$type", count:{$sum:1}}},
                 {$project:{
-                    "$_id":"$count"
+                    type:"_id", count:"$count"
                 }}
             ]
         }}
