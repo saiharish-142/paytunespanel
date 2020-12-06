@@ -342,28 +342,14 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
         { $match: {
             "campaignId":campaignId
         } },
-        { $group:{
-            _id: {appId: "$appId",campaignId:"$campaignId", date:"$date" ,region :"$region",type:"$type",phoneMake:"$phoneMake"},
-            count:{$sum:1}
-        }},{$group:{
-            _id:{appId:"$_id.appId",campaignId:"$_id.campaignId", date:"$_id.date", type:"$_id.type"} , 
-            region:{$push:"$_id.region"}, 
-            count:{$sum:"$count"},
-            phoneMake:{$push:"$_id.phoneMake"}
-        }},{$group:{
-            _id:{appId:"$_id.appId",campaignId:"$_id.campaignId" ,date:"$_id.date"}, 
-            type:{$push:{type:"$_id.type",count:"$count"}}, 
-            region:{$push:"$region"},
-            phoneMake:{$push:"$phoneMake"}
-        }},{$group:{
-            _id:{date:"$_id.date",campaignId:"$_id.campaignId"}, 
-            report:{$push:{appId:"$_id.appId",type:"$type",region:"$region",phoneMake:"$phoneMake"}}
-        }},{$project:{
-            campaignId:"$_id.campaignId",
-            date:"$_id.date", 
-            report:"$report", 
-            _id:0
-        }},{$sort: {date: -1}}
+        {$facet:{
+            "typeValues":[
+                {$group:{_id:"$type", count:{$sum:1}}},
+                {$project:{
+                    "$_id":"$count"
+                }}
+            ]
+        }}
     ])
     .then(result=>{
         resu = result;
