@@ -343,7 +343,6 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
             "campaignId":campaignId
         } },
         {$facet:{
-            "appIds":[{$project:{id:"$appId"}}],
             "typeValues":[
                 {$group:{_id:{type:"$type",appId:"$appId"}, count:{$sum:1}}},
                 {$group:{_id:"$_id.appId", result:{$push:{type:"$_id.type",count:"$count"}}}},
