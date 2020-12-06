@@ -11,6 +11,16 @@ const trackinglogsSchema = new mongoose.Schema({
     date: { type: String },
     rtbreqid:{ type: ObjectId},
     url: { type: String },
+    zip:{type:String},
+    rtbType:{type:String},
+    phoneMake:{type:String},
+    phoneModel:{type:String},
+    platformType:{type:String},
+    osVersion:{type:String},
+    language:{type:String},
+    pptype:{type:String},
+    bundle:{type:String},
+    bundlename:{type:String},
     createdOn: { type: Date, default: Date.now }
 })
 

@@ -335,24 +335,67 @@ router.post('/reportdate',adminauth,async (req,res)  =>{
     .catch(err => console.log(err))
 })
 
+router.post('/testcom1',adminauth,async (req,res)  =>{
+    const { campaignId } = req.body
+    var resu = [];
+    trackinglogs.aggregate([
+        { $match: {
+            "campaignId":campaignId
+        } },
+        { $group:{
+            _id: {appId: "$appId",campaignId:"$campaignId", date:"$date" ,region :"$region",type:"$type"},
+            count:{$sum:1}
+        }},{$group:{
+            _id:{appId:"$_id.appId",campaignId:"$_id.campaignId", date:"$_id.date", type:"$_id.type"} , 
+            region:{$push:"$_id.region"}, 
+            count:{$sum:"$count"}
+        }},{$group:{
+            _id:{appId:"$_id.appId",campaignId:"$_id.campaignId" ,date:"$_id.date"}, 
+            type:{$push:{type:"$_id.type",count:"$count"}}, 
+            region:{$push:"$region"}
+        }},{$group:{
+            _id:{date:"$_id.date",campaignId:"$_id.campaignId"}, 
+            report:{$push:{appId:"$_id.appId",type:"$type",region:"$region"}}
+        }},{$project:{
+            campaignId:"$_id.campaignId",
+            date:"$_id.date", 
+            report:"$report", 
+            _id:0
+        }},{$sort: {date: -1}}
+    ])
+    .then(result=>{
+        resu = result;
+        res.json(resu)
+    })
+    .catch(err => console.log(err))
+})
+
 router.post('/repotcrecamp',adminauth,async (req,res)  =>{
     const { campaignId } = req.body
     var resu = [];
     trackinglogs.aggregate([
         { $match: {
-            "campaignId":campaignId,
-            "type":{$in:["impression","complete","click","companionclicktracking","clicktracking"]}
+            "campaignId":campaignId
         } },
         { $group:{
-            _id: {appId: "$appId",campaignId:"$campaignId", date:"$date" ,region :"$region",type:"$type"},count:{$sum:1}
+            _id: {appId: "$appId",campaignId:"$campaignId", date:"$date" ,region :"$region",type:"$type"},
+            count:{$sum:1}
         }},{$group:{
-            _id:{appId:"$_id.appId",campaignId:"$_id.campaignId", date:"$_id.date", type:"$_id.type"} , region:{$push:"$_id.region"}, count:{$sum:"$count"}
+            _id:{appId:"$_id.appId",campaignId:"$_id.campaignId", date:"$_id.date", type:"$_id.type"} , 
+            region:{$push:"$_id.region"}, 
+            count:{$sum:"$count"}
         }},{$group:{
-            _id:{appId:"$_id.appId",campaignId:"$_id.campaignId" ,date:"$_id.date"}, type:{$push:{type:"$_id.type",count:"$count"}}, region:{$push:"$region"}
+            _id:{appId:"$_id.appId",campaignId:"$_id.campaignId" ,date:"$_id.date"}, 
+            type:{$push:{type:"$_id.type",count:"$count"}}, 
+            region:{$push:"$region"}
         }},{$group:{
-            _id:{date:"$_id.date",campaignId:"$_id.campaignId"}, report:{$push:{appId:"$_id.appId",type:"$type",region:"$region"}}
+            _id:{date:"$_id.date",campaignId:"$_id.campaignId"}, 
+            report:{$push:{appId:"$_id.appId",type:"$type",region:"$region"}}
         }},{$project:{
-            campaignId:"$_id.campaignId",date:"$_id.date", report:"$report", _id:0
+            campaignId:"$_id.campaignId",
+            date:"$_id.date", 
+            report:"$report", 
+            _id:0
         }},{$sort: {date: -1}}
     ])
     .then(result=>{
