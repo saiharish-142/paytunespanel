@@ -349,7 +349,7 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
                 {$project:{app:"$_id", res:"$result", _id:0}}
             ],"typebyRegion":[
                 {$group:{_id:{type:"$type",appId:"$appId",region:"$region"}, count:{$sum:1}}},
-                {$group:{_id:{appId:"_id.appId",region:"$_id.region"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
+                {$group:{_id:{appId:"$_id.appId",region:"$_id.region"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
                 {$project:{_id:0,appId:"$_id.appId",region:"$_id.region",res:"$result"}}
             ]
         }}
