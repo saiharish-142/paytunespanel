@@ -346,7 +346,7 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
             _id: {appId: "$appId",campaignId:"$campaignId", date:"$date" ,region :"$region",type:"$type",phoneMake:"$phoneMake"},
             count:{$sum:1}
         }},{$group:{
-            _id:{appId:"$_id.appId",campaignId:"$_id.campaignId", date:"$_id.date", type:"$_id.type",phoneMake:"$_id.phoneMake"} , 
+            _id:{appId:"$_id.appId",campaignId:"$_id.campaignId", date:"$_id.date", type:"$_id.type"} , 
             region:{$push:"$_id.region"}, 
             count:{$sum:"$count"},
             phoneMake:{$push:"$_id.phoneMake"}
