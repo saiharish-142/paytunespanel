@@ -355,6 +355,18 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
                 {$group:{_id:{type:"$type",appId:"$appId",language:"$language"}, count:{$sum:1}}},
                 {$group:{_id:{appId:"$_id.appId",language:"$_id.language"}, result:{$push:{type:"_id.type",count:"$count"}}}},
                 {$project:{_id:0,appId:"$_id.appId",language:"$_id.language",res:"$result"}}
+            ],"typeByOSV":[
+                {$group:{_id:{type:"$type",appId:"$appId",osVersion:"$osVersion"}, count:{$sum:1}}},
+                {$group:{_id:{appId:"$_id.appId",osVersion:"$_id.osVersion"}, result:{$push:{type:"_id.type",count:"$count"}}}},
+                {$project:{_id:0,appId:"$_id.appId",osVersion:"$_id.osVersion",res:"$result"}}
+            ],"typeByPhModel":[
+                {$group:{_id:{type:"$type",appId:"$appId",phoneModel:"$phoneModel"}, count:{$sum:1}}},
+                {$group:{_id:{appId:"$_id.appId",phoneModel:"$_id.phoneModel"}, result:{$push:{type:"_id.type",count:"$count"}}}},
+                {$project:{_id:0,appId:"$_id.appId",phoneModel:"$_id.phoneModel",res:"$result"}}
+            ],"typeByPT":[
+                {$group:{_id:{type:"$type",appId:"$appId",platformType:"$platformType"}, count:{$sum:1}}},
+                {$group:{_id:{appId:"$_id.appId",platformType:"$_id.platformType"}, result:{$push:{type:"_id.type",count:"$count"}}}},
+                {$project:{_id:0,appId:"$_id.appId",platformType:"$_id.platformType",res:"$result"}}
             ]
         }}
     ])
