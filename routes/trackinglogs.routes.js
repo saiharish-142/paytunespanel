@@ -344,9 +344,10 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
         } },
         {$facet:{
             "typeValues":[
-                {$group:{_id:"$type", count:{$sum:1}}},
+                {$group:{_id:{type:"$type",appId:"$appId"}, count:{$sum:1}}},
+                {$group:{_id:"$_id.appId", result:{$push:{type:"$_id.type",count:"$count"}}}}
                 {$project:{
-                    type:"_id", count:"$count"
+                    app:"$_id", res:"$result", _id:0
                 }}
             ]
         }}
