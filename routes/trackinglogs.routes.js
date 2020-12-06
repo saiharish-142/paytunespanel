@@ -350,32 +350,32 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
             ],"typebyRegion":[
                 {$group:{_id:{type:"$type",appId:"$appId",region:"$region"}, count:{$sum:1}}},
                 {$group:{_id:{appId:"$_id.appId",region:"$_id.region"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
-                {$group:{_id:"$_id.appId", region:{$push:{region:"$_id.region",result:"$result"}}}},
+                {$group:{_id:"$_id.appId", result:{$push:{region:"$_id.region",result:"$result"}}}},
                 {$project:{_id:0,appId:"$_id.appId",res:"$result"}}
             ],"typeByLan":[
                 {$group:{_id:{type:"$type",appId:"$appId",language:"$language"}, count:{$sum:1}}},
                 {$group:{_id:{appId:"$_id.appId",language:"$_id.language"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
-                {$group:{_id:"$_id.appId", language:{$push:{language:"$_id.language",result:"$result"}}}},
+                {$group:{_id:"$_id.appId", result:{$push:{language:"$_id.language",result:"$result"}}}},
                 {$project:{_id:0,appId:"$_id.appId",res:"$result"}}
             ],"typeByOSV":[
                 {$group:{_id:{type:"$type",appId:"$appId",osVersion:"$osVersion"}, count:{$sum:1}}},
                 {$group:{_id:{appId:"$_id.appId",osVersion:"$_id.osVersion"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
-                {$group:{_id:"$_id.appId", osVersion:{$push:{osVersion:"$_id.osVersion",result:"$result"}}}},
+                {$group:{_id:"$_id.appId", result:{$push:{osVersion:"$_id.osVersion",result:"$result"}}}},
                 {$project:{_id:0,appId:"$_id.appId",res:"$result"}}
             ],"typeByPhModel":[
                 {$group:{_id:{type:"$type",appId:"$appId",phoneModel:"$phoneModel"}, count:{$sum:1}}},
                 {$group:{_id:{appId:"$_id.appId",phoneModel:"$_id.phoneModel"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
-                {$group:{_id:"$_id.appId", phoneModel:{$push:{phoneModel:"$_id.phoneModel",result:"$result"}}}},
+                {$group:{_id:"$_id.appId", result:{$push:{phoneModel:"$_id.phoneModel",result:"$result"}}}},
                 {$project:{_id:0,appId:"$_id.appId",res:"$result"}}
             ],"typeByPT":[
                 {$group:{_id:{type:"$type",appId:"$appId",platformType:"$platformType"}, count:{$sum:1}}},
                 {$group:{_id:{appId:"$_id.appId",platformType:"$_id.platformType"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
-                {$group:{_id:"$_id.appId", platformType:{$push:{platformType:"$_id.platformType",result:"$result"}}}},
+                {$group:{_id:"$_id.appId", result:{$push:{platformType:"$_id.platformType",result:"$result"}}}},
                 {$project:{_id:0,appId:"$_id.appId",res:"$result"}}
             ],"typeByPin":[
                 {$group:{_id:{type:"$type",appId:"$appId",zip:"$zip"}, count:{$sum:1}}},
                 {$group:{_id:{appId:"$_id.appId",zip:"$_id.zip"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
-                {$group:{_id:"$_id.appId", zip:{$push:{zip:"$_id.zip",result:"$result"}}}},
+                {$group:{_id:"$_id.appId", result:{$push:{zip:"$_id.zip",result:"$result"}}}},
                 {$project:{_id:0,appId:"$_id.appId",res:"$result"}}
             ]
         }}
