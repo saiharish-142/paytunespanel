@@ -336,11 +336,12 @@ router.post('/reportdate',adminauth,async (req,res)  =>{
 })
 
 router.post('/testcom1',adminauth,async (req,res)  =>{
-    const { campaignId } = req.body
+    const { campaignId, date } = req.body
     var resu = [];
     trackinglogs.aggregate([
         { $match: {
-            "campaignId":campaignId
+            "campaignId":campaignId,
+            "date":date
         } },
         {$facet:{
             "typeValues":[
