@@ -342,20 +342,8 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
         { $match: {
             "campaignId":campaignId
         } },
-        {$facet:{
-            "typeValues":[
-                {$group:{_id:{type:"$type",appId:"$appId"}, count:{$sum:1}}},
-                {$group:{_id:"$_id.appId", result:{$push:{type:"$_id.type",count:"$count"}}}},
-                {$project:{app:"$_id", res:"$result", _id:0}}
-            ],"typebyRegion":[
-                {$group:{_id:{type:"$type",appId:"$appId",region:"$region"}, count:{$sum:1}}},
-                {$group:{_id:{appId:"$_id.appId",region:"$_id.region"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
-                {$project:{_id:0,appId:"$_id.appId",region:"$_id.region",res:"$result"}}
-            ],"typeByLan":[
-                {$group:{_id:{type:"$type",appId:"$appId",language:"$language"}, count:{$sum:1}}},
-                {$group:{_id:{appId:"$_id.appId",language:"$_id.language"}, result:{$push:{type:"_id.type",count:"$count"}}}},
-                {$project:{_id:0,appId:"$_id.appId",language:"$_id.language",res:"$result"}}
-            ]
+        {$group:{
+            _id:"$appId",result:"$appId"
         }}
     ])
     .then(result=>{
