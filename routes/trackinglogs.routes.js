@@ -354,7 +354,7 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
             ],"typeByLan":[
                 {$group:{_id:{type:"$type",appId:"$appId",language:"$language"}, count:{$sum:1}}},
                 {$group:{_id:{appId:"$_id.appId",language:"$_id.language"}, result:{$push:{type:"_id.type",count:"$count"}}}},
-                {$project:{_id:0,appId:"$_id.appId",region:"$_id.region",res:"$result"}}
+                {$project:{_id:0,appId:"$_id.appId",language:"$_id.language",res:"$result"}}
             ]
         }}
     ])
