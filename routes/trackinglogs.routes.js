@@ -343,19 +343,21 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
             "campaignId":campaignId
         } },
         { $group:{
-            _id: {appId: "$appId",campaignId:"$campaignId", date:"$date" ,region :"$region",type:"$type"},
+            _id: {appId: "$appId",campaignId:"$campaignId", date:"$date" ,region :"$region",type:"$type",phoneMake:"$phoneMake"},
             count:{$sum:1}
         }},{$group:{
-            _id:{appId:"$_id.appId",campaignId:"$_id.campaignId", date:"$_id.date", type:"$_id.type"} , 
+            _id:{appId:"$_id.appId",campaignId:"$_id.campaignId", date:"$_id.date", type:"$_id.type",phoneMake:"$_id.phoneMake"} , 
             region:{$push:"$_id.region"}, 
-            count:{$sum:"$count"}
+            count:{$sum:"$count"},
+            phoneMake:{$push:"$_id.phoneMake"}
         }},{$group:{
             _id:{appId:"$_id.appId",campaignId:"$_id.campaignId" ,date:"$_id.date"}, 
             type:{$push:{type:"$_id.type",count:"$count"}}, 
-            region:{$push:"$region"}
+            region:{$push:"$region"},
+            phoneMake:{$push:"$phoneMake"}
         }},{$group:{
             _id:{date:"$_id.date",campaignId:"$_id.campaignId"}, 
-            report:{$push:{appId:"$_id.appId",type:"$type",region:"$region"}}
+            report:{$push:{appId:"$_id.appId",type:"$type",region:"$region",phoneMake:"$phoneMake"}}
         }},{$project:{
             campaignId:"$_id.campaignId",
             date:"$_id.date", 
