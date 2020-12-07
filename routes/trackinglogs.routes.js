@@ -344,10 +344,15 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
             "date":date
         } },
         {$facet:{
+            "appIds":[
+                {$group:{_id:{campaignId:"$campaignId",appId:"$appId"}}},
+                {$group:{_id:"$_id.campaignId",ids:{$push:"$_id.appId"}}},
+                {$project:{_id:0,ids:"$ids"}}
+            ],
             "typeValues":[
                 {$group:{_id:{type:"$type",appId:"$appId"}, count:{$sum:1}}},
                 {$group:{_id:"$_id.appId", result:{$push:{type:"$_id.type",count:"$count"}}}},
-                {$project:{app:"$_id", res:"$result", _id:0}}
+                {$project:{appId:"$_id", res:"$result", _id:0}}
             ],"typebyRegion":[
                 {$group:{_id:{type:"$type",appId:"$appId",region:"$region"}, count:{$sum:1}}},
                 {$group:{_id:{appId:"$_id.appId",region:"$_id.region"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
