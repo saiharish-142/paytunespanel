@@ -379,18 +379,16 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByPT":[
                 {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",platformType:"$platformType"}, count:{$sum:1}}},
-                {$group:{_id:{appId:"$_id.appId",platformType:"$_id.platformType"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",platformType:"$_id.platformType"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
                 {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{platformType:"$_id.platformType",result:"$result"}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByPin":[
                 {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",zip:"$zip"}, count:{$sum:1}}},
-                {$group:{_id:{appId:"$_id.appId",zip:"$_id.zip"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",zip:"$_id.zip"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
                 {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{zip:"$_id.zip",result:"$result"}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
-            ],"dayPart":[
-                {$group:{_id:{type:"$type"}}}
             ]
         }}
     ])
