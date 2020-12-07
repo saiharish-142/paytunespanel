@@ -399,6 +399,49 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
     .catch(err => console.log(err))
 })
 
+router.post('/testcom2',adminauth,async (req,res)  =>{
+    const { campaignId, date } = req.body
+    var resu = [];
+    trackinglogs.aggregate([
+        { $match: {
+            "date":date
+        } },
+        {$group:{
+            _id:{campaignId:"$campaignId",appId:"$appId",date:"$date",type:"$type"},
+            region:{$push:"$region"},
+            language:{$push:"$language"},
+            osVersion:{$push:"$osVersion"},
+            phoneModel:{$push:"$phoneModel"},
+            platformType:{$push:"$platformType"},
+            zip:{$push:"$zip"},
+            count:{$sum:1}
+        }},
+        {$group:{
+            _id:{campaignId:"$_id.campaignId",date:"$_id.date",appId:"$_id.appId"},
+            res:{$push:{
+                type:"$_id.type",
+                count:"$count",
+                region:"$region",
+                language:"$language",
+                osVersion:"$osVersion",
+                phoneModel:"$phoneModel",
+                platformType:"$platformType",
+                zip:"$zip"
+            }}
+        }},{$group:{
+            _id:{campaignId:"$_id.campaignId",date:"$_id.date"},
+            reports:{$push:{appId:"$_id.appId",res:"$res"}}
+        }},{$project:{
+            campaignId:"$_id.campaignId",date:"$_id.date",reports:"$reports",_id:0
+        }}
+    ])
+    .then(result=>{
+        resu = result;
+        res.json(resu)
+    })
+    .catch(err => console.log(err))
+})
+
 router.post('/repotcrecamp',adminauth,async (req,res)  =>{
     const { campaignId } = req.body
     var resu = [];
