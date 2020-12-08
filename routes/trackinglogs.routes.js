@@ -434,12 +434,13 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
             campaignId:"$_id.campaignId",date:"$_id.date",reports:"$reports",_id:0
         }}
     ],{ allowDiskUse: true })
-    .then(result=>{
-        var resu = [];
-        resu = result;
-        res.json(resu)
+    .exec(function(err,result){
+        if(err){
+            console.log(err)
+            return res.status(400).json(err)
+        }
+        return res.json(result)
     })
-    .catch(err => console.log(err))
 })
 
 router.post('/repotcrecamp',adminauth,async (req,res)  =>{
