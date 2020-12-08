@@ -408,11 +408,13 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
         {$group:{
             _id:{campaignId:"$campaignId",appId:"$appId",date:"$date",type:"$type"},
             region:{$push:"$region"},
-            language:{$push:"$language"},
-            osVersion:{$push:"$osVersion"},
-            phoneModel:{$push:"$phoneModel"},
-            platformType:{$push:"$platformType"},
-            zip:{$push:"$zip"},
+            language:{$group:{
+                _id:"$region",count:{$sum:1}
+            }},
+            // osVersion:{$push:"$osVersion"},
+            // phoneModel:{$push:"$phoneModel"},
+            // platformType:{$push:"$platformType"},
+            // zip:{$push:"$zip"},
             count:{$sum:1}
         }},
         {$group:{
@@ -420,12 +422,12 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
             res:{$push:{
                 type:"$_id.type",
                 count:"$count",
-                region:"$region",
-                language:"$language",
-                osVersion:"$osVersion",
-                phoneModel:"$phoneModel",
-                platformType:"$platformType",
-                zip:"$zip"
+                region:"$region"
+                // language:"$language",
+                // osVersion:"$osVersion",
+                // phoneModel:"$phoneModel",
+                // platformType:"$platformType",
+                // zip:"$zip"
             }}
         }},{$group:{
             _id:{campaignId:"$_id.campaignId",date:"$_id.date"},
@@ -433,7 +435,8 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
         }},{$project:{
             campaignId:"$_id.campaignId",date:"$_id.date",reports:"$reports",_id:0
         }}
-    ],{ allowDiskUse: true },function(err,result){
+    ],{ allowDiskUse: true })
+    .exec(function(err,result){
         console.log(err,result)
         if(err){
             console.log(err)
