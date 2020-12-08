@@ -401,7 +401,6 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
 
 router.post('/testcom2',adminauth,async (req,res)  =>{
     const { campaignId, date } = req.body
-    var resu = [];
     trackinglogs.aggregate([
         { $match: {
             "date":date
@@ -436,6 +435,7 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
         }}
     ])
     .then(result=>{
+        var resu = [];
         resu = result;
         res.json(resu)
     })
