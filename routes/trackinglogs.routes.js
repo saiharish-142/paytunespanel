@@ -350,42 +350,42 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
             ],
             "typeValues":[
                 {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId"}, count:{$sum:1}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:{$arrayToObject:"$result"}}}}},
                 {$project:{campaignId:"$_id", report:"$report", _id:0}}
             ],"typebyRegion":[
                 {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",region:"$region"}, count:{$sum:1}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",region:"$_id.region"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",region:"$_id.region"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
                 {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{region:"$_id.region",result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByLan":[
                 {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",language:"$language"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",language:"$_id.language"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",language:"$_id.language"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
                 {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{language:"$_id.language",result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByOSV":[
                 {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",osVersion:"$osVersion"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",osVersion:"$_id.osVersion"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",osVersion:"$_id.osVersion"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
                 {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{osVersion:"$_id.osVersion",result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByPhModel":[
                 {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",phoneModel:"$phoneModel"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",phoneModel:"$_id.phoneModel"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",phoneModel:"$_id.phoneModel"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
                 {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{phoneModel:"$_id.phoneModel",result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByPT":[
                 {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",platformType:"$platformType"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",platformType:"$_id.platformType"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",platformType:"$_id.platformType"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
                 {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{platformType:"$_id.platformType",result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByPin":[
                 {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",zip:"$zip"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",zip:"$_id.zip"}, result:{$push:{type:"$_id.type",count:"$count"}}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",zip:"$_id.zip"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
                 {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{zip:"$_id.zip",result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
