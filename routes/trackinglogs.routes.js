@@ -436,7 +436,7 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
             campaignId:"$_id.campaignId",date:"$_id.date",reports:"$reports",_id:0
         }}
     ],{ allowDiskUse: true })
-    .exec(function(result,Callback){
+    .exec(function(Callback,result){
         if(Callback){
             Callback();
         }
