@@ -409,7 +409,7 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
         {$group:{
             _id:{campaignId:"$campaignId",appId:"$appId",date:"$date",type:"$type"},
             region:{$push:"$region"},
-            language:{$push:"$language"},
+            language:{$group:{_id:"$language",count:{$sum:1}}},
             count:{$sum:1}
         }},
         {$group:{
