@@ -433,8 +433,7 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
         }},{$project:{
             campaignId:"$_id.campaignId",date:"$_id.date",reports:"$reports",_id:0
         }}
-    ],{ allowDiskUse: true })
-    .exec(function(err,result){
+    ],{ allowDiskUse: true },function(err,result){
         console.log(err,result)
         if(err){
             console.log(err)
