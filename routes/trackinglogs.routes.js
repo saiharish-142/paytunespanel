@@ -401,6 +401,7 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
 
 router.post('/testcom2',adminauth,async (req,res)  =>{
     const { campaignId, date } = req.body
+    var resu = [];
     trackinglogs.aggregate([
         { $match: {
             "date":date
@@ -408,13 +409,7 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
         {$group:{
             _id:{campaignId:"$campaignId",appId:"$appId",date:"$date",type:"$type"},
             region:{$push:"$region"},
-            language:{$group:{
-                _id:"$region",count:{$sum:1}
-            }},
-            // osVersion:{$push:"$osVersion"},
-            // phoneModel:{$push:"$phoneModel"},
-            // platformType:{$push:"$platformType"},
-            // zip:{$push:"$zip"},
+            language:{$push:"$language"},
             count:{$sum:1}
         }},
         {$group:{
@@ -423,11 +418,6 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
                 type:"$_id.type",
                 count:"$count",
                 region:"$region"
-                // language:"$language",
-                // osVersion:"$osVersion",
-                // phoneModel:"$phoneModel",
-                // platformType:"$platformType",
-                // zip:"$zip"
             }}
         }},{$group:{
             _id:{campaignId:"$_id.campaignId",date:"$_id.date"},
@@ -435,13 +425,12 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
         }},{$project:{
             campaignId:"$_id.campaignId",date:"$_id.date",reports:"$reports",_id:0
         }}
-    ],{ allowDiskUse: true })
-    .exec(function(Callback,result){
-        if(Callback){
-            Callback();
-        }
-        return res.json(result)
+    ])
+    .then(result=>{
+        resu = result;
+        res.json(resu)
     })
+    .catch(err => console.log(err))
 })
 
 router.post('/repotcrecamp',adminauth,async (req,res)  =>{
