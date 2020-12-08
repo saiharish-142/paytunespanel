@@ -433,7 +433,7 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
         }},{$project:{
             campaignId:"$_id.campaignId",date:"$_id.date",reports:"$reports",_id:0
         }}
-    ])
+    ],{ allowDiskUse: true })
     .then(result=>{
         var resu = [];
         resu = result;
