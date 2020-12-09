@@ -162,15 +162,18 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
             resu = populatedreports;
             // console.log(populatedreports)
             resu.map((det)=>{
-                function groupByKey(array, key) {
-                    return array
-                      .reduce((hash, obj) => {
-                        if(obj[key] === undefined) return hash; 
-                        return Object.assign(hash, { [obj[key]]:( hash[obj[key]] || [] ).concat(obj)})
-                      }, {})
-                }
-                var regionde = groupByKey(det.region,'region')
+                var regionde = datamaker(det.region,'region')
                 det.region = regionde
+                var platformtypede = datamaker(det.platformtype,'platformtype')
+                det.platformtype = platformtypede
+                var pincodede = datamaker(det.pincode,'zip')
+                det.pincode = pincodede
+                var osVersionde = datamaker(det.osVersion,'osVersion')
+                det.osVersion = osVersionde
+                var languagede = datamaker(det.language,'language')
+                det.language = languagede
+                var phoneModelde = datamaker(det.phoneModel,'phoneModel')
+                det.phoneModel = phoneModelde
                 var rescampaignId = [].concat.apply([], det.campaignId);
                 rescampaignId = [...new Set(rescampaignId)];
                 det.campaignId = rescampaignId[0]
@@ -190,6 +193,39 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
     })
     .catch(err=>console.log(err))
 })
+function datamaker(aaa,idrequ){
+    var super11 = [];
+    aaa.map(dataa=> {
+        super11 = super11.concat(dataa)
+    })
+    var groups = {};
+    var id = idrequ;
+    for (var i = 0; i < super11.length; i++) {
+    var groupName = super11[i][id];
+    if (!groups[groupName]) {
+        groups[groupName] = [];
+    }
+    groups[groupName].push(super11[i].result[0]);
+    }
+    myArray = [];
+    for (var groupName in groups) {
+    myArray.push({[id]: groupName, result: groups[groupName]});
+    }
+    myArray.map(esc=>{
+        var result = [];
+        const sumArray = arr => {
+            const res = {};
+            for(let i = 0; i < arr.length; i++){
+                Object.keys(arr[i]).forEach(key => {
+                    res[key] = (res[key] || 0) + arr[i][key];
+                });
+            };
+            return res;
+        };
+        esc.result = sumArray(esc.result)
+    })
+    return myArray;
+}
 
 router.put('/detreportcambydat',adminauth,(req,res)=>{
     const { campaignId } = req.body
