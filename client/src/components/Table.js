@@ -23,6 +23,12 @@ export default function BasicTable({singlead}) {
     const {state1} = useContext(IdContext)
     const [logs, setlogs] = useState([])
     const [ids, setids] = useState({})
+    const [regilogcount, setregilogcount] = useState(0)
+    const [osvelogcount, setosvelogcount] = useState(0)
+    const [phonemodlogcount, setphonemodlogcount] = useState(0)
+    const [phonMankelogcount, setphonMankelogcount] = useState(0)
+    const [lanlogcount, setlanlogcount] = useState(0)
+    const [pinlogcount, setpinlogcount] = useState(0)
     const [impre, setimpre] = useState(0)
     const [click, setclick] = useState(0)
     const [logsd, setlogsd] = useState([])
@@ -296,6 +302,8 @@ export default function BasicTable({singlead}) {
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
             </TableBody>
         </Table>
+        </TableContainer>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
         <div style={{margin:'5px',fontWeight:'bolder'}}>Display Type</div>
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
@@ -396,6 +404,8 @@ export default function BasicTable({singlead}) {
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
             </TableBody>
         </Table>
+        </TableContainer>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
             <div style={{margin:'5px',fontWeight:'bolder'}}>Display Type</div>
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
@@ -444,6 +454,425 @@ export default function BasicTable({singlead}) {
                     </TableRow>
                 })
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
+            </TableBody>
+        </Table>
+        </TableContainer>
+         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Region Wise Summary Report</div>
+        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
+        <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+            <TableRow>
+                <TableCell>Region</TableCell>
+                <TableCell>Campaign Start Date</TableCell>
+                <TableCell>Campaign End Date</TableCell>
+                <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
+                <TableCell>Balance Days</TableCell>
+                <TableCell></TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {singlead._id ? logs.length && 
+                logs.map((log,i) => 
+                    !log.nameads && log.region.map((regionlog,i)=>{
+                        return <TableRow key={i}>
+                        <TableCell>{regionlog.region}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
+                        <TableCell>{regionlog.result.impression}</TableCell>
+                        <TableCell>{
+                            regionlog.result.companionclicktracking ? regionlog.result.companionclicktracking :0 +
+                            regionlog.result.clicktracking ?regionlog.result.clicktracking : 0 +
+                            regionlog.result.click ?regionlog.result.click : 0 
+                        }</TableCell>
+                        <TableCell>{Math.round(regionlog.clicks*100/regionlog.impressions *100)/100}%</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                            </TableRow>
+                        })
+                    ): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
+            </TableBody>
+        </Table>
+        </TableContainer>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Display Type</div>
+        <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+            <TableRow>
+                <TableCell>Region</TableCell>
+                <TableCell>Campaign Start Date</TableCell>
+                <TableCell>Campaign End Date</TableCell>
+                <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
+                <TableCell>Balance Days</TableCell>
+                <TableCell></TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {singlead._id ? logsd.length && 
+                logsd.map((log,i) => 
+                    !log.nameads && log.region.map((regionlog,i)=>{
+                        return <TableRow key={i}>
+                        <TableCell>{regionlog.region}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
+                        <TableCell>{regionlog.result.impression}</TableCell>
+                        <TableCell>{
+                            regionlog.result.companionclicktracking ? regionlog.result.companionclicktracking :0 +
+                            regionlog.result.clicktracking ?regionlog.result.clicktracking : 0 +
+                            regionlog.result.click ?regionlog.result.click : 0 
+                        }</TableCell>
+                        <TableCell>{Math.round(regionlog.clicks*100/regionlog.impressions *100)/100}%</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                            </TableRow>
+                        })
+                    ): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
+            </TableBody>
+        </Table>
+        </TableContainer>
+         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Language Wise Summary Report</div>
+        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
+        <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+            <TableRow>
+                <TableCell>Language</TableCell>
+                <TableCell>Campaign Start Date</TableCell>
+                <TableCell>Campaign End Date</TableCell>
+                <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
+                <TableCell>Balance Days</TableCell>
+                <TableCell></TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {singlead._id ? logs.length && 
+                logs.map((log,i) => 
+                    !log.nameads && log.language.map((lanlog,i)=>{
+                        return <TableRow key={i}>
+                        <TableCell>{lanlog.language}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
+                        <TableCell>{lanlog.result.impression}</TableCell>
+                        <TableCell>{
+                            lanlog.result.companionclicktracking ? lanlog.result.companionclicktracking :0 +
+                            lanlog.result.clicktracking ?lanlog.result.clicktracking : 0 +
+                            lanlog.result.click ?lanlog.result.click : 0 
+                        }</TableCell>
+                        <TableCell>{Math.round(lanlog.clicks*100/lanlog.impressions *100)/100}%</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                            </TableRow>
+                        })
+                    ): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
+            </TableBody>
+        </Table>
+        </TableContainer>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Display Type</div>
+        <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+            <TableRow>
+                <TableCell>Language</TableCell>
+                <TableCell>Campaign Start Date</TableCell>
+                <TableCell>Campaign End Date</TableCell>
+                <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
+                <TableCell>Balance Days</TableCell>
+                <TableCell></TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {singlead._id ? logsd.length && 
+                logsd.map((log,i) => 
+                    !log.nameads && log.language.map((lanlog,i)=>{
+                        return <TableRow key={i}>
+                        <TableCell>{lanlog.language}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
+                        <TableCell>{lanlog.result.impression}</TableCell>
+                        <TableCell>{
+                            lanlog.result.companionclicktracking ? lanlog.result.companionclicktracking :0 +
+                            lanlog.result.clicktracking ?lanlog.result.clicktracking : 0 +
+                            lanlog.result.click ?lanlog.result.click : 0 
+                        }</TableCell>
+                        <TableCell>{Math.round(lanlog.clicks*100/lanlog.impressions *100)/100}%</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                            </TableRow>
+                        })
+                    ): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
+            </TableBody>
+        </Table>
+        </TableContainer>
+         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>OS Version Wise Summary Report</div>
+        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
+        <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+            <TableRow>
+                <TableCell>OS Version</TableCell>
+                <TableCell>Campaign Start Date</TableCell>
+                <TableCell>Campaign End Date</TableCell>
+                <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
+                <TableCell>Balance Days</TableCell>
+                <TableCell></TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {singlead._id ? logs.length && 
+                logs.map((log,i) => 
+                    !log.nameads && log.osVersion.map((osvlog,i)=>{
+                        return <TableRow key={i}>
+                        <TableCell>{osvlog.osVersion}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
+                        <TableCell>{osvlog.result.impression}</TableCell>
+                        <TableCell>{
+                            osvlog.result.companionclicktracking ? osvlog.result.companionclicktracking :0 +
+                            osvlog.result.clicktracking ?osvlog.result.clicktracking : 0 +
+                            osvlog.result.click ?osvlog.result.click : 0 
+                        }</TableCell>
+                        <TableCell>{Math.round(osvlog.clicks*100/osvlog.impressions *100)/100}%</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                            </TableRow>
+                        })
+                    ): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
+            </TableBody>
+        </Table>
+        </TableContainer>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Display Type</div>
+        <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+            <TableRow>
+                <TableCell>OS Version</TableCell>
+                <TableCell>Campaign Start Date</TableCell>
+                <TableCell>Campaign End Date</TableCell>
+                <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
+                <TableCell>Balance Days</TableCell>
+                <TableCell></TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {singlead._id ? logsd.length && 
+                logsd.map((log,i) => 
+                    !log.nameads && log.osVersion.map((osvlog,i)=>{
+                        return <TableRow key={i}>
+                        <TableCell>{osvlog.osVersion}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
+                        <TableCell>{osvlog.result.impression}</TableCell>
+                        <TableCell>{
+                            osvlog.result.companionclicktracking ? osvlog.result.companionclicktracking :0 +
+                            osvlog.result.clicktracking ?osvlog.result.clicktracking : 0 +
+                            osvlog.result.click ?osvlog.result.click : 0 
+                        }</TableCell>
+                        <TableCell>{Math.round(osvlog.clicks*100/osvlog.impressions *100)/100}%</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                            </TableRow>
+                        })
+                    ): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
+            </TableBody>
+        </Table>
+        </TableContainer>
+         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Model Wise Summary Report</div>
+        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
+        <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+            <TableRow>
+                <TableCell>Phone Model</TableCell>
+                <TableCell>Campaign Start Date</TableCell>
+                <TableCell>Campaign End Date</TableCell>
+                <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
+                <TableCell>Balance Days</TableCell>
+                <TableCell></TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {singlead._id ? logs.length && 
+                logs.map((log,i) => 
+                    !log.nameads && log.phoneModel.map((phmlog,i)=>{
+                        return <TableRow key={i}>
+                        <TableCell>{phmlog.phoneModel}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
+                        <TableCell>{phmlog.result.impression}</TableCell>
+                        <TableCell>{
+                            phmlog.result.companionclicktracking ? phmlog.result.companionclicktracking :0 +
+                            phmlog.result.clicktracking ?phmlog.result.clicktracking : 0 +
+                            phmlog.result.click ?phmlog.result.click : 0 
+                        }</TableCell>
+                        <TableCell>{Math.round(phmlog.clicks*100/phmlog.impressions *100)/100}%</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                            </TableRow>
+                        })
+                    ): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
+            </TableBody>
+        </Table>
+        </TableContainer>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Display Type</div>
+        <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+            <TableRow>
+                <TableCell>Phone Model</TableCell>
+                <TableCell>Campaign Start Date</TableCell>
+                <TableCell>Campaign End Date</TableCell>
+                <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
+                <TableCell>Balance Days</TableCell>
+                <TableCell></TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {singlead._id ? logsd.length && 
+                logsd.map((log,i) => 
+                    !log.nameads && log.phoneModel.map((phmlog,i)=>{
+                        return <TableRow key={i}>
+                        <TableCell>{phmlog.phoneModel}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
+                        <TableCell>{phmlog.result.impression}</TableCell>
+                        <TableCell>{
+                            phmlog.result.companionclicktracking ? phmlog.result.companionclicktracking :0 +
+                            phmlog.result.clicktracking ?phmlog.result.clicktracking : 0 +
+                            phmlog.result.click ?phmlog.result.click : 0 
+                        }</TableCell>
+                        <TableCell>{Math.round(phmlog.clicks*100/phmlog.impressions *100)/100}%</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                            </TableRow>
+                        })
+                    ): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
+            </TableBody>
+        </Table>
+        </TableContainer>
+         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
+        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
+        <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+            <TableRow>
+                <TableCell>Pincode</TableCell>
+                <TableCell>Campaign Start Date</TableCell>
+                <TableCell>Campaign End Date</TableCell>
+                <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
+                <TableCell>Balance Days</TableCell>
+                <TableCell></TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {singlead._id ? logs.length && 
+                logs.map((log,i) => 
+                    !log.nameads && log.pincode.map((pinlog,i)=>{
+                        return <TableRow key={i}>
+                        <TableCell>{pinlog.zip}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
+                        <TableCell>{pinlog.result.impression}</TableCell>
+                        <TableCell>{
+                            pinlog.result.companionclicktracking ? pinlog.result.companionclicktracking :0 +
+                            pinlog.result.clicktracking ?pinlog.result.clicktracking : 0 +
+                            pinlog.result.click ?pinlog.result.click : 0 
+                        }</TableCell>
+                        <TableCell>{Math.round(pinlog.clicks*100/pinlog.impressions *100)/100}%</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                            </TableRow>
+                        })
+                    ): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
+            </TableBody>
+        </Table>
+        </TableContainer>
+        {/* <TablePagination
+            rowsPerPageOptions={[5, 10, 25, 100]}
+            component="div"
+            count={logs.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+        /> */}
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Display Type</div>
+        <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+            <TableRow>
+                <TableCell>Pincode</TableCell>
+                <TableCell>Campaign Start Date</TableCell>
+                <TableCell>Campaign End Date</TableCell>
+                <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
+                <TableCell>Balance Days</TableCell>
+                <TableCell></TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {singlead._id ? logsd.length && 
+                logsd.map((log,i) => 
+                    !log.nameads && log.pincode.map((pinlog,i)=>{
+                        return <TableRow key={i}>
+                        <TableCell>{pinlog.zip}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
+                        <TableCell>{pinlog.result.impression}</TableCell>
+                        <TableCell>{
+                            pinlog.result.companionclicktracking ? pinlog.result.companionclicktracking :0 +
+                            pinlog.result.clicktracking ?pinlog.result.clicktracking : 0 +
+                            pinlog.result.click ?pinlog.result.click : 0 
+                        }</TableCell>
+                        <TableCell>{Math.round(pinlog.clicks*100/pinlog.impressions *100)/100}%</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                            </TableRow>
+                        })
+                    ): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
             </TableBody>
         </Table>
         </TableContainer>
