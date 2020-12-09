@@ -162,8 +162,11 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
             resu = populatedreports;
             // console.log(populatedreports)
             resu.map((det)=>{
-                var resregion = [].concat.apply([], det.region);
-                resregion = [...new Set(resregion)];
+                var resregion = det.region.reduce(function (r, a) {
+                    r[a.region] = r[a.region] || [];
+                    r[a.region].push(a);
+                    return r;
+                });
                 det.region = resregion
                 var rescampaignId = [].concat.apply([], det.campaignId);
                 rescampaignId = [...new Set(rescampaignId)];
