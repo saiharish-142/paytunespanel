@@ -168,8 +168,9 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
                         if(obj[key] === undefined) return hash; 
                         return Object.assign(hash, { [obj[key]]:( hash[obj[key]] || [] ).concat(obj)})
                       }, {})
-                 }
-                det.region = groupByKey(det.region,'region')
+                }
+                var regionde = groupByKey(det.region,'region')
+                det.region = regionde
                 var rescampaignId = [].concat.apply([], det.campaignId);
                 rescampaignId = [...new Set(rescampaignId)];
                 det.campaignId = rescampaignId[0]
