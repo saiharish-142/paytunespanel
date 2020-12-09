@@ -126,9 +126,32 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
         {$match:{
             "campaignId":{$in:campaignId}
         }},{$group:{
-            _id:"$Publisher", updatedAt:{$push:"$updatedAt"}, camp:{$push:"$campaignId"} , impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
+            _id:"$Publisher", 
+            updatedAt:{$push:"$updatedAt"}, 
+            camp:{$push:"$campaignId"} , 
+            impressions:{$sum:"$impressions"}, 
+            complete:{$sum:"$complete"}, 
+            clicks:{$sum:"$clicks"}, 
+            region:{$push:"$region"},
+            platformtype:{$push:"$platformtype"},
+            pincode:{$push:"$pincode"},
+            osVersion:{$push:"$osVersion"},
+            language:{$push:"$language"},
+            phoneModel:{$push:"$phoneModel"}
         }},{$project:{
-            Publisher:"$_id", updatedAt:"$updatedAt", campaignId:"$camp", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
+            Publisher:"$_id", 
+            updatedAt:"$updatedAt", 
+            campaignId:"$camp", 
+            impressions:"$impressions", 
+            complete:"$complete", 
+            clicks:"$clicks", 
+            region:"$region", 
+            platformtype:"$platformtype", 
+            pincode:"$pincode", 
+            osVersion:"$osVersion", 
+            language:"$language", 
+            phoneModel:"$phoneModel", 
+            _id:0
         }}
     ])
     .then(reports=>{
