@@ -362,7 +362,7 @@ function datamaker(aaa,idrequ){
     for (var groupName in groups) {
     myArray.push({[id]: groupName, result: groups[groupName]});
     }
-    console.log(myArray)
+    // console.log(myArray)
     myArray.map(esc=>{
         // var result = [];
         const sumArray = arr => {
