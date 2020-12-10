@@ -267,6 +267,7 @@ function datamaker(aaa,idrequ){
             };
             return res;
         };
+        console.log(esc)
         esc.result = sumArray(esc.result)
     })
     return myArray;
