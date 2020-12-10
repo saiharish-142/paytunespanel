@@ -131,26 +131,14 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
             camp:{$push:"$campaignId"} , 
             impressions:{$sum:"$impressions"}, 
             complete:{$sum:"$complete"}, 
-            clicks:{$sum:"$clicks"}, 
-            region:{$push:"$region"},
-            platformtype:{$push:"$platformtype"},
-            pincode:{$push:"$pincode"},
-            osVersion:{$push:"$osVersion"},
-            language:{$push:"$language"},
-            phoneModel:{$push:"$phoneModel"}
+            clicks:{$sum:"$clicks"}
         }},{$project:{
             Publisher:"$_id", 
             updatedAt:"$updatedAt", 
             campaignId:"$camp", 
             impressions:"$impressions", 
             complete:"$complete", 
-            clicks:"$clicks", 
-            region:"$region", 
-            platformtype:"$platformtype", 
-            pincode:"$pincode", 
-            osVersion:"$osVersion", 
-            language:"$language", 
-            phoneModel:"$phoneModel", 
+            clicks:"$clicks",
             _id:0
         }}
     ])
@@ -162,18 +150,6 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
             resu = populatedreports;
             // console.log(populatedreports)
             resu.map((det)=>{
-                var regionde = datamaker(det.region,'region')
-                det.region = regionde
-                var platformtypede = datamaker(det.platformtype,'platformType')
-                det.platformtype = platformtypede
-                var pincodede = datamaker(det.pincode,'zip')
-                det.pincode = pincodede
-                var osVersionde = datamaker(det.osVersion,'osVersion')
-                det.osVersion = osVersionde
-                var languagede = datamaker(det.language,'language')
-                det.language = languagede
-                var phoneModelde = datamaker(det.phoneModel,'phoneModel')
-                det.phoneModel = phoneModelde
                 var rescampaignId = [].concat.apply([], det.campaignId);
                 rescampaignId = [...new Set(rescampaignId)];
                 det.campaignId = rescampaignId[0]
@@ -193,6 +169,50 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
     })
     .catch(err=>console.log(err))
 })
+
+router.put('/regionsum',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var resu = [];
+    Report.aggregate([
+        {$match:{
+            "campaignId":{$in:campaignId}
+        }},{$group:{
+            _id:null, 
+            region:{$push:"$region"}
+        }},{$project:{
+            region:"$region",
+            _id:0
+        }}
+    ])
+    .then(reports=>{
+        resu = reports;
+        resu.map((det)=>{
+            var regionde = datamaker(det.region,'region')
+            det.region = regionde
+        })
+        res.json({resu,reports})
+    })
+    .catch(err=>console.log(err))
+})
+// , 
+//             region:{$push:"$region"},
+//             platformtype:{$push:"$platformtype"},
+//             pincode:{$push:"$pincode"},
+//             osVersion:{$push:"$osVersion"},
+//             language:{$push:"$language"},
+//             phoneModel:{$push:"$phoneModel"}
+// var regionde = datamaker(det.region,'region')
+//                 det.region = regionde
+//                 var platformtypede = datamaker(det.platformtype,'platformType')
+//                 det.platformtype = platformtypede
+//                 var pincodede = datamaker(det.pincode,'zip')
+//                 det.pincode = pincodede
+//                 var osVersionde = datamaker(det.osVersion,'osVersion')
+//                 det.osVersion = osVersionde
+//                 var languagede = datamaker(det.language,'language')
+//                 det.language = languagede
+//                 var phoneModelde = datamaker(det.phoneModel,'phoneModel')
+//                 det.phoneModel = phoneModelde
 function datamaker(aaa,idrequ){
     var super11 = [];
     aaa.map(dataa=> {
