@@ -1,10 +1,32 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
-import React from 'react'
+import React, {useEffect} from 'react'
+import TablePagination from "@material-ui/core/TablePagination";
+import { useHistory } from 'react-router-dom';
 
-function Auditable({streamingads,title,jsotitle,ids,url,adtype}) {
+function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1}) {
+    // console.log(streamingads)
+    const history = useHistory();
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [page, setPage] = React.useState(0);
-    const [adss, setadss] = React.useState(streamingads)
+    const [adss, setadss] = React.useState([])
+    useEffect(()=>{
+        if(ids){
+            fetch(`/report/${url}`,{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:ids
+                })
+            }).then(res=>res.json())
+            .then(result => {
+                console.log(result[0][regtitle])
+                setadss(result[0][regtitle])
+            })
+            .catch(err => console.log(err))
+        }
+    },[ids])
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -30,7 +52,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,adtype}) {
     return (
         <Paper>
             <div style={{margin:'5px',fontWeight:'bolder'}}>{adtype} Type</div>
-            <TableContainer className={classes.container}>
+            <TableContainer>
                 <Table stickyHeader aria-label="sticky table">
                 <TableHead>
                     <TableRow>
@@ -46,20 +68,26 @@ function Auditable({streamingads,title,jsotitle,ids,url,adtype}) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {adss.length >= 1 ? adss
+                    {adss && adss.length >= 1 ? adss
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) =>{ 
                         if(typeof row !== 'undefined'){
                         return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
-                            <TableCell>{log[jsotitle]}</TableCell>
-                            <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
-                            <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
-                            <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
-                            <TableCell>{log.impressions}</TableCell>
-                            <TableCell>{log.clicks}</TableCell>
-                            <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
-                            <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
+                            <TableCell>{row[jsotitle]}</TableCell>
+                            <TableCell>{dateformatchanger(streamingads.startDate[0].slice(0,10))}</TableCell>
+                            <TableCell>{dateformatchanger(streamingads.endDate[0].slice(0,10))}</TableCell>
+                            <TableCell>{timefinder(streamingads.endDate[0],streamingads.startDate[0])} days</TableCell>
+                            <TableCell>{row.result.impression}</TableCell>
+                            <TableCell>{
+                                row.result.click ? row.result.click :0 + 
+                                row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
+                                row.result.clicktracking ? row.result.clicktracking :0
+                            }</TableCell>
+                            <TableCell>{Math.round((row.result.click ? row.result.click :0 + 
+                                row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
+                                row.result.clicktracking ? row.result.clicktracking :0)*100/row.result.impression *100)/100}%</TableCell>
+                            <TableCell>{timefinder(streamingads.endDate[0],Date.now())} days</TableCell>
                             <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                         </TableRow>
                         );}else{
@@ -70,9 +98,9 @@ function Auditable({streamingads,title,jsotitle,ids,url,adtype}) {
                 </Table>
             </TableContainer>
             <TablePagination
-                rowsPerPageOptions={[5, 10, 25, 100]}
+                rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={adss.length}
+                count={adss ? adss.length : 0}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}
