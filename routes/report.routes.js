@@ -187,11 +187,11 @@ router.put('/regionsum',adminauth,(req,res)=>{
     .then(reports=>{
         // resu = reports;
         resu = reports.map((det)=>{
-            // var regionde = datamaker(det.region,'region')
-            // det.region = regionde;
+            var regionde = datamaker(det.region,'region')
+            det.region = regionde;
             return det;
         })
-        res.json(reports)
+        res.json(resu)
     })
     .catch(err=>console.log(err))
 })
@@ -241,7 +241,10 @@ router.put('/regionsum',adminauth,(req,res)=>{
 //                 var phoneModelde = datamaker(det.phoneModel,'phoneModel')
 //                 det.phoneModel = phoneModelde
 function datamaker(aaa,idrequ){
-    var super11 = aaa;
+    var super11 = [];
+    aaa.map(part => {
+        super11 = super11.concat(part)
+    })
     var groups = {};
     var id = idrequ;
     for (var i = 0; i < super11.length; i++) {
