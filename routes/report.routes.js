@@ -186,7 +186,7 @@ router.put('/regionsum',adminauth,(req,res)=>{
     ])
     .then(reports=>{
         resu = reports;
-        resu.map((det)=>{
+        resu = resu.map((det)=>{
             var regionde = datamaker(det.region,'region')
             det.region = regionde
         })
