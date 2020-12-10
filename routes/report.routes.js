@@ -214,10 +214,7 @@ router.put('/regionsum',adminauth,(req,res)=>{
 //                 var phoneModelde = datamaker(det.phoneModel,'phoneModel')
 //                 det.phoneModel = phoneModelde
 function datamaker(aaa,idrequ){
-    var super11 = [];
-    aaa.map(dataa=> {
-        super11 = super11.concat(dataa)
-    })
+    var super11 = aaa;
     var groups = {};
     var id = idrequ;
     for (var i = 0; i < super11.length; i++) {
@@ -225,14 +222,14 @@ function datamaker(aaa,idrequ){
     if (!groups[groupName]) {
         groups[groupName] = [];
     }
-    groups[groupName].push(super11[i].result[0]);
+    groups[groupName].push(super11[i].result);
     }
     myArray = [];
     for (var groupName in groups) {
     myArray.push({[id]: groupName, result: groups[groupName]});
     }
     myArray.map(esc=>{
-        var result = [];
+        // var result = [];
         const sumArray = arr => {
             const res = {};
             for(let i = 0; i < arr.length; i++){
