@@ -196,7 +196,7 @@ router.put('/regionsum',adminauth,(req,res)=>{
     .catch(err=>console.log(err))
 })
 
-router.put('/regionsum',adminauth,(req,res)=>{
+router.put('/platformsum',adminauth,(req,res)=>{
     const { campaignId } = req.body
     var resu = [];
     Report.aggregate([
@@ -215,6 +215,110 @@ router.put('/regionsum',adminauth,(req,res)=>{
         resu = resu.map((det)=>{
             var platformtypede = datamaker(det.platformtype,'platformType')
             det.platformtype = platformtypede;
+            return det;
+        })
+        res.json(resu)
+    })
+    .catch(err=>console.log(err))
+})
+
+router.put('/pincodesum',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var resu = [];
+    Report.aggregate([
+        {$match:{
+            "campaignId":{$in:campaignId}
+        }},{$group:{
+            _id:null, 
+            pincode:{$push:"$pincode"}
+        }},{$project:{
+            pincode:"$pincode",
+            _id:0
+        }}
+    ])
+    .then(reports=>{
+        // resu = reports;
+        resu = reports.map((det)=>{
+            var pincodede = datamaker(det.pincode,'zip')
+            det.pincode = pincodede;
+            return det;
+        })
+        res.json(resu)
+    })
+    .catch(err=>console.log(err))
+})
+
+router.put('/osVersionsum',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var resu = [];
+    Report.aggregate([
+        {$match:{
+            "campaignId":{$in:campaignId}
+        }},{$group:{
+            _id:null, 
+            osVersion:{$push:"$osVersion"}
+        }},{$project:{
+            osVersion:"$osVersion",
+            _id:0
+        }}
+    ])
+    .then(reports=>{
+        resu = reports;
+        resu = resu.map((det)=>{
+            var osVersionde = datamaker(det.osVersion,'osVersion')
+            det.osVersion = osVersionde;
+            return det;
+        })
+        res.json(resu)
+    })
+    .catch(err=>console.log(err))
+})
+
+router.put('/languagesum',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var resu = [];
+    Report.aggregate([
+        {$match:{
+            "campaignId":{$in:campaignId}
+        }},{$group:{
+            _id:null, 
+            language:{$push:"$language"}
+        }},{$project:{
+            language:"$language",
+            _id:0
+        }}
+    ])
+    .then(reports=>{
+        // resu = reports;
+        resu = reports.map((det)=>{
+            var languagede = datamaker(det.language,'language')
+            det.language = languagede;
+            return det;
+        })
+        res.json(resu)
+    })
+    .catch(err=>console.log(err))
+})
+
+router.put('/phoneModelsum',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var resu = [];
+    Report.aggregate([
+        {$match:{
+            "campaignId":{$in:campaignId}
+        }},{$group:{
+            _id:null, 
+            phoneModel:{$push:"$phoneModel"}
+        }},{$project:{
+            phoneModel:"$phoneModel",
+            _id:0
+        }}
+    ])
+    .then(reports=>{
+        resu = reports;
+        resu = resu.map((det)=>{
+            var phoneModelde = datamaker(det.phoneModel,'phoneModel')
+            det.phoneModel = phoneModelde;
             return det;
         })
         res.json(resu)
