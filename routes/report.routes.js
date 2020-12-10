@@ -188,9 +188,36 @@ router.put('/regionsum',adminauth,(req,res)=>{
         resu = reports;
         resu = resu.map((det)=>{
             var regionde = datamaker(det.region,'region')
-            det.region = regionde
+            det.region = regionde;
+            return det;
         })
-        res.json({resu,reports})
+        res.json(resu)
+    })
+    .catch(err=>console.log(err))
+})
+
+router.put('/regionsum',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var resu = [];
+    Report.aggregate([
+        {$match:{
+            "campaignId":{$in:campaignId}
+        }},{$group:{
+            _id:null, 
+            platformtype:{$push:"$platformtype"}
+        }},{$project:{
+            platformtype:"$platformtype",
+            _id:0
+        }}
+    ])
+    .then(reports=>{
+        resu = reports;
+        resu = resu.map((det)=>{
+            var platformtypede = datamaker(det.platformtype,'platformType')
+            det.platformtype = platformtypede;
+            return det;
+        })
+        res.json(resu)
     })
     .catch(err=>console.log(err))
 })
@@ -228,6 +255,7 @@ function datamaker(aaa,idrequ){
     for (var groupName in groups) {
     myArray.push({[id]: groupName, result: groups[groupName]});
     }
+    // console.log(myArray)
     myArray.map(esc=>{
         // var result = [];
         const sumArray = arr => {
