@@ -187,11 +187,11 @@ router.put('/regionsum',adminauth,(req,res)=>{
     .then(reports=>{
         // resu = reports;
         resu = reports.map((det)=>{
-            var regionde = datamaker(det.region,'region')
-            det.region = regionde;
+            // var regionde = datamaker(det.region,'region')
+            // det.region = regionde;
             return det;
         })
-        res.json({resu,reports})
+        res.json(reports)
     })
     .catch(err=>console.log(err))
 })
