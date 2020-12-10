@@ -270,8 +270,12 @@ function datamaker(aaa,idrequ){
             };
             return res;
         };
+        var resultDes = [];
+        esc.result.map(eac=>{
+            resultDes = resultDes.concat(eac)
+        })
+        esc.result = sumArray(resultDes)
         // console.log(esc)
-        esc.result = sumArray(esc.result)
     })
     return myArray;
 }
