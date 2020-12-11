@@ -365,22 +365,16 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
                 {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{language:"$_id.language",result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
-            ],"typeByOSV":[
-                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",osVersion:"$osVersion"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",osVersion:"$_id.osVersion"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{osVersion:"$_id.osVersion",result:{$arrayToObject:"$result"}}}}},
-                {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
-                {$project:{_id:0,campaignId:"$_id",report:"$report"}}
-            ],"typeByPhModel":[
-                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",phoneModel:"$phoneModel"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",phoneModel:"$_id.phoneModel"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{phoneModel:"$_id.phoneModel",result:{$arrayToObject:"$result"}}}}},
+            ],,"typeByPhModel":[
+                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",phoneMake:"$phoneMake",phoneModel:"$phoneModel"}, count:{$sum:1}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",phoneMake:"$_id.phoneMake",phoneModel:"$_id.phoneModel"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{phoneModel:{$concat: [ "$_id.phoneMake", " - ", "$_id.phoneModel" ]},result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByPT":[
-                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",platformType:"$platformType"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",platformType:"$_id.platformType"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{platformType:"$_id.platformType",result:{$arrayToObject:"$result"}}}}},
+                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",platformType:"$platformType",osVersion:"$osVersion"}, count:{$sum:1}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",platformType:"$_id.platformType",osVersion:"$_id.osVersion"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{platformType:{$concat: [ "$_id.platformType", " - ", "$_id.osVersion" ]},result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByPin":[
@@ -401,7 +395,6 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
             var reportsdata = resultdata[0].typeValues.filter(x => x.campaignId === camId)
             var reportsdataReg = resultdata[0].typebyRegion.filter(x => x.campaignId === camId)
             var reportsdataLan = resultdata[0].typeByLan.filter(x => x.campaignId === camId)
-            var reportsdataOSV = resultdata[0].typeByOSV.filter(x => x.campaignId === camId)
             var reportsdataPHM = resultdata[0].typeByPhModel.filter(x => x.campaignId === camId)
             var reportsdataPT = resultdata[0].typeByPT.filter(x => x.campaignId === camId)
             var reportsdataZip = resultdata[0].typeByPin.filter(x => x.campaignId === camId)
@@ -410,7 +403,6 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
                 var appReportsdata = reportsdata[0].report.filter(x => x.appId === id)
                 var appReportsdataReg = reportsdataReg[0].report.filter(x => x.appId === id)
                 var appReportsdataLan = reportsdataLan[0].report.filter(x => x.appId === id)
-                var appReportsdataOSV = reportsdataOSV[0].report.filter(x => x.appId === id)
                 var appReportsdataPHM = reportsdataPHM[0].report.filter(x => x.appId === id)
                 var appReportsdataPT = reportsdataPT[0].report.filter(x => x.appId === id)
                 var appReportsdataZip = reportsdataZip[0].report.filter(x => x.appId === id)
@@ -421,6 +413,8 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
                     Publisher:id,
                     date:datereq,
                     impressions:appReportsdata[0].result.impression ? appReportsdata[0].result.impression : 0,
+                    thirdQuartile:appReportsdata[0].result.thirdquartile ? appReportsdata[0].result.thirdquartile : 0,
+                    firstQuartile:appReportsdata[0].result.firstquartile ? appReportsdata[0].result.firstquartile : 0,
                     clicks:appReportsdata[0].result.clicktracking?appReportsdata[0].result.clicktracking:0
                     + appReportsdata[0].result.companionclicktracking?appReportsdata[0].result.companionclicktracking:0
                     + appReportsdata[0].result.click ? appReportsdata[0].result.click : 0,
@@ -429,7 +423,6 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
                     region:appReportsdataReg[0].result,
                     platformtype:appReportsdataPT[0].result,
                     pincode:appReportsdataZip[0].result,
-                    osVersion:appReportsdataOSV[0].result,
                     language:appReportsdataLan[0].result,
                     phoneModel:appReportsdataPHM[0].result,
                 })
@@ -475,22 +468,16 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
                 {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{language:"$_id.language",result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
-            ],"typeByOSV":[
-                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",osVersion:"$osVersion"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",osVersion:"$_id.osVersion"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{osVersion:"$_id.osVersion",result:{$arrayToObject:"$result"}}}}},
-                {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
-                {$project:{_id:0,campaignId:"$_id",report:"$report"}}
-            ],"typeByPhModel":[
-                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",phoneModel:"$phoneModel"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",phoneModel:"$_id.phoneModel"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{phoneModel:"$_id.phoneModel",result:{$arrayToObject:"$result"}}}}},
+            ],,"typeByPhModel":[
+                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",phoneMake:"$phoneMake",phoneModel:"$phoneModel"}, count:{$sum:1}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",phoneMake:"$_id.phoneMake",phoneModel:"$_id.phoneModel"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{phoneModel:{$concat: [ "$_id.phoneMake", " - ", "$_id.phoneModel" ]},result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByPT":[
-                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",platformType:"$platformType"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",platformType:"$_id.platformType"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{platformType:"$_id.platformType",result:{$arrayToObject:"$result"}}}}},
+                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",platformType:"$platformType",osVersion:"$osVersion"}, count:{$sum:1}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",platformType:"$_id.platformType",osVersion:"$_id.osVersion"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{platformType:{$concat: [ "$_id.platformType", " - ", "$_id.osVersion" ]},result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByPin":[

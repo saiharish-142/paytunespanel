@@ -13,10 +13,6 @@ const subSchemapincode = new mongoose.Schema({
     zip:{type:String},result:[]
 },{ _id : false })
 
-const subSchemaosVersion = new mongoose.Schema({
-    osVersion:{type:String},result:[]
-},{ _id : false })
-
 const subSchemalanguage = new mongoose.Schema({
     language:{type:String},result:[]
 },{ _id : false })
@@ -32,12 +28,13 @@ const reportSchema = new mongoose.Schema({
     mediatype:{type:String},
     dealID:{type:String},
     impressions:{type:Number},
+    thirdQuartile:{type:Number},
+    firstQuartile:{type:Number},
     spend:{type:String},
     avgSpend:{type:String},
     region:[subSchemaregion],
     platformtype:[subSchemaplatformtype],
     pincode:[subSchemapincode],
-    osVersion:[subSchemaosVersion],
     language:[subSchemalanguage],
     phoneModel:[subSchemaphoneModel],
     complete:{type:Number},
