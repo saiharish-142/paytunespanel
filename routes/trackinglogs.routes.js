@@ -338,7 +338,9 @@ router.post('/reportdate',adminauth,async (req,res)  =>{
 router.post('/procedtest1',adminauth,async (req,res)  =>{
     const { campaignId, date } = req.body
     var resu = [];
-    trackinglogs.aggregate([
+    trackinglogs.runCommand({
+        aggregate: "test",
+        pipeline:[
         { $match: {
             "date":date
         } },
@@ -406,7 +408,9 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ]
         }}
-    ])
+    ],
+    allowDiskUse: true
+    })
     .then(result=>{
         var resus = [];
         var resultdata = result;
@@ -465,7 +469,9 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
 router.post('/testcom1',adminauth,async (req,res)  =>{
     const { campaignId, date } = req.body
     var resu = [];
-    trackinglogs.aggregate([
+    trackinglogs.runCommand({
+        aggregate: "test",
+        pipeline:[
         { $match: {
             "date":date
         } },
@@ -533,7 +539,9 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ]
         }}
-    ])
+    ],
+    allowDiskUse: true
+    })
     .then(result=>{
         resu = result;
         res.json(resu)
