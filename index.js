@@ -372,39 +372,54 @@ function ReportsRefresher(date,credate){
                     {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:{$arrayToObject:"$result"}}}}},
                     {$project:{campaignId:"$_id", report:"$report", _id:0}}
                 ],"typebyRegion":[
-                    {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",region:"$region"}, count:{$sum:1}}},
-                    {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType",region:"$_id.region"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                    {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{region:"$_id.region",result:{$arrayToObject:"$result"}}}}},
+                    {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",region:"$region"}, ifa:{$push:"$ifa"}, count:{$sum:1}}},
+                    {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType",region:"$_id.region"},unique:{$addToSet:"$ifa"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                    {$addFields:{unique:{"$reduce": {
+                                "input": "$unique",
+                                "initialValue": [],
+                                "in": { "$concatArrays": [ "$$value", "$$this" ] }
+                    }}}},
+                    {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{region:"$_id.region",unique:{$size:"$unique"},result:{$arrayToObject:"$result"}}}}},
                     {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                     {$project:{_id:0,campaignId:"$_id",report:"$report"}}
                 ],"typeByLan":[
-                    {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",language:"$language"}, count:{$sum:1}}},
-                    {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",language:"$_id.language"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                    {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{language:"$_id.language",result:{$arrayToObject:"$result"}}}}},
-                    {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
-                    {$project:{_id:0,campaignId:"$_id",report:"$report"}}
-                ],"typeByOSV":[
-                    {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",osVersion:"$osVersion"}, count:{$sum:1}}},
-                    {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",osVersion:"$_id.osVersion"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                    {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{osVersion:"$_id.osVersion",result:{$arrayToObject:"$result"}}}}},
+                    {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",language:"$language"}, ifa:{$push:"$ifa"}, count:{$sum:1}}},
+                    {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",language:"$_id.language"},unique:{$addToSet:"$ifa"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                    {$addFields:{unique:{"$reduce": {
+                                "input": "$unique",
+                                "initialValue": [],
+                                "in": { "$concatArrays": [ "$$value", "$$this" ] }
+                    }}}},
+                    {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{language:"$_id.language",unique:{$size:"$unique"},result:{$arrayToObject:"$result"}}}}},
                     {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                     {$project:{_id:0,campaignId:"$_id",report:"$report"}}
                 ],"typeByPhModel":[
-                    {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",phoneModel:"$phoneModel"}, count:{$sum:1}}},
-                    {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",phoneModel:"$_id.phoneModel"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                    {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{phoneModel:"$_id.phoneModel",result:{$arrayToObject:"$result"}}}}},
+                    {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",phoneMake:"$phoneMake",phoneModel:"$phoneModel"}, count:{$sum:1}}},
+                    {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",phoneMake:"$_id.phoneMake",phoneModel:"$_id.phoneModel"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                    {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{phoneModel:{$concat: [ "$_id.phoneMake", " - ", "$_id.phoneModel" ]},result:{$arrayToObject:"$result"}}}}},
                     {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                     {$project:{_id:0,campaignId:"$_id",report:"$report"}}
                 ],"typeByPT":[
-                    {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",platformType:"$platformType"}, count:{$sum:1}}},
-                    {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",platformType:"$_id.platformType"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                    {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{platformType:"$_id.platformType",result:{$arrayToObject:"$result"}}}}},
+                    {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",platformType:"$platformType",osVersion:"$osVersion"}, count:{$sum:1}}},
+                    {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",platformType:"$_id.platformType",osVersion:"$_id.osVersion"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                    {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{platformType:{$concat: [ "$_id.platformType", " - ", "$_id.osVersion" ]},result:{$arrayToObject:"$result"}}}}},
                     {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                     {$project:{_id:0,campaignId:"$_id",report:"$report"}}
                 ],"typeByPin":[
-                    {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",zip:"$zip"}, count:{$sum:1}}},
-                    {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",zip:"$_id.zip"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                    {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{zip:"$_id.zip",result:{$arrayToObject:"$result"}}}}},
+                    {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",zip:"$zip"}, ifa:{$push:"$ifa"}, count:{$sum:1}}},
+                    {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",zip:"$_id.zip"},unique:{$addToSet:"$ifa"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                    {$addFields:{unique:{"$reduce": {
+                                "input": "$unique",
+                                "initialValue": [],
+                                "in": { "$concatArrays": [ "$$value", "$$this" ] }
+                    }}}},
+                    {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{zip:"$_id.zip",unique:{$size:"$unique"},result:{$arrayToObject:"$result"}}}}},
+                    {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
+                    {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                ],"typeByDev":[
+                    {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",pptype:"$pptype"}, count:{$sum:1}}},
+                    {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",pptype:"$_id.pptype"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                    {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{pptype:"$_id.pptype",result:{$arrayToObject:"$result"}}}}},
                     {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                     {$project:{_id:0,campaignId:"$_id",report:"$report"}}
                 ]
@@ -472,14 +487,14 @@ function ReportsRefresher(date,credate){
 // adddata[0].appIds.map(caim => {
 //     var camId = caim.campaignId
 //     var datereq = caim.date
-//     var reportsdata = resultdata[0].typeValues.filter(x => x.campaignId === camId)
-//     var reportsdataReg = resultdata[0].typebyRegion.filter(x => x.campaignId === camId)
-//     var reportsdataLan = resultdata[0].typeByLan.filter(x => x.campaignId === camId)
-//     var reportsdataPHM = resultdata[0].typeByPhModel.filter(x => x.campaignId === camId)
-//     var reportsdataPT = resultdata[0].typeByPT.filter(x => x.campaignId === camId)
-//     var reportsdataDT = resultdata[0].typeByDev.filter(x => x.campaignId === camId)
-//     var reportsdataZip = resultdata[0].typeByPin.filter(x => x.campaignId === camId)
-//     // console.log(reportsdata[0].report.length)
+//     var reportsdata = adddata[0].typeValues.filter(x => x.campaignId === camId)
+//     var reportsdataReg = adddata[0].typebyRegion.filter(x => x.campaignId === camId)
+//     var reportsdataLan = adddata[0].typeByLan.filter(x => x.campaignId === camId)
+//     var reportsdataPHM = adddata[0].typeByPhModel.filter(x => x.campaignId === camId)
+//     var reportsdataPT = adddata[0].typeByPT.filter(x => x.campaignId === camId)
+//     var reportsdataDT = adddata[0].typeByDev.filter(x => x.campaignId === camId)
+//     var reportsdataZip = adddata[0].typeByPin.filter(x => x.campaignId === camId)
+//     // console.log(reportsdata)
 //     caim.ids.map(id => {
 //         var appReportsdata = reportsdata[0].report.filter(x => x.appId === id)
 //         var appReportsdataReg = reportsdataReg[0].report.filter(x => x.appId === id)
@@ -511,7 +526,7 @@ function ReportsRefresher(date,credate){
 //             language:appReportsdataLan[0].result,
 //             phoneModel:appReportsdataPHM[0].result,
 //         })
-//         // console.log(report)
+//         console.log(report)
 //         // report.save()
 //         // .then(sdsa=>{console.log('completed')})
 //         // .catch(err=>{console.log(err)})
