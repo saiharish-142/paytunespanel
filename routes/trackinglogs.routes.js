@@ -540,13 +540,15 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
             ]
         }}
     ],
-    allowDiskUse: true
+    allowDiskUse: true,
+    cursor: { batchSize: 0 }
     })
-    .then(result=>{
-        resu = result;
-        res.json(resu)
+    .exec(function(error, cursor) {
+        if(error){
+            res.status(400).json(error)
+        }
+        res.json(cursor)
     })
-    .catch(err => console.log(err))
 })
 
 // router.post('/testcom2',adminauth,async (req,res)  =>{
