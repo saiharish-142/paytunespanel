@@ -325,6 +325,32 @@ router.put('/phoneModelsum',adminauth,(req,res)=>{
     })
     .catch(err=>console.log(err))
 })
+
+router.put('/deviceMakesum',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var resu = [];
+    Report.aggregate([
+        {$match:{
+            "campaignId":{$in:campaignId}
+        }},{$group:{
+            _id:null, 
+            deviceModel:{$push:"$deviceModel"}
+        }},{$project:{
+            deviceModel:"$deviceModel",
+            _id:0
+        }}
+    ])
+    .then(reports=>{
+        resu = reports;
+        resu = resu.map((det)=>{
+            var phoneModelde = datamaker(det.phoneModel,'pptype')
+            det.phoneModel = phoneModelde;
+            return det;
+        })
+        res.json(resu)
+    })
+    .catch(err=>console.log(err))
+})
 // , 
 //             region:{$push:"$region"},
 //             platformtype:{$push:"$platformtype"},
@@ -356,11 +382,15 @@ function datamaker(aaa,idrequ){
     if (!groups[groupName]) {
         groups[groupName] = [];
     }
+    if (!groups[`${groupName}`+`unique`]) {
+        groups[`${groupName}`+`unique`] = 0;
+    }
+    groups[`${groupName}`+`unique`] += super11[i].unique
     groups[groupName].push(super11[i].result);
     }
     myArray = [];
     for (var groupName in groups) {
-    myArray.push({[id]: groupName, result: groups[groupName]});
+    myArray.push({[id]: groupName, unique:groups[`${groupName}`+`unique`], result: groups[groupName]});
     }
     // console.log(myArray)
     myArray.map(esc=>{

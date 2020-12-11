@@ -10,7 +10,7 @@ const subSchemaplatformtype = new mongoose.Schema({
 },{ _id : false })
 
 const subSchemadevicetype = new mongoose.Schema({
-    platformType:{type:String},result:[]
+    pptype:{type:String},result:[]
 },{ _id : false })
 
 const subSchemapincode = new mongoose.Schema({
