@@ -356,7 +356,9 @@ function ReportsRefresher(date,credate){
     console.log(date,credate)
     const trackinglogs = mongoose.model('trackinglogs')
         var data = [];
-        trackinglogs.aggregate([
+        trackinglogs.db.db.command({
+            aggregate: "trackinglogs",
+            pipeline:[
             { $match: {
                 "date":date
             } },
@@ -424,9 +426,12 @@ function ReportsRefresher(date,credate){
                     {$project:{_id:0,campaignId:"$_id",report:"$report"}}
                 ]
             }}
-        ])
+        ],
+        allowDiskUse: true,
+        cursor: {  }
+        })
         .then(result=>{
-            var resultdata = result;
+            var resultdata = result.cursor.firstBatch;
             resultdata[0].appIds.map(caim => {
             var camId = caim.campaignId
             var datereq = caim.date
