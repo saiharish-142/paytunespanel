@@ -2,19 +2,23 @@ const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema.Types
 
 const subSchemaregion = new mongoose.Schema({
-    region:{type:String},result:[]
+    region:{type:String},unique:{type:Number},result:[]
 },{ _id : false })
 
 const subSchemaplatformtype = new mongoose.Schema({
     platformType:{type:String},result:[]
 },{ _id : false })
 
+const subSchemadevicetype = new mongoose.Schema({
+    platformType:{type:String},result:[]
+},{ _id : false })
+
 const subSchemapincode = new mongoose.Schema({
-    zip:{type:String},result:[]
+    zip:{type:String},unique:{type:Number},result:[]
 },{ _id : false })
 
 const subSchemalanguage = new mongoose.Schema({
-    language:{type:String},result:[]
+    language:{type:String},unique:{type:Number},result:[]
 },{ _id : false })
 
 const subSchemaphoneModel = new mongoose.Schema({
@@ -37,6 +41,7 @@ const reportSchema = new mongoose.Schema({
     pincode:[subSchemapincode],
     language:[subSchemalanguage],
     phoneModel:[subSchemaphoneModel],
+    deviceModel:[subSchemadevicetype],
     complete:{type:Number},
     clicks:{type:Number}
 },{timestamps:true})

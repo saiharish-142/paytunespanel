@@ -354,15 +354,25 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:{$arrayToObject:"$result"}}}}},
                 {$project:{campaignId:"$_id", report:"$report", _id:0}}
             ],"typebyRegion":[
-                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",region:"$region"}, count:{$sum:1}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType",region:"$_id.region"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{region:"$_id.region",result:{$arrayToObject:"$result"}}}}},
+                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",region:"$region"}, ifa:{$push:"$ifa"}, count:{$sum:1}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType",region:"$_id.region"},unique:{$addToSet:"$ifa"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                {$addFields:{unique:{"$reduce": {
+                            "input": "$unique",
+                            "initialValue": [],
+                            "in": { "$concatArrays": [ "$$value", "$$this" ] }
+                }}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{region:"$_id.region",unique:{$size:"$unique"},result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByLan":[
-                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",language:"$language"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",language:"$_id.language"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{language:"$_id.language",result:{$arrayToObject:"$result"}}}}},
+                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",language:"$language"}, ifa:{$push:"$ifa"}, count:{$sum:1}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",language:"$_id.language"},unique:{$addToSet:"$ifa"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                {$addFields:{unique:{"$reduce": {
+                            "input": "$unique",
+                            "initialValue": [],
+                            "in": { "$concatArrays": [ "$$value", "$$this" ] }
+                }}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{language:"$_id.language",unique:{$size:"$unique"},result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByPhModel":[
@@ -378,9 +388,20 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByPin":[
-                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",zip:"$zip"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",zip:"$_id.zip"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{zip:"$_id.zip",result:{$arrayToObject:"$result"}}}}},
+                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",zip:"$zip"}, ifa:{$push:"$ifa"}, count:{$sum:1}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",zip:"$_id.zip"},unique:{$addToSet:"$ifa"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                {$addFields:{unique:{"$reduce": {
+                            "input": "$unique",
+                            "initialValue": [],
+                            "in": { "$concatArrays": [ "$$value", "$$this" ] }
+                }}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{zip:"$_id.zip",unique:{$size:"$unique"},result:{$arrayToObject:"$result"}}}}},
+                {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
+                {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+            ],"typeByDev":[
+                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",pptype:"$pptype"}, count:{$sum:1}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",pptype:"$_id.pptype"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{pptype:"$_id.pptype",result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ]
@@ -397,6 +418,7 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
             var reportsdataLan = resultdata[0].typeByLan.filter(x => x.campaignId === camId)
             var reportsdataPHM = resultdata[0].typeByPhModel.filter(x => x.campaignId === camId)
             var reportsdataPT = resultdata[0].typeByPT.filter(x => x.campaignId === camId)
+            var reportsdataDT = resultdata[0].typeByDev.filter(x => x.campaignId === camId)
             var reportsdataZip = resultdata[0].typeByPin.filter(x => x.campaignId === camId)
             // console.log(reportsdata[0].report.length)
             caim.ids.map(id => {
@@ -405,6 +427,7 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
                 var appReportsdataLan = reportsdataLan[0].report.filter(x => x.appId === id)
                 var appReportsdataPHM = reportsdataPHM[0].report.filter(x => x.appId === id)
                 var appReportsdataPT = reportsdataPT[0].report.filter(x => x.appId === id)
+                var appReportsdataDT = reportsdataDT[0].report.filter(x => x.appId === id)
                 var appReportsdataZip = reportsdataZip[0].report.filter(x => x.appId === id)
                 // console.log(appReportsdataReg[0].result)
                 const Report = mongoose.model('Report')
@@ -422,6 +445,7 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
                     mediatype:appReportsdata[0].rtbType,
                     region:appReportsdataReg[0].result,
                     platformtype:appReportsdataPT[0].result,
+                    deviceModel:appReportsdataDT[0].result,
                     pincode:appReportsdataZip[0].result,
                     language:appReportsdataLan[0].result,
                     phoneModel:appReportsdataPHM[0].result,
