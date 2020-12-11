@@ -377,13 +377,19 @@ function datamaker(aaa,idrequ){
     if (!groups[groupName]) {
         groups[groupName] = [];
     }
+    if (!groups[`${groupName}`+"unique"]) {
+        groups[`${groupName}`+"unique"] = 0;
+    }
+    groups[`${groupName}`+"unique"] += super11[i].unique
     groups[groupName].push(super11[i].result);
     }
     myArray = [];
+    // console.log(groups)
     for (var groupName in groups) {
-    myArray.push({[id]: groupName, result: groups[groupName]});
+        if(groupName.length < idrequ.length)
+        myArray.push({[id]: groupName, unique: groups[`${groupName}`+"unique"], result: groups[groupName]});
     }
-    // console.log(myArray)
+    console.log(myArray)
     myArray.map(esc=>{
         // var result = [];
         const sumArray = arr => {
