@@ -437,16 +437,7 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
     })
     .catch(err => console.log(err))
 })
-let setter = (ifas) => {
-    console.log(ifas.length ? (ifas.length,ifas) : undefined)
-    var resultreq = [];
-    ifas.map(dsa=>{
-        resultreq.concat(dsa)
-    })
-    resultreq = [...new Set(resultreq)];
-    console.log(resultreq.length ? resultreq.length : undefined)
-    return resultreq;
-}
+
 router.post('/testcom1',adminauth,async (req,res)  =>{
     const { campaignId, date } = req.body
     var resu = [];
@@ -468,11 +459,12 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
             ],"typebyRegion":[
                 {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",region:"$region"}, ifa:{$push:"$ifa"}, count:{$sum:1}}},
                 {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType",region:"$_id.region"},ifa:{$push:"$ifa"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$project:{_id:1,result:1,unique:{$function:{
-                    body:setter(ifa),
-                    args:["$ifa"],
-                    lang: "js"
+                {$addFields:{unique:{"$reduce": {
+                            "input": "$ifa",
+                            "initialValue": [],
+                            "in": { "$concatArrays": [ "$$value", "$$this" ] }
                 }}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType",region:"$_id.region"},unique:{$addToSet:"$unique"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
                 {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{region:"$_id.region",unique:{$size:"$unique"},result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
