@@ -438,7 +438,7 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
     .catch(err => console.log(err))
 })
 function setter(ifas) {
-    console.log(ifas.length ? ifas.length : undefined)
+    console.log(ifas.length ? (ifas.length,ifas) : undefined)
     var resultreq = [];
     ifas.map(dsa=>{
         resultreq.concat(dsa)
