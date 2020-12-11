@@ -469,8 +469,8 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
 router.post('/testcom1',adminauth,async (req,res)  =>{
     const { campaignId, date } = req.body
     var resu = [];
-    trackinglogs.runCommand({
-        aggregate: "test",
+    trackinglogs.db.db.command({
+        aggregate: "trackinglogs",
         pipeline:[
         { $match: {
             "date":date
