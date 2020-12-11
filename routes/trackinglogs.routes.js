@@ -543,12 +543,11 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
     allowDiskUse: true,
     cursor: { batchSize: 0 }
     })
-    .exec(function(error, cursor) {
-        if(error){
-            res.status(400).json(error)
-        }
-        res.json(cursor)
+    .then(result=>{
+        resu = result;
+        res.json(resu)
     })
+    .catch(err => console.log(err))
 })
 
 // router.post('/testcom2',adminauth,async (req,res)  =>{
