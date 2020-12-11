@@ -459,7 +459,7 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
             ],"typebyRegion":[
                 {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",region:"$region"}, ifa:{$push:"$ifa"}, count:{$sum:1}}},
                 {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType",region:"$_id.region"}, ifa:{$push:"$ifa"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{region:"$_id.region", unique:{$addToSet:"$ifa"},result:{$arrayToObject:"$result"}}}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{region:"$_id.region", unique:{$push:"$ifa"},result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ],"typeByLan":[
