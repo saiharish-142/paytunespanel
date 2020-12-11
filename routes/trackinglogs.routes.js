@@ -541,7 +541,7 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
         }}
     ],
     allowDiskUse: true,
-    cursor: { batchSize: 0 }
+    cursor: {  }
     })
     .then(result=>{
         resu = result;
