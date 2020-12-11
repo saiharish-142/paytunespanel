@@ -170,6 +170,27 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
     .catch(err=>console.log(err))
 })
 
+router.put('/regionsum1',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var resu = [];
+    Report.aggregate([
+        {$match:{
+            "campaignId":{$in:campaignId}
+        }},{$group:{
+            _id:null, 
+            region:{$push:"$region"}
+        }},{$project:{
+            region:"$region",
+            _id:0
+        }}
+    ])
+    .then(reports=>{
+        // resu = reports;
+        res.json(reports)
+    })
+    .catch(err=>console.log(err))
+})
+
 router.put('/regionsum',adminauth,(req,res)=>{
     const { campaignId } = req.body
     var resu = [];
