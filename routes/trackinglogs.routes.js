@@ -544,7 +544,7 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
     cursor: {  }
     })
     .then(result=>{
-        resu = result;
+        resu = result.cursor.firstBatch;
         res.json(resu)
     })
     .catch(err => console.log(err))
