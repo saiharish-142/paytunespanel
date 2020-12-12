@@ -387,10 +387,10 @@ function datamaker(aaa,idrequ){
     myArray = [];
     // console.log(groups)
     for (var groupName in groups) {
-        if(groupName.length < idrequ.length)
+        if(!groupName.includes('unique'))
         myArray.push({[id]: groupName, unique: groups[`${groupName}`+"unique"], result: groups[groupName]});
     }
-    console.log(myArray)
+    // console.log(myArray)
     myArray.map(esc=>{
         // var result = [];
         const sumArray = arr => {
