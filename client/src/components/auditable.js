@@ -57,6 +57,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1})
                 <TableHead>
                     <TableRow>
                         <TableCell>{title}</TableCell>
+                        {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>Unique Users</TableCell>}
                         <TableCell>Campaign Start Date</TableCell>
                         <TableCell>Campaign End Date</TableCell>
                         <TableCell>Total Days of Campaign</TableCell>
@@ -72,9 +73,11 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1})
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) =>{ 
                         if(typeof row !== 'undefined'){
+                        if(row[jsotitle] && row[jsotitle] !== " - " && row[jsotitle] && row[jsotitle] !== undefined){
                         return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                             <TableCell>{row[jsotitle]}</TableCell>
+                            {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>{row.unique}</TableCell>}
                             <TableCell>{dateformatchanger(streamingads.startDate[0].slice(0,10))}</TableCell>
                             <TableCell>{dateformatchanger(streamingads.endDate[0].slice(0,10))}</TableCell>
                             <TableCell>{timefinder(streamingads.endDate[0],streamingads.startDate[0])} days</TableCell>
@@ -90,7 +93,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1})
                             <TableCell>{timefinder(streamingads.endDate[0],Date.now())} days</TableCell>
                             <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                         </TableRow>
-                        );}else{
+                        );}}else{
                             return (<TableRow><TableCell>No aaads to display</TableCell></TableRow>)
                         }
                     }) : <TableRow><TableCell>No ads to display</TableCell></TableRow>}
