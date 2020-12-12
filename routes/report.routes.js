@@ -10,7 +10,7 @@ router.get('/reports',adminauth,(req,res)=>{
     Report.find()
     .populate('Publisher')
     .sort('-date')
-    .limit(100)
+    .limit(20)
     .then(reports=>{
         res.json(reports)
     })
