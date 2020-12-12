@@ -57,11 +57,11 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1})
                 <TableHead>
                     <TableRow>
                         <TableCell>{title}</TableCell>
-                        {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>Unique Users</TableCell>}
                         <TableCell>Campaign Start Date</TableCell>
                         <TableCell>Campaign End Date</TableCell>
                         <TableCell>Total Days of Campaign</TableCell>
                         <TableCell>Total Impressions Delivered till date</TableCell>
+                        {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>Unique Users</TableCell>}
                         <TableCell>Total Clicks Delivered till date</TableCell>
                         <TableCell>CTR</TableCell>
                         <TableCell>Balance Days</TableCell>
@@ -77,11 +77,11 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1})
                         return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                             <TableCell>{row[jsotitle]}</TableCell>
-                            {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>{row.unique}</TableCell>}
                             <TableCell>{dateformatchanger(streamingads.startDate[0].slice(0,10))}</TableCell>
                             <TableCell>{dateformatchanger(streamingads.endDate[0].slice(0,10))}</TableCell>
                             <TableCell>{timefinder(streamingads.endDate[0],streamingads.startDate[0])} days</TableCell>
                             <TableCell>{row.result.impression}</TableCell>
+                            {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>{row.unique}</TableCell>}
                             <TableCell>{
                                 row.result.click ? row.result.click :0 + 
                                 row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
