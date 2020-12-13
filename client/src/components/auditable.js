@@ -21,7 +21,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1})
                 })
             }).then(res=>res.json())
             .then(result => {
-                console.log(result[0][regtitle])
+                // console.log(result[0][regtitle])
                 setadss(result[0][regtitle])
             })
             .catch(err => console.log(err))

@@ -24,6 +24,14 @@ export default function BasicTable({singlead}) {
     const [logs, setlogs] = useState([])
     const [ids, setids] = useState({})
     const [impre, setimpre] = useState(0)
+    const [fq, setfq] = useState(0)
+    const [sq, setsq] = useState(0)
+    const [tq, settq] = useState(0)
+    const [complete, setcomplete] = useState(0)
+    const [fqd, setfqd] = useState(0)
+    const [sqd, setsqd] = useState(0)
+    const [tqd, settqd] = useState(0)
+    const [completed, setcompleted] = useState(0)
     const [click, setclick] = useState(0)
     const [logsd, setlogsd] = useState([])
     // const [idsd, setidsd] = useState([])
@@ -79,13 +87,21 @@ export default function BasicTable({singlead}) {
             .then(result=>{
                 var impressions = 0;
                 var clicks = 0;
+                var completes = 0;
+                var firstq = 0;
+                var secq = 0;
+                var thirdq = 0;
                 setlogs(result)
                 result.map((re)=>{
                     impressions += re.impressions
+                    firstq += re.firstQuartile
+                    secq += re.secondQuartile
+                    thirdq += re.thirdQuartile
+                    completes += re.complete
                     clicks += re.clicks
                 })
-                // console.log(result)
-                offlineReports(result,impressions,clicks)
+                // console.log(firstq,secq,thirdq,completes)
+                offlineReports(result,impressions,clicks,firstq,secq,thirdq,completes)
                 setimpre(impressions)
                 setclick(clicks)
             })
@@ -94,7 +110,7 @@ export default function BasicTable({singlead}) {
             })
         }
     },[ids])
-    const offlineReports = (logs,imp,clck) => {
+    const offlineReports = (logs,imp,clck,firq,secq,thirq,compo) => {
         fetch('/offreport/sumreportofcam22',{
             method:'put',
             headers:{
@@ -107,12 +123,20 @@ export default function BasicTable({singlead}) {
         .then(result=>{
             var impressions1 = imp;
             var clicks1 = clck;
+            var firt1 = firq;
+            var sec1 = secq;
+            var thir1 = thirq;
+            var compo1 = compo;
             var logss = result;
             // console.log(result)
             result.map((re)=>{
                 re.nameads = 'Offline'
                 impressions1 += re.impressions
                 clicks1 += re.clicks
+                firt1 += re.firstQuartile ? re.firstQuartile : 0
+                sec1 += re.secondQuartile ? re.secondQuartile : 0
+                thir1 += re.thirdQuartile ? re.thirdQuartile : 0
+                compo1 += re.complete ? re.complete : 0
             })
             logss = logss.concat(logs)
             logss = logss.sort(function(a,b){
@@ -120,13 +144,21 @@ export default function BasicTable({singlead}) {
                 var d2 = new Date(b.updatedAt[0])
                 return d2 - d1
             })
-            console.log(logss)
+            // console.log(firt1,sec1,thir1,compo1)
             if(logss.length)
             setlogs(logss)
             if(impressions1)
             setimpre(impressions1)
             if(clicks1)
             setclick(clicks1)
+            if(firt1)
+            setfq(firt1)
+            if(sec1)
+            setsq(sec1)
+            if(thir1)
+            settq(thir1)
+            if(compo1)
+            setcomplete(compo1)
         })
         .catch(err =>{
             console.log(err)
@@ -449,6 +481,30 @@ export default function BasicTable({singlead}) {
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
             </TableBody>
         </Table>
+        </TableContainer>
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Quartile Summary Report</div>
+        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <TableContainer  style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell></TableCell>
+                        <TableCell>First Quartile</TableCell>
+                        <TableCell>Second Quartile</TableCell>
+                        <TableCell>Third Quartile</TableCell>
+                        <TableCell>Complete</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    <TableRow>
+                        <TableCell>Impressions</TableCell>
+                        <TableCell>{fq}</TableCell>
+                        <TableCell>{sq > 0 && sq}</TableCell>
+                        <TableCell>{tq}</TableCell>
+                        <TableCell>{complete > 0 && complete}</TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
         </TableContainer>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Region Wise Summary Report</div>
         <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
