@@ -11,6 +11,7 @@ import TableRow from "@material-ui/core/TableRow";
 import { useHistory } from "react-router-dom";
 import { IdContext } from '../App'
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
+import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 
 const useStyles = makeStyles({
     root: {
@@ -153,6 +154,65 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
             setadss(datareq)
             settingcamp(datareq)
         }
+        if(cmd=== 'remain'){
+            datareq = datareq.sort(function(a,b){
+                var d1 = new Date(a.endDate[0])
+                var d2 = new Date(Date.now())
+                // console.log(d1,d2)
+                var aa = d1.getTime() - d2.getTime();
+                if(d1<d2){
+                    aa = null;
+                }
+                var db1 = new Date(b.endDate[0])
+                var db2 = new Date(Date.now())
+                // console.log(d1,d2)
+                var ba = db1.getTime() - db2.getTime();
+                if(d1<d2){
+                    ba = null;
+                }
+                if(ba < aa) { return 1; }
+                if(ba > aa) { return -1; }
+                return 0;
+            })
+            setsa('remain')
+            setadss(datareq)
+            settingcamp(datareq)
+        }
+        if(cmd=== 'revremain'){
+            datareq = datareq.sort(function(a,b){
+                var d1 = new Date(a.endDate[0])
+                var d2 = new Date(Date.now())
+                // console.log(d1,d2)
+                var aa = d1.getTime() - d2.getTime();
+                if(d1<d2){
+                    aa = null;
+                }
+                var db1 = new Date(b.endDate[0])
+                var db2 = new Date(Date.now())
+                // console.log(d1,d2)
+                var ba = db1.getTime() - db2.getTime();
+                if(d1<d2){
+                    ba = null;
+                }
+                if(ba < aa) { return -1; }
+                if(ba > aa) { return 1; }
+                return 0;
+            })
+            setsa('revremain')
+            setadss(datareq)
+            settingcamp(datareq)
+        }
+    }
+    const timefinder = (da1) => {
+        var d1 = new Date(da1)
+        var d2 = new Date(Date.now())
+        // console.log(d1,d2)
+        if(d1<d2){
+            return 'completed campaign'
+        }
+        var show = d1.getTime() - d2.getTime();
+        var resula = show/(1000 * 3600 * 24) ;
+        return Math.round(resula*1)/1 ;
     }
     return (
         <Paper className={classes.root}>
@@ -169,6 +229,7 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
                     <TableCell align='center' onClick={()=>campaignssorter('create')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Created On {sa==='create' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
                     <TableCell align='center' onClick={()=>campaignssorter('start')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Start Date {sa==='start' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
                     <TableCell align='center' onClick={()=>campaignssorter('end')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>End Date {sa==='end' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                    <TableCell align='center' onDoubleClick={()=>campaignssorter('revremain')} onClick={()=>campaignssorter('remain')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Remaining Days {sa==='remain' &&  <ArrowUpwardRoundedIcon fontSize="small" />}{sa==='revremain' &&  <ArrowDownwardRoundedIcon fontSize="small" />}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>
             </TableHead>
@@ -188,6 +249,7 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
                         <TableCell align='center'>{row.createdOn ? dateformatchanger(row.createdOn.substring(0,10)) : dateformatchanger(row.createdAt.substring(0,10))}</TableCell>
                         <TableCell align='center'>{row.startDate && dateformatchanger(row.startDate[0])}</TableCell>
                         <TableCell align='center'>{row.endDate && dateformatchanger(row.endDate[0])}</TableCell>
+                        <TableCell align='center'>{row.endDate&& timefinder(row.endDate[0])} days</TableCell>
                         <TableCell align='center' className='mangeads__report' onClick={()=>{
                             history.push(`/manageAds/${row._id}`)
                             dispatch1({type:"ID",payload:row._id})
