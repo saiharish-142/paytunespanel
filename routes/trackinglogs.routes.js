@@ -474,16 +474,12 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
         aggregate: "trackinglogs",
         pipeline:[
         {$facet:{
-            "uniqueusers":[
+            "regionwiseunique":[
                 {$match:{"type":{$in:["impression"]}}},
-                {$facet:{
-                    "regionwise":[
-                        {$group:{_id:{campaignId:"$campaignId",appId:"$appId",region:"$region"},ifa:{$addToSet:"$ifa"}}},
-                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"}, uniquerepo:{$push:{region:"$_id.region",unique:{$size:"$ifa"}}}}},
-                        {$group:{_id:"$_id.campaignId",results:{$push:{appId:"$_id.appId",result:"$uniquerepo"}}}},
-                        {$project:{_id:0,campaignId:"$_id",results:1}}
-                    ]
-                }}
+                {$group:{_id:{campaignId:"$campaignId",appId:"$appId",region:"$region"},ifa:{$addToSet:"$ifa"}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"}, uniquerepo:{$push:{region:"$_id.region",unique:{$size:"$ifa"}}}}},
+                {$group:{_id:"$_id.campaignId",results:{$push:{appId:"$_id.appId",result:"$uniquerepo"}}}},
+                {$project:{_id:0,campaignId:"$_id",results:1}}
             ],
             "appIds":[
                 {$match:{"date":date}},
