@@ -607,7 +607,21 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
             cursor:{}
         })
         uniqueuserslist = uniqueuserslist.cursor.firstBatch
-        res.json({uniqueuserslist})
+        let platformlist = await trackinglogs.db.db.command({
+            aggregate:"trackinglogs",
+            pipeline:[
+                {$match:{"date":date}},
+                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",pptype:"$pptype"}, count:{$sum:1}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",pptype:"$_id.pptype"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{pptype:"$_id.pptype",result:{$arrayToObject:"$result"}}}}},
+                {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
+                {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+            ],
+            allowDiskUse:true,
+            cursor:{}
+        })
+        platformlist = platformlist.cursor.firstBatch
+        res.json({uniqueuserslist,platformlist})
     }catch(e){
         console.log(e)
         res.status(400).json(e)
