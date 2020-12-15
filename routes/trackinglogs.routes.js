@@ -489,9 +489,14 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
                 {$project:{_id:0,campaignId:"$_id.campaignId",date:"$_id.date",ids:"$ids"}}
             ],"typebyRegion":[
                 {$match:{"date":date}},
-                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",region:"$region"}, ifa:{$addToSet:{$cond:[{$eq:["$type","impression"]},"$ifa","$$REMOVE"]}}, count:{$sum:1}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",region:"$_id.region"}, ifa:{$addToSet:"$ifa"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{region:"$_id.region",unique:{$size:"$ifa"},result:{$arrayToObject:"$result"}}}}},
+                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",region:"$region"}, ifa:{$push:{$cond:[{$eq:["$type","impression"]},"$ifa","$$REMOVE"]}}, count:{$sum:1}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",region:"$_id.region"},unique:{$addToSet:"$ifa"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                {$addFields:{unique:{"$reduce": {
+                            "input": "$unique",
+                            "initialValue": [],
+                            "in": { "$concatArrays": [ "$$value", "$$this" ] }
+                }}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{region:"$_id.region",unique:{$size:"$unique"},result:{$arrayToObject:"$result"}}}}},
                 {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                 {$project:{_id:0,campaignId:"$_id",report:"$report"}}
             ]
