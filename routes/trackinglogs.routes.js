@@ -587,9 +587,19 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
         pipeline:[
             {$match:{"type":{$in:["impression"]}}},
             {$group:{_id:{campaignId:"$campaignId",appId:"$appId",region:"$region"},ifa:{$addToSet:"$ifa"}}},
-            {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"},ifa:{$addToSet:"$ifa"}, uniquerepo:{$push:{region:"$_id.region",unique:{$size:"$ifa"}}}}},
-            {$group:{_id:"$_id.campaignId",ifa:{$addToSet:"$ifa"},results:{$push:{appId:"$_id.appId",appwiseunique:{$size:"$ifa"},result:"$uniquerepo"}}}},
-            {$project:{_id:0,campaignId:"$_id",uniquecampwise:{$size:"$ifa"},results:1}}
+            {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"},ifa:{$push:"$ifa"}, uniquerepo:{$push:{region:"$_id.region",unique:{$size:"$ifa"}}}}},
+            {$addFields:{unique:{"$reduce": {
+                "input": "$ifa",
+                "initialValue": [],
+                "in": { "$concatArrays": [ "$$value", "$$this" ] }
+            }}}},
+            {$group:{_id:"$_id.campaignId",ifa:{$addToSet:"$unique"},results:{$push:{appId:"$_id.appId",appwiseunique:{$size:"$ifa"},result:"$uniquerepo"}}}},
+            {$addFields:{unique:{"$reduce": {
+                "input": "$ifa",
+                "initialValue": [],
+                "in": { "$concatArrays": [ "$$value", "$$this" ] }
+            }}}},
+            {$project:{_id:0,campaignId:"$_id",uniquecampwise:{$size:"$unique"},results:1}}
         ],
         allowDiskUse: true,
         cursor: {  }
