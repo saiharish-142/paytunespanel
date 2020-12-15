@@ -599,8 +599,18 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
             allowDiskUse:true,
             cursor:{}
         })
+        let uniqueuserslist2 = await trackinglogs.db.db.command({
+            aggregate:"trackinglogs",
+            pipeline:[
+                {$match:{"campaignId":{$in:logids},"type":{$in:["impression"]}}},
+                {$group:{_id:null,ids:{$addToSet:"$campaignId"}}}
+            ],
+            allowDiskUse:true,
+            cursor:{}
+        })
         uniqueuserslist = uniqueuserslist.cursor.firstBatch[0].ids
-        res.json({logids:logids.length,uniqueuserslist:uniqueuserslist.length})
+        uniqueuserslist2 = uniqueuserslist2.cursor.firstBatch[0].ids
+        res.json({logids:logids.length,uniqueuserslist:uniqueuserslist.length,uniqueuserslist2:uniqueuserslist2.length})
     }catch(e){
         console.log(e)
         res.status(400).json(e)
