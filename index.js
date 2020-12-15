@@ -10,7 +10,7 @@ const cron = require('node-cron')
 app.use(express.json())
 app.use(cors())
 
-mongoose.connect(MONGOURI,{useNewUrlParser: true,useFindAndModify:false, useUnifiedTopology: true})
+mongoose.connect(MONGOURI,{useNewUrlParser: true,useFindAndModify:false,socketTimeoutMS: 30000,keepAlive: true,reconnectTries: 30000, useUnifiedTopology: true})
 mongoose.connection.on('connected',() => {
     console.log("connected to database.....")
 })
@@ -537,667 +537,1215 @@ function ReportsRefresher(date,credate){
 //         // .catch(err=>{console.log(err)})
 //     })
 // })
-// var reports = [
-//     {
-//         "region": [
-//             [
-//                 {
-//                     "result": [
-//                         {
-//                             "complete": 698,
-//                             "firstquartile": 1,
-//                             "impression": 407,
-//                             "thirdquartile": 1,
-//                             "start": 776,
-//                             "creativeview": 156,
-//                             "companionclicktracking": 7,
-//                             "error": 1,
-//                             "midpoint": 1,
-//                             "progress": 1
-//                         }
-//                     ],
-//                     "region": "UP"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "impression": 2899,
-//                             "complete": 4811,
-//                             "companionclicktracking": 91,
-//                             "creativeview": 1041,
-//                             "error": 3,
-//                             "start": 5467
-//                         }
-//                     ],
-//                     "region": "TG"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "firstquartile": 2,
-//                             "start": 4139,
-//                             "impression": 2208,
-//                             "companionclicktracking": 118,
-//                             "pause": 2,
-//                             "complete": 3607,
-//                             "creativeview": 955,
-//                             "error": 1
-//                         }
-//                     ],
-//                     "region": "GJ"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "pause": 2,
-//                             "resume": 2,
-//                             "complete": 4365,
-//                             "start": 4999,
-//                             "companionclicktracking": 98,
-//                             "creativeview": 989,
-//                             "error": 10,
-//                             "impression": 2618
-//                         }
-//                     ],
-//                     "region": "DL"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "impression": 4366,
-//                             "complete": 7153,
-//                             "error": 2,
-//                             "start": 8163,
-//                             "companionclicktracking": 195,
-//                             "creativeview": 1797
-//                         }
-//                     ],
-//                     "region": "KA"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "error": 7,
-//                             "creativeview": 3659,
-//                             "companionclicktracking": 355,
-//                             "impression": 8513,
-//                             "start": 16051,
-//                             "complete": 14049
-//                         }
-//                     ],
-//                     "region": "MH"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "thirdquartile": 2,
-//                             "progress": 2,
-//                             "impression": 7174,
-//                             "creativeview": 3190,
-//                             "complete": 11895,
-//                             "companionclicktracking": 273,
-//                             "firstquartile": 10,
-//                             "start": 13514,
-//                             "error": 3,
-//                             "midpoint": 6
-//                         }
-//                     ],
-//                     "region": "WB"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "start": 798,
-//                             "creativeview": 145,
-//                             "companionclicktracking": 10,
-//                             "impression": 422,
-//                             "error": 2,
-//                             "complete": 713
-//                         }
-//                     ],
-//                     "region": "HR"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "complete": 3199,
-//                             "thirdquartile": 2,
-//                             "companionclicktracking": 107,
-//                             "impression": 2033,
-//                             "start": 3771,
-//                             "creativeview": 1006,
-//                             "progress": 2,
-//                             "firstquartile": 2,
-//                             "midpoint": 2
-//                         }
-//                     ],
-//                     "region": "TN"
-//                 }
-//             ],
-//             [
-//                 {
-//                     "result": [
-//                         {
-//                             "unmute": 1,
-//                             "pause": 48,
-//                             "resume": 34,
-//                             "impression": 404,
-//                             "thirdquartile": 374,
-//                             "clicktracking": 3,
-//                             "firstquartile": 379,
-//                             "midpoint": 378,
-//                             "start": 459,
-//                             "complete": 374
-//                         }
-//                     ],
-//                     "region": "TN"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "midpoint": 761,
-//                             "clicktracking": 5,
-//                             "impression": 840,
-//                             "unmute": 2,
-//                             "resume": 105,
-//                             "start": 1001,
-//                             "firstquartile": 766,
-//                             "mute": 3,
-//                             "pause": 124,
-//                             "complete": 758,
-//                             "thirdquartile": 759
-//                         }
-//                     ],
-//                     "region": "KA"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "complete": 225,
-//                             "firstquartile": 225,
-//                             "clicktracking": 1,
-//                             "impression": 245,
-//                             "start": 264,
-//                             "thirdquartile": 225,
-//                             "resume": 23,
-//                             "unmute": 1,
-//                             "pause": 31,
-//                             "midpoint": 225
-//                         }
-//                     ],
-//                     "region": "GJ"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "pause": 91,
-//                             "impression": 1093,
-//                             "thirdquartile": 974,
-//                             "mute": 18,
-//                             "clicktracking": 6,
-//                             "midpoint": 979,
-//                             "complete": 976,
-//                             "resume": 60,
-//                             "start": 1256,
-//                             "firstquartile": 987,
-//                             "unmute": 13
-//                         }
-//                     ],
-//                     "region": "DL"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "firstquartile": 2,
-//                             "midpoint": 2,
-//                             "start": 6,
-//                             "complete": 2,
-//                             "impression": 2,
-//                             "pause": 1,
-//                             "thirdquartile": 2
-//                         }
-//                     ],
-//                     "region": "RJ"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "clicktracking": 2,
-//                             "resume": 22,
-//                             "impression": 391,
-//                             "firstquartile": 345,
-//                             "mute": 1,
-//                             "complete": 342,
-//                             "midpoint": 344,
-//                             "pause": 41,
-//                             "thirdquartile": 343,
-//                             "unmute": 1,
-//                             "start": 441
-//                         }
-//                     ],
-//                     "region": "WB"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "complete": 235,
-//                             "mute": 3,
-//                             "clicktracking": 2,
-//                             "midpoint": 237,
-//                             "resume": 17,
-//                             "unmute": 1,
-//                             "pause": 25,
-//                             "start": 291,
-//                             "impression": 258,
-//                             "firstquartile": 242,
-//                             "thirdquartile": 236
-//                         }
-//                     ],
-//                     "region": "UP"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "unmute": 2,
-//                             "clicktracking": 1,
-//                             "impression": 275,
-//                             "resume": 22,
-//                             "start": 303,
-//                             "midpoint": 243,
-//                             "mute": 4,
-//                             "complete": 240,
-//                             "firstquartile": 244,
-//                             "thirdquartile": 240,
-//                             "pause": 27
-//                         }
-//                     ],
-//                     "region": "HR"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "firstquartile": 494,
-//                             "clicktracking": 3,
-//                             "midpoint": 491,
-//                             "thirdquartile": 490,
-//                             "complete": 488,
-//                             "error": 2,
-//                             "unmute": 5,
-//                             "start": 610,
-//                             "pause": 51,
-//                             "mute": 3,
-//                             "resume": 41,
-//                             "impression": 546
-//                         }
-//                     ],
-//                     "region": "MH"
-//                 }
-//             ],
-//             [
-//                 {
-//                     "result": [
-//                         {
-//                             "error": 7,
-//                             "midpoint": 2,
-//                             "impression": 8737,
-//                             "pause": 2,
-//                             "creativeview": 3613,
-//                             "companionclicktracking": 257,
-//                             "complete": 14564,
-//                             "firstquartile": 2,
-//                             "start": 16614
-//                         }
-//                     ],
-//                     "region": "WB"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "impression": 1159,
-//                             "error": 2,
-//                             "complete": 1931,
-//                             "start": 2191,
-//                             "creativeview": 515,
-//                             "companionclicktracking": 57
-//                         }
-//                     ],
-//                     "region": "HR"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "impression": 4066,
-//                             "start": 7504,
-//                             "creativeview": 1943,
-//                             "progress": 6,
-//                             "firstquartile": 4,
-//                             "midpoint": 6,
-//                             "complete": 6491,
-//                             "thirdquartile": 6,
-//                             "companionclicktracking": 221
-//                         }
-//                     ],
-//                     "region": "TN"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "thirdquartile": 6,
-//                             "complete": 6926,
-//                             "creativeview": 1938,
-//                             "error": 7,
-//                             "firstquartile": 10,
-//                             "start": 7973,
-//                             "impression": 4275,
-//                             "progress": 46,
-//                             "midpoint": 8,
-//                             "companionclicktracking": 280
-//                         }
-//                     ],
-//                     "region": "GJ"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "start": 7265,
-//                             "firstquartile": 2,
-//                             "thirdquartile": 2,
-//                             "impression": 3831,
-//                             "complete": 6408,
-//                             "companionclicktracking": 116,
-//                             "creativeview": 1246,
-//                             "progress": 2,
-//                             "error": 4,
-//                             "midpoint": 2
-//                         }
-//                     ],
-//                     "region": "TG"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "creativeview": 562,
-//                             "companionclicktracking": 61,
-//                             "error": 3,
-//                             "complete": 2028,
-//                             "impression": 1217,
-//                             "start": 2305
-//                         }
-//                     ],
-//                     "region": "UP"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "thirdquartile": 2,
-//                             "error": 9,
-//                             "start": 20259,
-//                             "firstquartile": 2,
-//                             "companionclicktracking": 555,
-//                             "creativeview": 4312,
-//                             "impression": 10861,
-//                             "complete": 17758
-//                         }
-//                     ],
-//                     "region": "KA"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "companionclicktracking": 380,
-//                             "creativeview": 3359,
-//                             "error": 24,
-//                             "thirdquartile": 5,
-//                             "impression": 7260,
-//                             "midpoint": 5,
-//                             "progress": 5,
-//                             "complete": 12050,
-//                             "firstquartile": 5,
-//                             "start": 13745
-//                         }
-//                     ],
-//                     "region": "DL"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "thirdquartile": 13,
-//                             "companionclicktracking": 775,
-//                             "firstquartile": 17,
-//                             "impression": 16000,
-//                             "complete": 26433,
-//                             "start": 30211,
-//                             "progress": 13,
-//                             "midpoint": 14,
-//                             "error": 19,
-//                             "creativeview": 6915
-//                         }
-//                     ],
-//                     "region": "MH"
-//                 }
-//             ],
-//             [
-//                 {
-//                     "result": [
-//                         {
-//                             "complete": 821,
-//                             "error": 1,
-//                             "pause": 36,
-//                             "impression": 877,
-//                             "start": 942,
-//                             "resume": 26,
-//                             "thirdquartile": 821,
-//                             "mute": 7,
-//                             "unmute": 8,
-//                             "firstquartile": 828,
-//                             "midpoint": 821,
-//                             "clicktracking": 5
-//                         }
-//                     ],
-//                     "region": "DL"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "impression": 5,
-//                             "complete": 5,
-//                             "firstquartile": 5,
-//                             "thirdquartile": 5,
-//                             "start": 5,
-//                             "midpoint": 5
-//                         }
-//                     ],
-//                     "region": "RJ"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "firstquartile": 306,
-//                             "mute": 2,
-//                             "clicktracking": 2,
-//                             "midpoint": 306,
-//                             "resume": 5,
-//                             "complete": 306,
-//                             "pause": 10,
-//                             "unmute": 2,
-//                             "thirdquartile": 306,
-//                             "start": 332,
-//                             "impression": 317
-//                         }
-//                     ],
-//                     "region": "WB"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "resume": 39,
-//                             "impression": 279,
-//                             "thirdquartile": 267,
-//                             "error": 1,
-//                             "firstquartile": 268,
-//                             "unmute": 1,
-//                             "midpoint": 268,
-//                             "pause": 40,
-//                             "complete": 267,
-//                             "start": 297
-//                         }
-//                     ],
-//                     "region": "TN"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "mute": 1,
-//                             "complete": 195,
-//                             "impression": 203,
-//                             "midpoint": 196,
-//                             "resume": 2,
-//                             "firstquartile": 199,
-//                             "unmute": 2,
-//                             "pause": 4,
-//                             "start": 218,
-//                             "thirdquartile": 195
-//                         }
-//                     ],
-//                     "region": "UP"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "complete": 213,
-//                             "thirdquartile": 213,
-//                             "resume": 3,
-//                             "impression": 227,
-//                             "firstquartile": 214,
-//                             "start": 255,
-//                             "midpoint": 215,
-//                             "pause": 6
-//                         }
-//                     ],
-//                     "region": "HR"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "midpoint": 574,
-//                             "mute": 3,
-//                             "impression": 609,
-//                             "pause": 27,
-//                             "error": 1,
-//                             "unmute": 5,
-//                             "start": 677,
-//                             "resume": 17,
-//                             "firstquartile": 575,
-//                             "thirdquartile": 574,
-//                             "complete": 574
-//                         }
-//                     ],
-//                     "region": "KA"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "clicktracking": 1,
-//                             "firstquartile": 139,
-//                             "complete": 139,
-//                             "thirdquartile": 139,
-//                             "resume": 5,
-//                             "start": 161,
-//                             "unmute": 2,
-//                             "pause": 10,
-//                             "impression": 149,
-//                             "midpoint": 139,
-//                             "mute": 2
-//                         }
-//                     ],
-//                     "region": "GJ"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "midpoint": 305,
-//                             "clicktracking": 3,
-//                             "firstquartile": 309,
-//                             "start": 362,
-//                             "thirdquartile": 305,
-//                             "pause": 15,
-//                             "error": 1,
-//                             "complete": 306,
-//                             "resume": 9,
-//                             "impression": 329
-//                         }
-//                     ],
-//                     "region": "MH"
-//                 }
-//             ],
-//             [
-//                 {
-//                     "result": [
-//                         {
-//                             "impression": 1
-//                         }
-//                     ],
-//                     "region": "TN"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "impression": 1,
-//                             "creativeview": 1,
-//                             "complete": 2,
-//                             "start": 2
-//                         }
-//                     ],
-//                     "region": "WB"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "complete": 4,
-//                             "start": 2,
-//                             "creativeview": 1,
-//                             "impression": 3,
-//                             "companionclicktracking": 1
-//                         }
-//                     ],
-//                     "region": "GJ"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "start": 2,
-//                             "impression": 1,
-//                             "complete": 2,
-//                             "creativeview": 2,
-//                             "companionclicktracking": 2
-//                         }
-//                     ],
-//                     "region": "KA"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "complete": 2,
-//                             "impression": 1
-//                         }
-//                     ],
-//                     "region": "DL"
-//                 },
-//                 {
-//                     "result": [
-//                         {
-//                             "impression": 6,
-//                             "creativeview": 1,
-//                             "complete": 10,
-//                             "start": 4
-//                         }
-//                     ],
-//                     "region": "MH"
-//                 }
-//             ]
-//         ]
-//     }
-// ]
+var reports = [
+    {
+        "region": [
+            [
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 106,
+                            "complete": 4180,
+                            "creativeview": 1059,
+                            "error": 6,
+                            "impression": 2553,
+                            "start": 4819
+                        }
+                    ],
+                    "region": "DL",
+                    "unique": 12723
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 57,
+                            "complete": 1854,
+                            "creativeview": 471,
+                            "impression": 1146,
+                            "start": 2168
+                        }
+                    ],
+                    "region": "GJ",
+                    "unique": 5696
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 12,
+                            "complete": 635,
+                            "creativeview": 175,
+                            "impression": 404,
+                            "start": 757
+                        }
+                    ],
+                    "region": "HR",
+                    "unique": 1983
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 60,
+                            "complete": 2736,
+                            "creativeview": 597,
+                            "error": 1,
+                            "impression": 1701,
+                            "start": 3236
+                        }
+                    ],
+                    "region": "KA",
+                    "unique": 8331
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 157,
+                            "complete": 7399,
+                            "creativeview": 1630,
+                            "error": 2,
+                            "firstquartile": 4,
+                            "impression": 4539,
+                            "midpoint": 4,
+                            "progress": 4,
+                            "start": 8616,
+                            "thirdquartile": 4
+                        }
+                    ],
+                    "region": "MH",
+                    "unique": 22347
+                },
+                {
+                    "result": [
+                        {
+                            "complete": 2,
+                            "impression": 1,
+                            "start": 2
+                        }
+                    ],
+                    "region": "RJ",
+                    "unique": 3
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 30,
+                            "complete": 2848,
+                            "creativeview": 527,
+                            "error": 1,
+                            "impression": 1735,
+                            "start": 3342
+                        }
+                    ],
+                    "region": "TG",
+                    "unique": 8483
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 46,
+                            "complete": 1803,
+                            "creativeview": 484,
+                            "error": 1,
+                            "impression": 1149,
+                            "start": 2101
+                        }
+                    ],
+                    "region": "TN",
+                    "unique": 5584
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 7,
+                            "complete": 636,
+                            "creativeview": 143,
+                            "error": 1,
+                            "impression": 376,
+                            "start": 713
+                        }
+                    ],
+                    "region": "UP",
+                    "unique": 1876
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 108,
+                            "complete": 7240,
+                            "creativeview": 1677,
+                            "error": 2,
+                            "firstquartile": 8,
+                            "impression": 4365,
+                            "midpoint": 10,
+                            "pause": 2,
+                            "progress": 6,
+                            "start": 8273,
+                            "thirdquartile": 6
+                        }
+                    ],
+                    "region": "WB",
+                    "unique": 21691
+                }
+            ],
+            [
+                {
+                    "result": [
+                        {
+                            "clicktracking": 2,
+                            "complete": 653,
+                            "firstquartile": 655,
+                            "impression": 710,
+                            "midpoint": 653,
+                            "mute": 4,
+                            "pause": 57,
+                            "resume": 42,
+                            "start": 784,
+                            "thirdquartile": 650,
+                            "unmute": 3
+                        }
+                    ],
+                    "region": "DL",
+                    "unique": 4213
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 2,
+                            "complete": 179,
+                            "firstquartile": 179,
+                            "impression": 190,
+                            "midpoint": 179,
+                            "mute": 1,
+                            "pause": 10,
+                            "resume": 8,
+                            "start": 205,
+                            "thirdquartile": 179
+                        }
+                    ],
+                    "region": "GJ",
+                    "unique": 774
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 2,
+                            "complete": 437,
+                            "error": 1,
+                            "firstquartile": 439,
+                            "impression": 478,
+                            "midpoint": 438,
+                            "mute": 1,
+                            "pause": 39,
+                            "resume": 31,
+                            "start": 537,
+                            "thirdquartile": 436,
+                            "unmute": 3
+                        }
+                    ],
+                    "region": "HR",
+                    "unique": 2842
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 4,
+                            "complete": 427,
+                            "firstquartile": 432,
+                            "impression": 458,
+                            "midpoint": 427,
+                            "mute": 1,
+                            "pause": 22,
+                            "resume": 17,
+                            "start": 493,
+                            "thirdquartile": 427,
+                            "unmute": 3
+                        }
+                    ],
+                    "region": "KA",
+                    "unique": 1857
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 2,
+                            "complete": 292,
+                            "firstquartile": 293,
+                            "impression": 329,
+                            "midpoint": 292,
+                            "mute": 1,
+                            "pause": 24,
+                            "resume": 12,
+                            "start": 355,
+                            "thirdquartile": 292,
+                            "unmute": 2
+                        }
+                    ],
+                    "region": "MH",
+                    "unique": 1310
+                },
+                {
+                    "result": [
+                        {
+                            "complete": 13,
+                            "firstquartile": 13,
+                            "impression": 15,
+                            "midpoint": 13,
+                            "pause": 2,
+                            "resume": 2,
+                            "start": 19,
+                            "thirdquartile": 13
+                        }
+                    ],
+                    "region": "RJ",
+                    "unique": 49
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 7,
+                            "complete": 646,
+                            "error": 1,
+                            "firstquartile": 651,
+                            "impression": 705,
+                            "midpoint": 648,
+                            "mute": 2,
+                            "pause": 61,
+                            "resume": 47,
+                            "start": 768,
+                            "thirdquartile": 645,
+                            "unmute": 2
+                        }
+                    ],
+                    "region": "TN",
+                    "unique": 4183
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 2,
+                            "complete": 379,
+                            "error": 3,
+                            "firstquartile": 380,
+                            "impression": 422,
+                            "midpoint": 380,
+                            "mute": 3,
+                            "pause": 41,
+                            "resume": 31,
+                            "start": 468,
+                            "thirdquartile": 379,
+                            "unmute": 2
+                        }
+                    ],
+                    "region": "UP",
+                    "unique": 2490
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 6,
+                            "complete": 628,
+                            "error": 1,
+                            "firstquartile": 631,
+                            "impression": 686,
+                            "midpoint": 629,
+                            "mute": 2,
+                            "pause": 40,
+                            "resume": 30,
+                            "start": 752,
+                            "thirdquartile": 631,
+                            "unmute": 3
+                        }
+                    ],
+                    "region": "WB",
+                    "unique": 4039
+                }
+            ],
+            [
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 624,
+                            "complete": 18080,
+                            "creativeview": 5227,
+                            "error": 38,
+                            "firstquartile": 12,
+                            "impression": 11084,
+                            "midpoint": 10,
+                            "progress": 4,
+                            "start": 20693,
+                            "thirdquartile": 4
+                        }
+                    ],
+                    "region": "DL",
+                    "unique": 55772
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 320,
+                            "complete": 6951,
+                            "creativeview": 1953,
+                            "error": 2,
+                            "firstquartile": 2,
+                            "impression": 4353,
+                            "midpoint": 2,
+                            "progress": 2,
+                            "start": 8067,
+                            "thirdquartile": 2
+                        }
+                    ],
+                    "region": "GJ",
+                    "unique": 21648
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 82,
+                            "complete": 2632,
+                            "creativeview": 779,
+                            "error": 3,
+                            "impression": 1598,
+                            "start": 3026
+                        }
+                    ],
+                    "region": "HR",
+                    "unique": 8120
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 530,
+                            "complete": 21142,
+                            "creativeview": 5141,
+                            "error": 14,
+                            "firstquartile": 1,
+                            "impression": 12969,
+                            "midpoint": 1,
+                            "progress": 1,
+                            "start": 24207,
+                            "thirdquartile": 1
+                        }
+                    ],
+                    "region": "KA",
+                    "unique": 64004
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 860,
+                            "complete": 30460,
+                            "creativeview": 7855,
+                            "error": 25,
+                            "firstquartile": 2,
+                            "impression": 18511,
+                            "midpoint": 2,
+                            "progress": 2,
+                            "start": 34742,
+                            "thirdquartile": 2
+                        }
+                    ],
+                    "region": "MH",
+                    "unique": 92455
+                },
+                {
+                    "result": [
+                        {
+                            "complete": 4,
+                            "creativeview": 2,
+                            "impression": 2,
+                            "start": 4
+                        }
+                    ],
+                    "region": "RJ",
+                    "unique": 6
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 212,
+                            "complete": 11019,
+                            "creativeview": 2347,
+                            "error": 2,
+                            "impression": 6599,
+                            "start": 12512
+                        }
+                    ],
+                    "region": "TG",
+                    "unique": 32691
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 233,
+                            "complete": 7097,
+                            "creativeview": 2110,
+                            "error": 3,
+                            "firstquartile": 4,
+                            "impression": 4495,
+                            "midpoint": 4,
+                            "progress": 4,
+                            "start": 8234,
+                            "thirdquartile": 4
+                        }
+                    ],
+                    "region": "TN",
+                    "unique": 22176
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 94,
+                            "complete": 2769,
+                            "creativeview": 802,
+                            "error": 7,
+                            "firstquartile": 2,
+                            "impression": 1697,
+                            "midpoint": 2,
+                            "progress": 2,
+                            "start": 3211,
+                            "thirdquartile": 2
+                        }
+                    ],
+                    "region": "UP",
+                    "unique": 8582
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 586,
+                            "complete": 27024,
+                            "creativeview": 7270,
+                            "error": 9,
+                            "firstquartile": 17,
+                            "impression": 16397,
+                            "midpoint": 13,
+                            "progress": 11,
+                            "start": 30878,
+                            "thirdquartile": 13
+                        }
+                    ],
+                    "region": "WB",
+                    "unique": 82218
+                }
+            ],
+            [
+                {
+                    "result": [
+                        {
+                            "clicktracking": 19,
+                            "complete": 2771,
+                            "error": 2,
+                            "firstquartile": 2795,
+                            "impression": 3035,
+                            "midpoint": 2775,
+                            "mute": 23,
+                            "pause": 250,
+                            "resume": 178,
+                            "start": 3355,
+                            "thirdquartile": 2774,
+                            "unmute": 24
+                        }
+                    ],
+                    "region": "DL",
+                    "unique": 18001
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 3,
+                            "complete": 546,
+                            "error": 1,
+                            "firstquartile": 549,
+                            "impression": 597,
+                            "midpoint": 545,
+                            "mute": 4,
+                            "pause": 82,
+                            "resume": 69,
+                            "start": 641,
+                            "thirdquartile": 546,
+                            "unmute": 8
+                        }
+                    ],
+                    "region": "GJ",
+                    "unique": 3045
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 2,
+                            "complete": 699,
+                            "firstquartile": 707,
+                            "impression": 761,
+                            "midpoint": 703,
+                            "mute": 7,
+                            "pause": 68,
+                            "resume": 53,
+                            "start": 849,
+                            "thirdquartile": 699,
+                            "unmute": 4
+                        }
+                    ],
+                    "region": "HR",
+                    "unique": 4552
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 10,
+                            "complete": 2051,
+                            "error": 1,
+                            "firstquartile": 2071,
+                            "impression": 2205,
+                            "midpoint": 2059,
+                            "mute": 14,
+                            "pause": 190,
+                            "resume": 150,
+                            "start": 2547,
+                            "thirdquartile": 2054,
+                            "unmute": 12
+                        }
+                    ],
+                    "region": "KA",
+                    "unique": 13364
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 13,
+                            "complete": 1219,
+                            "error": 3,
+                            "firstquartile": 1229,
+                            "impression": 1325,
+                            "midpoint": 1220,
+                            "mute": 8,
+                            "pause": 150,
+                            "resume": 115,
+                            "start": 1509,
+                            "thirdquartile": 1217,
+                            "unmute": 10
+                        }
+                    ],
+                    "region": "MH",
+                    "unique": 8018
+                },
+                {
+                    "result": [
+                        {
+                            "complete": 22,
+                            "firstquartile": 22,
+                            "impression": 25,
+                            "midpoint": 22,
+                            "pause": 1,
+                            "start": 29,
+                            "thirdquartile": 22
+                        }
+                    ],
+                    "region": "RJ",
+                    "unique": 77
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 8,
+                            "complete": 1001,
+                            "error": 1,
+                            "firstquartile": 1005,
+                            "impression": 1074,
+                            "midpoint": 998,
+                            "mute": 1,
+                            "pause": 118,
+                            "resume": 98,
+                            "start": 1183,
+                            "thirdquartile": 998,
+                            "unmute": 3
+                        }
+                    ],
+                    "region": "TN",
+                    "unique": 6487
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 7,
+                            "complete": 653,
+                            "error": 1,
+                            "firstquartile": 664,
+                            "impression": 695,
+                            "midpoint": 656,
+                            "mute": 7,
+                            "pause": 75,
+                            "resume": 61,
+                            "start": 766,
+                            "thirdquartile": 656,
+                            "unmute": 6
+                        }
+                    ],
+                    "region": "UP",
+                    "unique": 4247
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 6,
+                            "complete": 1029,
+                            "firstquartile": 1030,
+                            "impression": 1118,
+                            "midpoint": 1029,
+                            "mute": 7,
+                            "pause": 119,
+                            "resume": 84,
+                            "start": 1203,
+                            "thirdquartile": 1029,
+                            "unmute": 5
+                        }
+                    ],
+                    "region": "WB",
+                    "unique": 6659
+                }
+            ],
+            [
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 380,
+                            "complete": 12050,
+                            "creativeview": 3359,
+                            "error": 24,
+                            "firstquartile": 5,
+                            "impression": 7260,
+                            "midpoint": 5,
+                            "progress": 5,
+                            "start": 13745,
+                            "thirdquartile": 5
+                        }
+                    ],
+                    "region": "DL",
+                    "unique": 36823
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 280,
+                            "complete": 6926,
+                            "creativeview": 1938,
+                            "error": 7,
+                            "firstquartile": 10,
+                            "impression": 4275,
+                            "midpoint": 8,
+                            "progress": 46,
+                            "start": 7973,
+                            "thirdquartile": 6
+                        }
+                    ],
+                    "region": "GJ",
+                    "unique": 21469
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 57,
+                            "complete": 1931,
+                            "creativeview": 515,
+                            "error": 2,
+                            "impression": 1159,
+                            "start": 2191
+                        }
+                    ],
+                    "region": "HR",
+                    "unique": 5855
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 555,
+                            "complete": 17758,
+                            "creativeview": 4312,
+                            "error": 9,
+                            "firstquartile": 2,
+                            "impression": 10861,
+                            "start": 20259,
+                            "thirdquartile": 2
+                        }
+                    ],
+                    "region": "KA",
+                    "unique": 53756
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 775,
+                            "complete": 26433,
+                            "creativeview": 6915,
+                            "error": 19,
+                            "firstquartile": 17,
+                            "impression": 16000,
+                            "midpoint": 14,
+                            "progress": 13,
+                            "start": 30211,
+                            "thirdquartile": 13
+                        }
+                    ],
+                    "region": "MH",
+                    "unique": 80397
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 116,
+                            "complete": 6408,
+                            "creativeview": 1246,
+                            "error": 4,
+                            "firstquartile": 2,
+                            "impression": 3831,
+                            "midpoint": 2,
+                            "progress": 2,
+                            "start": 7265,
+                            "thirdquartile": 2
+                        }
+                    ],
+                    "region": "TG",
+                    "unique": 18872
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 221,
+                            "complete": 6491,
+                            "creativeview": 1943,
+                            "firstquartile": 4,
+                            "impression": 4066,
+                            "midpoint": 6,
+                            "progress": 6,
+                            "start": 7504,
+                            "thirdquartile": 6
+                        }
+                    ],
+                    "region": "TN",
+                    "unique": 20235
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 61,
+                            "complete": 2028,
+                            "creativeview": 562,
+                            "error": 3,
+                            "impression": 1217,
+                            "start": 2305
+                        }
+                    ],
+                    "region": "UP",
+                    "unique": 6176
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 257,
+                            "complete": 14564,
+                            "creativeview": 3613,
+                            "error": 7,
+                            "firstquartile": 2,
+                            "impression": 8737,
+                            "midpoint": 2,
+                            "pause": 2,
+                            "start": 16614
+                        }
+                    ],
+                    "region": "WB",
+                    "unique": 43796
+                }
+            ],
+            [
+                {
+                    "result": [
+                        {
+                            "clicktracking": 6,
+                            "complete": 976,
+                            "firstquartile": 987,
+                            "impression": 1093,
+                            "midpoint": 979,
+                            "mute": 18,
+                            "pause": 91,
+                            "resume": 60,
+                            "start": 1256,
+                            "thirdquartile": 974,
+                            "unmute": 13
+                        }
+                    ],
+                    "region": "DL",
+                    "unique": 6453
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 1,
+                            "complete": 225,
+                            "firstquartile": 225,
+                            "impression": 245,
+                            "midpoint": 225,
+                            "pause": 31,
+                            "resume": 23,
+                            "start": 264,
+                            "thirdquartile": 225,
+                            "unmute": 1
+                        }
+                    ],
+                    "region": "GJ",
+                    "unique": 790
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 1,
+                            "complete": 240,
+                            "firstquartile": 244,
+                            "impression": 275,
+                            "midpoint": 243,
+                            "mute": 4,
+                            "pause": 27,
+                            "resume": 22,
+                            "start": 303,
+                            "thirdquartile": 240,
+                            "unmute": 2
+                        }
+                    ],
+                    "region": "HR",
+                    "unique": 1361
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 5,
+                            "complete": 758,
+                            "firstquartile": 766,
+                            "impression": 840,
+                            "midpoint": 761,
+                            "mute": 3,
+                            "pause": 124,
+                            "resume": 105,
+                            "start": 1001,
+                            "thirdquartile": 759,
+                            "unmute": 2
+                        }
+                    ],
+                    "region": "KA",
+                    "unique": 5124
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 3,
+                            "complete": 488,
+                            "error": 2,
+                            "firstquartile": 494,
+                            "impression": 546,
+                            "midpoint": 491,
+                            "mute": 3,
+                            "pause": 51,
+                            "resume": 41,
+                            "start": 610,
+                            "thirdquartile": 490,
+                            "unmute": 5
+                        }
+                    ],
+                    "region": "MH",
+                    "unique": 3224
+                },
+                {
+                    "result": [
+                        {
+                            "complete": 2,
+                            "firstquartile": 2,
+                            "impression": 2,
+                            "midpoint": 2,
+                            "pause": 1,
+                            "start": 6,
+                            "thirdquartile": 2
+                        }
+                    ],
+                    "region": "RJ",
+                    "unique": 9
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 3,
+                            "complete": 374,
+                            "firstquartile": 379,
+                            "impression": 404,
+                            "midpoint": 378,
+                            "pause": 48,
+                            "resume": 34,
+                            "start": 459,
+                            "thirdquartile": 374,
+                            "unmute": 1
+                        }
+                    ],
+                    "region": "TN",
+                    "unique": 2454
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 2,
+                            "complete": 235,
+                            "firstquartile": 242,
+                            "impression": 258,
+                            "midpoint": 237,
+                            "mute": 3,
+                            "pause": 25,
+                            "resume": 17,
+                            "start": 291,
+                            "thirdquartile": 236,
+                            "unmute": 1
+                        }
+                    ],
+                    "region": "UP",
+                    "unique": 1547
+                },
+                {
+                    "result": [
+                        {
+                            "clicktracking": 2,
+                            "complete": 342,
+                            "firstquartile": 345,
+                            "impression": 391,
+                            "midpoint": 344,
+                            "mute": 1,
+                            "pause": 41,
+                            "resume": 22,
+                            "start": 441,
+                            "thirdquartile": 343,
+                            "unmute": 1
+                        }
+                    ],
+                    "region": "WB",
+                    "unique": 2273
+                }
+            ],
+            [
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 98,
+                            "complete": 4365,
+                            "creativeview": 989,
+                            "error": 10,
+                            "impression": 2618,
+                            "pause": 2,
+                            "resume": 2,
+                            "start": 4999
+                        }
+                    ],
+                    "region": "DL",
+                    "unique": 13081
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 118,
+                            "complete": 3607,
+                            "creativeview": 955,
+                            "error": 1,
+                            "firstquartile": 2,
+                            "impression": 2208,
+                            "pause": 2,
+                            "start": 4139
+                        }
+                    ],
+                    "region": "GJ",
+                    "unique": 11030
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 10,
+                            "complete": 713,
+                            "creativeview": 145,
+                            "error": 2,
+                            "impression": 422,
+                            "start": 798
+                        }
+                    ],
+                    "region": "HR",
+                    "unique": 2090
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 195,
+                            "complete": 7153,
+                            "creativeview": 1797,
+                            "error": 2,
+                            "impression": 4366,
+                            "start": 8163
+                        }
+                    ],
+                    "region": "KA",
+                    "unique": 21676
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 355,
+                            "complete": 14049,
+                            "creativeview": 3659,
+                            "error": 7,
+                            "impression": 8513,
+                            "start": 16051
+                        }
+                    ],
+                    "region": "MH",
+                    "unique": 42634
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 91,
+                            "complete": 4811,
+                            "creativeview": 1041,
+                            "error": 3,
+                            "impression": 2899,
+                            "start": 5467
+                        }
+                    ],
+                    "region": "TG",
+                    "unique": 14312
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 107,
+                            "complete": 3199,
+                            "creativeview": 1006,
+                            "firstquartile": 2,
+                            "impression": 2033,
+                            "midpoint": 2,
+                            "progress": 2,
+                            "start": 3771,
+                            "thirdquartile": 2
+                        }
+                    ],
+                    "region": "TN",
+                    "unique": 10118
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 7,
+                            "complete": 698,
+                            "creativeview": 156,
+                            "error": 1,
+                            "firstquartile": 1,
+                            "impression": 407,
+                            "midpoint": 1,
+                            "progress": 1,
+                            "start": 776,
+                            "thirdquartile": 1
+                        }
+                    ],
+                    "region": "UP",
+                    "unique": 2046
+                },
+                {
+                    "result": [
+                        {
+                            "companionclicktracking": 273,
+                            "complete": 11895,
+                            "creativeview": 3190,
+                            "error": 3,
+                            "firstquartile": 10,
+                            "impression": 7174,
+                            "midpoint": 6,
+                            "progress": 2,
+                            "start": 13514,
+                            "thirdquartile": 2
+                        }
+                    ],
+                    "region": "WB",
+                    "unique": 36067
+                }
+            ],
+            [
+                {
+                    "result": [
+                        {
+                            "complete": 6,
+                            "firstquartile": 6,
+                            "impression": 7,
+                            "thirdquartile": 6,
+                            "start": 8,
+                            "midpoint": 6
+                        }
+                    ],
+                    "region": "HR",
+                    "unique": 21
+                },
+                {
+                    "result": [
+                        {
+                            "thirdquartile": 15,
+                            "impression": 17,
+                            "start": 20,
+                            "firstquartile": 15,
+                            "complete": 15,
+                            "resume": 10,
+                            "midpoint": 15,
+                            "pause": 10
+                        }
+                    ],
+                    "region": "WB",
+                    "unique": 62
+                },
+                {
+                    "result": [
+                        {
+                            "pause": 2,
+                            "midpoint": 19,
+                            "start": 23,
+                            "complete": 20,
+                            "resume": 2,
+                            "impression": 21,
+                            "thirdquartile": 19,
+                            "clicktracking": 1,
+                            "firstquartile": 20
+                        }
+                    ],
+                    "region": "TN",
+                    "unique": 107
+                },
+                {
+                    "result": [
+                        {
+                            "firstquartile": 17,
+                            "thirdquartile": 16,
+                            "start": 19,
+                            "complete": 16,
+                            "impression": 17,
+                            "clicktracking": 3,
+                            "midpoint": 16
+                        }
+                    ],
+                    "region": "UP",
+                    "unique": 55
+                },
+                {
+                    "result": [
+                        {
+                            "thirdquartile": 1,
+                            "midpoint": 1,
+                            "start": 1,
+                            "complete": 1,
+                            "impression": 1,
+                            "firstquartile": 1
+                        }
+                    ],
+                    "region": "RJ",
+                    "unique": 1
+                }
+            ]
+        ]
+    }
+]
 // function datamaker(aaa,idrequ){
 //     var super11 = [];
 //     aaa.map(dataa=> {
@@ -1232,49 +1780,54 @@ function ReportsRefresher(date,credate){
 //     return myArray;
 // }
 
-// function datamaker(aaa,idrequ){
-//     var super11 = [];
-//     aaa.map(part => {
-//         super11 = super11.concat(part)
-//     })
-//     var groups = {};
-//     var id = idrequ;
-//     for (var i = 0; i < super11.length; i++) {
-//     var groupName = super11[i][id];
-//     if (!groups[groupName]) {
-//         groups[groupName] = [];
-//     }
-//     groups[groupName].push(super11[i].result);
-//     }
-//     myArray = [];
-//     for (var groupName in groups) {
-//     myArray.push({[id]: groupName, result: groups[groupName]});
-//     }
-//     // console.log(myArray[0].result)
-//     myArray.map(esc=>{
-//         // var result = [];
-//         const sumArray = arr => {
-//             const res = {};
-//             for(let i = 0; i < arr.length; i++){
-//                 Object.keys(arr[i]).forEach(key => {
-//                     res[key] = (res[key] || 0) + arr[i][key];
-//                 });
-//             };
-//             return res;
-//         };
-//         // console.log(esc)
-//         var resultDes = [];
-//         esc.result.map(eac=>{
-//             resultDes = resultDes.concat(eac)
-//         })
-//         esc.result = sumArray(resultDes)
-//         // console.log(esc.result)
-//     })
-//     return myArray;
-// }
-// reports = reports.map(det => {
-//     var dema = datamaker(det.region,'region')
-//     det.region = dema
-//     return det;
-// })
+function datamaker(aaa,idrequ){
+    var super11 = [];
+    aaa.map(part => {
+        super11 = super11.concat(part)
+    })
+    var groups = {};
+    var id = idrequ;
+    for (var i = 0; i < super11.length; i++) {
+    var groupName = super11[i][id];
+    if (!groups[groupName]) {
+        groups[groupName] = [];
+    }
+    if (!groups[`${groupName}`+"unique"]) {
+        groups[`${groupName}`+"unique"] = 0;
+    }
+    groups[`${groupName}`+"unique"] += super11[i].unique
+    groups[groupName].push(super11[i].result);
+    }
+    myArray = [];
+    // console.log(groups)
+    for (var groupName in groups) {
+        if(groupName.length < idrequ.length)
+        myArray.push({[id]: groupName, unique: groups[`${groupName}`+"unique"], result: groups[groupName]});
+    }
+    // console.log(myArray)
+    myArray.map(esc=>{
+        // var result = [];
+        const sumArray = arr => {
+            const res = {};
+            for(let i = 0; i < arr.length; i++){
+                Object.keys(arr[i]).forEach(key => {
+                    res[key] = (res[key] || 0) + arr[i][key];
+                });
+            };
+            return res;
+        };
+        var resultDes = [];
+        esc.result.map(eac=>{
+            resultDes = resultDes.concat(eac)
+        })
+        esc.result = sumArray(resultDes)
+        // console.log(esc)
+    })
+    return myArray;
+}
+reports = reports.map(det => {
+    var dema = datamaker(det.region,'region')
+    det.region = dema
+    return det;
+})
 // console.log(reports[0].region[0])
