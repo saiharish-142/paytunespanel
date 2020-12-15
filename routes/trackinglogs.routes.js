@@ -595,13 +595,13 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
             pipeline:[
                 {$match:{"campaignId":{$in:logids},"type":{$in:["impression"]}}},
                 {$group:{_id:{campaignId:"$campaignId",appId:"$appId"},ifa:{$addToSet:"$ifa"}}},
-                {$group:{_id:"$_id.campaignId",unique:{$push:"$ifa"},publishdata:{$push:{appId:"$_id.appId",uniqueuser:{$size:"$ifa"}}}}},
+                {$group:{_id:"$_id.campaignId",unique:{$addToSet:"$ifa"},publishdata:{$push:{appId:"$_id.appId",uniqueuser:{$size:"$ifa"}}}}},
                 {$addFields:{unique:{"$reduce": {
                     "input": "$unique",
                     "initialValue": [],
                     "in": { "$concatArrays": [ "$$value", "$$this" ] }
                 }}}},
-                {$group:{_id:"$_id.campaignId",unique:{$addToSet:"$unique"},publishdata:{$push:"$publishdata"}}},
+                {$group:{_id:"$_id.campaignId",publishdata:{$push:"$publishdata"}}},
                 {$project:{_id:0,campaignId:"$_id",unique:{$size:"$unique"},publishdata:1}}
             ],
             allowDiskUse:true,
