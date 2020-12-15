@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const router = express.Router()
 const trackinglogs = mongoose.model('trackinglogs')
 const Report = mongoose.model('Report')
+const StreamingAds = mongoose.model('streamingads')
 const publisherapps = mongoose.model('publisherapps')
 const adminauth = require('../authenMiddleware/adminauth')
 
@@ -562,41 +563,21 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
     .catch(err => console.log(err))
 })
 
-// router.post('/testcom2',adminauth,async (req,res)  =>{
-//     const { campaignId, date } = req.body
-//     var resu = [];
-//     trackinglogs.aggregate([
-//         { $match: {
-//             "date":date
-//         } },
-//         {$group:{
-//             _id:{
-//                 campaignId:"$campaignId",appId:"$appId",date:"$date",type:"$type",
-//                 region:"$region",language:"$language",osVersion:"$osVersion",phoneModel:"$phoneModel",
-//                 platformType:"$platformType",zip:"$zip"
-//             },
-//             count:{$sum:1}
-//         }},
-//         {$group:{
-//             _id:{campaignId:"$_id.campaignId",date:"$_id.date",appId:"$_id.appId"},
-//             res:{$push:{
-//                 type:"$_id.type",
-//                 count:"$count",
-//                 region:"$region"
-//             }}
-//         }},{$group:{
-//             _id:{campaignId:"$_id.campaignId",date:"$_id.date"},
-//             reports:{$push:{appId:"$_id.appId",res:"$res"}}
-//         }},{$project:{
-//             campaignId:"$_id.campaignId",date:"$_id.date",reports:"$reports",_id:0
-//         }}
-//     ])
-//     .then(result=>{
-//         resu = result;
-//         res.json(resu)
-//     })
-//     .catch(err => console.log(err))
-// })
+router.post('/testcom2',adminauth,async (req,res)  =>{
+    const { campaignId, date, date2 } = req.body
+    var resu = [];
+    var newdate = new Date(date2)
+    StreamingAds.aggregate([
+        {$match:{"endDate":{$gte:newdate}}},
+        {$group:{_id:null,ids:{$push:"$_id"}}},
+        {$project:{_id:0,ids:"$ids"}}
+    ])
+    .then(result=>{
+        resu = result;
+        res.json(resu)
+    })
+    .catch(err => console.log(err))
+})
 
 router.post('/repotcrecamp',adminauth,async (req,res)  =>{
     const { campaignId } = req.body
