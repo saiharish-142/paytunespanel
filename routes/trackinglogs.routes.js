@@ -606,7 +606,7 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
             allowDiskUse:true,
             cursor:{}
         })
-        uniqueuserslist = uniqueuserslist.cursor.firstBatch[0].ids
+        uniqueuserslist = uniqueuserslist.cursor.firstBatch[0]
         res.json({uniqueuserslist})
     }catch(e){
         console.log(e)
