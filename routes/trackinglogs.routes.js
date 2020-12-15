@@ -591,11 +591,17 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
         ])
         logids = logids[0].ids
         let uniqueuserslist = await trackinglogs.db.db.command({
-            aggregate:"trackinglogs",
+            aggregateCursor:"trackinglogs",
             pipeline:[
-                {$match:{"campaignId":{$in:logids}}},
-                {$group:{_id:null , ids:{$addToSet:"$_id"}}},
-                {$project:{_id:0,ids:1}}
+                {$match:{"campaignId":{$in:logids},"type":{$in:["impression"]}}},
+                {$group:{_id:{campaignId:"$campaignId",appId:"$appId"} , ifa:{$addToSet:"$ifa"}}},
+                {$group:{_id:"$_id.campaignId",unique:{$push:"$ifa"},campdata:{$push:{appId:"$_id.appId",uniqueusers:{$size:"$ifa"}}}}},
+                {$addFields:{unique:{"$reduce": {
+                    "input": "$unique",
+                    "initialValue": [],
+                    "in": { "$concatArrays": [ "$$value", "$$this" ] }
+                }}}},
+                {$project:{_id:0,campaignId:"$_id",unique:{$size:"$unique"},campdata:"$campdata"}}
             ],
             allowDiskUse:true,
             cursor:{}
