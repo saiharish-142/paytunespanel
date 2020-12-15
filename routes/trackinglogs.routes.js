@@ -591,7 +591,7 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
                     ])
         let logids = await trackinglogs.aggregate([
             {$match:{"date":date}},
-            {$group:{_id:null,ids:{$addToSet:"$_id"}}},
+            {$group:{_id:null,ids:{$addToSet:"$campaignId"}}},
             {$project:{_id:0,ids:1}}
         ])
         // let uniqueusers = await trackinglogs.db.db.command({
