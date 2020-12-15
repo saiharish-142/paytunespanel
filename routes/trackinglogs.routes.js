@@ -585,33 +585,38 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
     var newdate = new Date(date)
     try{
         let campaignids = await StreamingAds.aggregate([
-            {$match:{"endDate":{$gte:newdate},"startDate":{$lte:newdate}}},
-            {$group:{_id:null,ids:{$push:"$_id"}}},
-            {$project:{_id:0,ids:"$ids"}}
+                    {$match:{"endDate":{$gte:newdate},"startDate":{$lte:newdate}}},
+                    {$group:{_id:null,ids:{$push:"$_id"}}},
+                    {$project:{_id:0,ids:"$ids"}}
+                    ])
+        let logids = await trackinglogs.aggregate([
+            {$match:{"date":date}},
+            {$group:{_id:null,ids:{$addToSet:"$_id"}}},
+            {$project:{_id:0,ids:1}}
         ])
-        let uniqueusers = await trackinglogs.db.db.command({
-            aggregate: "trackinglogs",
-            pipeline:[
-                {$match:{"type":{$in:["impression"]}}},
-                {$group:{_id:{campaignId:"$campaignId",appId:"$appId",region:"$region"},ifa:{$addToSet:"$ifa"}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"},ifa:{$push:"$ifa"}, uniquerepo:{$push:{region:"$_id.region",unique:{$size:"$ifa"}}}}},
-                {$addFields:{unique:{"$reduce": {
-                    "input": "$ifa",
-                    "initialValue": [],
-                    "in": { "$concatArrays": [ "$$value", "$$this" ] }
-                }}}},
-                {$group:{_id:"$_id.campaignId",ifa:{$addToSet:"$unique"},results:{$push:{appId:"$_id.appId",appwiseunique:{$size:"$unique"},result:"$uniquerepo"}}}},
-                {$addFields:{unique:{"$reduce": {
-                    "input": "$ifa",
-                    "initialValue": [],
-                    "in": { "$concatArrays": [ "$$value", "$$this" ] }
-                }}}},
-                {$project:{_id:0,campaignId:"$_id",uniquecampwise:{$size:"$unique"},results:1}}
-            ],
-            allowDiskUse: true,
-            cursor: {  }
-        })
-        res.json({campaignids,uniqueusers})
+        // let uniqueusers = await trackinglogs.db.db.command({
+        //     aggregate: "trackinglogs",
+        //     pipeline:[
+        //         {$match:{"type":{$in:["impression"]}}},
+        //         {$group:{_id:{campaignId:"$campaignId",appId:"$appId",region:"$region"},ifa:{$addToSet:"$ifa"}}},
+        //         {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"},ifa:{$push:"$ifa"}, uniquerepo:{$push:{region:"$_id.region",unique:{$size:"$ifa"}}}}},
+        //         {$addFields:{unique:{"$reduce": {
+        //             "input": "$ifa",
+        //             "initialValue": [],
+        //             "in": { "$concatArrays": [ "$$value", "$$this" ] }
+        //         }}}},
+        //         {$group:{_id:"$_id.campaignId",ifa:{$addToSet:"$unique"},results:{$push:{appId:"$_id.appId",appwiseunique:{$size:"$unique"},result:"$uniquerepo"}}}},
+        //         {$addFields:{unique:{"$reduce": {
+        //             "input": "$ifa",
+        //             "initialValue": [],
+        //             "in": { "$concatArrays": [ "$$value", "$$this" ] }
+        //         }}}},
+        //         {$project:{_id:0,campaignId:"$_id",uniquecampwise:{$size:"$unique"},results:1}}
+        //     ],
+        //     allowDiskUse: true,
+        //     cursor: {  }
+        // })
+        res.json({campaignids,logids})
     }catch(e){
         console.log(e)
         res.status(400).json(e)
