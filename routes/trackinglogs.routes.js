@@ -612,7 +612,7 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
         //     allowDiskUse: true,
         //     cursor: {  }
         // })
-        res.json({campaignids,logids})
+        res.json({logids})
     }catch(e){
         console.log(e)
         res.status(400).json(e)
