@@ -601,12 +601,13 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
                     "initialValue": [],
                     "in": { "$concatArrays": [ "$$value", "$$this" ] }
                 }}}},
+                {$group:{_id:"$_id.campaignId",unique:{$addToSet:"$unique"},publishdata:{$push:"$publishdata"}}},
                 {$project:{_id:0,campaignId:"$_id",unique:{$size:"$unique"},publishdata:1}}
             ],
             allowDiskUse:true,
             cursor:{}
         })
-        uniqueuserslist = uniqueuserslist.cursor.firstBatch[0]
+        uniqueuserslist = uniqueuserslist.cursor.firstBatch
         res.json({uniqueuserslist})
     }catch(e){
         console.log(e)
