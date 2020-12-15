@@ -582,13 +582,18 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
 router.post('/testcom3',adminauth,async (req,res)  =>{
     const { campaignId, date } = req.body
     var resu = [];
-    trackinglogs.aggregate([
-        {$match:{"type":{$in:["impression"]}}},
-        {$group:{_id:{campaignId:"$campaignId",appId:"$appId",region:"$region"},ifa:{$addToSet:"$ifa"}}},
-        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"},ifa:{$addToSet:"$ifa"}, uniquerepo:{$push:{region:"$_id.region",unique:{$size:"$ifa"}}}}},
-        {$group:{_id:"$_id.campaignId",ifa:{$addToSet:"$ifa"},results:{$push:{appId:"$_id.appId",appwiseunique:{$size:"$ifa"},result:"$uniquerepo"}}}},
-        {$project:{_id:0,campaignId:"$_id",uniquecampwise:{$size:"$ifa"},results:1}}
-    ])
+    trackinglogs.db.db.command({
+        aggregate: "trackinglogs",
+        pipeline:[
+            {$match:{"type":{$in:["impression"]}}},
+            {$group:{_id:{campaignId:"$campaignId",appId:"$appId",region:"$region"},ifa:{$addToSet:"$ifa"}}},
+            {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"},ifa:{$addToSet:"$ifa"}, uniquerepo:{$push:{region:"$_id.region",unique:{$size:"$ifa"}}}}},
+            {$group:{_id:"$_id.campaignId",ifa:{$addToSet:"$ifa"},results:{$push:{appId:"$_id.appId",appwiseunique:{$size:"$ifa"},result:"$uniquerepo"}}}},
+            {$project:{_id:0,campaignId:"$_id",uniquecampwise:{$size:"$ifa"},results:1}}
+        ],
+        allowDiskUse: true,
+        cursor: {  }
+    })
     .then(result=>{
         resu = result;
         res.json(resu)
