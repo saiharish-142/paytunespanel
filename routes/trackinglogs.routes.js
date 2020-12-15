@@ -602,7 +602,7 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
         let uniqueuserslist2 = await trackinglogs.db.db.command({
             aggregate:"trackinglogs",
             pipeline:[
-                {$match:{"campaignId":{$in:logids},"type":{$in:["impression"]}}},
+                {$match:{"campaignId":{$in:logids}}},
                 {$group:{_id:null,ids:{$addToSet:"$campaignId"}}}
             ],
             allowDiskUse:true,
