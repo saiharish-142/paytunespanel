@@ -593,7 +593,7 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
                 "initialValue": [],
                 "in": { "$concatArrays": [ "$$value", "$$this" ] }
             }}}},
-            {$group:{_id:"$_id.campaignId",ifa:{$addToSet:"$unique"},results:{$push:{appId:"$_id.appId",appwiseunique:{$size:"$ifa"},result:"$uniquerepo"}}}},
+            {$group:{_id:"$_id.campaignId",ifa:{$addToSet:"$unique"},results:{$push:{appId:"$_id.appId",appwiseunique:{$size:"$unique"},result:"$uniquerepo"}}}},
             {$addFields:{unique:{"$reduce": {
                 "input": "$ifa",
                 "initialValue": [],
