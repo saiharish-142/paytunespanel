@@ -594,23 +594,20 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
             aggregate:"trackinglogs",
             pipeline:[
                 {$match:{"campaignId":{$in:logids},"type":{$in:["impression"]}}},
-                {$group:{_id:null,ids:{$addToSet:"$campaignId"}}}
-            ],
-            allowDiskUse:true,
-            cursor:{}
-        })
-        let uniqueuserslist2 = await trackinglogs.db.db.command({
-            aggregate:"trackinglogs",
-            pipeline:[
-                {$match:{"campaignId":{$in:logids}}},
-                {$group:{_id:null,ids:{$addToSet:"$campaignId"}}}
+                {$group:{_id:{campaignId:"$campaignId",appId:"$appId"},ifa:{$addToSet:"$ifa"}}},
+                {$group:{_id:"$_id.campaignId",unique:{$push:"$ifa"},publishdata:{$push:{appId:"$_id.appId",uniqueuser:{$size:"$ifa"}}}}},
+                {$addFields:{unique:{"$reduce": {
+                    "input": "$unique",
+                    "initialValue": [],
+                    "in": { "$concatArrays": [ "$$value", "$$this" ] }
+                }}}},
+                {$project:{_id:0,campaignId:"$_id",unique:{$size:"$unique"},publishdata:1}}
             ],
             allowDiskUse:true,
             cursor:{}
         })
         uniqueuserslist = uniqueuserslist.cursor.firstBatch[0].ids
-        uniqueuserslist2 = uniqueuserslist2.cursor.firstBatch[0].ids
-        res.json({logids:logids.length,uniqueuserslist:uniqueuserslist.length,uniqueuserslist2:uniqueuserslist2.length})
+        res.json({uniqueuserslist})
     }catch(e){
         console.log(e)
         res.status(400).json(e)
