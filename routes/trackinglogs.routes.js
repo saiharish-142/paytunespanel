@@ -621,7 +621,62 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
             cursor:{}
         })
         platformlist = platformlist.cursor.firstBatch
-        res.json({uniqueuserslist,platformlist})
+        let valueslist = await trackinglogs.db.db.command({
+            aggregate:"trackinglogs",
+            pipeline:[
+                {$match:{"date":date}},
+                {$group:{_id:{campaignId:"$campaignId",rtbType:"$rtbType",type:"$type",appId:"$appId"}, count:{$sum:1}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:{$arrayToObject:"$result"}}}}},
+                {$project:{campaignId:"$_id", report:"$report", _id:0}}
+            ],
+            allowDiskUse:true,
+            cursor:{}
+        })
+        valueslist = valueslist.cursor.firstBatch
+        let regionlist = await trackinglogs.db.db.command({
+            aggregate:"trackinglogs",
+            pipeline:[
+                {$match:{"date":date}},
+                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",region:"$region"}, count:{$sum:1}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",region:"$_id.region"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{region:"$_id.region",result:{$arrayToObject:"$result"}}}}},
+                {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
+                {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+            ],
+            allowDiskUse:true,
+            cursor:{}
+        })
+        regionlist = regionlist.cursor.firstBatch
+        let pinlist = await trackinglogs.db.db.command({
+            aggregate:"trackinglogs",
+            pipeline:[
+                {$match:{"date":date}},
+                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",zip:"$zip"}, count:{$sum:1}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",zip:"$_id.zip"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{zip:"$_id.zip",result:{$arrayToObject:"$result"}}}}},
+                {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
+                {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+            ],
+            allowDiskUse:true,
+            cursor:{}
+        })
+        pinlist = pinlist.cursor.firstBatch
+        let langlist = await trackinglogs.db.db.command({
+            aggregate:"trackinglogs",
+            pipeline:[
+                {$match:{"date":date}},
+                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",language:"$language"}, count:{$sum:1}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",language:"$_id.language"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{language:"$_id.language",result:{$arrayToObject:"$result"}}}}},
+                {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
+                {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+            ],
+            allowDiskUse:true,
+            cursor:{}
+        })
+        langlist = langlist.cursor.firstBatch
+        res.json({uniqueuserslist,platformlist,valueslist,regionlist,pinlist,langlist})
     }catch(e){
         console.log(e)
         res.status(400).json(e)
