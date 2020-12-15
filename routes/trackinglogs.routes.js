@@ -593,90 +593,111 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
         let uniqueuserslist = await trackinglogs.db.db.command({
             aggregate:"trackinglogs",
             pipeline:[
-                {$match:{"campaignId":{$in:logids},"type":{$in:["impression"]}}},
-                {$group:{_id:{campaignId:"$campaignId",appId:"$appId"},ifa:{$addToSet:"$ifa"}}},
-                {$group:{_id:"$_id.campaignId",unique:{$addToSet:"$ifa"},publishdata:{$push:{appId:"$_id.appId",uniqueuser:{$size:"$ifa"}}}}},
-                {$addFields:{unique:{"$reduce": {
-                    "input": "$unique",
-                    "initialValue": [],
-                    "in": { "$concatArrays": [ "$$value", "$$this" ] }
-                }}}},
-                {$project:{_id:0,campaignId:"$_id",unique:{$size:"$unique"},publishdata:1}}
+                {$facet:{
+                    "uniquesumdatawise":[
+                        {$match:{"campaignId":{$in:logids},"type":{$in:["impression"]}}},
+                        {$group:{_id:{campaignId:"$campaignId",appId:"$appId"},ifa:{$addToSet:"$ifa"}}},
+                        {$group:{_id:"$_id.campaignId",unique:{$addToSet:"$ifa"},publishdata:{$push:{appId:"$_id.appId",uniqueuser:{$size:"$ifa"}}}}},
+                        {$addFields:{unique:{"$reduce": {
+                            "input": "$unique",
+                            "initialValue": [],
+                            "in": { "$concatArrays": [ "$$value", "$$this" ] }
+                        }}}},
+                        {$project:{_id:0,campaignId:"$_id",unique:{$size:"$unique"},publishdata:1}},
+                    ],
+                    "regionwiseunique":[
+                        {$match:{"campaignId":{$in:logids},"type":{$in:["impression"]}}},
+                        {$group:{_id:{campaignId:"$campaignId",appId:"$appId",region:"$region"},ifa:{$addToSet:"$ifa"}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"}, uniquerepo:{$push:{region:"$_id.region",unique:{$size:"$ifa"}}}}},
+                        {$group:{_id:"$_id.campaignId",results:{$push:{appId:"$_id.appId",result:"$uniquerepo"}}}},
+                        {$project:{_id:0,campaignId:"$_id",results:1}}
+                    ],
+                    "pinwiseunique":[
+                        {$match:{"campaignId":{$in:logids},"type":{$in:["impression"]}}},
+                        {$group:{_id:{campaignId:"$campaignId",appId:"$appId",zip:"$zip"},ifa:{$addToSet:"$ifa"}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"}, uniquerepo:{$push:{zip:"$_id.zip",unique:{$size:"$ifa"}}}}},
+                        {$group:{_id:"$_id.campaignId",results:{$push:{appId:"$_id.appId",result:"$uniquerepo"}}}},
+                        {$project:{_id:0,campaignId:"$_id",results:1}}
+                    ],
+                    "lanwiseunique":[
+                        {$match:{"campaignId":{$in:logids},"type":{$in:["impression"]}}},
+                        {$group:{_id:{campaignId:"$campaignId",appId:"$appId",language:"$language"},ifa:{$addToSet:"$ifa"}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"}, uniquerepo:{$push:{language:"$_id.language",unique:{$size:"$ifa"}}}}},
+                        {$group:{_id:"$_id.campaignId",results:{$push:{appId:"$_id.appId",result:"$uniquerepo"}}}},
+                        {$project:{_id:0,campaignId:"$_id",results:1}}
+                    ]
+                }}
             ],
             allowDiskUse:true,
             cursor:{}
         })
         uniqueuserslist = uniqueuserslist.cursor.firstBatch
-        let platformlist = await trackinglogs.db.db.command({
-            aggregate:"trackinglogs",
+        let wholetypelist = await trackinglogs.db.db.command({
+            aggregate: "trackinglogs",
             pipeline:[
-                {$match:{"date":date}},
-                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",pptype:"$pptype"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",pptype:"$_id.pptype"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{pptype:"$_id.pptype",result:{$arrayToObject:"$result"}}}}},
-                {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
-                {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                {$facet:{
+                    "appIds":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",date:"$date",appId:"$appId"}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",date:"$_id.date"},ids:{$push:"$_id.appId"}}},
+                        {$project:{_id:0,campaignId:"$_id.campaignId",date:"$_id.date",ids:"$ids"}}
+                    ],
+                    "typeValues":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",rtbType:"$rtbType",type:"$type",appId:"$appId"}, count:{$sum:1}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:{$arrayToObject:"$result"}}}}},
+                        {$project:{campaignId:"$_id", report:"$report", _id:0}}
+                    ],"typebyRegion":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",region:"$region"}, count:{$sum:1}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType",region:"$_id.region"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{region:"$_id.region",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
+                        {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                    ],"typeByLan":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",language:"$language"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",language:"$_id.language"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{language:"$_id.language",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
+                        {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                    ],"typeByPhModel":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",phoneMake:"$phoneMake",phoneModel:"$phoneModel"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",phoneMake:"$_id.phoneMake",phoneModel:"$_id.phoneModel"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{phoneModel:{$concat: [ "$_id.phoneMake", " - ", "$_id.phoneModel" ]},result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
+                        {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                    ],"typeByPT":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",platformType:"$platformType",osVersion:"$osVersion"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",platformType:"$_id.platformType",osVersion:"$_id.osVersion"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{platformType:{$concat: [ "$_id.platformType", " - ", "$_id.osVersion" ]},result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
+                        {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                    ],"typeByPin":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",zip:"$zip"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",zip:"$_id.zip"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{zip:"$_id.zip",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
+                        {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                    ],"typeByDev":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",pptype:"$pptype"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",pptype:"$_id.pptype"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{pptype:"$_id.pptype",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
+                        {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                    ]
+                }}
             ],
-            allowDiskUse:true,
-            cursor:{}
+            allowDiskUse: true,
+            cursor: {  }
         })
-        platformlist = platformlist.cursor.firstBatch
-        let valueslist = await trackinglogs.db.db.command({
-            aggregate:"trackinglogs",
-            pipeline:[
-                {$match:{"date":date}},
-                {$group:{_id:{campaignId:"$campaignId",rtbType:"$rtbType",type:"$type",appId:"$appId"}, count:{$sum:1}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:{$arrayToObject:"$result"}}}}},
-                {$project:{campaignId:"$_id", report:"$report", _id:0}}
-            ],
-            allowDiskUse:true,
-            cursor:{}
-        })
-        valueslist = valueslist.cursor.firstBatch
-        let regionlist = await trackinglogs.db.db.command({
-            aggregate:"trackinglogs",
-            pipeline:[
-                {$match:{"date":date}},
-                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",region:"$region"}, count:{$sum:1}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",region:"$_id.region"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{region:"$_id.region",result:{$arrayToObject:"$result"}}}}},
-                {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
-                {$project:{_id:0,campaignId:"$_id",report:"$report"}}
-            ],
-            allowDiskUse:true,
-            cursor:{}
-        })
-        regionlist = regionlist.cursor.firstBatch
-        let pinlist = await trackinglogs.db.db.command({
-            aggregate:"trackinglogs",
-            pipeline:[
-                {$match:{"date":date}},
-                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",zip:"$zip"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",zip:"$_id.zip"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{zip:"$_id.zip",result:{$arrayToObject:"$result"}}}}},
-                {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
-                {$project:{_id:0,campaignId:"$_id",report:"$report"}}
-            ],
-            allowDiskUse:true,
-            cursor:{}
-        })
-        pinlist = pinlist.cursor.firstBatch
-        let langlist = await trackinglogs.db.db.command({
-            aggregate:"trackinglogs",
-            pipeline:[
-                {$match:{"date":date}},
-                {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",language:"$language"}, count:{$sum:1}}},
-                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",language:"$_id.language"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{language:"$_id.language",result:{$arrayToObject:"$result"}}}}},
-                {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
-                {$project:{_id:0,campaignId:"$_id",report:"$report"}}
-            ],
-            allowDiskUse:true,
-            cursor:{}
-        })
-        langlist = langlist.cursor.firstBatch
-        res.json({uniqueuserslist,platformlist,valueslist,regionlist,pinlist,langlist})
+        wholetypelist = wholetypelist.cursor.firstBatch
+        res.json({uniqueuserslist,wholetypelist})
     }catch(e){
         console.log(e)
         res.status(400).json(e)
