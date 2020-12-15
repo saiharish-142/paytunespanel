@@ -567,8 +567,8 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
     const { campaignId, date, date2 } = req.body
     var resu = [];
     var newdate = new Date(date2)
-    let number = await trackinglogs.distinct('ifa',{"campaignId":"5f736a8602a2051e8de33360","appId": "5d3f052e979a1c2391016c04","type":"impression"})
-    res.json({num:number.length})
+    let number = await trackinglogs.distinct('ifa',{"campaignId":"5f736a8602a2051e8de33360","appId": "5d3f052e979a1c2391016c04","type":"impression"}).length
+    res.json({num:number})
 })
 
 router.post('/testcom3',adminauth,async (req,res)  =>{
