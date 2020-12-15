@@ -482,6 +482,20 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
                 {$group:{_id:"$_id.campaignId",ifa:{$addToSet:"$ifa"},results:{$push:{appId:"$_id.appId",appwiseunique:{$size:"$ifa"},result:"$uniquerepo"}}}},
                 {$project:{_id:0,campaignId:"$_id",uniquecampwise:{$size:"$ifa"},results:1}}
             ],
+            "pinwiseunique":[
+                {$match:{"type":{$in:["impression"]}}},
+                {$group:{_id:{campaignId:"$campaignId",appId:"$appId",zip:"$zip"},ifa:{$addToSet:"$ifa"}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"}, uniquerepo:{$push:{zip:"$_id.zip",unique:{$size:"$ifa"}}}}},
+                {$group:{_id:"$_id.campaignId",results:{$push:{appId:"$_id.appId",result:"$uniquerepo"}}}},
+                {$project:{_id:0,campaignId:"$_id",results:1}}
+            ],
+            "lanwiseunique":[
+                {$match:{"type":{$in:["impression"]}}},
+                {$group:{_id:{campaignId:"$campaignId",appId:"$appId",language:"$language"},ifa:{$addToSet:"$ifa"}}},
+                {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"}, uniquerepo:{$push:{language:"$_id.language",unique:{$size:"$ifa"}}}}},
+                {$group:{_id:"$_id.campaignId",results:{$push:{appId:"$_id.appId",result:"$uniquerepo"}}}},
+                {$project:{_id:0,campaignId:"$_id",results:1}}
+            ],
             "appIds":[
                 {$match:{"date":date}},
                 {$group:{_id:{campaignId:"$campaignId",date:"$date",appId:"$appId"}}},
@@ -554,9 +568,26 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
     var resu = [];
     var newdate = new Date(date2)
     StreamingAds.aggregate([
-        {$match:{"endDate":{$gte:newdate}}},
+        {$match:{"endDate":{$gte:newdate},"startDate":{$lte:newdate}}},
         {$group:{_id:null,ids:{$push:"$_id"}}},
         {$project:{_id:0,ids:"$ids"}}
+    ])
+    .then(result=>{
+        resu = result;
+        res.json(resu)
+    })
+    .catch(err => console.log(err))
+})
+
+router.post('/testcom3',adminauth,async (req,res)  =>{
+    const { campaignId, date } = req.body
+    var resu = [];
+    trackinglogs.aggregate([
+        {$match:{"type":{$in:["impression"]}}},
+        {$group:{_id:{campaignId:"$campaignId",appId:"$appId",region:"$region"},ifa:{$addToSet:"$ifa"}}},
+        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"},ifa:{$addToSet:"$ifa"}, uniquerepo:{$push:{region:"$_id.region",unique:{$size:"$ifa"}}}}},
+        {$group:{_id:"$_id.campaignId",ifa:{$addToSet:"$ifa"},results:{$push:{appId:"$_id.appId",appwiseunique:{$size:"$ifa"},result:"$uniquerepo"}}}},
+        {$project:{_id:0,campaignId:"$_id",uniquecampwise:{$size:"$ifa"},results:1}}
     ])
     .then(result=>{
         resu = result;
