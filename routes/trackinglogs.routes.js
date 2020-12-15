@@ -599,15 +599,8 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
             allowDiskUse:true,
             cursor:{}
         })
-        // let uniqueusers = await trackinglogs.db.db.command({
-        //     aggregate: "trackinglogs",
-        //     pipeline:[
-        //         
-        //     ],
-        //     allowDiskUse: true,
-        //     cursor: {  }
-        // })
-        res.json({logids:logids.length,uniqueuserslist})
+        uniqueuserslist = uniqueuserslist.cursor.firstBatch[0].ids
+        res.json({logids:logids.length,uniqueuserslist:uniqueuserslist.length})
     }catch(e){
         console.log(e)
         res.status(400).json(e)
