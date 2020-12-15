@@ -10,7 +10,17 @@ const cron = require('node-cron')
 app.use(express.json())
 app.use(cors())
 
-mongoose.connect(MONGOURI,{useNewUrlParser: true,useFindAndModify:false,socketTimeoutMS: 30000,keepAlive: true,reconnectTries: 30000, useUnifiedTopology: true})
+mongoose.connect(MONGOURI,{
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    autoIndex: false, // Don't build indexes
+    poolSize: 10, // Maintain up to 10 socket connections
+    serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+    family: 4 // Use IPv4, skip trying IPv6
+})
 mongoose.connection.on('connected',() => {
     console.log("connected to database.....")
 })
