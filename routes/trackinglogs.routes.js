@@ -622,51 +622,58 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
                     ],
                     "typeValues":[
                         {$match:{"date":date}},
-                        {$group:{_id:{campaignId:"$campaignId",rtbType:"$rtbType",type:"$type",appId:"$appId"}, count:{$sum:1}}},
-                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId"}, count:{$sum:1}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:{$arrayToObject:"$result"}}}}},
                         {$project:{campaignId:"$_id", report:"$report", _id:0}}
                     ],"typebyRegion":[
                         {$match:{"date":date}},
-                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",region:"$region"}, count:{$sum:1}}},
-                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType",region:"$_id.region"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{region:"$_id.region",result:{$arrayToObject:"$result"}}}}},
-                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",region:"$region"}, count:{$sum:1}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",region:"$_id.region"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{region:"$_id.region",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                         {$project:{_id:0,campaignId:"$_id",report:"$report"}}
                     ],"typeByLan":[
                         {$match:{"date":date}},
-                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",language:"$language"}, count:{$sum:1}}},
-                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",language:"$_id.language"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{language:"$_id.language",result:{$arrayToObject:"$result"}}}}},
-                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",language:"$language"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",language:"$_id.language"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{language:"$_id.language",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                         {$project:{_id:0,campaignId:"$_id",report:"$report"}}
                     ],"typeByPhModel":[
                         {$match:{"date":date}},
-                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",phoneMake:"$phoneMake",phoneModel:"$phoneModel"}, count:{$sum:1}}},
-                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",phoneMake:"$_id.phoneMake",phoneModel:"$_id.phoneModel"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{phoneModel:{$concat: [ "$_id.phoneMake", " - ", "$_id.phoneModel" ]},result:{$arrayToObject:"$result"}}}}},
-                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",phoneMake:"$phoneMake",phoneModel:"$phoneModel"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",phoneMake:"$_id.phoneMake",phoneModel:"$_id.phoneModel"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{phoneModel:{$concat: [ "$_id.phoneMake", " - ", "$_id.phoneModel" ]},result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                         {$project:{_id:0,campaignId:"$_id",report:"$report"}}
                     ],"typeByPT":[
                         {$match:{"date":date}},
-                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",platformType:"$platformType",osVersion:"$osVersion"}, count:{$sum:1}}},
-                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",platformType:"$_id.platformType",osVersion:"$_id.osVersion"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{platformType:{$concat: [ "$_id.platformType", " - ", "$_id.osVersion" ]},result:{$arrayToObject:"$result"}}}}},
-                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",platformType:"$platformType",osVersion:"$osVersion"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",platformType:"$_id.platformType",osVersion:"$_id.osVersion"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{platformType:{$concat: [ "$_id.platformType", " - ", "$_id.osVersion" ]},result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
+                        {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                    ],"typeByPlatform":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",platformType:"$platformType"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",platformType:"$_id.platformType"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{platformType:"$_id.platformType",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                         {$project:{_id:0,campaignId:"$_id",report:"$report"}}
                     ],"typeByPin":[
                         {$match:{"date":date}},
-                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",zip:"$zip"}, count:{$sum:1}}},
-                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",zip:"$_id.zip"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{zip:"$_id.zip",result:{$arrayToObject:"$result"}}}}},
-                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",zip:"$zip"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",zip:"$_id.zip"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{zip:"$_id.zip",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                         {$project:{_id:0,campaignId:"$_id",report:"$report"}}
                     ],"typeByDev":[
                         {$match:{"date":date}},
-                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",rtbType:"$rtbType",pptype:"$pptype"}, count:{$sum:1}}},
-                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",rtbType:"$_id.rtbType",pptype:"$_id.pptype"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
-                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",rtbType:"$_id.rtbType"}, result:{$push:{pptype:"$_id.pptype",result:{$arrayToObject:"$result"}}}}},
-                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",rtbType:"$_id.rtbType",result:"$result"}}}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",pptype:"$pptype"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",pptype:"$_id.pptype"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{pptype:"$_id.pptype",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
                         {$project:{_id:0,campaignId:"$_id",report:"$report"}}
                     ]
                 }}
