@@ -483,7 +483,6 @@ async function ReportsRefresher(date,credate){
             cursor: {  }
         }).catch(err => console.log(err))
         wholetypelist = wholetypelist.cursor.firstBatch
-        var resultdata = result.cursor.firstBatch;
         wholetypelist[0].appIds.map(caompoids=>{
             var campId = caompoids.campaignId;
             var repodate = caompoids.date;
