@@ -25,6 +25,10 @@ const subSchemaphoneModel = new mongoose.Schema({
     phoneModel:{type:String},result:[]
 },{ _id : false })
 
+const subSchemaphonePlatform = new mongoose.Schema({
+    platformType:{type:String},result:[]
+},{ _id : false })
+
 const reportSchema = new mongoose.Schema({
     date:{type:String},
     Publisher:{type:ObjectId,ref:'publisherapps'},
@@ -44,6 +48,7 @@ const reportSchema = new mongoose.Schema({
     pincode:[subSchemapincode],
     language:[subSchemalanguage],
     phoneModel:[subSchemaphoneModel],
+    phonePlatform:[subSchemaphonePlatform],
     deviceModel:[subSchemadevicetype],
     complete:{type:Number},
     clicks:{type:Number}

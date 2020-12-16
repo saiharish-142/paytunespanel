@@ -468,6 +468,298 @@ router.post('/procedtest1',adminauth,async (req,res)  =>{
     .catch(err => console.log(err))
 })
 
+router.post('/procedtest2',adminauth,async (req,res)  =>{
+    const { campaignId, date } = req.body
+    var resu = [];
+    try  {
+        let logids = await trackinglogs.aggregate([
+            {$match:{"date":date}},
+            {$group:{_id:null,ids:{$addToSet:"$campaignId"}}},
+            {$project:{_id:0,ids:1}}
+        ]).catch(err => console.log(err))
+        logids = logids[0].ids
+        let uniqueuserslist = await trackinglogs.db.db.command({
+            aggregate:"trackinglogs",
+            pipeline:[
+                {$facet:{
+                    "uniquesumdatawise":[
+                        {$match:{"campaignId":{$in:logids},"type":{$in:["impression"]}}},
+                        {$group:{_id:{campaignId:"$campaignId",appId:"$appId"},ifa:{$addToSet:"$ifa"}}},
+                        {$group:{_id:"$_id.campaignId",unique:{$addToSet:"$ifa"},publishdata:{$push:{appId:"$_id.appId",uniqueuser:{$size:"$ifa"}}}}},
+                        {$addFields:{unique:{"$reduce": {
+                            "input": "$unique",
+                            "initialValue": [],
+                            "in": { "$concatArrays": [ "$$value", "$$this" ] }
+                        }}}},
+                        {$project:{_id:0,campaignId:"$_id",unique:{$size:"$unique"},publishdata:1}},
+                    ],
+                    "regionwiseunique":[
+                        {$match:{"campaignId":{$in:logids},"type":{$in:["impression"]}}},
+                        {$group:{_id:{campaignId:"$campaignId",appId:"$appId",region:"$region"},ifa:{$addToSet:"$ifa"}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"}, uniquerepo:{$push:{region:"$_id.region",unique:{$size:"$ifa"}}}}},
+                        {$group:{_id:"$_id.campaignId",results:{$push:{appId:"$_id.appId",result:"$uniquerepo"}}}},
+                        {$project:{_id:0,campaignId:"$_id",results:1}}
+                    ],
+                    "pinwiseunique":[
+                        {$match:{"campaignId":{$in:logids},"type":{$in:["impression"]}}},
+                        {$group:{_id:{campaignId:"$campaignId",appId:"$appId",zip:"$zip"},ifa:{$addToSet:"$ifa"}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"}, uniquerepo:{$push:{zip:"$_id.zip",unique:{$size:"$ifa"}}}}},
+                        {$group:{_id:"$_id.campaignId",results:{$push:{appId:"$_id.appId",result:"$uniquerepo"}}}},
+                        {$project:{_id:0,campaignId:"$_id",results:1}}
+                    ],
+                    "lanwiseunique":[
+                        {$match:{"campaignId":{$in:logids},"type":{$in:["impression"]}}},
+                        {$group:{_id:{campaignId:"$campaignId",appId:"$appId",language:"$language"},ifa:{$addToSet:"$ifa"}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId"}, uniquerepo:{$push:{language:"$_id.language",unique:{$size:"$ifa"}}}}},
+                        {$group:{_id:"$_id.campaignId",results:{$push:{appId:"$_id.appId",result:"$uniquerepo"}}}},
+                        {$project:{_id:0,campaignId:"$_id",results:1}}
+                    ]
+                }}
+            ],
+            allowDiskUse:true,
+            cursor:{}
+        })
+        uniqueuserslist = uniqueuserslist.cursor.firstBatch
+        let wholetypelist = await trackinglogs.db.db.command({
+            aggregate: "trackinglogs",
+            pipeline:[
+                {$facet:{
+                    "appIds":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",date:"$date",appId:"$appId"}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",date:"$_id.date"},ids:{$push:"$_id.appId"}}},
+                        {$project:{_id:0,campaignId:"$_id.campaignId",date:"$_id.date",ids:"$ids"}}
+                    ],
+                    "typeValues":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId"}, count:{$sum:1}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:{$arrayToObject:"$result"}}}}},
+                        {$project:{campaignId:"$_id", report:"$report", _id:0}}
+                    ],"typebyRegion":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",region:"$region"}, count:{$sum:1}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId",region:"$_id.region"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{region:"$_id.region",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
+                        {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                    ],"typeByLan":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",language:"$language"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",language:"$_id.language"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{language:"$_id.language",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
+                        {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                    ],"typeByPhModel":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",phoneMake:"$phoneMake",phoneModel:"$phoneModel"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",phoneMake:"$_id.phoneMake",phoneModel:"$_id.phoneModel"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{phoneModel:{$concat: [ "$_id.phoneMake", " - ", "$_id.phoneModel" ]},result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
+                        {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                    ],"typeByPT":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",platformType:"$platformType",osVersion:"$osVersion"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",platformType:"$_id.platformType",osVersion:"$_id.osVersion"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{platformType:{$concat: [ "$_id.platformType", " - ", "$_id.osVersion" ]},result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
+                        {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                    ],"typeByPlatform":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",platformType:"$platformType"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",platformType:"$_id.platformType"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{platformType:"$_id.platformType",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
+                        {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                    ],"typeByPin":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",zip:"$zip"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",zip:"$_id.zip"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{zip:"$_id.zip",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
+                        {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                    ],"typeByDev":[
+                        {$match:{"date":date}},
+                        {$group:{_id:{campaignId:"$campaignId",type:"$type",appId:"$appId",pptype:"$pptype"}, count:{$sum:1}}},
+                        {$group:{_id:{campaignId:"$_id.campaignId",appId:"$_id.appId",pptype:"$_id.pptype"}, result:{$push:{k:"$_id.type",v:"$count"}}}},
+                        {$group:{_id:{appId:"$_id.appId",campaignId:"$_id.campaignId"}, result:{$push:{pptype:"$_id.pptype",result:{$arrayToObject:"$result"}}}}},
+                        {$group:{_id:"$_id.campaignId",report:{$push:{appId:"$_id.appId",result:"$result"}}}},
+                        {$project:{_id:0,campaignId:"$_id",report:"$report"}}
+                    ]
+                }}
+            ],
+            allowDiskUse: true,
+            cursor: {  }
+        }).catch(err => console.log(err))
+        wholetypelist = wholetypelist.cursor.firstBatch
+        var resultdata = result.cursor.firstBatch;
+        wholetypelist[0].appIds.map(caompoids=>{
+            var campId = caompoids.campaignId;
+            var repodate = caompoids.date;
+            var uniquedatareq = uniqueuserslist[0]
+            var uniquedataofcamp = uniquedatareq.uniquesumdatawise.filter(x => x.campaignId === campId);
+            var uniquecountofcamp;
+            uniquedataofcamp.map(dd=>{
+                uniquecountofcamp = dd.unique
+            })
+            var uniqueregiondatacamp = uniquedatareq.regionwiseunique.filter(x => x.campaignId === campId);
+            var uniquepindatacamp = uniquedatareq.pinwiseunique.filter(x => x.campaignId === campId);
+            var uniquelangdatacamp = uniquedatareq.lanwiseunique.filter(x => x.campaignId === campId);
+            var resdatareq = wholetypelist[0]
+            var impredatacamp = resdatareq.typeValues.filter(x => x.campaignId === campId);
+            var regiondatacamp = resdatareq.typebyRegion.filter(x => x.campaignId === campId);
+            var languagedatacamp = resdatareq.typeByLan.filter(x => x.campaignId === campId);
+            var pindatacamp = resdatareq.typeByPin.filter(x => x.campaignId === campId);
+            var devicedatacamp = resdatareq.typeByDev.filter(x => x.campaignId === campId);
+            var phmodatacamp = resdatareq.typeByPhModel.filter(x => x.campaignId === campId);
+            var plattypedatacamp = resdatareq.typeByPT.filter(x => x.campaignId === campId);
+            var platformdatacamp = resdatareq.typeByPlatform.filter(x => x.campaignId === campId);
+            // console.log(pindatacamp[0])
+            caompoids.ids.map(app_id=>{
+                var appIdreq = app_id;
+                var appuniquedata = uniquedataofcamp[0]
+                var appuniquecount;
+                uniquedataofcamp.map(dd=>{
+                    appuniquedata = dd.publishdata.filter(x => x.appId === appIdreq)
+                    appuniquecount = appuniquedata[0].uniqueuser
+                })
+                var uniqueregiondataapp = [];
+                uniqueregiondatacamp.map(dd => {
+                    uniqueregiondataapp = dd.results.filter(x => x.appId === appIdreq)
+                    uniqueregiondataapp = uniqueregiondataapp[0].result
+                })
+                var uniquepindataapp = [];
+                uniquepindatacamp.map(dd => {
+                    uniquepindataapp = dd.results.filter(x => x.appId === appIdreq)
+                    uniquepindataapp = uniquepindataapp[0].result
+                })
+                // console.log(typeof uniquepindataapp)
+                var uniquelangdataapp =[];
+                uniquelangdatacamp.map(dd => {
+                    uniquelangdataapp = dd.results.filter(x => x.appId === appIdreq)
+                    uniquelangdataapp = uniquelangdataapp[0].result
+                })
+                // console.log(uniquelangdataapp)
+                var impressionsapp;
+                var completeapp;
+                var clickapp;
+                var firstqapp;
+                var thirdqapp;
+                var midpointapp;
+                var appimpredata = [];
+                impredatacamp.map(dd => {
+                    appimpredata = dd.report.filter(x => x.appId ===appIdreq)
+                    appimpredata = appimpredata[0].result;
+                    impressionsapp = appimpredata.impression ? appimpredata.impression :0 
+                    completeapp = appimpredata.complete ? appimpredata.complete :0 
+                    clickapp = appimpredata.click ? appimpredata.click :0 + 
+                            appimpredata.companionclicktracking ? appimpredata.companionclicktracking :0 +
+                            appimpredata.clicktracking ? appimpredata.clicktracking :0 ;
+                    firstqapp = appimpredata.firstquartile ? appimpredata.firstquartile :0 
+                    thirdqapp = appimpredata.thirdquartile ? appimpredata.thirdquartile :0 
+                    midpointapp = appimpredata.midpoint ? appimpredata.midpoint :0 
+                })
+                var regiondataapp = [];
+                regiondatacamp.map(dd =>{
+                    regiondataapp = dd.report.filter(x => x.appId === appIdreq)
+                    regiondataapp = regiondataapp[0].result
+                    regiondataapp = regiondataapp.map(ad =>{
+                        var regionlocal = uniqueregiondataapp.filter(x => x.region === ad.region)
+                        ad.unique = regionlocal;
+                        regionlocal.map(mad => {
+                            ad.unique = mad.unique
+                        })
+                        return ad;
+                    })
+                    // console.log(regiondataapp)
+                })
+                var pindataapp =[];
+                pindatacamp.map(dd =>{
+                    pindataapp = dd.report.filter(x => x.appId === appIdreq)
+                    pindataapp = pindataapp[0].result
+                    pindataapp = pindataapp.map(ad =>{
+                        var pinlocal = uniquepindataapp.filter(x => x.zip === ad.zip)
+                        ad.unique = pinlocal;
+                        // console.log(JSON.stringify(pinlocal[0]))
+                        pinlocal.map(mad => {
+                            ad.unique = mad.unique
+                        })
+                        return ad;
+                    })
+                    // console.log(pindataapp)
+                })
+                var langdataapp =[];
+                languagedatacamp.map(dd =>{
+                    langdataapp = dd.report.filter(x => x.appId === appIdreq)
+                    langdataapp = langdataapp[0].result
+                    langdataapp = langdataapp.map(ad =>{
+                        var langlocal = uniquelangdataapp.filter(x => x.zip === ad.zip)
+                        ad.unique = 0;
+                        // console.log(JSON.stringify(langlocal[0]))
+                        langlocal.map(mad => {
+                            ad.unique = mad.unique
+                        })
+                        return ad;
+                    })
+                    // console.log(langdataapp)
+                })
+                var devicedataapp =[];
+                devicedatacamp.map(dd =>{
+                    devicedataapp = dd.report.filter(x => x.appId === appIdreq)
+                    devicedataapp = devicedataapp[0].result
+                    // console.log(devicedataapp)
+                })
+                var phmodataapp =[];
+                phmodatacamp.map(dd =>{
+                    phmodataapp = dd.report.filter(x => x.appId === appIdreq)
+                    phmodataapp = phmodataapp[0].result
+                    // console.log(phmodataapp)
+                })
+                var plattypedataapp =[];
+                plattypedatacamp.map(dd =>{
+                    plattypedataapp = dd.report.filter(x => x.appId === appIdreq)
+                    plattypedataapp = plattypedataapp[0].result
+                    // console.log(plattypedataapp)
+                })
+                var platformbasedataapp =[];
+                platformdatacamp.map(dd =>{
+                    platformbasedataapp = dd.report.filter(x => x.appId === appIdreq)
+                    platformbasedataapp = platformbasedataapp[0].result
+                    // console.log(platformbasedataapp)
+                })
+                const Report = mongoose.model('Report')
+                const report = new Report({
+                    date:repodate,
+                    Publisher:appIdreq,
+                    campaignId:campId,
+                    impressions:impressionsapp,
+                    firstQuartile:firstqapp,
+                    midpoint:midpointapp,
+                    thirdQuartile:thirdqapp,
+                    complete:completeapp,
+                    clicks:clickapp,
+                    publishunique:appuniquecount,
+                    campunique:uniquecountofcamp,
+                    region:regiondataapp,
+                    platformtype:plattypedataapp,
+                    language:langdataapp,
+                    pincode:pindataapp,
+                    phoneModel:phmodataapp,
+                    phonePlatform:platformbasedataapp,
+                    deviceModel:devicedataapp
+                })
+                resu.push(report)
+                report.save()
+                .then(ree=>console.log('complete'))
+                .catch(err => console.log('err'))
+            })
+        })
+        res.json(resu)
+    }catch(e){
+        console.log(e)
+    }
+})
+
 router.post('/testcom1',adminauth,async (req,res)  =>{
     const { campaignId, date } = req.body
     var resu = [];
