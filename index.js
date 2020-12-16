@@ -489,7 +489,7 @@ async function ReportsRefresher(date,credate){
             var repodate = caompoids.date;
             var uniquedatareq = uniqueuserslist[0]
             var uniquedataofcamp = uniquedatareq.uniquesumdatawise.filter(x => x.campaignId === campId);
-            var uniquecountofcamp;
+            var uniquecountofcamp = 0;
             uniquedataofcamp.map(dd=>{
                 uniquecountofcamp = dd.unique
             })
@@ -509,7 +509,7 @@ async function ReportsRefresher(date,credate){
             caompoids.ids.map(app_id=>{
                 var appIdreq = app_id;
                 var appuniquedata = uniquedataofcamp[0]
-                var appuniquecount;
+                var appuniquecount = 0;
                 uniquedataofcamp.map(dd=>{
                     appuniquedata = dd.publishdata.filter(x => x.appId === appIdreq)
                     appuniquecount = appuniquedata[0].uniqueuser
@@ -556,7 +556,6 @@ async function ReportsRefresher(date,credate){
                     regiondataapp = regiondataapp[0].result
                     regiondataapp = regiondataapp.map(ad =>{
                         var regionlocal = uniqueregiondataapp.filter(x => x.region === ad.region)
-                        ad.unique = regionlocal;
                         regionlocal.map(mad => {
                             ad.unique = mad.unique
                         })
@@ -570,7 +569,6 @@ async function ReportsRefresher(date,credate){
                     pindataapp = pindataapp[0].result
                     pindataapp = pindataapp.map(ad =>{
                         var pinlocal = uniquepindataapp.filter(x => x.zip === ad.zip)
-                        ad.unique = pinlocal;
                         // console.log(JSON.stringify(pinlocal[0]))
                         pinlocal.map(mad => {
                             ad.unique = mad.unique
@@ -585,7 +583,6 @@ async function ReportsRefresher(date,credate){
                     langdataapp = langdataapp[0].result
                     langdataapp = langdataapp.map(ad =>{
                         var langlocal = uniquelangdataapp.filter(x => x.zip === ad.zip)
-                        ad.unique = 0;
                         // console.log(JSON.stringify(langlocal[0]))
                         langlocal.map(mad => {
                             ad.unique = mad.unique
