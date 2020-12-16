@@ -13,7 +13,8 @@ app.use(cors())
 const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 900000
+    serverSelectionTimeoutMS: 900000,
+    socketTimeoutMS: 900000
 }
 
 mongoose.connect(MONGOURI,options)
