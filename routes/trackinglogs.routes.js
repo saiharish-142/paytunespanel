@@ -750,7 +750,7 @@ router.post('/procedtest2',adminauth,async (req,res)  =>{
                 resu.push(report)
                 report.save()
                 .then(ree=>console.log('complete'))
-                .catch(err => console.log('err'))
+                .catch(err => console.log(err))
             })
         })
         res.json(resu)
