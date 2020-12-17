@@ -71,11 +71,11 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1})
                 <TableBody>
                     {adss && adss.length >= 1 ? adss
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) =>{ 
+                    .map((row,i) =>{ 
                         if(typeof row !== 'undefined'){
                         if(row[jsotitle] && row[jsotitle] !== " - " && row[jsotitle] && row[jsotitle] !== undefined){
                         return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
+                        <TableRow key ={i} hover role="checkbox" tabIndex={-1} key={row._id}>
                             <TableCell>{row[jsotitle]}</TableCell>
                             <TableCell>{dateformatchanger(streamingads.startDate[0].slice(0,10))}</TableCell>
                             <TableCell>{dateformatchanger(streamingads.endDate[0].slice(0,10))}</TableCell>

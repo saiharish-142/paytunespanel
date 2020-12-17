@@ -26,7 +26,7 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
     const classes = useStyles();
     const history = useHistory();
     const [page, setPage] = React.useState(0);
-    const [sa, setsa] = useState('create')
+    const [sa, setsa] = useState('remain')
     const [adss, setadss] = useState(streamingads)
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const {state1,dispatch1} = useContext(IdContext)
@@ -44,12 +44,13 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
     }
     useEffect(() => {
         setadss(streamingads)
+        campaignssorter(sa)
     }, [streamingads])
     useEffect(() => {
         // console.log('changed')
     }, [adss])
     useEffect(() => {
-        // console.log('changed')
+        // console.log(sa)
     }, [sa])
     const campaignssorter = (cmd) => {
         var datareq = streamingads;

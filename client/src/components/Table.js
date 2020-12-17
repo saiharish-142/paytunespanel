@@ -33,6 +33,8 @@ export default function BasicTable({singlead}) {
     const [tqd, settqd] = useState(0)
     const [completed, setcompleted] = useState(0)
     const [click, setclick] = useState(0)
+    const [uniquesumcamp, setuniquesumcamp] = useState(0)
+    const [uniquesumcampd, setuniquesumcampd] = useState(0)
     const [logsd, setlogsd] = useState([])
     // const [idsd, setidsd] = useState([])
     const [impred, setimpred] = useState(0)
@@ -95,11 +97,17 @@ export default function BasicTable({singlead}) {
                 result.map((re)=>{
                     impressions += re.impressions
                     firstq += re.firstQuartile
-                    secq += re.secondQuartile
+                    secq += re.midpoint
                     thirdq += re.thirdQuartile
                     completes += re.complete
                     clicks += re.clicks
                 })
+                var uniquenum = 0;
+                result.map(log => {
+                    log.campunique = log.campunique.sort(function(a,b){return b-a;})
+                    uniquenum = log.campunique[0]
+                })
+                setuniquesumcamp(uniquenum)
                 // console.log(firstq,secq,thirdq,completes)
                 offlineReports(result,impressions,clicks,firstq,secq,thirdq,completes)
                 setimpre(impressions)
@@ -134,7 +142,7 @@ export default function BasicTable({singlead}) {
                 impressions1 += re.impressions
                 clicks1 += re.clicks
                 firt1 += re.firstQuartile ? re.firstQuartile : 0
-                sec1 += re.secondQuartile ? re.secondQuartile : 0
+                sec1 += re.midpoint ? re.midpoint : 0
                 thir1 += re.thirdQuartile ? re.thirdQuartile : 0
                 compo1 += re.complete ? re.complete : 0
             })
@@ -144,7 +152,7 @@ export default function BasicTable({singlead}) {
                 var d2 = new Date(b.updatedAt[0])
                 return d2 - d1
             })
-            // console.log(firt1,sec1,thir1,compo1)
+            // console.log(logss)
             if(logss.length)
             setlogs(logss)
             if(impressions1)
@@ -183,6 +191,12 @@ export default function BasicTable({singlead}) {
                     impressions += re.impressions
                     clicks += re.clicks
                 })
+                var uniquenum = 0;
+                result.map(log => {
+                    log.campunique = log.campunique.sort(function(a,b){return b-a;})
+                    uniquenum = log.campunique[0]
+                })
+                setuniquesumcampd(uniquenum)
                 // console.log(result)
                 offlineReportsd(result,impressions,clicks)
                 setimpred(impressions)
@@ -219,7 +233,7 @@ export default function BasicTable({singlead}) {
                 var d2 = new Date(b.updatedAt[0])
                 return d2 - d1
             })
-            console.log(logss)
+            // console.log(logss)
             if(logss.length)
             setlogsd(logss)
             if(impressions1)
@@ -271,6 +285,11 @@ export default function BasicTable({singlead}) {
         // console.log(s,date)
         return s.slice(3,5) + '/' + s.slice(0,2) + '/' + s.slice(6,10) + ' ' + s.slice(11,)
     }
+    const uniquetopfinder = (dataunique) => {
+        var gotdata = dataunique;
+        gotdata = gotdata.sort(function(a,b){return b-a;})
+        return gotdata[0];
+    }
     // console.log(Date('2020-11-28T18:30:00.541Z').toString())
     // console.log(Date('2020-11-28T18:30:00.541Z'))
     // console.log(Date('2020-11-28T18:30:00.541Z'))
@@ -290,6 +309,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Unique Users</TableCell>
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total Clicks Delivered till date</TableCell>
@@ -300,7 +320,7 @@ export default function BasicTable({singlead}) {
             </TableRow>
             </TableHead>
             <TableBody>
-            {singlead._id && (logs.length>0 || logsd.length>0) && ids ?
+            {singlead._id && (logs.length>0) && ids ?
                 <TableRow 
                     style={{
                         background: colorfinder(
@@ -316,6 +336,7 @@ export default function BasicTable({singlead}) {
                     <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
                     <TableCell>{ids && ids.audimpression}</TableCell>
                     <TableCell>{impre}</TableCell>
+                    <TableCell>{uniquesumcamp}</TableCell>
                     <TableCell>{ids &&  Math.round(ids.audimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{click}</TableCell>
@@ -338,6 +359,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Unique Users</TableCell>
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total Clicks Delivered till date</TableCell>
@@ -348,7 +370,7 @@ export default function BasicTable({singlead}) {
             </TableRow>
             </TableHead>
             <TableBody>
-            {singlead._id && ids && (logs.length>0 || logsd.length>0) ?
+            {singlead._id && ids && (logsd.length>0) ?
                 <TableRow 
                     style={{
                         background: colorfinder(
@@ -364,6 +386,7 @@ export default function BasicTable({singlead}) {
                     <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
                     <TableCell>{ids && ids.disimpression}</TableCell>
                     <TableCell>{impred}</TableCell>
+                    <TableCell>{uniquesumcampd}</TableCell>
                     <TableCell>{ids && Math.round(ids.disimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{clickd}</TableCell>
@@ -389,6 +412,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Unique Users</TableCell>
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total Clicks Delivered till date</TableCell>
@@ -417,6 +441,7 @@ export default function BasicTable({singlead}) {
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && log.campaignId.TargetImpressions}</TableCell>
                         <TableCell>{log.impressions}</TableCell>
+                        <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
@@ -441,6 +466,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Unique Users</TableCell>
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total Clicks Delivered till date</TableCell>
@@ -469,6 +495,7 @@ export default function BasicTable({singlead}) {
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && log.campaignId.TargetImpressions}</TableCell>
                         <TableCell>{log.impressions}</TableCell>
+                        <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
@@ -506,6 +533,59 @@ export default function BasicTable({singlead}) {
                 </TableBody>
             </Table>
         </TableContainer>
+        <TableContainer  style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Publisher Wise</div>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Publisher</TableCell>
+                        <TableCell>First Quartile</TableCell>
+                        <TableCell>Second Quartile</TableCell>
+                        <TableCell>Third Quartile</TableCell>
+                        <TableCell>Complete</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {logs ? logs.map((log,i) => {
+                        if(!log.nameads){
+                            return <TableRow key = {i}>
+                                <TableCell>{log.Publisher.AppName}</TableCell>
+                                <TableCell>{log.firstQuartile}</TableCell>
+                                <TableCell>{log.midpoint}</TableCell>
+                                <TableCell>{log.thirdQuartile}</TableCell>
+                                <TableCell>{log.complete}</TableCell>
+                            </TableRow>
+                        }
+                    }): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
+                </TableBody>
+            </Table>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Display Type</div>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Publisher</TableCell>
+                        <TableCell>First Quartile</TableCell>
+                        <TableCell>Second Quartile</TableCell>
+                        <TableCell>Third Quartile</TableCell>
+                        <TableCell>Complete</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {logsd ? logsd.map((log) => {
+                        if(!log.nameads){
+                            return <TableRow>
+                                <TableCell>{log.Publisher.AppName}</TableCell>
+                                <TableCell>{log.firstQuartile}</TableCell>
+                                <TableCell>{log.midpoint}</TableCell>
+                                <TableCell>{log.thirdQuartile}</TableCell>
+                                <TableCell>{log.complete}</TableCell>
+                            </TableRow>
+                        }
+                    }): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
+                </TableBody>
+            </Table>
+        </TableContainer>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Region Wise Summary Report</div>
         <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.audio} url='regionsum' />
@@ -518,6 +598,10 @@ export default function BasicTable({singlead}) {
         <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='platformtype' jsotitle='platformType' ids={ids && ids.audio} url='platformsum' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform Type' regtitle='platformtype' jsotitle='platformType' ids={ids && ids.display} url='platformsum' />
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
+        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} url='phonePlatformsum' />
+        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} url='phonePlatformsum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
         <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} url='pincodesum' />
