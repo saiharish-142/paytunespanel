@@ -305,7 +305,7 @@ router.put('/languagesum',adminauth,(req,res)=>{
             return det;
         })
         lanres = datamaker2(lanres,'language')
-        res.json([{language:resu}])
+        res.json([{language:lanres}])
     })
     .catch(err=>console.log(err))
 })
