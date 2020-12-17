@@ -203,21 +203,25 @@ router.put('/regionsum',adminauth,(req,res)=>{
         {$match:{
             "campaignId":{$in:campaignId}
         }},{$group:{
-            _id:null, 
+            _id:"$appId", 
             region:{$push:"$region"}
         }},{$project:{
             region:"$region",
-            _id:0
+            _id:0,
+            appId:"$_id"
         }}
     ])
     .then(reports=>{
         // resu = reports;
+        var resregion = [];
         resu = reports.map((det)=>{
             var regionde = datamaker(det.region,'region')
             det.region = regionde;
+            resregion = resregion.concat(regionde)
             return det;
         })
-        res.json(resu)
+        resregion = datamaker2(resregion,'region')
+        res.json([{region:resregion}])
     })
     .catch(err=>console.log(err))
 })
@@ -398,6 +402,54 @@ function datamaker(aaa,idrequ){
                 groups[`${groupName}`+"unique"] = groups[`${groupName}`+"unique"].sort(function(a,b){return b-a;})
                 groups[`${groupName}`+"unique"] = groups[`${groupName}`+"unique"][0]
             }
+            myArray.push({[id]: groupName, unique: groups[`${groupName}`+"unique"], result: groups[groupName]});
+        }
+    }
+    // console.log(myArray)
+    myArray.map(esc=>{
+        // var result = [];
+        const sumArray = arr => {
+            const res = {};
+            for(let i = 0; i < arr.length; i++){
+                Object.keys(arr[i]).forEach(key => {
+                    res[key] = (res[key] || 0) + arr[i][key];
+                });
+            };
+            return res;
+        };
+        var resultDes = [];
+        esc.result.map(eac=>{
+            resultDes = resultDes.concat(eac)
+        })
+        esc.result = sumArray(resultDes)
+        // console.log(esc)
+    })
+    return myArray;
+}
+function datamaker2(aaa,idrequ){
+    var super11 = [];
+    aaa.map(part => {
+        super11 = super11.concat(part)
+    })
+    var groups = {};
+    var id = idrequ;
+    for (var i = 0; i < super11.length; i++) {
+    var groupName = super11[i][id];
+    if (!groups[groupName]) {
+        groups[groupName] = [];
+    }
+    if (!groups[`${groupName}`+"unique"]) {
+        groups[`${groupName}`+"unique"] = 0;
+    }
+    if(super11[i].unique !== undefined){
+        groups[`${groupName}`+"unique"] += super11[i].unique;
+    }
+    groups[groupName].push(super11[i].result);
+    }
+    myArray = [];
+    // console.log(groups)
+    for (var groupName in groups) {
+        if(!groupName.includes('unique')){
             myArray.push({[id]: groupName, unique: groups[`${groupName}`+"unique"], result: groups[groupName]});
         }
     }
