@@ -620,7 +620,7 @@ router.post('/procedtest2',adminauth,async (req,res)  =>{
                 var appuniquecount = 0;
                 uniquedataofcamp.map(dd=>{
                     appuniquedata = dd.publishdata.filter(x => x.appId === appIdreq)
-                    appuniquecount = appuniquedata[0].uniqueuser
+                    appuniquecount = appuniquedata[0].uniqueuser && appuniquedata[0].uniqueuser
                 })
                 var uniqueregiondataapp = [];
                 uniqueregiondatacamp.map(dd => {

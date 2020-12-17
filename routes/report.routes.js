@@ -383,16 +383,23 @@ function datamaker(aaa,idrequ){
         groups[groupName] = [];
     }
     if (!groups[`${groupName}`+"unique"]) {
-        groups[`${groupName}`+"unique"] = 0;
+        groups[`${groupName}`+"unique"] = [];
     }
-    groups[`${groupName}`+"unique"] += super11[i].unique
+    if(super11[i].unique !== undefined){
+        groups[`${groupName}`+"unique"].push(super11[i].unique);
+    }
     groups[groupName].push(super11[i].result);
     }
     myArray = [];
     // console.log(groups)
     for (var groupName in groups) {
-        if(!groupName.includes('unique'))
-        myArray.push({[id]: groupName, unique: groups[`${groupName}`+"unique"], result: groups[groupName]});
+        if(!groupName.includes('unique')){
+            if(groups[`${groupName}`+"unique"]){
+                groups[`${groupName}`+"unique"] = groups[`${groupName}`+"unique"].sort(function(a,b){return b-a;})
+                groups[`${groupName}`+"unique"] = groups[`${groupName}`+"unique"][0]
+            }
+            myArray.push({[id]: groupName, unique: groups[`${groupName}`+"unique"], result: groups[groupName]});
+        }
     }
     // console.log(myArray)
     myArray.map(esc=>{
