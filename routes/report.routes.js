@@ -259,7 +259,7 @@ router.put('/pincodesum',adminauth,(req,res)=>{
         {$match:{
             "campaignId":{$in:campaignId}
         }},{$group:{
-            _id:null, 
+            _id:"$appId", 
             pincode:{$push:"$pincode"}
         }},{$project:{
             pincode:"$pincode",
@@ -268,12 +268,15 @@ router.put('/pincodesum',adminauth,(req,res)=>{
     ])
     .then(reports=>{
         // resu = reports;
+        var respin = [];
         resu = reports.map((det)=>{
             var pincodede = datamaker(det.pincode,'zip')
             det.pincode = pincodede;
+            respin = respin.concat(pincodede)
             return det;
         })
-        res.json(resu)
+        respin = datamaker2(respin,'zip')
+        res.json([{pincode:respin}])
     })
     .catch(err=>console.log(err))
 })
@@ -285,7 +288,7 @@ router.put('/languagesum',adminauth,(req,res)=>{
         {$match:{
             "campaignId":{$in:campaignId}
         }},{$group:{
-            _id:null, 
+            _id:"$appId", 
             language:{$push:"$language"}
         }},{$project:{
             language:"$language",
@@ -294,12 +297,15 @@ router.put('/languagesum',adminauth,(req,res)=>{
     ])
     .then(reports=>{
         // resu = reports;
+        var lanres = [];
         resu = reports.map((det)=>{
             var languagede = datamaker(det.language,'language')
             det.language = languagede;
+            lanres = lanres.concat(languagede)
             return det;
         })
-        res.json(resu)
+        lanres = datamaker2(lanres,'language')
+        res.json([{language:resu}])
     })
     .catch(err=>console.log(err))
 })
@@ -323,6 +329,32 @@ router.put('/phoneModelsum',adminauth,(req,res)=>{
         resu = resu.map((det)=>{
             var phoneModelde = datamaker(det.phoneModel,'phoneModel')
             det.phoneModel = phoneModelde;
+            return det;
+        })
+        res.json(resu)
+    })
+    .catch(err=>console.log(err))
+})
+
+router.put('/phonePlatformsum',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var resu = [];
+    Report.aggregate([
+        {$match:{
+            "campaignId":{$in:campaignId}
+        }},{$group:{
+            _id:null, 
+            phonePlatform:{$push:"$phonePlatform"}
+        }},{$project:{
+            phonePlatform:"$phonePlatform",
+            _id:0
+        }}
+    ])
+    .then(reports=>{
+        resu = reports;
+        resu = resu.map((det)=>{
+            var phonePlatformde = datamaker(det.phonePlatform,'platformType')
+            det.phonePlatform = phonePlatformde;
             return det;
         })
         res.json(resu)
