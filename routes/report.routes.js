@@ -133,6 +133,7 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
             impressions:{$sum:"$impressions"}, 
             thirdQuartile:{$sum:"$thirdQuartile"}, 
             firstQuartile:{$sum:"$firstQuartile"}, 
+            midpoint:{$sum:"$midpoint"}, 
             complete:{$sum:"$complete"}, 
             clicks:{$sum:"$clicks"}
         }},{$project:{
@@ -141,6 +142,7 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
             campaignId:"$camp", 
             impressions:"$impressions", 
             complete:"$complete", 
+            midpoint:"$midpoint", 
             firstQuartile:"$firstQuartile", 
             thirdQuartile:"$thirdQuartile", 
             clicks:"$clicks",
