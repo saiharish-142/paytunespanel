@@ -40,7 +40,7 @@ function Dashboard() {
         // console.log(val.toLowerCase())
         if(val){
             sec = streamingads
-            console.log(sec)
+            // console.log(sec)
             sec.map(ads => {
                 // console.log(ads.Adtitle)
                 if((ads.Adtitle.toLowerCase()).indexOf(val.toLowerCase()) > -1){
