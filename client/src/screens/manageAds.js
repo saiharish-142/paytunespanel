@@ -19,9 +19,15 @@ function Dashboard() {
         }).then(res=>res.json())
         .then(result =>{
             console.log(result)
+            var datareq = result;
+            datareq = datareq.sort(function(a,b){
+                var d1 = new Date(a.endDate[0])
+                var d2 = new Date(b.endDate[0])
+                return d2 - d1;
+            })
             setloading(false)
-            setStreamingads(result)
-            setStreamingadsSearched(result)
+            setStreamingads(datareq)
+            setStreamingadsSearched(datareq)
         }).catch(err=>{
             setloading(false)
             console.log(err)

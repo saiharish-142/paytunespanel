@@ -47,6 +47,7 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
         campaignssorter(sa)
     }, [streamingads])
     useEffect(() => {
+        campaignssorter(sa)
         // console.log('changed')
     }, [adss])
     useEffect(() => {
