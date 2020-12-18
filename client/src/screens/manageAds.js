@@ -40,8 +40,10 @@ function Dashboard() {
         // console.log(val.toLowerCase())
         if(val){
             sec = streamingads
+            console.log(sec)
             sec.map(ads => {
-                if((ads.AdTitle.toLowerCase()).indexOf(val.toLowerCase()) > -1){
+                // console.log(ads.Adtitle)
+                if((ads.Adtitle.toLowerCase()).indexOf(val.toLowerCase()) > -1){
                     // console.log('not1')
                     match.push(ads)
                 }
