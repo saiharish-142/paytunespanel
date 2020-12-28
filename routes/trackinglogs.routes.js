@@ -1000,6 +1000,7 @@ router.put('/uniquetest1',async (req,res) =>{
         },_id:0}},
         {$group:{_id:"$AdTitle"}}
     ]).catch(err => console.log(err))
+    var ree = [];
     response = await response.map(async (da) => {
         let doudt = await StreamingAds.aggregate([
             {$project:{_id:"$_id", AdTitle:{$toLower:"$AdTitle"}}},
@@ -1007,10 +1008,10 @@ router.put('/uniquetest1',async (req,res) =>{
             {$group:{_id:null,ids:{$push:"$_id"}}},
         ]).catch(err => console.log(err))
         console.log(doudt[0].ids)
+        ree = ree.push({_id:da._id,ids:doudt[0].ids})
         da.ids = doudt[0].ids
-        return da;
     })
-    res.json(response)
+    res.json({response,ree})
 })
 
 router.post('/repotcrecamp',adminauth,async (req,res)  =>{
