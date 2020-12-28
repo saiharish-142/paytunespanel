@@ -980,7 +980,28 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
 router.put('/uniquetest1',async (req,res) =>{
     const { date } = req.body
     let uniqueids = await trackinglogs.distinct( "campaignId",{"date":date,"type":"impression"}).catch(err => console.log(err))
-    res.json(uniqueids)
+    StreamingAds.aggregate([
+        {$match:{"_id":{$in:uniqueids}}},
+        {$group:{_id:"$_id",AdTitle:"$AdTitle"}},
+        {$project:{AdTitle:{$toLower:"$AdTitle"},_id:0}},
+        {$project:{AdTitle:{$split:["$AdTitle","_"]}}},
+        {$project:{AdTitle:{$slice:["$AdTitle",2]}}},
+        {$project:{AdTitle:{
+                '$reduce': {
+                    'input': '$AdTitle',
+                    'initialValue': '',
+                    'in': {
+                        '$concat': [
+                            '$$value',
+                            {'$cond': [{'$eq': ['$$value', '']}, '', '_']}, 
+                            '$$this']
+                    }
+                }
+            }}},
+    ])
+    .then(response => {
+        res.json({uniqueids,response})
+    })
 })
 
 router.post('/repotcrecamp',adminauth,async (req,res)  =>{
