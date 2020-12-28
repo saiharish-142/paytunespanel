@@ -981,7 +981,7 @@ router.put('/uniquetest1',async (req,res) =>{
     const { date } = req.body
     let uniqueids = await trackinglogs.distinct( "campaignId",{"date":date,"type":"impression"}).catch(err => console.log(err))
     let response = await StreamingAds.aggregate([
-        {$match:{"_id":{$in:uniqueids}}},
+        {$match:{_id:{$in:uniqueids}}},
     ]).catch(err => console.log(err))
     res.json({uniqueids,response})
 })
