@@ -1008,7 +1008,7 @@ router.put('/uniquetest1',async (req,res) =>{
             {$group:{_id:null,ids:{$push:"$_id"}}},
         ]).catch(err => console.log(err))
         console.log(doudt[0].ids)
-        ree = ree.push({_id:da._id,ids:doudt[0].ids})
+        ree.push({_id:da._id,ids:doudt[0].ids})
         da.ids = doudt[0].ids
     })
     res.json({response,ree})
