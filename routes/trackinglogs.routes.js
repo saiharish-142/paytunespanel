@@ -1004,7 +1004,7 @@ router.put('/uniquetest1',async (req,res) =>{
         let doudt = await StreamingAds.aggregate([
             {$project:{_id:"$_id", AdTitle:{$toLower:"$AdTitle"}}},
             {$match:{AdTitle:{$regex:da._id}}},
-            {$group:{_id:"$AdTitle",ids:{$push:"$_id"}}},
+            {$group:{_id:null,ids:{$push:"$_id"}}},
         ]).catch(err => console.log(err))
         console.log(doudt)
         return doudt;
