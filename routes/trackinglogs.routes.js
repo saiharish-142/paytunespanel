@@ -1007,7 +1007,7 @@ router.put('/uniquetest1',async (req,res) =>{
             {$group:{_id:null,ids:{$push:"$_id"}}},
         ]).catch(err => console.log(err))
         console.log(doudt)
-        return doudt;
+        return doudt[0];
     })
     res.json(response)
 })
