@@ -1006,8 +1006,9 @@ router.put('/uniquetest1',async (req,res) =>{
             {$match:{AdTitle:{$regex:da._id}}},
             {$group:{_id:null,ids:{$push:"$_id"}}},
         ]).catch(err => console.log(err))
-        console.log(doudt)
-        return doudt[0];
+        console.log(doudt[0].ids)
+        da.ids = doudt[0].ids
+        return da;
     })
     res.json(response)
 })
