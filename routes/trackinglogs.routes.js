@@ -977,6 +977,12 @@ router.post('/testcom3',adminauth,async (req,res)  =>{
     }
 })
 
+router.put('/uniquetest1',async (req,res) =>{
+    const { date } = req.body
+    let uniqueids = await trackinglogs.distinct( "campaignId",{"date":date,"type":"impression"}).catch(err => console.log(err))
+    res.json(uniqueids)
+})
+
 router.post('/repotcrecamp',adminauth,async (req,res)  =>{
     const { campaignId } = req.body
     var resu = [];
