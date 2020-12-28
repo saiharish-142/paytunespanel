@@ -997,9 +997,17 @@ router.put('/uniquetest1',async (req,res) =>{
                             '$$this']
                     }
                 }
-        }}},
-        {$group:{_id:"$AdTitle",ids:{$push:"$_id"}}}
+        },_id:0}},
+        {$group:{_id:"$AdTitle"}}
     ]).catch(err => console.log(err))
+    response = await response.map(async (da) => {
+        let doudt = await StreamingAds.aggregate([
+            {$project:{_id:"$_id", AdTitle:{$toLower:"$AdTitle"}}},
+            {$match:{AdTitle:{$regex:da._id}}},
+            {$group:{_id:"$AdTitle",ids:{$push:"$_id"}}},
+        ]).catch(err => console.log(err))
+        return doudt;
+    })
     res.json(response)
 })
 
