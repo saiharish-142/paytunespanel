@@ -997,9 +997,9 @@ router.put('/uniquetest1',async (req,res) =>{
                             '$$this']
                     }
                 }
-        }}},
+        },_id:0}}
     ]).catch(err => console.log(err))
-    res.json({uniqueids,response})
+    res.json(response)
 })
 
 router.post('/repotcrecamp',adminauth,async (req,res)  =>{
