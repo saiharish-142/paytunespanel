@@ -982,7 +982,22 @@ router.put('/uniquetest1',async (req,res) =>{
     let uniqueids = await trackinglogs.distinct( "campaignId",{"date":date,"type":"impression"}).catch(err => console.log(err))
     uniqueids = uniqueids.map(id => mongoose.Types.ObjectId(id))
     let response = await StreamingAds.aggregate([
-        {$match:{_id:{$in:uniqueids}}}
+        {$match:{_id:{$in:uniqueids}}},
+        {$project:{AdTitle:{$toLower:"$AdTitle"}}},
+        {$project:{AdTitle:{$split:["$AdTitle","_"]}}},
+        {$project:{AdTitle:{$slice:["$AdTitle",2]}}},
+        {$project:{AdTitle:{
+                '$reduce': {
+                    'input': '$AdTitle',
+                    'initialValue': '',
+                    'in': {
+                        '$concat': [
+                            '$$value',
+                            {'$cond': [{'$eq': ['$$value', '']}, '', '_']}, 
+                            '$$this']
+                    }
+                }
+        }}},
     ]).catch(err => console.log(err))
     res.json({uniqueids,response})
 })
