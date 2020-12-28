@@ -997,7 +997,8 @@ router.put('/uniquetest1',async (req,res) =>{
                             '$$this']
                     }
                 }
-        },_id:0}}
+        },_id:0}},
+        {$group:{_id:"$AdTitle"}}
     ]).catch(err => console.log(err))
     res.json(response)
 })
