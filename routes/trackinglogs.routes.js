@@ -1013,24 +1013,24 @@ router.put('/uniquetest1',async (req,res) =>{
         let splited = await adsetting.find({campaignId:{$in:doudt}}).catch(err => console.log(err))
         var audio = [];
         var display = [];
-        await splited.map(ids=>{
+        splited = await splited.map(ids=>{
             if(ids.type==='display')
                 display.push(ids.campaignId)
             else{
                 audio.push(ids.campaignId)
             }
         })
-        // let audioUnique = await trackinglogs.db.db.command({
-        //     aggregate: "trackinglogs",
-        //     pipeline:[
-        //         {$match:{"type":{$in:["impression"]},"campaignId":{$in:audio}}},
-        //         {$group:{_id:null,unique:{$addToSet:"$ifa"}}},
-        //         {$project:{_id:0,unique:{$size:"$unique"}}}
-        //     ],
-        //     allowDiskUse: true,
-        //     cursor: {  }
-        // })
-        console.log(display,audio)
+        let audioUnique = await trackinglogs.db.db.command({
+            aggregate: "trackinglogs",
+            pipeline:[
+                {$match:{"type":{$in:["impression"]},"campaignId":{$in:audio}}},
+                {$group:{_id:null,unique:{$addToSet:"$ifa"}}},
+                {$project:{_id:0,unique:{$size:"$unique"}}}
+            ],
+            allowDiskUse: true,
+            cursor: {  }
+        })
+        console.log(audioUnique,audio)
     })
     res.json({response,ree})
 })
