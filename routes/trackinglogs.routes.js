@@ -4,6 +4,7 @@ const router = express.Router()
 const trackinglogs = mongoose.model('trackinglogs')
 const Report = mongoose.model('Report')
 const StreamingAds = mongoose.model('streamingads')
+const Unique = mongoose.model('unique')
 const adsetting = mongoose.model('adsetting')
 const publisherapps = mongoose.model('publisherapps')
 const adminauth = require('../authenMiddleware/adminauth')
@@ -1073,8 +1074,14 @@ router.put('/uniquetest1',async (req,res) =>{
         }).catch(err => console.log(err))
         displayUnique = displayUnique.cursor.firstBatch && displayUnique.cursor.firstBatch[0]
         audioCount = audioUnique && audioUnique.count
+        displayCount = displayUnique && displayUnique.count
         // console.log(displayUnique)
-        console.log(audioUnique,displayUnique,title,audioCount,typeof audioCount)
+        const uniquedata = new Unique({
+            audiouser:audioCount ? audiouser :0,
+            displayuser:displayCount ? displayCount :0,
+            AdTitle:title
+        })
+        console.log(audioCount,displayCount,title,uniquedata)
     })
     res.json({response,ree})
 })
