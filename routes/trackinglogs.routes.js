@@ -839,11 +839,36 @@ router.post('/testcom1',adminauth,async (req,res)  =>{
 })
 
 router.post('/testcom2',adminauth,async (req,res)  =>{
-    const { campaignId, date, date2 } = req.body
-    var resu = [];
-    var newdate = new Date(date2)
-    let number = await trackinglogs.distinct('ifa',{"campaignId":"5f736a8602a2051e8de33360","appId": "5d3f052e979a1c2391016c04","type":"impression"}).length
-    res.json({num:number})
+    const { campaignId, date, audio } = req.body
+    let audioUnique = await trackinglogs.db.db.command({
+        aggregate: "trackinglogs",
+        pipeline:[
+            {$match:{ "type":"impression","campaignId" : { $in : audio} }},
+            {$group:{_id:"$ifa", total:{$sum:1},}},
+            {$count: "count"}
+        ],
+        allowDiskUse: true,
+        cursor: {  }
+    }).catch(err => console.log(err))
+    res.json(audioUnique)
+})
+
+router.post('/testcom2',adminauth,async (req,res)  =>{
+    const { campaignId, date, audio } = req.body
+    trackinglogs.db.db.command({
+        aggregate: "trackinglogs",
+        pipeline:[
+            {$match:{ "type":"impression","campaignId" : { $in : audio} }},
+            {$group:{_id:"$ifa", total:{$sum:1},}},
+            {$count: "count"}
+        ],
+        allowDiskUse: true,
+        cursor: {  }
+    })
+    .then(audioUnique=>{
+        res.json(audioUnique)
+    })
+    .catch(err => console.log(err))
 })
 
 router.post('/testcom3',adminauth,async (req,res)  =>{
