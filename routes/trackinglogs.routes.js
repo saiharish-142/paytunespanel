@@ -1049,13 +1049,13 @@ router.put('/uniquetest1',async (req,res) =>{
         let audioUnique = await trackinglogs.db.db.command({
             aggregate: "trackinglogs",
             pipeline:[
-                {$match:{ "type":"impression","campaignId" : { $in : audio} }},
+                {$match:{ "type":"impression","campaignId":{$in:audio}}},
                 {$group:{_id:"$ifa", total:{$sum:1},}},
                 {$count: "count"}
             ],
             allowDiskUse: true,
             cursor: {  }
-        })
+        }).catch(err => console.log(err))
         console.log(audioUnique)
     })
     res.json({response,ree})
