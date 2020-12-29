@@ -853,7 +853,7 @@ router.post('/testcom2',adminauth,async (req,res)  =>{
     res.json(audioUnique)
 })
 
-router.post('/testcom2',adminauth,async (req,res)  =>{
+router.post('/testcom2f',adminauth,async (req,res)  =>{
     const { campaignId, date, audio } = req.body
     trackinglogs.db.db.command({
         aggregate: "trackinglogs",
