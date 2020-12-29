@@ -1046,6 +1046,7 @@ router.put('/uniquetest1',async (req,res) =>{
             }
         })
         console.log(audio)
+        audio = audio.map(id => id.toString())
         let audioUnique = await trackinglogs.db.db.command({
             aggregate: "trackinglogs",
             pipeline:[
