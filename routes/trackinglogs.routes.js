@@ -1020,6 +1020,7 @@ router.put('/uniquetest1',async (req,res) =>{
                 audio.push(ids.campaignId)
             }
         })
+        console.log(audio)
         let audioUnique = await trackinglogs.db.db.command({
             aggregate: "trackinglogs",
             pipeline:[
@@ -1030,7 +1031,7 @@ router.put('/uniquetest1',async (req,res) =>{
             allowDiskUse: true,
             cursor: {  }
         })
-        console.log(audioUnique,audio)
+        console.log(audioUnique)
     })
     res.json({response,ree})
 })
