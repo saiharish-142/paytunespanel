@@ -1011,7 +1011,26 @@ router.put('/uniquetest1',async (req,res) =>{
         doudt = doudt[0].ids
         doudt = doudt.map(id => mongoose.Types.ObjectId(id))
         let splited = await adsetting.find({campaignId:{$in:doudt}}).catch(err => console.log(err))
-        console.log(splited)
+        var audio = [];
+        var display = [];
+        await splited.map(ids=>{
+            if(ids.type==='display')
+                display.push(ids.campaignId)
+            else{
+                audio.push(ids.campaignId)
+            }
+        })
+        let audioUnique = await trackinglogs.db.db.command({
+            aggregate: "trackinglogs",
+            pipeline:[
+                {$match:{"type":{$in:["impression"]},"campaignId":{$in:logids}}},
+                {$group:{_id:null,unique:{$addToSet:"$ifa"}}},
+                {$project:{_id:0,unique:{$size:"$unique"}}}
+            ],
+            allowDiskUse: true,
+            cursor: {  }
+        })
+        console.log(splited,audioUnique,audio)
     })
     res.json({response,ree})
 })
