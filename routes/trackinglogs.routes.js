@@ -1269,7 +1269,10 @@ router.put('/uniqueprod2',async (req,res) =>{
         .then(resutl=>{
             if(!resutl){
                 uniquedata.save()
-                .then(resu =>{ return console.log('completeunique')})
+                .then(resu =>{
+                    res.json(resu)
+                    return console.log('completeunique')
+                })
                 .catch(err =>{
                     console.log(audioCount,displayCount,title,uniquedata)
                     return console.log(err)
@@ -1280,14 +1283,17 @@ router.put('/uniqueprod2',async (req,res) =>{
             if(displayCount)
             resutl.displayuser = displayCount
             resutl.save()
-            .then(resu =>{ return console.log('updateunique')})
+            .then(resu =>{
+                res.json(resu)
+                return console.log('updateunique')
+            })
             .catch(err =>{
                 console.log(audioCount,displayCount,title,uniquedata)
                 return console.log(err)
             })
         })
     })
-    res.json({response,ree})
+    // res.json({response,ree})
 })
 
 router.post('/repotcrecamp',adminauth,async (req,res)  =>{
