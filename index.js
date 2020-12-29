@@ -35,6 +35,7 @@ require('./models/rtbrequests.model')
 require('./models/report.model')
 require('./models/campaignwisereports.model')
 require('./models/adsettings.model')
+require('./models/uniqueuser.model')
 
 app.use('/auth',require('./routes/user.routes'))
 app.use('/streamingads',require('./routes/streamingads.routes'))
