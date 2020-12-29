@@ -1232,7 +1232,7 @@ router.put('/uniqueprod2',async (req,res) =>{
             cursor: {  }
         }).catch(err => console.log(err))
         audioUnique = audioUnique.cursor.firstBatch && audioUnique.cursor.firstBatch[0]
-        // console.log(audioUnique)
+        console.log(audioUnique)
         display = display && display.map(id => id.toString())
         let displayUnique = await trackinglogs.db.db.command({
             aggregate: "trackinglogs",
@@ -1247,13 +1247,14 @@ router.put('/uniqueprod2',async (req,res) =>{
         displayUnique = displayUnique.cursor.firstBatch && displayUnique.cursor.firstBatch[0]
         audioCount = audioUnique && audioUnique.count
         displayCount = displayUnique && displayUnique.count
-        // console.log(displayUnique)
+        console.log(displayUnique)
         const uniquedata = new Unique({
             audiouser:audioCount ? audioCount :0,
             displayuser:displayCount ? displayCount :0,
             AdTitle:title
         })
         let dala = await Unique.deleteMany({AdTitle:title}).catch(err => console.log(err))
+        console.log(dala)
         uniquedata.save()
         .then(resu =>{
             return console.log('completeunique',dala)
