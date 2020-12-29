@@ -1166,7 +1166,6 @@ router.put('/uniqueprod1',async (req,res) =>{
         let dala = await Unique.deleteMany({AdTitle:title}).catch(err => console.log(err))
         uniquedata.save()
         .then(resu =>{
-            res.json(resu)
             return console.log('completeunique',dala)
         })
         .catch(err =>{
@@ -1257,7 +1256,6 @@ router.put('/uniqueprod2',async (req,res) =>{
         let dala = await Unique.deleteMany({AdTitle:title}).catch(err => console.log(err))
         uniquedata.save()
         .then(resu =>{
-            res.json(resu)
             return console.log('completeunique',dala)
         })
         .catch(err =>{
