@@ -1046,7 +1046,7 @@ router.put('/uniquetest1',async (req,res) =>{
             }
         })
         console.log(audio)
-        audio = audio.map(id => id.toString())
+        audio = audio && audio.map(id => id.toString())
         let audioUnique = await trackinglogs.db.db.command({
             aggregate: "trackinglogs",
             pipeline:[
@@ -1057,7 +1057,21 @@ router.put('/uniquetest1',async (req,res) =>{
             allowDiskUse: true,
             cursor: {  }
         }).catch(err => console.log(err))
+        audioUnique = audioUnique.cursor.firstBatch && audioUnique.cursor.firstBatch[0]
         console.log(audioUnique)
+        display = display && display.map(id => id.toString())
+        let displayUnique = await trackinglogs.db.db.command({
+            aggregate: "trackinglogs",
+            pipeline:[
+                {$match:{ "type":"impression","campaignId":{$in:display}}},
+                {$group:{_id:"$ifa", total:{$sum:1},}},
+                {$count: "count"}
+            ],
+            allowDiskUse: true,
+            cursor: {  }
+        }).catch(err => console.log(err))
+        displayUnique = displayUnique.cursor.firstBatch && displayUnique.cursor.firstBatch[0]
+        console.log(displayUnique)
     })
     res.json({response,ree})
 })
