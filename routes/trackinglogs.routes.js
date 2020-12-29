@@ -1033,6 +1033,7 @@ router.put('/uniquetest1',async (req,res) =>{
             {$match:{AdTitle:{$regex:da._id}}},
             {$group:{_id:null,ids:{$push:"$_id"}}},
         ]).catch(err => console.log(err))
+        var title = da._id;
         doudt = doudt[0].ids
         doudt = doudt.map(id => mongoose.Types.ObjectId(id))
         let splited = await adsetting.find({campaignId:{$in:doudt}}).catch(err => console.log(err))
@@ -1045,7 +1046,7 @@ router.put('/uniquetest1',async (req,res) =>{
                 audio.push(ids.campaignId)
             }
         })
-        console.log(audio)
+        // console.log(audio)
         audio = audio && audio.map(id => id.toString())
         let audioUnique = await trackinglogs.db.db.command({
             aggregate: "trackinglogs",
@@ -1058,7 +1059,7 @@ router.put('/uniquetest1',async (req,res) =>{
             cursor: {  }
         }).catch(err => console.log(err))
         audioUnique = audioUnique.cursor.firstBatch && audioUnique.cursor.firstBatch[0]
-        console.log(audioUnique)
+        // console.log(audioUnique)
         display = display && display.map(id => id.toString())
         let displayUnique = await trackinglogs.db.db.command({
             aggregate: "trackinglogs",
@@ -1071,7 +1072,9 @@ router.put('/uniquetest1',async (req,res) =>{
             cursor: {  }
         }).catch(err => console.log(err))
         displayUnique = displayUnique.cursor.firstBatch && displayUnique.cursor.firstBatch[0]
-        console.log(displayUnique)
+        audioCount = audioUnique && audioUnique.count
+        // console.log(displayUnique)
+        console.log(audioUnique,displayUnique,title,audioCount,typeof audioCount)
     })
     res.json({response,ree})
 })
