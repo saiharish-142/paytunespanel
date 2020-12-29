@@ -1086,6 +1086,210 @@ router.put('/uniquetest1',async (req,res) =>{
     res.json({response,ree})
 })
 
+router.put('/uniqueprod1',async (req,res) =>{
+    const { date } = req.body
+    let uniqueids = await trackinglogs.distinct( "campaignId",{"date":date,"type":"impression"}).catch(err => console.log(err))
+    uniqueids = uniqueids.map(id => mongoose.Types.ObjectId(id))
+    let response = await StreamingAds.aggregate([
+        {$match:{_id:{$in:uniqueids}}},
+        {$project:{AdTitle:{$toLower:"$AdTitle"}}},
+        {$project:{AdTitle:{$split:["$AdTitle","_"]}}},
+        {$project:{AdTitle:{$slice:["$AdTitle",2]}}},
+        {$project:{AdTitle:{
+                '$reduce': {
+                    'input': '$AdTitle',
+                    'initialValue': '',
+                    'in': {
+                        '$concat': [
+                            '$$value',
+                            {'$cond': [{'$eq': ['$$value', '']}, '', '_']}, 
+                            '$$this']
+                    }
+                }
+        },_id:0}},
+        {$group:{_id:"$AdTitle"}}
+    ]).catch(err => console.log(err))
+    var ree = [];
+    response = await response.map(async (da) => {
+        let doudt = await StreamingAds.aggregate([
+            {$project:{_id:"$_id", AdTitle:{$toLower:"$AdTitle"}}},
+            {$match:{AdTitle:{$regex:da._id}}},
+            {$group:{_id:null,ids:{$push:"$_id"}}},
+        ]).catch(err => console.log(err))
+        var title = da._id;
+        doudt = doudt[0].ids
+        doudt = doudt.map(id => mongoose.Types.ObjectId(id))
+        let splited = await adsetting.find({campaignId:{$in:doudt}}).catch(err => console.log(err))
+        var audio = [];
+        var display = [];
+        splited = await splited.map(ids=>{
+            if(ids.type==='display')
+                display.push(ids.campaignId)
+            else{
+                audio.push(ids.campaignId)
+            }
+        })
+        // console.log(audio)
+        audio = audio && audio.map(id => id.toString())
+        let audioUnique = await trackinglogs.db.db.command({
+            aggregate: "trackinglogs",
+            pipeline:[
+                {$match:{ "type":"impression","campaignId":{$in:audio}}},
+                {$group:{_id:"$ifa", total:{$sum:1},}},
+                {$count: "count"}
+            ],
+            allowDiskUse: true,
+            cursor: {  }
+        }).catch(err => console.log(err))
+        audioUnique = audioUnique.cursor.firstBatch && audioUnique.cursor.firstBatch[0]
+        // console.log(audioUnique)
+        display = display && display.map(id => id.toString())
+        let displayUnique = await trackinglogs.db.db.command({
+            aggregate: "trackinglogs",
+            pipeline:[
+                {$match:{ "type":"impression","campaignId":{$in:display}}},
+                {$group:{_id:"$ifa", total:{$sum:1},}},
+                {$count: "count"}
+            ],
+            allowDiskUse: true,
+            cursor: {  }
+        }).catch(err => console.log(err))
+        displayUnique = displayUnique.cursor.firstBatch && displayUnique.cursor.firstBatch[0]
+        audioCount = audioUnique && audioUnique.count
+        displayCount = displayUnique && displayUnique.count
+        // console.log(displayUnique)
+        const uniquedata = new Unique({
+            audiouser:audioCount ? audioCount :0,
+            displayuser:displayCount ? displayCount :0,
+            AdTitle:title
+        })
+        Unique.findOne({AdTitle:title})
+        .then(resutl=>{
+            if(!resutl){
+                uniquedata.save()
+                .then(resu =>{ return console.log('completeunique')})
+                .catch(err =>{
+                    console.log(audioCount,displayCount,title,uniquedata)
+                    return console.log(err)
+                })
+            }
+            if(audioCount)
+            resutl.audiouser = audioCount
+            if(displayCount)
+            resutl.displayuser = displayCount
+            resutl.save()
+            .then(resu =>{ return console.log('updateunique')})
+            .catch(err =>{
+                console.log(audioCount,displayCount,title,uniquedata)
+                return console.log(err)
+            })
+        })
+    })
+    res.json({response,ree})
+})
+
+router.put('/uniqueprod2',async (req,res) =>{
+    // const { date } = req.body
+    let uniqueids = await trackinglogs.distinct( "campaignId",{"type":"impression"}).catch(err => console.log(err))
+    uniqueids = uniqueids.map(id => mongoose.Types.ObjectId(id))
+    let response = await StreamingAds.aggregate([
+        {$match:{_id:{$in:uniqueids}}},
+        {$project:{AdTitle:{$toLower:"$AdTitle"}}},
+        {$project:{AdTitle:{$split:["$AdTitle","_"]}}},
+        {$project:{AdTitle:{$slice:["$AdTitle",2]}}},
+        {$project:{AdTitle:{
+                '$reduce': {
+                    'input': '$AdTitle',
+                    'initialValue': '',
+                    'in': {
+                        '$concat': [
+                            '$$value',
+                            {'$cond': [{'$eq': ['$$value', '']}, '', '_']}, 
+                            '$$this']
+                    }
+                }
+        },_id:0}},
+        {$group:{_id:"$AdTitle"}}
+    ]).catch(err => console.log(err))
+    var ree = [];
+    response = await response.map(async (da) => {
+        let doudt = await StreamingAds.aggregate([
+            {$project:{_id:"$_id", AdTitle:{$toLower:"$AdTitle"}}},
+            {$match:{AdTitle:{$regex:da._id}}},
+            {$group:{_id:null,ids:{$push:"$_id"}}},
+        ]).catch(err => console.log(err))
+        var title = da._id;
+        doudt = doudt[0].ids
+        doudt = doudt.map(id => mongoose.Types.ObjectId(id))
+        let splited = await adsetting.find({campaignId:{$in:doudt}}).catch(err => console.log(err))
+        var audio = [];
+        var display = [];
+        splited = await splited.map(ids=>{
+            if(ids.type==='display')
+                display.push(ids.campaignId)
+            else{
+                audio.push(ids.campaignId)
+            }
+        })
+        // console.log(audio)
+        audio = audio && audio.map(id => id.toString())
+        let audioUnique = await trackinglogs.db.db.command({
+            aggregate: "trackinglogs",
+            pipeline:[
+                {$match:{ "type":"impression","campaignId":{$in:audio}}},
+                {$group:{_id:"$ifa", total:{$sum:1},}},
+                {$count: "count"}
+            ],
+            allowDiskUse: true,
+            cursor: {  }
+        }).catch(err => console.log(err))
+        audioUnique = audioUnique.cursor.firstBatch && audioUnique.cursor.firstBatch[0]
+        // console.log(audioUnique)
+        display = display && display.map(id => id.toString())
+        let displayUnique = await trackinglogs.db.db.command({
+            aggregate: "trackinglogs",
+            pipeline:[
+                {$match:{ "type":"impression","campaignId":{$in:display}}},
+                {$group:{_id:"$ifa", total:{$sum:1},}},
+                {$count: "count"}
+            ],
+            allowDiskUse: true,
+            cursor: {  }
+        }).catch(err => console.log(err))
+        displayUnique = displayUnique.cursor.firstBatch && displayUnique.cursor.firstBatch[0]
+        audioCount = audioUnique && audioUnique.count
+        displayCount = displayUnique && displayUnique.count
+        // console.log(displayUnique)
+        const uniquedata = new Unique({
+            audiouser:audioCount ? audioCount :0,
+            displayuser:displayCount ? displayCount :0,
+            AdTitle:title
+        })
+        Unique.findOne({AdTitle:title})
+        .then(resutl=>{
+            if(!resutl){
+                uniquedata.save()
+                .then(resu =>{ return console.log('completeunique')})
+                .catch(err =>{
+                    console.log(audioCount,displayCount,title,uniquedata)
+                    return console.log(err)
+                })
+            }
+            if(audioCount)
+            resutl.audiouser = audioCount
+            if(displayCount)
+            resutl.displayuser = displayCount
+            resutl.save()
+            .then(resu =>{ return console.log('updateunique')})
+            .catch(err =>{
+                console.log(audioCount,displayCount,title,uniquedata)
+                return console.log(err)
+            })
+        })
+    })
+    res.json({response,ree})
+})
+
 router.post('/repotcrecamp',adminauth,async (req,res)  =>{
     const { campaignId } = req.body
     var resu = [];
@@ -1128,6 +1332,51 @@ router.post('/repotcrecamp',adminauth,async (req,res)  =>{
     .catch(err => console.log(err))
 })
 
+router.get('/unique',adminauth,async(req,res)=>{
+    Unique.find()
+    .then(result => {
+        res.json(result)
+    }).catch(err => res.status(400).json(err))
+})
+
+router.put('/uniqueone',adminauth,async(req,res)=>{
+    const {title} = req.body
+    Unique.find({AdTitle:title})
+    .then(result => {
+        res.json(result)
+    }).catch(err => res.status(400).json(err))
+})
+
+router.put('/uniqueid',adminauth,async(req,res)=>{
+    const {id} = req.body
+    Unique.find({_id:id})
+    .then(result => {
+        res.json(result)
+    }).catch(err => res.status(400).json(err))
+})
+
+router.delete('/deleteall',adminauth,async(req,res)=>{
+    Unique.deleteMany()
+    .then(resl=>{
+        res.json(resl)
+    }).catch(err => res.status(400).json(err))
+})
+
+router.delete('/deletesome',adminauth,async(req,res)=>{
+    const {title} = req.body
+    Unique.deleteMany({AdTitle:title})
+    .then(resl=>{
+        res.json(resl)
+    }).catch(err => res.status(400).json(err))
+})
+
+router.delete('/deletebyid',adminauth,async(req,res)=>{
+    const {id} = req.body
+    Unique.deleteMany({_id:id})
+    .then(resl=>{
+        res.json(resl)
+    }).catch(err => res.status(400).json(err))
+})
 
 router.post('/addlogs',adminauth, (req,res)=>{
     const { Type,id,appId, campaignId, rtbreqid, date, region, ifa } = req.body
