@@ -1023,7 +1023,7 @@ router.put('/uniquetest1',async (req,res) =>{
         let audioUnique = await trackinglogs.db.db.command({
             aggregate: "trackinglogs",
             pipeline:[
-                {$match:{"type":{$in:["impression"]},"campaignId":{$in:logids}}},
+                {$match:{"type":{$in:["impression"]},"campaignId":{$in:audio}}},
                 {$group:{_id:null,unique:{$addToSet:"$ifa"}}},
                 {$project:{_id:0,unique:{$size:"$unique"}}}
             ],
