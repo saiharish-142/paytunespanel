@@ -1077,7 +1077,7 @@ router.put('/uniquetest1',async (req,res) =>{
         displayCount = displayUnique && displayUnique.count
         // console.log(displayUnique)
         const uniquedata = new Unique({
-            audiouser:audioCount ? audiouser :0,
+            audiouser:audioCount ? audioCount :0,
             displayuser:displayCount ? displayCount :0,
             AdTitle:title
         })
