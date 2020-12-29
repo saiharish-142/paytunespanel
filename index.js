@@ -14,7 +14,8 @@ const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     serverSelectionTimeoutMS: 900000,
-    socketTimeoutMS: 900000
+    socketTimeoutMS: 900000,
+    useCreateIndex: true
 }
 
 mongoose.connect(MONGOURI,options)
