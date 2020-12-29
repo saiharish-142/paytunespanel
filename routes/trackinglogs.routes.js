@@ -4,6 +4,7 @@ const router = express.Router()
 const trackinglogs = mongoose.model('trackinglogs')
 const Report = mongoose.model('Report')
 const StreamingAds = mongoose.model('streamingads')
+const adsetting = mongoose.model('adsetting')
 const publisherapps = mongoose.model('publisherapps')
 const adminauth = require('../authenMiddleware/adminauth')
 
@@ -1007,9 +1008,10 @@ router.put('/uniquetest1',async (req,res) =>{
             {$match:{AdTitle:{$regex:da._id}}},
             {$group:{_id:null,ids:{$push:"$_id"}}},
         ]).catch(err => console.log(err))
-        console.log(doudt[0].ids)
-        ree.push({_id:da._id,ids:doudt[0].ids})
-        da.ids = doudt[0].ids
+        doudt = doudt[0].ids
+        doudt = doudt.map(id => mongoose.Types.ObjectId(id))
+        let splited = await adsetting.find({campaignId:{$in:doudt}}).catch(err => console.log(err))
+        console.log(splited)
     })
     res.json({response,ree})
 })
