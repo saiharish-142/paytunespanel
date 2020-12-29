@@ -47,6 +47,25 @@ export default function BasicTable({singlead}) {
     // }
     useEffect(()=>{
         if(state1){
+            fetch('/logs/uniqueone',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    title:state1
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                console.log(result[0])
+                setuniquesumcamp(result[0].audiouser)
+                setuniquesumcampd(result[0].displayuser)
+            })
+            .catch(err=>console.log(err))
+        }
+    },[state1])
+    useEffect(()=>{
+        if(state1){
             fetch('/streamingads/getids',{
                 method:'put',
                 headers:{
@@ -107,7 +126,7 @@ export default function BasicTable({singlead}) {
                     log.campunique = log.campunique.sort(function(a,b){return b-a;})
                     uniquenum = log.campunique[0]
                 })
-                setuniquesumcamp(uniquenum)
+                // setuniquesumcamp(uniquenum)
                 // console.log(firstq,secq,thirdq,completes)
                 offlineReports(result,impressions,clicks,firstq,secq,thirdq,completes)
                 setimpre(impressions)
@@ -196,7 +215,7 @@ export default function BasicTable({singlead}) {
                     log.campunique = log.campunique.sort(function(a,b){return b-a;})
                     uniquenum = log.campunique[0]
                 })
-                setuniquesumcampd(uniquenum)
+                // setuniquesumcampd(uniquenum)
                 // console.log(result)
                 offlineReportsd(result,impressions,clicks)
                 setimpred(impressions)

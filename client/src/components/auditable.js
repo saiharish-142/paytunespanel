@@ -22,7 +22,12 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1})
             }).then(res=>res.json())
             .then(result => {
                 // console.log(result[0][regtitle])
-                setadss(result[0][regtitle])
+                var loco = result[0][regtitle]
+                loco = loco.sort(function(a,b){
+                    return b.result.impression - a.result.impression;
+                })
+                // console.log(loco)
+                setadss(loco)
             })
             .catch(err => console.log(err))
         }
