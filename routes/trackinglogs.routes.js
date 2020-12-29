@@ -1163,26 +1163,15 @@ router.put('/uniqueprod1',async (req,res) =>{
             displayuser:displayCount ? displayCount :0,
             AdTitle:title
         })
-        Unique.findOne({AdTitle:title})
-        .then(resutl=>{
-            if(!resutl){
-                uniquedata.save()
-                .then(resu =>{ return console.log('completeunique')})
-                .catch(err =>{
-                    console.log(audioCount,displayCount,title,uniquedata)
-                    return console.log(err)
-                })
-            }
-            if(audioCount)
-            resutl.audiouser = audioCount
-            if(displayCount)
-            resutl.displayuser = displayCount
-            resutl.save()
-            .then(resu =>{ return console.log('updateunique')})
-            .catch(err =>{
-                console.log(audioCount,displayCount,title,uniquedata)
-                return console.log(err)
-            })
+        let dala = await Unique.deleteMany({AdTitle:title}).catch(err => console.log(err))
+        uniquedata.save()
+        .then(resu =>{
+            res.json(resu)
+            return console.log('completeunique',dala)
+        })
+        .catch(err =>{
+            console.log(audioCount,displayCount,title,uniquedata)
+            return console.log(err,dala)
         })
     })
     res.json({response,ree})
@@ -1265,32 +1254,15 @@ router.put('/uniqueprod2',async (req,res) =>{
             displayuser:displayCount ? displayCount :0,
             AdTitle:title
         })
-        Unique.findOne({AdTitle:title})
-        .then(resutl=>{
-            if(!resutl){
-                uniquedata.save()
-                .then(resu =>{
-                    res.json(resu)
-                    return console.log('completeunique')
-                })
-                .catch(err =>{
-                    console.log(audioCount,displayCount,title,uniquedata)
-                    return console.log(err)
-                })
-            }
-            if(audioCount)
-            resutl.audiouser = audioCount
-            if(displayCount)
-            resutl.displayuser = displayCount
-            resutl.save()
-            .then(resu =>{
-                res.json(resu)
-                return console.log('updateunique')
-            })
-            .catch(err =>{
-                console.log(audioCount,displayCount,title,uniquedata)
-                return console.log(err)
-            })
+        let dala = await Unique.deleteMany({AdTitle:title}).catch(err => console.log(err))
+        uniquedata.save()
+        .then(resu =>{
+            res.json(resu)
+            return console.log('completeunique',dala)
+        })
+        .catch(err =>{
+            console.log(audioCount,displayCount,title,uniquedata)
+            return console.log(err,dala)
         })
     })
     // res.json({response,ree})
