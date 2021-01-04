@@ -166,6 +166,7 @@ export default function BasicTable({singlead}) {
                 compo1 += re.complete ? re.complete : 0
             })
             logss = logss.concat(logs)
+            logss = logss.filter(x => x.impressions!==0)
             logss = logss.sort(function(a,b){
                 var d1 = new Date(a.updatedAt[0])
                 var d2 = new Date(b.updatedAt[0])
@@ -539,6 +540,7 @@ export default function BasicTable({singlead}) {
                         <TableCell>Second Quartile</TableCell>
                         <TableCell>Third Quartile</TableCell>
                         <TableCell>Complete</TableCell>
+                        <TableCell>Total Impresions</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -548,6 +550,7 @@ export default function BasicTable({singlead}) {
                         <TableCell>{sq > 0 && sq}</TableCell>
                         <TableCell>{tq}</TableCell>
                         <TableCell>{complete > 0 && complete}</TableCell>
+                        <TableCell>{impre}</TableCell>
                     </TableRow>
                 </TableBody>
             </Table>
@@ -563,6 +566,7 @@ export default function BasicTable({singlead}) {
                         <TableCell>Second Quartile</TableCell>
                         <TableCell>Third Quartile</TableCell>
                         <TableCell>Complete</TableCell>
+                        <TableCell>Total Impresions</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -574,31 +578,7 @@ export default function BasicTable({singlead}) {
                                 <TableCell>{log.midpoint}</TableCell>
                                 <TableCell>{log.thirdQuartile}</TableCell>
                                 <TableCell>{log.complete}</TableCell>
-                            </TableRow>
-                        }
-                    }): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
-                </TableBody>
-            </Table>
-            <div style={{margin:'5px',fontWeight:'bolder'}}>Display Type</div>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Publisher</TableCell>
-                        <TableCell>First Quartile</TableCell>
-                        <TableCell>Second Quartile</TableCell>
-                        <TableCell>Third Quartile</TableCell>
-                        <TableCell>Complete</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {logsd ? logsd.map((log) => {
-                        if(!log.nameads){
-                            return <TableRow>
-                                <TableCell>{log.Publisher.AppName}</TableCell>
-                                <TableCell>{log.firstQuartile}</TableCell>
-                                <TableCell>{log.midpoint}</TableCell>
-                                <TableCell>{log.thirdQuartile}</TableCell>
-                                <TableCell>{log.complete}</TableCell>
+                                <TableCell>{log.impressions}</TableCell>
                             </TableRow>
                         }
                     }): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
