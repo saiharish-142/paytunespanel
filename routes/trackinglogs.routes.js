@@ -872,6 +872,21 @@ router.post('/testcom2f',adminauth,async (req,res)  =>{
     .catch(err => console.log(err))
 })
 
+router.post('/testcom2f',adminauth,async (req,res)  =>{
+    const { campaignId, date, audio } = req.body
+    let logids = await trackinglogs.aggregate([
+        {$match:{"date":date}},
+        {$group:{_id:null,ids:{$addToSet:"$campaignId"}}},
+        {$project:{_id:0,ids:1}}
+    ])
+    .then(audioUnique=>{
+        var logids = audioUnique
+        logids = logids[0].ids
+        res.json({audioUnique,logids})
+    })
+    .catch(err => console.log(err))
+})
+
 router.post('/testcom3',adminauth,async (req,res)  =>{
     const { campaignId, date } = req.body
     var resu = [];
