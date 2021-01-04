@@ -161,9 +161,15 @@ cron.schedule('00 02 * * *', function(){
     var d = new Date()
     d.setDate(d.getDate());
     if(d.getDate() < 10){
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
     }else{
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
     }
     var currentTime = new Date();
     var currentOffset = currentTime.getTimezoneOffset();
@@ -177,9 +183,15 @@ cron.schedule('00 04 * * *', function(){
     var d = new Date()
     d.setDate(d.getDate());
     if(d.getDate() < 10){
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
     }else{
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
     }
     var currentTime = new Date();
     var currentOffset = currentTime.getTimezoneOffset();
@@ -193,9 +205,15 @@ cron.schedule('00 06 * * *', function(){
     var d = new Date()
     d.setDate(d.getDate());
     if(d.getDate() < 10){
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
     }else{
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
     }
     var currentTime = new Date();
     var currentOffset = currentTime.getTimezoneOffset();
@@ -209,9 +227,15 @@ cron.schedule('00 08 * * *', function(){
     var d = new Date()
     d.setDate(d.getDate());
     if(d.getDate() < 10){
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
     }else{
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
     }
     var currentTime = new Date();
     var currentOffset = currentTime.getTimezoneOffset();
@@ -225,9 +249,15 @@ cron.schedule('00 10 * * *', function(){
     var d = new Date()
     d.setDate(d.getDate());
     if(d.getDate() < 10){
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
     }else{
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
     }
     var currentTime = new Date();
     var currentOffset = currentTime.getTimezoneOffset();
@@ -241,9 +271,15 @@ cron.schedule('00 12 * * *', function(){
     var d = new Date()
     d.setDate(d.getDate());
     if(d.getDate() < 10){
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
     }else{
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
     }
     var currentTime = new Date();
     var currentOffset = currentTime.getTimezoneOffset();
@@ -257,9 +293,15 @@ cron.schedule('00 14 * * *', function(){
     var d = new Date()
     d.setDate(d.getDate());
     if(d.getDate() < 10){
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
     }else{
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
     }
     var currentTime = new Date();
     var currentOffset = currentTime.getTimezoneOffset();
@@ -273,9 +315,15 @@ cron.schedule('00 16 * * *', function(){
     var d = new Date()
     d.setDate(d.getDate());
     if(d.getDate() < 10){
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
     }else{
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
     }
     var currentTime = new Date();
     var currentOffset = currentTime.getTimezoneOffset();
@@ -289,9 +337,15 @@ cron.schedule('00 18 * * *', function(){
     var d = new Date()
     d.setDate(d.getDate());
     if(d.getDate() < 10){
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
     }else{
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
     }
     var currentTime = new Date();
     var currentOffset = currentTime.getTimezoneOffset();
@@ -305,9 +359,15 @@ cron.schedule('00 20 * * *', function(){
     var d = new Date()
     d.setDate(d.getDate());
     if(d.getDate() < 10){
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
     }else{
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
     }
     var currentTime = new Date();
     var currentOffset = currentTime.getTimezoneOffset();
@@ -321,9 +381,15 @@ cron.schedule('00 22 * * *', function(){
     var d = new Date()
     d.setDate(d.getDate());
     if(d.getDate() < 10){
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
     }else{
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
     }
     var currentTime = new Date();
     var currentOffset = currentTime.getTimezoneOffset();
