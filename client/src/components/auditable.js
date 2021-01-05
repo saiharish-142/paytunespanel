@@ -106,7 +106,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1})
                 </Table>
             </TableContainer>
             <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
+                rowsPerPageOptions={[5, 10, 25,100,1000,10000]}
                 component="div"
                 count={adss ? adss.length : 0}
                 rowsPerPage={rowsPerPage}
