@@ -3,7 +3,7 @@ import React, {useEffect} from 'react'
 import TablePagination from "@material-ui/core/TablePagination";
 import { useHistory } from 'react-router-dom';
 
-function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1}) {
+function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,client}) {
     // console.log(streamingads)
     const history = useHistory();
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -70,7 +70,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1})
                         <TableCell>Total Clicks Delivered till date</TableCell>
                         <TableCell>CTR</TableCell>
                         <TableCell>Balance Days</TableCell>
-                        <TableCell></TableCell>
+                        {!client &&  <TableCell></TableCell>}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -96,7 +96,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1})
                                 row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
                                 row.result.clicktracking ? row.result.clicktracking :0)*100/row.result.impression *100)/100}%</TableCell>
                             <TableCell>{timefinder(streamingads.endDate[0],Date.now())} days</TableCell>
-                            <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                            {!client &&  <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>}
                         </TableRow>
                         );}}else{
                             return (<TableRow><TableCell>No aaads to display</TableCell></TableRow>)

@@ -3,7 +3,6 @@ import { useState } from 'react'
 import {useHistory, useParams} from 'react-router-dom'
 import { IdContext } from '../App'
 import EnhancedTable from '../components/Table'
-import TitlRname from '../components/TitlRname'
 import M from 'materialize-css'
 
 function Report() {
