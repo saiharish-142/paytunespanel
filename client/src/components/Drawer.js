@@ -5,6 +5,7 @@ import Drawer from '@material-ui/core/Drawer';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import {UserContext} from '../App'
 
 const useStyles = makeStyles({
 list: {
@@ -19,7 +20,7 @@ export default function TemporaryDrawer() {
     const history = useHistory()
     const classes = useStyles();
     const [open, setopen] = React.useState(false);
-
+    const {state} = React.useContext(UserContext)
     return (
         <div>
             <div onClick={()=>setopen(true)}><i className='material-icons' style={{fontSize:'30px',cursor:'pointer',color:"white"}}>menu</i></div>
@@ -44,6 +45,13 @@ export default function TemporaryDrawer() {
                         <ListItemIcon><i className='material-icons'>keyboard_arrow_right</i></ListItemIcon>
                         <ListItemText>Manage Banner Creatives</ListItemText>
                     </ListItem>
+                    {state && state.usertype === 'admin' && <>
+                        <hr />
+                        <ListItem className='dashmenu__item' onClick={()=>history.push('/manageusers')}>
+                            <ListItemIcon><i className='material-icons'>keyboard_arrow_right</i></ListItemIcon>
+                            <ListItemText>Manage Users</ListItemText>
+                        </ListItem>
+                    </>}
                 </div>
             </Drawer>
         </div>

@@ -9,6 +9,9 @@ import Dashboard from './screens/manageAds';
 import Home from './screens/Home';
 import Report from './screens/Report';
 import DetailedTable from './screens/detailedReport';
+import ClientManage from './screens/ClientManage';
+import ClientReport from './screens/ClientReport';
+import ManageUser from './screens/ManageUser';
 // import Dashmenu from './components/dashmenu';
 
 export const UserContext = createContext()
@@ -48,17 +51,22 @@ function App() {
             <Route
               path='/manageAds'
               exact
-              render={()=>(state ? (state.usertype === 'admin' && <Dashboard />) : <Redirect to='/login' />)}
+              render={()=>(state ? (state.usertype === 'admin' ? <Dashboard /> : <ClientManage />) : <Redirect to='/login' />)}
               /> 
+            <Route
+              path='/manageusers'
+              exact
+              render={()=>(state && (state.usertype === 'admin' ? <ManageUser /> : <Home />))}
+              />
             <Route
               path='/manageAds/:campname'
               exact
-              render={()=>(state ? (state.usertype === 'admin' && <Report />) : <Redirect to='/login' />)}
+              render={()=>(state ? (state.usertype === 'admin' ? <Report /> : <ClientReport />) : <Redirect to='/login' />)}
               /> 
             <Route
               path='/manageAds/:campname/detailed'
-              render={()=>(state ? (state.usertype === 'admin' && <DetailedTable />) : <Redirect to='/login' />)}
-              /> 
+              render={()=>(state ? (state.usertype === 'admin' ? <DetailedTable /> : <Redirect to={`/manageAds`}/>) : <Redirect to='/login' />)}
+              />
           </>}
         </BrowserRouter>
       </div>
