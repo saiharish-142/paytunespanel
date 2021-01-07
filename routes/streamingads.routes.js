@@ -129,6 +129,100 @@ router.get('/grouped',adminauth,(req,res)=>{
     .catch(err => console.log(err))
 })
 
+router.put('/clientgrouped',adminauth,(req,res)=>{
+    const {Advertiser} = req.body
+    StreamingAds.aggregate([
+        {$match:{"Advertiser":Advertiser}}
+        {$project:{
+            AdTitle:{$toLower:"$AdTitle"},
+            Category:"$Category",
+            startDate:"$startDate",
+            endDate:"$endDate",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            PricingModel:"$PricingModel",
+            createdOn:"$createdOn"
+        }},{$project:{
+            AdTitle:{$split:["$AdTitle","_"]},
+            Category:"$Category",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            startDate:"$startDate",
+            endDate:"$endDate",
+            PricingModel:"$PricingModel",
+            createdOn:"$createdOn"
+        }},{$project:{
+            AdTitle:{$slice:["$AdTitle",2]} ,
+            Category:"$Category",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            startDate:"$startDate",
+            endDate:"$endDate",
+            PricingModel:"$PricingModel",
+            createdOn:{$substr:["$createdOn",0,10]}
+        }},{$project:{
+            AdTitle:{
+                '$reduce': {
+                    'input': '$AdTitle',
+                    'initialValue': '',
+                    'in': {
+                        '$concat': [
+                            '$$value',
+                            {'$cond': [{'$eq': ['$$value', '']}, '', '_']}, 
+                            '$$this']
+                    }
+                }
+            },
+            Category:"$Category",
+            startDate:"$startDate",
+            endDate:"$endDate",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            PricingModel:"$PricingModel",
+            createdOn:"$createdOn"
+        }},{$sort: {createdOn: -1}},{$group:{
+            _id:"$AdTitle",
+            Category:{$push : "$Category"},
+            Advertiser:{$push : "$Advertiser"},
+            Pricing:{$push : "$Pricing"},
+            startDate:{$push : "$startDate"},
+            endDate:{$push : "$endDate"}, 
+            PricingModel:{$push : "$PricingModel"},
+            createdOn:{$push : "$createdOn"}
+        }},{$project:{
+            Adtitle:"$_id",
+            Category:"$Category",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            startDate:"$startDate",
+            endDate:"$endDate",
+            PricingModel:"$PricingModel",
+            createdOn:{$arrayElemAt : ["$createdOn",0]}
+        }},{$sort: {createdOn: -1}}
+    ])
+    .then((respo)=>{
+        var data = [];
+        data = respo
+        data.forEach(ad => {
+            var resCategory = [].concat.apply([], ad.Category);
+            resCategory = [...new Set(resCategory)];
+            ad.Category = resCategory
+            var resAdvertiser = [].concat.apply([], ad.Advertiser);
+            resAdvertiser = [...new Set(resAdvertiser)];
+            ad.Advertiser = resAdvertiser
+            var resPricing = [].concat.apply([], ad.Pricing);
+            resPricing = [...new Set(resPricing)];
+            ad.Pricing = resPricing
+            var resPricingModel = [].concat.apply([], ad.PricingModel);
+            resPricingModel = [...new Set(resPricingModel)];
+            ad.PricingModel = resPricingModel
+            return ad;
+        })
+        res.json(data)
+    })
+    .catch(err => console.log(err))
+})
+
 router.put('/groupedsingle',adminauth,(req,res)=>{
     const { adtitle } = req.body
     StreamingAds.aggregate([
