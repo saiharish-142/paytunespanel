@@ -132,7 +132,7 @@ router.get('/grouped',adminauth,(req,res)=>{
 router.put('/clientgrouped',adminauth,(req,res)=>{
     const {Advertiser} = req.body
     StreamingAds.aggregate([
-        {$match:{"Advertiser":Advertiser}}
+        {$match:{"Advertiser":Advertiser}},
         {$project:{
             AdTitle:{$toLower:"$AdTitle"},
             Category:"$Category",
