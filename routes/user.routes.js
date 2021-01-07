@@ -94,7 +94,7 @@ router.get('/users',adminauth,(req,res)=>{
     admin.find()
     .select('-password')
     .then(erre=>{
-        res.json({erre,da:req.user})
+        res.json(erre)
     })
     .catch(err=>res.status(422).json(err))
 })
