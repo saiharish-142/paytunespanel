@@ -62,14 +62,11 @@ router.post('/signin',(req,res)=>{
 
 router.put('/createUser',adminauth,(req,res)=>{
     const { username, password, email, usertype } = req.body
-    if(req.user.username !== 'admin'){
-        return res.json({message:'You Should be an admin'})
-    }
     admin.findOne({email:email})
     .then(oneofuser=>{
         if(oneofuser){
             if(oneofuser.usertype === usertype){
-                return res.json({message:'User Already Exist'})
+                return res.json({error:'User Already Exist'})
             }
         }
         bcrypt.hash(password,12)
@@ -100,13 +97,10 @@ router.get('/users',adminauth,(req,res)=>{
 })
 
 router.delete('/deleteUser',adminauth,(req,res)=>{
-    if(req.user.username !== 'admin'){
-        return res.json({message:'You Should be an admin'})
-    }
     const {username} = req.body
     admin.deleteOne({username:username})
     .then(repo=>{
-        res.json({message:'USer Deleted successfully'})
+        res.json({message:'User Deleted successfully'})
     }).catch(err=>res.status(422).json(err))
 })
 
