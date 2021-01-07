@@ -99,4 +99,15 @@ router.get('/users',adminauth,(req,res)=>{
     .catch(err=>res.status(422).json(err))
 })
 
+router.delete('/deleteUser',adminauth,(req,res)=>{
+    if(req.user.username !== 'admin'){
+        return res.json({message:'You Should be an admin'})
+    }
+    const {username} = req.body
+    admin.deleteOne({username:username})
+    .then(repo=>{
+        res.json({message:'USer Deleted successfully'})
+    }).catch(err=>res.status(422).json(err))
+})
+
 module.exports = router
