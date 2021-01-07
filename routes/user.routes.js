@@ -5,6 +5,7 @@ const admin = mongoose.model("admin")
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { JWT_SECRET } = require('../config/keys')
+const adminauth  = require('../authenMiddleware/adminauth')
 
 router.post('/signup',(req,res)=>{
     const { username, password, email, usertype } = req.body
@@ -57,6 +58,45 @@ router.post('/signin',(req,res)=>{
         })
         .catch(err=>console.log(err))
     }).catch(err=>console.log(err))
+})
+
+router.put('/createUser',adminauth,(req,res)=>{
+    const { username, password, email, usertype } = req.body
+    if(req.user.username !== 'admin'){
+        return res.json({message:'You Should be an admin'})
+    }
+    admin.findOne({email:email})
+    .then(oneofuser=>{
+        if(oneofuser){
+            if(oneofuser.usertype === usertype){
+                return res.json({message:'User Already Exist'})
+            }
+        }
+        bcrypt.hash(password,12)
+        .then(hashpass => {
+            const adminU = new admin({
+                username,password:hashpass,email,usertype
+            })
+            adminU.save()
+            .then(savedAdmin => {
+                res.json({message:"User saved Successfully..."})
+            })
+            .catch(err => console.log(err))
+        })
+        .catch(err => console.log(err))
+    })
+})
+
+router.get('/users',adminauth,(req,res)=>{
+    if(req.user.username !== 'admin'){
+        return res.json({message:'You Should be an admin'})
+    }
+    admin.find()
+    .select('-password')
+    .then(erre=>{
+        res.json(erre)
+    })
+    .catch(err=>res.status(422).json(err))
 })
 
 module.exports = router
