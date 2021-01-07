@@ -17,8 +17,10 @@ module.exports = (req,res,next) =>{
         // console.log(payload)
         const {_id} = payload
         admin.findById(_id).then(loggeduser=>{
-            req.user = loggeduser
-            next()
+            if(loggeduser){
+                req.user = loggeduser
+                next()
+            }
         })
     })
 }

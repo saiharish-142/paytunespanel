@@ -88,13 +88,13 @@ router.put('/createUser',adminauth,(req,res)=>{
 })
 
 router.get('/users',adminauth,(req,res)=>{
-    if(req.user.username !== 'admin'){
-        return res.json({message:'You Should be an admin'})
-    }
+    // if(req.user.usertype !== 'admin'){
+    //     return res.json({message:'You Should be an admin'})
+    // }
     admin.find()
     .select('-password')
     .then(erre=>{
-        res.json(erre)
+        res.json({erre,da:req.user})
     })
     .catch(err=>res.status(422).json(err))
 })
