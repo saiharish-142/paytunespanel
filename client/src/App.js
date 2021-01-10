@@ -54,9 +54,9 @@ function App() {
               render={()=>(state ? (state.usertype === 'admin' ? <Dashboard /> : <ClientManage />) : <Redirect to='/login' />)}
               /> 
             <Route
-              path='/manageusers/:clientName'
+              path='/clientSideCamp'
               exact
-              render={()=>(state ? (state.usertype === 'admin' && <ClientManage />) : <Redirect to='/login' />)}
+              render={()=>(state ? (state.usertype === 'admin' && <Dashboard clientview={true} />) : <Redirect to='/login' />)}
               /> 
             <Route
               path='/manageusers'
@@ -69,7 +69,7 @@ function App() {
               render={()=>(state ? (state.usertype === 'admin' ? <Report /> : <ClientReport />) : <Redirect to='/login' />)}
               /> 
             <Route
-              path='/manageusers/:clientName/:campname'
+              path='/clientSideCamp/:campname'
               exact
               render={()=>(state ? (state.usertype === 'admin' && <ClientReport />) : <Redirect to='/login' />)}
               /> 

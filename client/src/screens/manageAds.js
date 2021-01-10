@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom'
 import DataTable from '../components/CampTable'
 import SearchCampagin from '../components/SearchCampagin'
 
-function Dashboard() {
+function Dashboard({clientview}) {
     const history = useHistory()
     const [loading, setloading] = useState(true)
     const [searchval, setSearchval] = useState('')
@@ -56,7 +56,7 @@ function Dashboard() {
     return (
         <div className='dashboard'>
             <SearchCampagin inval={searchval} setInval={onChange} />
-            {!loading ? <DataTable streamingads={streamingadsSearched} settingcamp={setStreamingadsSearched} />: <div> loading... </div>}
+            {!loading ? <DataTable clientview={clientview} streamingads={streamingadsSearched} settingcamp={setStreamingadsSearched} />: <div> loading... </div>}
             {/* {streamingads.length ? "": <div> Loading... </div>} */}
         </div>
     )

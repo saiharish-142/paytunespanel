@@ -22,7 +22,7 @@ const useStyles = makeStyles({
     }
 });
 
-export default function StickyHeadTable({streamingads,settingcamp}) {
+export default function StickyHeadTable({streamingads,settingcamp,clientview}) {
     const classes = useStyles();
     const history = useHistory();
     const [page, setPage] = React.useState(0);
@@ -253,7 +253,11 @@ export default function StickyHeadTable({streamingads,settingcamp}) {
                         <TableCell align='center'>{row.endDate && dateformatchanger(row.endDate[0])}</TableCell>
                         <TableCell align='center'>{row.endDate&& timefinder(row.endDate[0])} days</TableCell>
                         <TableCell align='center' className='mangeads__report' onClick={()=>{
-                            history.push(`/manageAds/${row._id}`)
+                            if(clientview){
+                                history.push(`/clientSideCamp/${row._id}`)
+                            }else{
+                                history.push(`/manageAds/${row._id}`)
+                            }
                             dispatch1({type:"ID",payload:row._id})
                         }}>Report</TableCell>
                     </TableRow>

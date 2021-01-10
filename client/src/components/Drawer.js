@@ -52,6 +52,13 @@ export default function TemporaryDrawer() {
                             <ListItemText>Manage Users</ListItemText>
                         </ListItem>
                     </>}
+                    {state && state.usertype === 'admin' && <>
+                        <hr />
+                        <ListItem className='dashmenu__item' onClick={()=>history.push('/clientSideCamp')}>
+                            <ListItemIcon><i className='material-icons'>keyboard_arrow_right</i></ListItemIcon>
+                            <ListItemText>Manage Client Reports</ListItemText>
+                        </ListItem>
+                    </>}
                 </div>
             </Drawer>
         </div>
