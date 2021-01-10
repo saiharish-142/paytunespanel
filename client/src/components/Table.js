@@ -302,13 +302,33 @@ export default function BasicTable({singlead}) {
         // var datee = new Date(date);
         var s = new Date(date).toLocaleString(undefined, {timeZone: 'Asia/Kolkata'});
         // var datee = datee.toString();
-        // console.log(s,date)
-        return s.slice(3,5) + '/' + s.slice(0,2) + '/' + s.slice(6,10) + ' ' + s.slice(11,)
+        // console.log(s,date,s.split('/'))
+        s = s.split('/')
+        return s[1] + '/' + s[0] + '/' + s[2]
     }
     const uniquetopfinder = (dataunique) => {
         var gotdata = dataunique;
         gotdata = gotdata.sort(function(a,b){return b-a;})
         return gotdata[0];
+    }
+    const datefinder = () => {
+        if(logs.length){
+            if(logs[0].updatedAt && logs[0].updatedAt.length){
+                return updatedatetimeseter(logs[0].updatedAt[0])
+            }else{
+                if(logsd.length){
+                    if(logsd[0].updatedAt && logsd[0].updatedAt.length){
+                        return updatedatetimeseter(logsd[0].updatedAt[0])
+                    }else{
+                        return 'not found'
+                    }
+                }else{
+                    return 'not found';
+                }
+            }
+        }else{
+            return 'not found'
+        }
     }
     // console.log(Date('2020-11-28T18:30:00.541Z').toString())
     // console.log(Date('2020-11-28T18:30:00.541Z'))
@@ -318,7 +338,7 @@ export default function BasicTable({singlead}) {
         <IconBreadcrumbs />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{state1 && state1.toUpperCase()} Campaign</div>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
             <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
         <Table className={classes.table} aria-label="simple table">
@@ -420,7 +440,7 @@ export default function BasicTable({singlead}) {
         </Table>
         </TableContainer>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Publisher Wise Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
             <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
         <Table className={classes.table} aria-label="simple table">
@@ -530,7 +550,7 @@ export default function BasicTable({singlead}) {
         </Table>
         </TableContainer>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Quartile Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <TableContainer  style={{margin:'20px 0'}} elevation={3} component={Paper}>
             <Table>
                 <TableHead>
@@ -586,31 +606,31 @@ export default function BasicTable({singlead}) {
             </Table>
         </TableContainer>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Region Wise Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.audio} url='regionsum' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.display} url='regionsum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Language Wise Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.audio} url='languagesum' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.display} url='languagesum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Type Wise Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='platformtype' jsotitle='platformType' ids={ids && ids.audio} url='platformsum' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform Type' regtitle='platformtype' jsotitle='platformType' ids={ids && ids.display} url='platformsum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} url='phonePlatformsum' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} url='phonePlatformsum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} url='pincodesum' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.display} url='pincodesum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Model Wise Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.audio} url='phoneModelsum' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.display} url='phoneModelsum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} url='deviceModelsum' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} url='deviceModelsum' />
         </>

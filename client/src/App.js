@@ -54,6 +54,11 @@ function App() {
               render={()=>(state ? (state.usertype === 'admin' ? <Dashboard /> : <ClientManage />) : <Redirect to='/login' />)}
               /> 
             <Route
+              path='/manageusers/:clientName'
+              exact
+              render={()=>(state ? (state.usertype === 'admin' && <ClientManage />) : <Redirect to='/login' />)}
+              /> 
+            <Route
               path='/manageusers'
               exact
               render={()=>(state && (state.usertype === 'admin' ? <ManageUser /> : <Home />))}
@@ -62,6 +67,11 @@ function App() {
               path='/manageAds/:campname'
               exact
               render={()=>(state ? (state.usertype === 'admin' ? <Report /> : <ClientReport />) : <Redirect to='/login' />)}
+              /> 
+            <Route
+              path='/manageusers/:clientName/:campname'
+              exact
+              render={()=>(state ? (state.usertype === 'admin' && <ClientReport />) : <Redirect to='/login' />)}
               /> 
             <Route
               path='/manageAds/:campname/detailed'

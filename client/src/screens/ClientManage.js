@@ -8,7 +8,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { IdContext } from '../App'
 import { UserContext } from '../App'
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
@@ -25,6 +25,7 @@ const useStyles = makeStyles({
 });
 
 function ClientManage() {
+    const {clientName} = useParams()
     const {state,dispatch} = useContext(UserContext)
     const {state1,dispatch1} = useContext(IdContext)
     // console.log(state1,state)
@@ -44,7 +45,7 @@ function ClientManage() {
                 "Content-Type":"application/json",
                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
             },body:JSON.stringify({
-                Advertiser:state.username
+                Advertiser: clientName ? clientName : state.username
             })
         }).then(res=>res.json())
         .then(result =>{
@@ -308,7 +309,11 @@ function ClientManage() {
                                 <TableCell align='center'>{row.endDate && dateformatchanger(row.endDate[0])}</TableCell>
                                 <TableCell align='center'>{row.endDate&& timefinder(row.endDate[0])} days</TableCell>
                                 <TableCell align='center' className='mangeads__report' onClick={()=>{
-                                    history.push(`/manageAds/${row._id}`)
+                                    if(clientName){
+                                        history.push(`/manageusers/${clientName}/${row._id}`)
+                                    }else{
+                                        history.push(`/manageAds/${row._id}`)
+                                    }
                                     dispatch1({type:"ID",payload:row._id})
                                 }}>Report</TableCell>
                             </TableRow>

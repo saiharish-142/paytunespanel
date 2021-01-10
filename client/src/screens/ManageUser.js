@@ -105,7 +105,7 @@ function ManageUser() {
                     <TableBody>
                         {users && users.map((data,i)=>{
                             return <TableRow key={i}>
-                                <TableCell align='center'>{data.username}</TableCell>
+                                <TableCell align='center'>{data.username}{data.usertype!=='admin' && <p style={{cursor:'pointer'}} onClick={()=>history.push(`/manageusers/${data.username}`)}>Show Client side</p>}</TableCell>
                                 <TableCell align='center'>{data.email}</TableCell>
                                 <TableCell align='center'>{data.usertype}</TableCell>
                                 {data.usertype!=='admin' && <TableCell align='center' onClick={()=>deleteUSer(data.username)} style={{cursor:'pointer'}}><DeleteOutlinedIcon /></TableCell>}

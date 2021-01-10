@@ -69,7 +69,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                         {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>Unique Users</TableCell>}
                         <TableCell>Total Clicks Delivered till date</TableCell>
                         <TableCell>CTR</TableCell>
-                        <TableCell>Balance Days</TableCell>
+                        {!client &&  <TableCell>Balance Days</TableCell>}
                         {!client &&  <TableCell></TableCell>}
                     </TableRow>
                 </TableHead>
@@ -95,7 +95,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                             <TableCell>{Math.round((row.result.click ? row.result.click :0 + 
                                 row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
                                 row.result.clicktracking ? row.result.clicktracking :0)*100/row.result.impression *100)/100}%</TableCell>
-                            <TableCell>{timefinder(streamingads.endDate[0],Date.now())} days</TableCell>
+                            {!client &&  <TableCell>{timefinder(streamingads.endDate[0],Date.now())} days</TableCell>}
                             {!client &&  <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>}
                         </TableRow>
                         );}}else{

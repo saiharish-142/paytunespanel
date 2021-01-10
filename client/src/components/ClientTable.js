@@ -172,7 +172,7 @@ export default function BasicTable({singlead}) {
                 var d2 = new Date(b.updatedAt[0])
                 return d2 - d1
             })
-            // console.log(logss)
+            console.log(logss)
             if(logss.length)
             setlogs(logss)
             if(impressions1)
@@ -253,7 +253,7 @@ export default function BasicTable({singlead}) {
                 var d2 = new Date(b.updatedAt[0])
                 return d2 - d1
             })
-            // console.log(logss)
+            console.log(logss)
             if(logss.length)
             setlogsd(logss)
             if(impressions1)
@@ -302,8 +302,9 @@ export default function BasicTable({singlead}) {
         // var datee = new Date(date);
         var s = new Date(date).toLocaleString(undefined, {timeZone: 'Asia/Kolkata'});
         // var datee = datee.toString();
-        // console.log(s,date)
-        return s.slice(3,5) + '/' + s.slice(0,2) + '/' + s.slice(6,10) + ' ' + s.slice(11,)
+        // console.log(s,date,s.split('/'))
+        s = s.split('/')
+        return s[1] + '/' + s[0] + '/' + s[2]
     }
     const uniquetopfinder = (dataunique) => {
         var gotdata = dataunique;
@@ -313,12 +314,31 @@ export default function BasicTable({singlead}) {
     // console.log(Date('2020-11-28T18:30:00.541Z').toString())
     // console.log(Date('2020-11-28T18:30:00.541Z'))
     // console.log(Date('2020-11-28T18:30:00.541Z'))
+    const datefinder = () => {
+        if(logs.length){
+            if(logs[0].updatedAt && logs[0].updatedAt.length){
+                return updatedatetimeseter(logs[0].updatedAt[0])
+            }else{
+                if(logsd.length){
+                    if(logsd[0].updatedAt && logsd[0].updatedAt.length){
+                        return updatedatetimeseter(logsd[0].updatedAt[0])
+                    }else{
+                        return 'not found'
+                    }
+                }else{
+                    return 'not found';
+                }
+            }
+        }else{
+            return 'not found'
+        }
+    }
     return (
         <>
         <IconBreadcrumbs />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{state1 && state1.toUpperCase()} Campaign</div>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
             <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
         <Table className={classes.table} aria-label="simple table">
@@ -330,12 +350,8 @@ export default function BasicTable({singlead}) {
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
                 <TableCell>Unique Users</TableCell>
-                <TableCell>Avg required</TableCell>
-                <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total Clicks Delivered till date</TableCell>
                 <TableCell>CTR</TableCell>
-                <TableCell>Balance Impressions</TableCell>
-                <TableCell>Balance Days</TableCell>
             </TableRow>
             </TableHead>
             <TableBody>
@@ -356,12 +372,8 @@ export default function BasicTable({singlead}) {
                     <TableCell>{ids && ids.audimpression}</TableCell>
                     <TableCell>{impre}</TableCell>
                     <TableCell>{uniquesumcamp}</TableCell>
-                    <TableCell>{ids &&  Math.round(ids.audimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{click}</TableCell>
                     <TableCell>{Math.round(click*100/impre *100)/100}%</TableCell>
-                    <TableCell>{ids && ids.audimpression-impre}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
                 </TableRow>
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
             </TableBody>
@@ -378,12 +390,8 @@ export default function BasicTable({singlead}) {
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
                 <TableCell>Unique Users</TableCell>
-                <TableCell>Avg required</TableCell>
-                <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total Clicks Delivered till date</TableCell>
                 <TableCell>CTR</TableCell>
-                <TableCell>Balance Impressions</TableCell>
-                <TableCell>Balance Days</TableCell>
             </TableRow>
             </TableHead>
             <TableBody>
@@ -404,19 +412,15 @@ export default function BasicTable({singlead}) {
                     <TableCell>{ids && ids.disimpression}</TableCell>
                     <TableCell>{impred}</TableCell>
                     <TableCell>{uniquesumcampd}</TableCell>
-                    <TableCell>{ids && Math.round(ids.disimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{clickd}</TableCell>
                     <TableCell>{Math.round(clickd*100/impred *100)/100}%</TableCell>
-                    <TableCell>{ids && ids.disimpression-impred}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
                 </TableRow>
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
             </TableBody>
         </Table>
         </TableContainer>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Quartile Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <TableContainer  style={{margin:'20px 0'}} elevation={3} component={Paper}>
             <Table>
                 <TableHead>
@@ -441,46 +445,15 @@ export default function BasicTable({singlead}) {
                 </TableBody>
             </Table>
         </TableContainer>
-        <TableContainer  style={{margin:'20px 0'}} elevation={3} component={Paper}>
-            <div style={{margin:'5px',fontWeight:'bolder'}}>Publisher Wise</div>
-            <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Publisher</TableCell>
-                        <TableCell>First Quartile</TableCell>
-                        <TableCell>Second Quartile</TableCell>
-                        <TableCell>Third Quartile</TableCell>
-                        <TableCell>Complete</TableCell>
-                        <TableCell>Total Impresions</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {logs ? logs.map((log,i) => {
-                        if(!log.nameads){
-                            return <TableRow key = {i}>
-                                <TableCell>{log.Publisher.AppName}</TableCell>
-                                <TableCell>{log.firstQuartile}</TableCell>
-                                <TableCell>{log.midpoint}</TableCell>
-                                <TableCell>{log.thirdQuartile}</TableCell>
-                                <TableCell>{log.complete}</TableCell>
-                                <TableCell>{log.impressions}</TableCell>
-                            </TableRow>
-                        }
-                    }): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
-                </TableBody>
-            </Table>
-        </TableContainer>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Type Wise Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='platformtype' jsotitle='platformType' ids={ids && ids.audio} client={true} url='platformsum' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform Type' regtitle='platformtype' jsotitle='platformType' ids={ids && ids.display} client={true} url='platformsum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} client={true} url='pincodesum' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.display} client={true} url='pincodesum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
-        <div>last updated at - {logs.length ? (logs[0].updatedAt ? updatedatetimeseter(logs[0].updatedAt[0]) : 'not found') : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} client={true} url='deviceModelsum' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} client={true} url='deviceModelsum' />
         </>
