@@ -28,10 +28,8 @@ export default function BasicTable({singlead}) {
     const [sq, setsq] = useState(0)
     const [tq, settq] = useState(0)
     const [complete, setcomplete] = useState(0)
-    const [fqd, setfqd] = useState(0)
-    const [sqd, setsqd] = useState(0)
-    const [tqd, settqd] = useState(0)
-    const [completed, setcompleted] = useState(0)
+    const [ratio, setratio] = useState(0)
+    const [ratiod, setratiod] = useState(0)
     const [click, setclick] = useState(0)
     const [uniquesumcamp, setuniquesumcamp] = useState(0)
     const [uniquesumcampd, setuniquesumcampd] = useState(0)
@@ -122,10 +120,14 @@ export default function BasicTable({singlead}) {
                     clicks += re.clicks
                 })
                 var uniquenum = 0;
+                var uniimprenum = 0;
                 result.map(log => {
                     log.campunique = log.campunique.sort(function(a,b){return b-a;})
-                    uniquenum = log.campunique[0]
+                    uniquenum += log.campunique[0]
+                    uniimprenum += log.impressions
                 })
+                // console.log(uniquenum/uniimprenum,uniquenum,uniimprenum)
+                setratio(uniquenum/uniimprenum)
                 // setuniquesumcamp(uniquenum)
                 // console.log(firstq,secq,thirdq,completes)
                 offlineReports(result,impressions,clicks,firstq,secq,thirdq,completes)
@@ -212,10 +214,14 @@ export default function BasicTable({singlead}) {
                     clicks += re.clicks
                 })
                 var uniquenum = 0;
+                var unimprenum = 0;
                 result.map(log => {
                     log.campunique = log.campunique.sort(function(a,b){return b-a;})
-                    uniquenum = log.campunique[0]
+                    uniquenum += log.campunique[0]
+                    unimprenum += log.impressions
                 })
+                setratiod(uniquenum/unimprenum)
+                // console.log(uniquenum/unimprenum)
                 // setuniquesumcampd(uniquenum)
                 // console.log(result)
                 offlineReportsd(result,impressions,clicks)
@@ -371,7 +377,7 @@ export default function BasicTable({singlead}) {
                     <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
                     <TableCell>{ids && ids.audimpression}</TableCell>
                     <TableCell>{impre}</TableCell>
-                    <TableCell>{uniquesumcamp}</TableCell>
+                    <TableCell>{Math.round(ratio*impre) + 1}</TableCell>
                     <TableCell>{click}</TableCell>
                     <TableCell>{Math.round(click*100/impre *100)/100}%</TableCell>
                 </TableRow>
@@ -411,7 +417,7 @@ export default function BasicTable({singlead}) {
                     <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
                     <TableCell>{ids && ids.disimpression}</TableCell>
                     <TableCell>{impred}</TableCell>
-                    <TableCell>{uniquesumcampd}</TableCell>
+                    <TableCell>{Math.round(ratiod*impred) + 1}</TableCell>
                     <TableCell>{clickd}</TableCell>
                     <TableCell>{Math.round(clickd*100/impred *100)/100}%</TableCell>
                 </TableRow>
@@ -445,13 +451,13 @@ export default function BasicTable({singlead}) {
                 </TableBody>
             </Table>
         </TableContainer>
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Type Wise Summary Report</div>
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='platformtype' jsotitle='platformType' ids={ids && ids.audio} client={true} url='platformsum' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform Type' regtitle='platformtype' jsotitle='platformType' ids={ids && ids.display} client={true} url='platformsum' />
+        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} client={true} url='phonePlatformsum' />
+        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} client={true} url='phonePlatformsum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} client={true} url='pincodesum' />
+        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' ratio={ratio} regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} client={true} url='pincodesum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} client={true} url='deviceModelsum' />

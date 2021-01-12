@@ -3,7 +3,7 @@ import React, {useEffect} from 'react'
 import TablePagination from "@material-ui/core/TablePagination";
 import { useHistory } from 'react-router-dom';
 
-function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,client}) {
+function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,client,ratio}) {
     // console.log(streamingads)
     const history = useHistory();
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -86,7 +86,9 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                             <TableCell>{dateformatchanger(streamingads.endDate[0].slice(0,10))}</TableCell>
                             <TableCell>{timefinder(streamingads.endDate[0],streamingads.startDate[0])} days</TableCell>
                             <TableCell>{row.result.impression}</TableCell>
-                            {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>{row.unique}</TableCell>}
+                            {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>{
+                                ratio ? (Math.round(ratio*row.result.impression) + 1) : row.unique
+                            }</TableCell>}
                             <TableCell>{
                                 row.result.click ? row.result.click :0 + 
                                 row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
