@@ -1,181 +1,45 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
-const StreamingAds = mongoose.model('streamingads')
-const campaignwisereports = mongoose.model('campaignwisereports')
-const publisherapps = mongoose.model('publisherapps')
 const adminauth  = require('../authenMiddleware/adminauth')
+const campaignwisereports = mongoose.model('campaignwisereports')
+const StreamingAds = mongoose.model('streamingads')
+const publisherapps = mongoose.model('publisherapps')
 
 router.get('/reports',adminauth,(req,res)=>{
     campaignwisereports.find()
-    .populate('appId')
-    .sort('-date')
-    .limit(20)
-    .then(reports=>{
-        res.json(reports)
+    .then(result=>{
+        res.json(result)
     })
-    .catch(err=>console.log(err))
+    .catch(er => res.status(400).json(er))
 })
 
 router.put('/reportbydate',adminauth,(req,res)=>{
     const { date } = req.body
     campaignwisereports.find({date:date})
-    .populate('appId')
     .sort('-date')
     .then(reports=>{
-        res.json(reports)
+        publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
+            if(err){
+                res.status(422).json(err)
+            }
+            res.json(populatedreports)
+        })
     })
     .catch(err=>console.log(err))
 })
 
 router.put('/reportbydatereq',adminauth,(req,res)=>{
     const { date, campaignId, appId } = req.body
-    campaignwisereports.find({date:date, campaignId:campaignId, appId:appId})
-    .populate('appId')
+    var id = mongoose.Types.ObjectId(campaignId)
+    campaignwisereports.find({date:date, campaignId:id, appId:appId})
     .sort('-date')
     .then(reports=>{
-        res.json(reports)
-    })
-    .catch(err=>console.log(err))
-})
-
-router.put('/sumrepobyjoincamp',adminauth,(req,res)=>{
-    const { adtitle } = req.body
-    StreamingAds.aggregate([
-        {$match:{
-            AdTitle:{$regex:adtitle}
-        }},{$project:{
-            id:"$_id"
-        }}
-    ])
-    .then(resp=>{
-        var ids = [];
-        resp.map(re => {
-            ids.push(re.id)
-        })
-        campaignwisereports.aggregate([
-            {$match:{
-                "campaignId": {$in : ids}
-            }},{$group:{
-                _id:"$appId", updatedAt:{$push:"$updatedAt"}, impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
-            }},{$project:{
-                appId:"$_id", updatedAt:"$updatedAt", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
-            }}
-        ])
-        .then(reports=>{
-            publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
-                if(err){
-                    return res.status(422).json(err)
-                }
-                resu = populatedreports;
-                resu.map((det)=>{
-                    var resregion = [].concat.apply([], det.region);
-                    resregion = [...new Set(resregion)];
-                    det.region = resregion
-                    var updatedDate = det.updatedAt
-                    updatedDate.sort(function(a,b){
-                        return new Date(b) - new Date(a);
-                    });
-                    det.updatedAt = updatedDate
-                })
-                res.json(resu)
-            })
-        })
-        .catch(err=>console.log(err))
-    })
-    .catch(err=>console.log(err))
-})
-
-router.put('/sumreportofcam',adminauth,(req,res)=>{
-    const { campaignId } = req.body
-    var resu = [];
-    campaignwisereports.aggregate([
-        {$match:{
-            "campaignId":campaignId
-        }},{$group:{
-            _id:"$appId", updatedAt:{$push:"$updatedAt"}, impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
-        }},{$project:{
-            appId:"$_id", updatedAt:"$updatedAt", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
-        }}
-    ])
-    .then(reports=>{
         publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
             if(err){
-                return res.status(422).json(err)
+                res.status(422).json(err)
             }
-            resu = populatedreports;
-            resu.map((det)=>{
-                var resregion = [].concat.apply([], det.region);
-                resregion = [...new Set(resregion)];
-                det.region = resregion
-                var updatedDate = det.updatedAt
-                updatedDate.sort(function(a,b){
-                    return new Date(b) - new Date(a);
-                });
-                det.updatedAt = updatedDate
-            })
-            res.json(resu)
-        })
-    })
-    .catch(err=>console.log(err))
-})
-
-router.put('/sumreportofcam22',adminauth,(req,res)=>{
-    const { campaignId } = req.body
-    var resu = [];
-    campaignwisereports.aggregate([
-        {$match:{
-            "campaignId":{$in:campaignId}
-        }},{$group:{
-            _id:"$appId", 
-            updatedAt:{$push:"$updatedAt"}, 
-            camp:{$push:"$campaignId"} , 
-            publishunique:{$push:"$publishunique"} , 
-            campunique:{$push:"$campunique"} , 
-            impressions:{$sum:"$impressions"}, 
-            thirdQuartile:{$sum:"$thirdQuartile"}, 
-            firstQuartile:{$sum:"$firstQuartile"}, 
-            midpoint:{$sum:"$midpoint"}, 
-            complete:{$sum:"$complete"}, 
-            clicks:{$sum:"$clicks"}
-        }},{$project:{
-            appId:"$_id", 
-            updatedAt:"$updatedAt", 
-            campaignId:"$camp", 
-            publishunique:"$publishunique", 
-            campunique:"$campunique", 
-            impressions:"$impressions", 
-            complete:"$complete", 
-            midpoint:"$midpoint", 
-            firstQuartile:"$firstQuartile", 
-            thirdQuartile:"$thirdQuartile", 
-            clicks:"$clicks",
-            _id:0
-        }}
-    ])
-    .then(reports=>{
-        publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
-            if(err){
-                return res.status(422).json(err)
-            }
-            resu = populatedreports;
-            // console.log(populatedreports)
-            resu.map((det)=>{
-                var rescampaignId = [].concat.apply([], det.campaignId);
-                rescampaignId = [...new Set(rescampaignId)];
-                det.campaignId = rescampaignId[0]
-                var updatedDate = det.updatedAt
-                updatedDate.sort(function(a,b){
-                    return new Date(b) - new Date(a);
-                });
-                det.updatedAt = updatedDate
-            })
-            StreamingAds.populate(resu,{path:'campaignId'},function(err,populatedres){
-                if(err){
-                    return res.status(422).json(resu)
-                }
-                res.json(populatedres)
-            })
+            res.json(populatedreports)
         })
     })
     .catch(err=>console.log(err))
@@ -183,12 +47,13 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
 
 router.put('/detreportcambydat',adminauth,(req,res)=>{
     const { campaignId } = req.body
+    var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
     var resu = [];
     campaignwisereports.aggregate([
         {$match:{
-            "campaignId":{$in : campaignId}
+            "campaignId":{$in : ids}
         }},{$group:{
-            _id:{date:"$date"},updatedAt:{$push:'$updatedAt'}, impressions:{$sum:"$impressions"}, complete:{$sum:"$complete"}, clicks:{$sum:"$clicks"}, region:{$push:"$region"}
+            _id:{date:"$date"},updatedAt:{$push:'$createdOn'}, impressions:{$sum:"$impression"}, complete:{$sum:"$completedAudioImpressions"}, clicks:{$sum:"$CompanionClickTracking"}, region:{$push:"$region"}
         }},{$project:{
             date:"$_id.date", updatedAt:"$updatedAt", impressions:"$impressions", complete:"$complete", clicks:"$clicks", region:"$region", _id:0
         }},{$sort: {date: -1}}
@@ -210,58 +75,81 @@ router.put('/detreportcambydat',adminauth,(req,res)=>{
     .catch(err=>console.log(err))
 })
 
+router.put('/sumreportofcam22',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
+    var resu = [];
+    campaignwisereports.aggregate([
+        {$match:{
+            "campaignId":{$in:ids}
+        }},{$group:{
+            _id:"$appId", updatedAt:{$push:"$createdOn"}, camp:{$push:"$campaignId"} , impressions:{$sum:"$impression"}, complete:{$sum:"$completedAudioImpressions"}, clicks:{$sum:"$CompanionClickTracking"}
+        }},{$project:{
+            Publisher:"$_id", updatedAt:"$updatedAt", campaignId:"$camp", impressions:"$impressions", complete:"$complete", clicks:"$clicks" ,_id:0
+        }}
+    ])
+    .then(reports=>{
+        publisherapps.populate(reports,{path:'Publisher'},function(err,populatedreports){
+            if(err){
+                return res.status(422).json(err)
+            }
+            resu = populatedreports;
+            // console.log(populatedreports)
+            resu.map((det)=>{
+                var resregion = [].concat.apply([], det.region);
+                resregion = [...new Set(resregion)];
+                det.region = resregion
+                var rescampaignId = [].concat.apply([], det.campaignId);
+                rescampaignId = [...new Set(rescampaignId)];
+                det.campaignId = rescampaignId[0]
+                var updatedDate = det.updatedAt
+                updatedDate.sort(function(a,b){
+                    return new Date(b) - new Date(a);
+                });
+                det.updatedAt = updatedDate
+            })
+            StreamingAds.populate(resu,{path:'campaignId'},function(err,populatedres){
+                if(err){
+                    return res.status(422).json(resu)
+                }
+                res.json(populatedres)
+            })
+        })
+    })
+    .catch(err=>console.log(err))
+})
+
+
 router.put('/reportbycamp',adminauth,(req,res)=>{
     const { campaignId } = req.body
-    campaignwisereports.find({campaignId:{$in : campaignId}})
-    .populate('appId')
+    var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
+    campaignwisereports.find({campaignId:{$in : ids}})
     .sort('-date')
     .then(reports=>{
-        res.json(reports)
+        publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
+            if(err){
+                res.status(422).json(err)
+            }
+            res.json(populatedreports)
+        })
     })
     .catch(err=>console.log(err))
 })
 
 router.put('/detreportbycamp',adminauth,(req,res)=>{
     const { campaignId, date } = req.body
-    campaignwisereports.findOneAndUpdate({campaignId:campaignId,date:date})
-    .populate('appId')
+    var id = mongoose.Types.ObjectId(campaignId)
+    campaignwisereports.findOneAndUpdate({campaignId:id,date:date})
     .sort('-date')
     .then(reports=>{
-        if(!reports){
-            console.log('good')
-        }else{
-            console.log('bad')
-        }
-        res.json(reports)
+        publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
+            if(err){
+                res.status(422).json(err)
+            }
+            res.json(populatedreports)
+        })
     })
     .catch(err=>console.log(err))
 })
-
-router.post('/createReport',(req,res)=>{
-    const { date, appId, impressions, campaignId, completed, region, clicks, spend } = req.body
-    const report = new campaignwisereports({
-        date:date,
-        appId:appId,
-        campaignId:campaignId,
-        impressions:impressions,
-        complete:completed,
-        clicks:clicks,
-        region:region,
-        spend:spend,
-        avgSpend:spend
-    })
-    report.save()
-    .then(result => {
-        res.json(result)
-    })
-    .catch(err => console.log(err))
-})
-
-// router.delete('/deleteMany',adminauth,(req,res)=>{
-//     Report.deleteMany({_id:req.body.id})
-//     .then(repon=>{
-//         res.json({relt:repon,mess:"deleted"})
-//     })
-// })
 
 module.exports = router
