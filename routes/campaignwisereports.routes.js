@@ -82,11 +82,7 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
     campaignwisereports.aggregate([
         {$match:{
             "campaignId":{$in:ids}
-        }},{$group:{
-            _id:"$appId", updatedAt:{$push:"$createdOn"}, camp:{$push:"$campaignId"} , impressions:{$sum:"$impression"}, complete:{$sum:"$completedAudioImpressions"}, clicks:{$sum:"$CompanionClickTracking"}
-        }},{$project:{
-            Publisher:"$_id", updatedAt:"$updatedAt", campaignId:"$camp", impressions:"$impressions", complete:"$complete", clicks:"$clicks" ,_id:0
-        }},{$group:{
+        }},,{$group:{
             _id:"$appId", 
             updatedAt:{$push:"$createdOn"}, 
             camp:{$push:"$campaignId"} , 
