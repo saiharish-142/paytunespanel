@@ -83,29 +83,9 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
         {$match:{
             "campaignId":{$in:ids}
         }},{$group:{
-            _id:"$appId", 
-            updatedAt:{$push:"$createdOn"}, 
-            camp:{$push:"$campaignId"} , 
-            campunique:{$push:"$campunique"} , 
-            impressions:{$sum:"$impression"}, 
-            thirdQuartile:{$sum:"$thirdQuartile"}, 
-            firstQuartile:{$sum:"$start"}, 
-            midpoint:{$sum:"$midpoint"}, 
-            complete:{$sum:"$completedAudioImpressions"}, 
-            clicks:{$sum:"$CompanionClickTracking"}
+            _id:"$appId", updatedAt:{$push:"$createdOn"}, camp:{$push:"$campaignId"} , impressions:{$sum:"$impression"}, complete:{$sum:"$completedAudioImpressions"}, clicks:{$sum:"$CompanionClickTracking"}
         }},{$project:{
-            Publisher:"$_id", 
-            updatedAt:"$updatedAt", 
-            campaignId:"$camp", 
-            publishunique:"$publishunique", 
-            campunique:"$campunique", 
-            impressions:"$impressions", 
-            complete:"$complete", 
-            midpoint:"$midpoint", 
-            firstQuartile:"$firstQuartile", 
-            thirdQuartile:"$thirdQuartile", 
-            clicks:"$clicks",
-            _id:0
+            Publisher:"$_id", updatedAt:"$updatedAt", campaignId:"$camp", impressions:"$impressions", complete:"$complete", clicks:"$clicks" ,_id:0
         }}
     ])
     .then(reports=>{
