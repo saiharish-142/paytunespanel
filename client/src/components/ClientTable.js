@@ -453,15 +453,15 @@ export default function BasicTable({singlead}) {
         </TableContainer>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} client={true} url='phonePlatformsum' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} client={true} url='phonePlatformsum' />
+        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} impression={impre} ratio={ratio} client={true} url='phonePlatformsum' />
+        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} impression={impred} ratio={ratiod} client={true} url='phonePlatformsum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' ratio={ratio} regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} client={true} url='pincodesum' />
+        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' ratio={ratio} regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} impression={impre} ratio={ratio} client={true} url='pincodesum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} client={true} url='deviceModelsum' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} client={true} url='deviceModelsum' />
+        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} impression={impre} ratio={ratio} client={true} url='deviceModelsum' />
+        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} impression={impred} ratio={ratiod} client={true} url='deviceModelsum' />
         </>
     );
 }

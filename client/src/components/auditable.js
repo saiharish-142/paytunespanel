@@ -3,11 +3,12 @@ import React, {useEffect} from 'react'
 import TablePagination from "@material-ui/core/TablePagination";
 import { useHistory } from 'react-router-dom';
 
-function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,client,ratio}) {
+function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,client,ratio,impression}) {
     // console.log(streamingads)
     const history = useHistory();
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [page, setPage] = React.useState(0);
+    const [totalimpre, settotalimpre] = React.useState(0);
     const [adss, setadss] = React.useState([])
     useEffect(()=>{
         if(ids){
@@ -26,6 +27,12 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                 loco = loco.sort(function(a,b){
                     return b.result.impression - a.result.impression;
                 })
+                var totimpre = 0;
+                loco.map(a=>{
+                    totimpre += parseInt(a.result.impression)
+                })
+                // console.log(totimpre)
+                settotalimpre(totimpre)
                 // console.log(loco)
                 setadss(loco)
             })
@@ -60,11 +67,11 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
             <TableContainer>
                 <Table stickyHeader aria-label="sticky table">
                 <TableHead>
-                    <TableRow>
+                    <TableRow>  
                         <TableCell>{title}</TableCell>
-                        <TableCell>Campaign Start Date</TableCell>
-                        <TableCell>Campaign End Date</TableCell>
-                        <TableCell>Total Days of Campaign</TableCell>
+                        {!client &&  <TableCell>Campaign Start Date</TableCell>}
+                        {!client &&  <TableCell>Campaign End Date</TableCell>}
+                        {!client &&  <TableCell>Total Days of Campaign</TableCell>}
                         <TableCell>Total Impressions Delivered till date</TableCell>
                         {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>Unique Users</TableCell>}
                         <TableCell>Total Clicks Delivered till date</TableCell>
@@ -82,10 +89,10 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                         return (
                         <TableRow key ={i} hover role="checkbox" tabIndex={-1} key={row._id}>
                             <TableCell>{row[jsotitle]}</TableCell>
-                            <TableCell>{dateformatchanger(streamingads.startDate[0].slice(0,10))}</TableCell>
-                            <TableCell>{dateformatchanger(streamingads.endDate[0].slice(0,10))}</TableCell>
-                            <TableCell>{timefinder(streamingads.endDate[0],streamingads.startDate[0])} days</TableCell>
-                            <TableCell>{row.result.impression}</TableCell>
+                            {!client && <TableCell>{dateformatchanger(streamingads.startDate[0].slice(0,10))}</TableCell>}
+                            {!client && <TableCell>{dateformatchanger(streamingads.endDate[0].slice(0,10))}</TableCell>}
+                            {!client && <TableCell>{timefinder(streamingads.endDate[0],streamingads.startDate[0])} days</TableCell>}
+                            {client? <TableCell>{Math.round(impression*row.result.impression/totalimpre)}</TableCell> : <TableCell>{row.result.impression}</TableCell>}
                             {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>{
                                 ratio ? (Math.round(ratio*row.result.impression) + 1) : row.unique
                             }</TableCell>}
@@ -96,7 +103,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                             }</TableCell>
                             <TableCell>{Math.round((row.result.click ? row.result.click :0 + 
                                 row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
-                                row.result.clicktracking ? row.result.clicktracking :0)*100/row.result.impression *100)/100}%</TableCell>
+                                row.result.clicktracking ? row.result.clicktracking :0)*100/(impression*row.result.impression/totalimpre) *100)/100}%</TableCell>
                             {!client &&  <TableCell>{timefinder(streamingads.endDate[0],Date.now())} days</TableCell>}
                             {!client &&  <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>}
                         </TableRow>
