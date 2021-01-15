@@ -31,6 +31,7 @@ export default function BasicTable({singlead}) {
     const [ratio, setratio] = useState(0)
     const [ratiod, setratiod] = useState(0)
     const [click, setclick] = useState(0)
+    const [imprada, setimprada] = useState(0)
     const [uniquesumcamp, setuniquesumcamp] = useState(0)
     const [uniquesumcampd, setuniquesumcampd] = useState(0)
     const [logsd, setlogsd] = useState([])
@@ -111,13 +112,17 @@ export default function BasicTable({singlead}) {
                 var secq = 0;
                 var thirdq = 0;
                 setlogs(result)
+                var suminre = 0;
                 result.map((re)=>{
-                    impressions += re.impressions
-                    firstq += re.firstQuartile
-                    secq += re.midpoint
-                    thirdq += re.thirdQuartile
-                    completes += re.complete
+                    if(re.Publisher.AppName!=='Saavn'){
+                        suminre += re.impressions
+                        firstq += re.firstQuartile
+                        secq += re.midpoint
+                        thirdq += re.thirdQuartile
+                        completes += re.complete
+                    }
                     clicks += re.clicks
+                    impressions += re.impressions
                 })
                 var uniquenum = 0;
                 var uniimprenum = 0;
@@ -133,6 +138,7 @@ export default function BasicTable({singlead}) {
                 offlineReports(result,impressions,clicks,firstq,secq,thirdq,completes)
                 setimpre(impressions)
                 setclick(clicks)
+                setimprada(suminre)
             })
             .catch(err =>{
                 console.log(err)
@@ -162,10 +168,10 @@ export default function BasicTable({singlead}) {
                 re.nameads = 'Offline'
                 impressions1 += re.impressions
                 clicks1 += re.clicks
-                firt1 += re.firstQuartile ? re.firstQuartile : 0
-                sec1 += re.midpoint ? re.midpoint : 0
-                thir1 += re.thirdQuartile ? re.thirdQuartile : 0
-                compo1 += re.complete ? re.complete : 0
+                // firt1 += re.firstQuartile ? re.firstQuartile : 0
+                // sec1 += re.midpoint ? re.midpoint : 0
+                // thir1 += re.thirdQuartile ? re.thirdQuartile : 0
+                // compo1 += re.complete ? re.complete : 0
             })
             logss = logss.concat(logs)
             logss = logss.filter(x => x.impressions!==0)
@@ -259,7 +265,7 @@ export default function BasicTable({singlead}) {
                 var d2 = new Date(b.updatedAt[0])
                 return d2 - d1
             })
-            console.log(logss)
+            // console.log(logss)
             if(logss.length)
             setlogsd(logss)
             if(impressions1)
@@ -440,14 +446,24 @@ export default function BasicTable({singlead}) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <TableRow>
-                        <TableCell>Impressions</TableCell>
-                        <TableCell>{fq}</TableCell>
-                        <TableCell>{sq > 0 && sq}</TableCell>
-                        <TableCell>{tq}</TableCell>
-                        <TableCell>{complete > 0 && complete}</TableCell>
-                        <TableCell>{impre}</TableCell>
-                    </TableRow>
+                        {fq>0 && sq>0 && tq>0 ?
+                            <TableRow>
+                                    <TableCell>Impressions</TableCell>
+                                    <TableCell>{Math.round(fq*impre/imprada)}</TableCell>
+                                    <TableCell>{Math.round(sq*impre/imprada)}</TableCell>
+                                    <TableCell>{Math.round(tq*impre/imprada)}</TableCell>
+                                    <TableCell>{Math.round(complete*impre/imprada)}</TableCell>
+                                    <TableCell>{impre}</TableCell>
+                            </TableRow>:
+                            <TableRow>
+                                <TableCell>Impressions</TableCell>
+                                <TableCell>{impre}</TableCell>
+                                <TableCell>{impre}</TableCell>
+                                <TableCell>{impre}</TableCell>
+                                <TableCell>{impre}</TableCell>
+                                <TableCell>{impre}</TableCell>
+                            </TableRow>
+                        }
                 </TableBody>
             </Table>
         </TableContainer>
