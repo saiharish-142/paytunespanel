@@ -3,12 +3,13 @@ import React, {useEffect} from 'react'
 import TablePagination from "@material-ui/core/TablePagination";
 import { useHistory } from 'react-router-dom';
 
-function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,client,ratio,impression}) {
+function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,client,ratio,impression,click}) {
     // console.log(streamingads)
     const history = useHistory();
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [page, setPage] = React.useState(0);
     const [totalimpre, settotalimpre] = React.useState(0);
+    const [totalclick, settotalclick] = React.useState(0);
     const [adss, setadss] = React.useState([])
     useEffect(()=>{
         if(ids){
@@ -28,11 +29,16 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                     return b.result.impression - a.result.impression;
                 })
                 var totimpre = 0;
+                var totclick = 0;
                 loco.map(a=>{
                     totimpre += parseInt(a.result.impression)
+                    totclick += a.result.click ? a.result.click :0 + 
+                    a.result.companionclicktracking ? a.result.companionclicktracking :0 + 
+                    a.result.clicktracking ? a.result.clicktracking :0;
                 })
                 // console.log(totimpre)
                 settotalimpre(totimpre)
+                settotalclick(totclick)
                 // console.log(loco)
                 setadss(loco)
             })
@@ -97,9 +103,9 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                                 ratio ? (Math.round(ratio*row.result.impression) + 1) : row.unique
                             }</TableCell>}
                             <TableCell>{
-                                row.result.click ? row.result.click :0 + 
+                                Math.round(click*(row.result.click ? row.result.click :0 + 
                                 row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
-                                row.result.clicktracking ? row.result.clicktracking :0
+                                row.result.clicktracking ? row.result.clicktracking :0)/totalclick)
                             }</TableCell>
                             <TableCell>{Math.round((row.result.click ? row.result.click :0 + 
                                 row.result.companionclicktracking ? row.result.companionclicktracking :0 + 

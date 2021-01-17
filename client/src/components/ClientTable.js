@@ -104,7 +104,7 @@ export default function BasicTable({singlead}) {
                     campaignId:ids.audio
                 })
             }).then(res=>res.json())
-            .then(result=>{
+            .then(async (result)=>{
                 var impressions = 0;
                 var clicks = 0;
                 var completes = 0;
@@ -126,13 +126,20 @@ export default function BasicTable({singlead}) {
                 })
                 var uniquenum = 0;
                 var uniimprenum = 0;
-                result.map(log => {
-                    log.campunique = log.campunique.sort(function(a,b){return b-a;})
+                await result.map(async(log) => {
+                    log.campunique = await log.campunique.sort(function(a,b){return b-a;})
                     uniquenum += log.campunique[0]
+                    // console.log(log.campunique,log.impressions)
                     uniimprenum += log.impressions
                 })
-                // console.log(uniquenum/uniimprenum,uniquenum,uniimprenum)
-                setratio(uniquenum/uniimprenum)
+                // console.log(uniquenum,uniimprenum)
+                if(uniquenum/uniimprenum < 1){
+                    console.log('right')
+                    setratio(uniquenum/uniimprenum)
+                }else{
+                    console.log('corrected')
+                    setratio(0.98)
+                }
                 // setuniquesumcamp(uniquenum)
                 // console.log(firstq,secq,thirdq,completes)
                 offlineReports(result,impressions,clicks,firstq,secq,thirdq,completes)
@@ -469,15 +476,15 @@ export default function BasicTable({singlead}) {
         </TableContainer>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} impression={impre} ratio={ratio} client={true} url='phonePlatformsum' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} impression={impred} ratio={ratiod} client={true} url='phonePlatformsum' />
+        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} click={click} impression={impre} ratio={ratio} client={true} url='phonePlatformsum' />
+        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} click={clickd} impression={impred} ratio={ratiod} client={true} url='phonePlatformsum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' ratio={ratio} regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} impression={impre} ratio={ratio} client={true} url='pincodesum' />
+        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' ratio={ratio} regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} click={click} impression={impre} ratio={ratio} client={true} url='pincodesum' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} impression={impre} ratio={ratio} client={true} url='deviceModelsum' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} impression={impred} ratio={ratiod} client={true} url='deviceModelsum' />
+        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} click={click} impression={impre} ratio={ratio} client={true} url='deviceModelsum' />
+        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} click={clickd} impression={impred} ratio={ratiod} client={true} url='deviceModelsum' />
         </>
     );
 }
