@@ -24,7 +24,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                 })
             }).then(res=>res.json())
             .then(result => {
-                console.log(result,url)
+                // console.log(result,url)
                 var loco = result[0][regtitle]
                 loco = loco.sort(function(a,b){
                     return b.result.impression - a.result.impression;
@@ -109,14 +109,22 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                                 ratio ? (Math.round(ratio*row.result.impression) + 1) : row.unique
                             }</TableCell>}
                             <TableCell>{
-                                Math.round(click*(row.result.click ? row.result.click :0 + 
+                                click ?
+                                Math.round(click*(row.result.click ? (row.result.click) :0 + 
                                 row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
-                                row.result.clicktracking ? row.result.clicktracking :0)/totalclick)
+                                row.result.clicktracking ? row.result.clicktracking :0)/totalclick) :
+                                Math.round(row.result.click ? (row.result.click) :0 + 
+                                row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
+                                row.result.clicktracking ? row.result.clicktracking :0)
                             }</TableCell>
                             <TableCell>{
+                                impression ?
+                                Math.round(((row.result.click ? row.result.click :0 + 
+                                row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
+                                row.result.clicktracking ? row.result.clicktracking :0)*click/totalclick)*100/(impression*row.result.impression/totalimpre) *100)/100 :
                                 Math.round((row.result.click ? row.result.click :0 + 
                                 row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
-                                row.result.clicktracking ? row.result.clicktracking :0)*100/(impression*row.result.impression/totalimpre) *100)/100}%</TableCell>
+                                row.result.clicktracking ? row.result.clicktracking :0)*100/(row.result.impression) *100)/100 }%</TableCell>
                             {!client &&  <TableCell>{timefinder(streamingads.endDate[0],Date.now())} days</TableCell>}
                             {!client &&  <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>}
                         </TableRow>
