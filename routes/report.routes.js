@@ -308,16 +308,17 @@ router.put('/pincodesum',adminauth,(req,res)=>{
     })
     .then(report=>{
         var reports = report.cursor.firstBatch && report.cursor.firstBatch[0]
+        res.json(reports)
         // resu = reports;
-        var respin = [];
-        resu = reports.map((det)=>{
-            var pincodede = datamaker(det.pincode,'zip')
-            det.pincode = pincodede;
-            respin = respin.concat(pincodede)
-            return det;
-        })
-        respin = datamaker2(respin,'zip')
-        res.json([{pincode:respin}])
+        // var respin = [];
+        // resu = reports.map((det)=>{
+        //     var pincodede = datamaker(det.pincode,'zip')
+        //     det.pincode = pincodede;
+        //     respin = respin.concat(pincodede)
+        //     return det;
+        // })
+        // respin = datamaker2(respin,'zip')
+        // res.json([{pincode:respin}])
     })
     .catch(err=>console.log(err))
 })
