@@ -234,8 +234,7 @@ router.put('/regionsum',adminauth,(req,res)=>{
             appId:"$_id"
         }}
     ])
-    .then(report=>{
-        var reports = report.cursor.firstBatch && report.cursor.firstBatch[0]
+    .then(reports=>{
         // resu = reports;
         var resregion = [];
         resu = reports.map((det)=>{
