@@ -205,35 +205,35 @@ router.put('/regionsum1',adminauth,(req,res)=>{
 router.put('/regionsum',adminauth,(req,res)=>{
     const { campaignId } = req.body
     var resu = [];
-    // Report.aggregate([
-    //     {$match:{
-    //         "campaignId":{$in:campaignId}
-    //     }},{$group:{
-    //         _id:"$appId", 
-    //         region:{$push:"$region"}
-    //     }},{$project:{
-    //         region:"$region",
-    //         _id:0,
-    //         appId:"$_id"
-    //     }}
-    // ])
-    Report.db.db.command({
-        aggregate: "Report",
-        pipeline:[
-            {$match:{
-                "campaignId":{$in:campaignId}
-            }},{$group:{
-                _id:"$appId", 
-                region:{$push:"$region"}
-            }},{$project:{
-                region:"$region",
-                _id:0,
-                appId:"$_id"
-            }}
-        ],
-        allowDiskUse: true,
-        cursor: {  }
-    })
+    // Report.db.db.command({
+    //     aggregate: "Report",
+    //     pipeline:[
+    //         {$match:{
+    //             "campaignId":{$in:campaignId}
+    //         }},{$group:{
+    //             _id:"$appId", 
+    //             region:{$push:"$region"}
+    //         }},{$project:{
+    //             region:"$region",
+    //             _id:0,
+    //             appId:"$_id"
+    //         }}
+    //     ],
+    //     allowDiskUse: true,
+    //     cursor: {  }
+    // })
+    Report.aggregate([
+        {$match:{
+            "campaignId":{$in:campaignId}
+        }},{$group:{
+            _id:"$appId", 
+            region:{$push:"$region"}
+        }},{$project:{
+            region:"$region",
+            _id:0,
+            appId:"$_id"
+        }}
+    ])
     .then(report=>{
         var reports = report.cursor.firstBatch && report.cursor.firstBatch[0]
         // resu = reports;
