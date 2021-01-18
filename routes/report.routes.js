@@ -308,7 +308,7 @@ router.put('/pincodesum',adminauth,(req,res)=>{
     })
     .then(report=>{
         var reports = report.cursor.firstBatch && report.cursor.firstBatch[0]
-        res.json(reports)
+        res.json(report)
         // resu = reports;
         // var respin = [];
         // resu = reports.map((det)=>{
