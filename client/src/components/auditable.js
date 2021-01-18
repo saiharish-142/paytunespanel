@@ -12,6 +12,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
     const [totalclick, settotalclick] = React.useState(0);
     const [adss, setadss] = React.useState([])
     useEffect(()=>{
+        console.log(ids,url,adtype)
         if(ids){
             fetch(`/report/${url}`,{
                 method:'put',
@@ -23,7 +24,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                 })
             }).then(res=>res.json())
             .then(result => {
-                // console.log(result[0][regtitle])
+                console.log(result,url)
                 var loco = result[0][regtitle]
                 loco = loco.sort(function(a,b){
                     return b.result.impression - a.result.impression;
@@ -31,11 +32,12 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                 var totimpre = 0;
                 var totclick = 0;
                 loco.map(a=>{
-                    totimpre += parseInt(a.result.impression)
+                    totimpre += a.result.impression ? parseInt(a.result.impression) :0
                     totclick += a.result.click ? a.result.click :0 + 
                     a.result.companionclicktracking ? a.result.companionclicktracking :0 + 
                     a.result.clicktracking ? a.result.clicktracking :0;
                 })
+                // console.log(typeof impression, impression)
                 // console.log(totimpre)
                 settotalimpre(totimpre)
                 settotalclick(totclick)
@@ -45,6 +47,10 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
             .catch(err => console.log(err))
         }
     },[ids])
+    // console.log(impression,url,adtype)
+    // useEffect(()=>{
+    //     console.log(impression,totalimpre,url,impression/totalimpre,adtype)
+    // },[totalimpre,impression])
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -107,7 +113,8 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                                 row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
                                 row.result.clicktracking ? row.result.clicktracking :0)/totalclick)
                             }</TableCell>
-                            <TableCell>{Math.round((row.result.click ? row.result.click :0 + 
+                            <TableCell>{
+                                Math.round((row.result.click ? row.result.click :0 + 
                                 row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
                                 row.result.clicktracking ? row.result.clicktracking :0)*100/(impression*row.result.impression/totalimpre) *100)/100}%</TableCell>
                             {!client &&  <TableCell>{timefinder(streamingads.endDate[0],Date.now())} days</TableCell>}
