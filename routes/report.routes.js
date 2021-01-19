@@ -590,7 +590,7 @@ router.put('/reportbycamp',adminauth,(req,res)=>{
 
 router.put('/detreportbycamp',adminauth,(req,res)=>{
     const { campaignId, date } = req.body
-    Report.findOneAndUpdate({campaignId:{$in:campaignId},date:date})
+    Report.find({campaignId:{$in:campaignId},date:date})
     .populate('Publisher')
     .sort('-date')
     .then(reports=>{
