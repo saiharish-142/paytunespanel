@@ -278,33 +278,35 @@ router.put('/platformsum',adminauth,(req,res)=>{
 router.put('/pincodesum',adminauth,(req,res)=>{
     const { campaignId } = req.body
     var resu = [];
-    // Report.aggregate([
-    //     {$match:{
-    //         "campaignId":{$in:campaignId}
-    //     }},{$group:{
-    //         _id:"$appId", 
-    //         pincode:{$push:"$pincode"}
-    //     }},{$project:{
-    //         pincode:"$pincode",
-    //         _id:0
-    //     }}
-    // ])
-    Report.db.db.command({
-        aggregate: "Report",
-        pipeline:[
-            {$match:{
-                "campaignId":{$in:campaignId}
-            }},{$group:{
-                _id:"$appId", 
-                pincode:{$push:"$pincode"}
-            }},{$project:{
-                pincode:"$pincode",
-                _id:0
-            }}
-        ],
-        allowDiskUse: true,
-        cursor: {  }
-    })
+    // Report.db.db.command({
+    //     aggregate: "Report",
+    //     pipeline:[
+    //         {$match:{
+    //             "campaignId":{$in:campaignId}
+    //         }},{$group:{
+    //             _id:"$appId", 
+    //             pincode:{$push:"$pincode"}
+    //         }},{$project:{
+    //             pincode:"$pincode",
+    //             _id:0
+    //         }}
+    //     ],
+    //     allowDiskUse: true,
+    //     cursor: {  }
+    // })
+    Report.aggregate([
+        {$match:{
+            "campaignId":{$in:campaignId}
+        }},{$group:{
+            _id:"$appId", 
+            pincode:{$push:"$pincode"}
+        }},{$project:{
+            pincode:"$pincode",
+            _id:0
+        }}
+    ])
+    .allowDiskUse(true)
+    .cursor({})
     .then(report=>{
         var reports = report.cursor.firstBatch && report.cursor.firstBatch[0]
         res.json(report)
