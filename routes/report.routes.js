@@ -307,22 +307,13 @@ router.put('/pincodesum',adminauth,(req,res)=>{
     ])
     .allowDiskUse(true)
     .cursor({})
-    .exec()
-    .then(report=>{
-        var reports = report.cursor.firstBatch && report.cursor.firstBatch[0]
-        res.json(report)
-        // resu = reports;
-        // var respin = [];
-        // resu = reports.map((det)=>{
-        //     var pincodede = datamaker(det.pincode,'zip')
-        //     det.pincode = pincodede;
-        //     respin = respin.concat(pincodede)
-        //     return det;
-        // })
-        // respin = datamaker2(respin,'zip')
-        // res.json([{pincode:respin}])
-    })
-    .catch(err=>console.log(err))
+    .exec(function(err, datatotalOld) {
+        if (err) {
+            console.log('Err', err);
+        } else {
+            res.json(datatotalOld);
+        }
+    });
 })
 
 router.put('/languagesum',adminauth,(req,res)=>{
