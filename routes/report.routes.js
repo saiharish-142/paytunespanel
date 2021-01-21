@@ -307,6 +307,7 @@ router.put('/pincodesum',adminauth,(req,res)=>{
     ])
     .allowDiskUse(true)
     .cursor({})
+    .exec()
     .then(report=>{
         var reports = report.cursor.firstBatch && report.cursor.firstBatch[0]
         res.json(report)
