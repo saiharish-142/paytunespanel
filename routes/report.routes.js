@@ -316,6 +316,45 @@ router.put('/pincodesum',adminauth,(req,res)=>{
     });
 })
 
+router.put('/pincodesum2',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var resu = [];
+    // Report.db.db.command({
+    //     aggregate: "Report",
+    //     pipeline:[
+    //         {$match:{
+    //             "campaignId":{$in:campaignId}
+    //         }},{$group:{
+    //             _id:"$appId", 
+    //             pincode:{$push:"$pincode"}
+    //         }},{$project:{
+    //             pincode:"$pincode",
+    //             _id:0
+    //         }}
+    //     ],
+    //     allowDiskUse: true,
+    //     cursor: {  }
+    // })
+    Report.aggregate([
+        {$match:{
+            "campaignId":{$in:campaignId}
+        }},{$group:{
+            _id:"$appId", 
+            pincode:{$push:"$pincode"}
+        }},{$project:{
+            pincode:"$pincode",
+            _id:0
+        }}
+    ])
+    .exec(function(err, datatotalOld) {
+        if (err) {
+            console.log('Err', err);
+        } else {
+            res.json(datatotalOld);
+        }
+    });
+})
+
 router.put('/languagesum',adminauth,(req,res)=>{
     const { campaignId } = req.body
     var resu = [];
