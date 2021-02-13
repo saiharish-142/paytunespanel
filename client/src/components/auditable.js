@@ -14,7 +14,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
     useEffect(()=>{
         console.log(ids,url,adtype)
         if(ids){
-            fetch(`/report/${url}`,{
+            fetch(`/subrepo/${url}`,{
                 method:'put',
                 headers:{
                     "Content-Type":"application/json",
@@ -25,23 +25,24 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
             }).then(res=>res.json())
             .then(result => {
                 // console.log(result,url)
-                var loco = result[0][regtitle]
+                var loco = result
                 loco = loco.sort(function(a,b){
-                    return b.result.impression - a.result.impression;
+                    return b.impression - a.impression;
                 })
                 var totimpre = 0;
                 var totclick = 0;
                 loco.map(a=>{
-                    totimpre += a.result.impression ? parseInt(a.result.impression) :0
-                    totclick += a.result.click ? a.result.click :0 + 
-                    a.result.companionclicktracking ? a.result.companionclicktracking :0 + 
-                    a.result.clicktracking ? a.result.clicktracking :0;
+                    totimpre += a.impression ? parseInt(a.impression) :0
+                    totclick += a.click ? a.click :0 + 
+                    a.CompanionClickTracking ? a.CompanionClickTracking :0 + 
+                    a.SovClickTracking ? a.SovClickTracking :0 + 
+                    a.clicktracking ? a.clicktracking :0;
                 })
                 // console.log(typeof impression, impression)
                 // console.log(totimpre)
                 settotalimpre(totimpre)
                 settotalclick(totclick)
-                // console.log(loco)
+                console.log(loco,url)
                 setadss(loco)
             })
             .catch(err => console.log(err))
@@ -104,27 +105,31 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                             {!client && <TableCell>{dateformatchanger(streamingads.startDate[0].slice(0,10))}</TableCell>}
                             {!client && <TableCell>{dateformatchanger(streamingads.endDate[0].slice(0,10))}</TableCell>}
                             {!client && <TableCell>{timefinder(streamingads.endDate[0],streamingads.startDate[0])} days</TableCell>}
-                            {client? <TableCell>{Math.round(impression*row.result.impression/totalimpre)}</TableCell> : <TableCell>{row.result.impression}</TableCell>}
+                            {client? <TableCell>{Math.round(impression*row.impression/totalimpre)}</TableCell> : <TableCell>{row.impression}</TableCell>}
                             {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>{
-                                ratio ? (Math.round(ratio*row.result.impression) + 1) : row.unique
+                                ratio ? (Math.round(ratio*row.impression) + 1) : row.unique
                             }</TableCell>}
                             <TableCell>{
                                 click ?
-                                Math.round(click*(row.result.click ? (row.result.click) :0 + 
-                                row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
-                                row.result.clicktracking ? row.result.clicktracking :0)/totalclick) :
-                                Math.round(row.result.click ? (row.result.click) :0 + 
-                                row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
-                                row.result.clicktracking ? row.result.clicktracking :0)
+                                Math.round(click*(row.click ? (row.click) :0 + 
+                                row.CompanionClickTracking ? row.CompanionClickTracking :0 + 
+                                row.SovClickTracking ? row.SovClickTracking :0 + 
+                                row.clicktracking ? row.clicktracking :0)/totalclick) :
+                                Math.round(row.click ? (row.click) :0 + 
+                                row.CompanionClickTracking ? row.CompanionClickTracking :0 + 
+                                row.SovClickTracking ? row.SovClickTracking :0 + 
+                                row.clicktracking ? row.clicktracking :0)
                             }</TableCell>
                             <TableCell>{
                                 impression ?
-                                Math.round(((row.result.click ? row.result.click :0 + 
-                                row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
-                                row.result.clicktracking ? row.result.clicktracking :0)*click/totalclick)*100/(impression*row.result.impression/totalimpre) *100)/100 :
-                                Math.round((row.result.click ? row.result.click :0 + 
-                                row.result.companionclicktracking ? row.result.companionclicktracking :0 + 
-                                row.result.clicktracking ? row.result.clicktracking :0)*100/(row.result.impression) *100)/100 }%</TableCell>
+                                Math.round(((row.click ? row.click :0 + 
+                                row.CompanionClickTracking ? row.CompanionClickTracking :0 + 
+                                row.SovClickTracking ? row.SovClickTracking :0 + 
+                                row.clicktracking ? row.clicktracking :0)*click/totalclick)*100/(impression*row.impression/totalimpre) *100)/100 :
+                                Math.round((row.click ? row.click :0 + 
+                                row.CompanionClickTracking ? row.CompanionClickTracking :0 + 
+                                row.SovClickTracking ? row.SovClickTracking :0 + 
+                                row.clicktracking ? row.clicktracking :0)*100/(row.impression) *100)/100 }%</TableCell>
                             {!client &&  <TableCell>{timefinder(streamingads.endDate[0],Date.now())} days</TableCell>}
                             {!client &&  <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>}
                         </TableRow>
