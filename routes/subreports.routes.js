@@ -240,4 +240,14 @@ router.put('/uniqueusersbycampids',adminauth,(req,res)=>{
     .catch(err=>res.status(422).json(err))
 })
 
+router.put('/uniqueusersbycampids2',adminauth,(req,res)=>{
+    const {campaignId} = req.body
+    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    uniqueuserreports.aggregate([
+        {$match:{campaignId:{$in:ids}}}
+    ])
+    .then(result=>res.json(result))
+    .catch(err=>res.status(422).json(err))
+})
+
 module.exports = router
