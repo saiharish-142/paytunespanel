@@ -231,7 +231,7 @@ router.put('/phoneModelbycampids',adminauth,(req,res)=>{
 router.put('/uniqueusersbycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
     var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
-    phonemakereports.aggregate([
+    uniqueuserreports.aggregate([
         {$match:{campaignId:{$in:ids}}}
     ])
     .then(result=>res.json(result))
