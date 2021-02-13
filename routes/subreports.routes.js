@@ -232,7 +232,9 @@ router.put('/uniqueusersbycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
     var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
     uniqueuserreports.aggregate([
-        {$match:{campaignId:{$in:ids}}}
+        {$match:{campaignId:{$in:ids}}},
+        {$group:{_id:"$campaignId",unique:{$sum:"$uniqueusers"}}},
+        {$project:{campaignId:"$_id",unique:1,_id:0}}
     ])
     .then(result=>res.json(result))
     .catch(err=>res.status(422).json(err))
