@@ -294,28 +294,41 @@ router.put('/pincodesum',adminauth,(req,res)=>{
     //     allowDiskUse: true,
     //     cursor: {  }
     // })
-    Report.aggregate([
-        {$match:{
-            "campaignId":{$in:campaignId}
-        }},{$group:{
-            _id:"$appId", 
-            pincode:{$push:"$pincode"}
-        }},{$project:{
-            pincode:"$pincode",
-            _id:0
-        }}
-    ])
-    .allowDiskUse(true)
-    .cursor({})
-    .exec(function(err, datatotalOld) {
+    Report.find({"campaignId":{$in:campaignId}}).exec(function(err, datatotalOld) {
         if (err) {
             console.log('Err', err);
         } else {
-            res.json(datatotalOld);
+            //console.log('datatotalOld',datatotalOld);
+            //res.json(datatotalOld);
+            console.log('datatotalOldlength',datatotalOld.length);
+            if(datatotalOld!=undefined && datatotalOld!=''){
+                calculatePincodeData(datatotalOld,function(resultteddata){
+                    //console.log('resultteddata',resultteddata);
+                    res.jsonp(resultteddata);
+                });     
+            }
+            
         }
-    });
+    }); 
 })
-
+function calculatePincodeData(csvDataArray,callback){
+    console.log('in callback');
+        var pincodeData=[];
+                var checkCircle = function(csvDataArray, i) {
+                    if (i < csvDataArray.length) {
+                        var tVal = csvDataArray[i];
+                        if(tVal.pincode!=undefined && tVal.pincode!=''){
+                            pincodeData.push(tVal.pincode);
+                        }
+                        i++;
+                        checkCircle(csvDataArray, i);
+                    } else {
+                        callback(pincodeData);
+                    }
+                }
+                checkCircle(csvDataArray, 0);   
+    
+    }
 router.put('/pincodesum2',adminauth,(req,res)=>{
     const { campaignId } = req.body
     var resu = [];

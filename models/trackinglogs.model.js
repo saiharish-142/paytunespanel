@@ -21,7 +21,8 @@ const trackinglogsSchema = new mongoose.Schema({
     pptype:{type:String},
     bundle:{type:String},
     bundlename:{type:String},
-    createdOn: { type: Date, default: Date.now }
+    createdOn: { type: Date, default: Date.now },
+    citylanguage:{type:String}
 })
 
 mongoose.model('trackinglogs',trackinglogsSchema)
