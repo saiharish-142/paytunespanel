@@ -90,4 +90,152 @@ router.put('/phonemakebycampids',adminauth,(req,res)=>{
     .catch(err=>res.status(422).json(err))
 })
 
+router.put('/zipbycampids',adminauth,(req,res)=>{
+    const {campaignId} = req.body
+    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    zipreports.aggregate([
+        {$match:{campaignId:{$in:ids}}},
+        {$group:{_id:{zip:"$zip",campaignId:"$campaignId"}, 
+            impression:{$sum:"$impression"}, 
+            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+            SovClickTracking:{$sum:"$SovClickTracking"}, 
+            start:{$sum:"$start"}, 
+            midpoint:{$sum:"$midpoint"},
+            thirdQuartile:{$sum:"$thirdQuartile"},
+            complete:{$sum:"$complete"},
+            createdOn:{$push:"$createdOn"}
+        }},{$project:{
+            zip:"$_id.zip", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
+        }}
+    ])
+    .then(result=>res.json(result))
+    .catch(err=>res.status(422).json(err))
+})
+
+router.put('/regionbycampids',adminauth,(req,res)=>{
+    const {campaignId} = req.body
+    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    regionreports.aggregate([
+        {$match:{campaignId:{$in:ids}}},
+        {$group:{_id:{region:"$region",campaignId:"$campaignId"}, 
+            impression:{$sum:"$impression"}, 
+            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+            SovClickTracking:{$sum:"$SovClickTracking"}, 
+            start:{$sum:"$start"}, 
+            midpoint:{$sum:"$midpoint"},
+            thirdQuartile:{$sum:"$thirdQuartile"},
+            complete:{$sum:"$complete"},
+            createdOn:{$push:"$createdOn"}
+        }},{$project:{
+            region:"$_id.region", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
+        }}
+    ])
+    .then(result=>res.json(result))
+    .catch(err=>res.status(422).json(err))
+})
+
+router.put('/pptypebycampids',adminauth,(req,res)=>{
+    const {campaignId} = req.body
+    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    pptypereports.aggregate([
+        {$match:{campaignId:{$in:ids}}},
+        {$group:{_id:{pptype:"$pptype",campaignId:"$campaignId"}, 
+            impression:{$sum:"$impression"}, 
+            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+            SovClickTracking:{$sum:"$SovClickTracking"}, 
+            start:{$sum:"$start"}, 
+            midpoint:{$sum:"$midpoint"},
+            thirdQuartile:{$sum:"$thirdQuartile"},
+            complete:{$sum:"$complete"},
+            createdOn:{$push:"$createdOn"}
+        }},{$project:{
+            pptype:"$_id.pptype", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
+        }}
+    ])
+    .then(result=>res.json(result))
+    .catch(err=>res.status(422).json(err))
+})
+
+router.put('/platformTypebycampids',adminauth,(req,res)=>{
+    const {campaignId} = req.body
+    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    platformtypereports.aggregate([
+        {$match:{campaignId:{$in:ids}}},
+        {$group:{_id:{platformType:"$platformType",campaignId:"$campaignId"}, 
+            impression:{$sum:"$impression"}, 
+            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+            SovClickTracking:{$sum:"$SovClickTracking"}, 
+            start:{$sum:"$start"}, 
+            midpoint:{$sum:"$midpoint"},
+            thirdQuartile:{$sum:"$thirdQuartile"},
+            complete:{$sum:"$complete"},
+            createdOn:{$push:"$createdOn"}
+        }},{$project:{
+            platformType:"$_id.platformType", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
+        }}
+    ])
+    .then(result=>res.json(result))
+    .catch(err=>res.status(422).json(err))
+})
+
+router.put('/citylanguagebycampids',adminauth,(req,res)=>{
+    const {campaignId} = req.body
+    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    citylanguagereports.aggregate([
+        {$match:{campaignId:{$in:ids}}},
+        {$group:{_id:{citylanguage:"$citylanguage",campaignId:"$campaignId"}, 
+            impression:{$sum:"$impression"}, 
+            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+            SovClickTracking:{$sum:"$SovClickTracking"}, 
+            start:{$sum:"$start"}, 
+            midpoint:{$sum:"$midpoint"},
+            thirdQuartile:{$sum:"$thirdQuartile"},
+            complete:{$sum:"$complete"},
+            createdOn:{$push:"$createdOn"}
+        }},{$project:{
+            citylanguage:"$_id.citylanguage", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
+        }}
+    ])
+    .then(result=>res.json(result))
+    .catch(err=>res.status(422).json(err))
+})
+
+router.put('/phoneModelbycampids',adminauth,(req,res)=>{
+    const {campaignId} = req.body
+    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    phonemodelreports.aggregate([
+        {$match:{campaignId:{$in:ids}}},
+        {$group:{_id:{phoneModel:"$phoneModel",campaignId:"$campaignId"}, 
+            impression:{$sum:"$impression"}, 
+            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+            SovClickTracking:{$sum:"$SovClickTracking"}, 
+            start:{$sum:"$start"}, 
+            midpoint:{$sum:"$midpoint"},
+            thirdQuartile:{$sum:"$thirdQuartile"},
+            complete:{$sum:"$complete"},
+            createdOn:{$push:"$createdOn"}
+        }},{$project:{
+            phoneModel:"$_id.phoneModel", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
+        }}
+    ])
+    .then(result=>res.json(result))
+    .catch(err=>res.status(422).json(err))
+})
+
+router.put('/uniqueusersbycampids',adminauth,(req,res)=>{
+    const {campaignId} = req.body
+    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    phonemakereports.aggregate([
+        {$match:{campaignId:{$in:ids}}}
+    ])
+    .then(result=>res.json(result))
+    .catch(err=>res.status(422).json(err))
+})
+
 module.exports = router
