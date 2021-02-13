@@ -58,7 +58,7 @@ app.use('/report',require('./routes/report.routes'))
 app.use('/offreport',require('./routes/campaignwisereports.routes'))
 app.use('/rtbreq',require('./routes/rtbrequest.routes'))
 app.use('/bundle',require('./routes/bundlenamereports.routes'))
-app.use('/phonemake',require('./routes/subreports.routes'))
+app.use('/subrepo',require('./routes/subreports.routes'))
 
 if(process.env.NODE_ENV==="production"){
     app.use(express.static('client/build'))
