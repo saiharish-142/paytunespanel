@@ -4,6 +4,7 @@ var campaignifareportsSchema = new Schema({
     campaignId: { type: Schema.Types.ObjectId, ref: 'streamingadObj' },
     ccampaignId: String,
     ifa: String,
+    zip: String,
     createdOn: { type: Date, default: Date.now },
 });
 campaignifareportsSchema.index({ ifa: 1 });

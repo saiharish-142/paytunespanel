@@ -45,24 +45,53 @@ export default function BasicTable({singlead}) {
     //     return v
     // }
     useEffect(()=>{
-        if(state1){
-            fetch('/logs/uniqueone',{
+        if(ids){
+            fetch('/subrepo/uniqueusersbycampids',{
                 method:'put',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
                 },body:JSON.stringify({
-                    title:state1
+                    campaignId:ids.audio
                 })
             }).then(res=>res.json())
             .then(result=>{
-                console.log(result[0])
-                setuniquesumcamp(result[0].audiouser)
-                setuniquesumcampd(result[0].displayuser)
+                // console.log(result[0])
+                setuniquesumcamp(result[0].unique)
+                if(result[0].unique/impre < 0.5 || result[0].unique/impre > 1 ){
+                    setratio(0.75)
+                }else{
+                    setratio(result[0].unique/impre)
+                }
+                // console.log(impre/result[0].unique)
             })
             .catch(err=>console.log(err))
         }
-    },[state1])
+    },[ids,impre])
+    // unique users finder display
+    useEffect(()=>{
+        if(ids){
+            fetch('/subrepo/uniqueusersbycampids',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:ids.display
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                // console.log(result[0])
+                setuniquesumcampd(result[0].unique)
+                if(result[0].unique/impred < 0.5 || result[0].unique/impred > 1 ){
+                    setratiod(0.75)
+                }else{
+                    setratiod(result[0].unique/impre)
+                }
+            })
+            .catch(err=>console.log(err))
+        }
+    },[ids,impred])
     useEffect(()=>{
         if(state1){
             fetch('/streamingads/getids',{
@@ -95,7 +124,7 @@ export default function BasicTable({singlead}) {
     },[state1])
     useEffect(()=>{
         if(ids && ids.audio){
-            fetch('/report/sumreportofcam22',{
+            fetch('/offreport/sumreportofcam22',{
                 method:'put',
                 headers:{
                     "Content-Type":"application/json",
@@ -105,47 +134,44 @@ export default function BasicTable({singlead}) {
                 })
             }).then(res=>res.json())
             .then(async (result)=>{
-                var impressions = 0;
-                var clicks = 0;
-                var completes = 0;
-                var firstq = 0;
-                var secq = 0;
-                var thirdq = 0;
-                setlogs(result)
-                var suminre = 0;
+                var impressions1 = 0;
+                var clicks1 = 0;
+                var firt1 = 0;
+                var sec1 = 0;
+                var thir1 = 0;
+                var compo1 = 0;
+                var logss = result;
+                // console.log(result)
                 result.map((re)=>{
-                    if(re.Publisher.AppName!=='Saavn'){
-                        suminre += re.impressions
-                        firstq += re.firstQuartile
-                        secq += re.midpoint
-                        thirdq += re.thirdQuartile
-                        completes += re.complete
-                    }
-                    clicks += re.clicks
-                    impressions += re.impressions
+                    re.nameads = 'Offline'
+                    impressions1 += re.impressions
+                    clicks1 += re.clicks
+                    firt1 += re.firstQuartile ? re.firstQuartile : 0
+                    sec1 += re.midpoint ? re.midpoint : 0
+                    thir1 += re.thirdQuartile ? re.thirdQuartile : 0
+                    compo1 += re.complete ? re.complete : 0
                 })
-                var uniquenum = 0;
-                var uniimprenum = 0;
-                await result.map(async(log) => {
-                    log.campunique = await log.campunique.sort(function(a,b){return b-a;})
-                    uniquenum += log.campunique[0]
-                    // console.log(log.campunique,log.impressions)
-                    uniimprenum += log.impressions
+                logss = logss.filter(x => x.impressions!==0)
+                logss = logss.sort(function(a,b){
+                    var d1 = new Date(a.updatedAt[0])
+                    var d2 = new Date(b.updatedAt[0])
+                    return d2 - d1
                 })
-                // console.log(uniquenum,uniimprenum)
-                if(uniquenum/uniimprenum < 1){
-                    console.log('right')
-                    setratio(uniquenum/uniimprenum)
-                }else{
-                    console.log('corrected')
-                    setratio(0.98)
-                }
-                // setuniquesumcamp(uniquenum)
-                // console.log(firstq,secq,thirdq,completes)
-                offlineReports(result,impressions,clicks,firstq,secq,thirdq,completes)
-                setimpre(impressions)
-                setclick(clicks)
-                setimprada(suminre)
+                console.log(logss)
+                if(logss.length)
+                setlogs(logss)
+                if(impressions1)
+                setimpre(impressions1)
+                if(clicks1)
+                setclick(clicks1)
+                if(firt1)
+                setfq(firt1)
+                if(sec1)
+                setsq(sec1)
+                if(thir1)
+                settq(thir1)
+                if(compo1)
+                setcomplete(compo1)
             })
             .catch(err =>{
                 console.log(err)
@@ -175,10 +201,10 @@ export default function BasicTable({singlead}) {
                 re.nameads = 'Offline'
                 impressions1 += re.impressions
                 clicks1 += re.clicks
-                // firt1 += re.firstQuartile ? re.firstQuartile : 0
-                // sec1 += re.midpoint ? re.midpoint : 0
-                // thir1 += re.thirdQuartile ? re.thirdQuartile : 0
-                // compo1 += re.complete ? re.complete : 0
+                firt1 += re.firstQuartile ? re.firstQuartile : 0
+                sec1 += re.midpoint ? re.midpoint : 0
+                thir1 += re.thirdQuartile ? re.thirdQuartile : 0
+                compo1 += re.complete ? re.complete : 0
             })
             logss = logss.concat(logs)
             logss = logss.filter(x => x.impressions!==0)
@@ -209,7 +235,7 @@ export default function BasicTable({singlead}) {
     }
     useEffect(()=>{
         if(ids && ids.display){
-            fetch('/report/sumreportofcam22',{
+            fetch('/offreport/sumreportofcam22',{
                 method:'put',
                 headers:{
                     "Content-Type":"application/json",
@@ -219,27 +245,27 @@ export default function BasicTable({singlead}) {
                 })
             }).then(res=>res.json())
             .then(result=>{
-                var impressions = 0;
-                var clicks = 0;
-                setlogsd(result)
-                result.map((re)=>{
-                    impressions += re.impressions
-                    clicks += re.clicks
-                })
-                var uniquenum = 0;
-                var unimprenum = 0;
-                result.map(log => {
-                    log.campunique = log.campunique.sort(function(a,b){return b-a;})
-                    uniquenum += log.campunique[0]
-                    unimprenum += log.impressions
-                })
-                setratiod(uniquenum/unimprenum)
-                // console.log(uniquenum/unimprenum)
-                // setuniquesumcampd(uniquenum)
+                var impressions1 = 0;
+                var clicks1 = 0;
+                var logss = result;
                 // console.log(result)
-                offlineReportsd(result,impressions,clicks)
-                setimpred(impressions)
-                setclickd(clicks)
+                result.map((re)=>{
+                    impressions1 += re.impressions
+                    clicks1 += re.clicks
+                })
+                logss = logss.concat(logs)
+                logss = logss.sort(function(a,b){
+                    var d1 = new Date(a.updatedAt[0])
+                    var d2 = new Date(b.updatedAt[0])
+                    return d2 - d1
+                })
+                // console.log(logss)
+                if(logss.length)
+                setlogsd(logss)
+                if(impressions1)
+                setimpred(impressions1)
+                if(clicks1)
+                setclickd(clicks1)
             })
             .catch(err =>{
                 console.log(err)
@@ -390,7 +416,7 @@ export default function BasicTable({singlead}) {
                     <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
                     <TableCell>{ids && ids.audimpression}</TableCell>
                     <TableCell>{impre}</TableCell>
-                    <TableCell>{Math.round(ratio*impre) + 1}</TableCell>
+                    <TableCell>{ratio && Math.round(ratio*impre) + 1}</TableCell>
                     <TableCell>{click}</TableCell>
                     <TableCell>{Math.round(click*100/impre *100)/100}%</TableCell>
                 </TableRow>

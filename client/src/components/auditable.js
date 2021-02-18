@@ -4,7 +4,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import { useHistory } from 'react-router-dom';
 
 function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,client,ratio,impression,click}) {
-    // console.log(streamingads)
+    // console.log(click,ratio)
     const history = useHistory();
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [page, setPage] = React.useState(0);
@@ -12,7 +12,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
     const [totalclick, settotalclick] = React.useState(0);
     const [adss, setadss] = React.useState([])
     useEffect(()=>{
-        console.log(ids,url,adtype)
+        // console.log(ids,url,adtype)
         if(ids){
             fetch(`/subrepo/${url}`,{
                 method:'put',
@@ -24,7 +24,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                 })
             }).then(res=>res.json())
             .then(result => {
-                // console.log(result,url)
+                console.log(result,url)
                 var loco = result
                 loco = loco.sort(function(a,b){
                     return b.impression - a.impression;
@@ -33,16 +33,14 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                 var totclick = 0;
                 loco.map(a=>{
                     totimpre += a.impression ? parseInt(a.impression) :0
-                    totclick += a.click ? a.click :0 + 
-                    a.CompanionClickTracking ? a.CompanionClickTracking :0 + 
-                    a.SovClickTracking ? a.SovClickTracking :0 + 
-                    a.clicktracking ? a.clicktracking :0;
+                    totclick += a.CompanionClickTracking ? a.CompanionClickTracking :0 + 
+                    a.SovClickTracking ? a.SovClickTracking :0;
                 })
                 // console.log(typeof impression, impression)
-                // console.log(totimpre)
+                console.log(totimpre,totclick)
                 settotalimpre(totimpre)
                 settotalclick(totclick)
-                console.log(loco,url)
+                // console.log(loco,url)
                 setadss(loco)
             })
             .catch(err => console.log(err))
@@ -111,25 +109,17 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                             }</TableCell>}
                             <TableCell>{
                                 click ?
-                                Math.round(click*(row.click ? (row.click) :0 + 
-                                row.CompanionClickTracking ? row.CompanionClickTracking :0 + 
-                                row.SovClickTracking ? row.SovClickTracking :0 + 
-                                row.clicktracking ? row.clicktracking :0)/totalclick) :
-                                Math.round(row.click ? (row.click) :0 + 
-                                row.CompanionClickTracking ? row.CompanionClickTracking :0 + 
-                                row.SovClickTracking ? row.SovClickTracking :0 + 
-                                row.clicktracking ? row.clicktracking :0)
+                                Math.round(click*(row.CompanionClickTracking ? parseInt(row.CompanionClickTracking) :0 + 
+                                row.SovClickTracking ? parseInt(row.SovClickTracking) :0)/totalclick) :
+                                Math.round(row.CompanionClickTracking ? parseInt(row.CompanionClickTracking) :0 + 
+                                row.SovClickTracking ? parseInt(row.SovClickTracking) :0)
                             }</TableCell>
                             <TableCell>{
                                 impression ?
-                                Math.round(((row.click ? row.click :0 + 
-                                row.CompanionClickTracking ? row.CompanionClickTracking :0 + 
-                                row.SovClickTracking ? row.SovClickTracking :0 + 
-                                row.clicktracking ? row.clicktracking :0)*click/totalclick)*100/(impression*row.impression/totalimpre) *100)/100 :
-                                Math.round((row.click ? row.click :0 + 
-                                row.CompanionClickTracking ? row.CompanionClickTracking :0 + 
-                                row.SovClickTracking ? row.SovClickTracking :0 + 
-                                row.clicktracking ? row.clicktracking :0)*100/(row.impression) *100)/100 }%</TableCell>
+                                Math.round(((row.CompanionClickTracking ? parseInt(row.CompanionClickTracking) :0 + 
+                                row.SovClickTracking ? parseInt(row.SovClickTracking) :0)*click/totalclick)*100/(impression*parseInt(row.impression)/totalimpre) *100)/100 :
+                                Math.round((row.CompanionClickTracking ? parseInt(row.CompanionClickTracking) :0 + 
+                                row.SovClickTracking ? parseInt(row.SovClickTracking) :0)*100/parseInt(row.impression) *100)/100 }%</TableCell>
                             {!client &&  <TableCell>{timefinder(streamingads.endDate[0],Date.now())} days</TableCell>}
                             {!client &&  <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>}
                         </TableRow>

@@ -46,6 +46,7 @@ require('./models/pptypereports')
 require('./models/regionreports')
 require('./models/uniqueuserreports')
 require('./models/zipreports')
+require('./models/zipuniqueuserreports')
 
 app.use('/auth',require('./routes/user.routes'))
 app.use('/streamingads',require('./routes/streamingads.routes'))

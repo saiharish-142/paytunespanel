@@ -115,7 +115,7 @@ export default function BasicTable({singlead}) {
     },[state1])
     useEffect(()=>{
         if(ids && ids.audio){
-            fetch('/report/sumreportofcam22',{
+            fetch('/offreport/sumreportofcam22',{
                 method:'put',
                 headers:{
                     "Content-Type":"application/json",
@@ -125,31 +125,46 @@ export default function BasicTable({singlead}) {
                 })
             }).then(res=>res.json())
             .then(result=>{
-                var impressions = 0;
-                var clicks = 0;
-                var completes = 0;
-                var firstq = 0;
-                var secq = 0;
-                var thirdq = 0;
-                setlogs(result)
+                var impressions1 = 0;
+                var clicks1 = 0;
+                var firt1 = 0;
+                var sec1 = 0;
+                var thir1 = 0;
+                var compo1 = 0;
+                var logss = result;
+                // console.log(result)
                 result.map((re)=>{
-                    impressions += re.impressions
-                    firstq += re.firstQuartile
-                    secq += re.midpoint
-                    thirdq += re.thirdQuartile
-                    completes += re.complete
-                    clicks += re.clicks
+                    if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                        re.nameads = 'Offline'
+                    }console.log(re)
+                    impressions1 += re.impressions
+                    clicks1 += re.clicks
+                    firt1 += re.firstQuartile ? re.firstQuartile : 0
+                    sec1 += re.midpoint ? re.midpoint : 0
+                    thir1 += re.thirdQuartile ? re.thirdQuartile : 0
+                    compo1 += re.complete ? re.complete : 0
                 })
-                var uniquenum = 0;
-                result.map(log => {
-                    log.campunique = log.campunique.sort(function(a,b){return b-a;})
-                    uniquenum = log.campunique[0]
+                logss = logss.filter(x => x.impressions!==0)
+                logss = logss.sort(function(a,b){
+                    var d1 = new Date(a.updatedAt[0])
+                    var d2 = new Date(b.updatedAt[0])
+                    return d2 - d1
                 })
-                // setuniquesumcamp(uniquenum)
-                // console.log(firstq,secq,thirdq,completes)
-                offlineReports(result,impressions,clicks,firstq,secq,thirdq,completes)
-                setimpre(impressions)
-                setclick(clicks)
+                // console.log(logss)
+                if(logss.length)
+                setlogs(logss)
+                if(impressions1)
+                setimpre(impressions1)
+                if(clicks1)
+                setclick(clicks1)
+                if(firt1)
+                setfq(firt1)
+                if(sec1)
+                setsq(sec1)
+                if(thir1)
+                settq(thir1)
+                if(compo1)
+                setcomplete(compo1)
             })
             .catch(err =>{
                 console.log(err)
@@ -176,6 +191,7 @@ export default function BasicTable({singlead}) {
             var logss = result;
             // console.log(result)
             result.map((re)=>{
+                if(re.appId==='5b2210af504f3097e73e0d8b'|| re.appId === '5d10c405844dd970bf41e2af')
                 re.nameads = 'Offline'
                 impressions1 += re.impressions
                 clicks1 += re.clicks
@@ -213,7 +229,7 @@ export default function BasicTable({singlead}) {
     }
     useEffect(()=>{
         if(ids && ids.display){
-            fetch('/report/sumreportofcam22',{
+            fetch('/offreport/sumreportofcam22',{
                 method:'put',
                 headers:{
                     "Content-Type":"application/json",
@@ -223,23 +239,28 @@ export default function BasicTable({singlead}) {
                 })
             }).then(res=>res.json())
             .then(result=>{
-                var impressions = 0;
-                var clicks = 0;
-                setlogsd(result)
-                result.map((re)=>{
-                    impressions += re.impressions
-                    clicks += re.clicks
-                })
-                var uniquenum = 0;
-                result.map(log => {
-                    log.campunique = log.campunique.sort(function(a,b){return b-a;})
-                    uniquenum = log.campunique[0]
-                })
-                // setuniquesumcampd(uniquenum)
+                var impressions1 = 0;
+                var clicks1 = 0;
+                var logss = result;
                 // console.log(result)
-                offlineReportsd(result,impressions,clicks)
-                setimpred(impressions)
-                setclickd(clicks)
+                result.map((re)=>{
+                    if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                        re.nameads = 'Offline'
+                    }impressions1 += re.impressions
+                    clicks1 += re.clicks
+                })
+                logss = logss.sort(function(a,b){
+                    var d1 = new Date(a.updatedAt[0])
+                    var d2 = new Date(b.updatedAt[0])
+                    return d2 - d1
+                })
+                // console.log(logss)
+                if(logss.length)
+                setlogsd(logss)
+                if(impressions1)
+                setimpred(impressions1)
+                if(clicks1)
+                setclickd(clicks1)
             })
             .catch(err =>{
                 console.log(err)
@@ -262,8 +283,9 @@ export default function BasicTable({singlead}) {
             var logss = result;
             // console.log(result)
             result.map((re)=>{
-                re.nameads = 'Offline'
-                impressions1 += re.impressions
+                if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                    re.nameads = 'Offline'
+                }impressions1 += re.impressions
                 clicks1 += re.clicks
             })
             logss = logss.concat(logs)
