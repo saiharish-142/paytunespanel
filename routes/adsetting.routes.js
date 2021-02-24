@@ -40,6 +40,8 @@ router.put('/addetailt',adminauth,(req,res)=>{
         var audimpression = 0;
         var display = [];
         var disimpression = 0;
+        var video = [];
+        var vidimpression = 0;
         ids = await ids.map(async(id)=>{
             reu.map(rrr=>{
                 // console.log(rrr.campaignId.equals(id))
@@ -53,6 +55,11 @@ router.put('/addetailt',adminauth,(req,res)=>{
                     if(rrr.type==='display'){
                         display.push(id)
                         disimpression += parseInt(rrr.targetImpression)
+                        // console.log('display',rrr.targetImpression)
+                    }
+                    if(rrr.type==='video'){
+                        video.push(id)
+                        vidimpression += parseInt(rrr.targetImpression)
                         // console.log('display',rrr.targetImpression)
                     }
                 }
@@ -72,7 +79,7 @@ router.put('/addetailt',adminauth,(req,res)=>{
         })
         setTimeout(resultting,1000)
         // console.log(audimpression)
-        function resultting(){res.json({reu,audio,display,audimpression,disimpression})}
+        function resultting(){res.json({reu,audio,display,video,vidimpression,audimpression,disimpression})}
     })
     .catch(err => res.status(400).json(err))
 })
