@@ -9,10 +9,18 @@ const pptypereports = mongoose.model('pptypereports')
 const platformtypereports = mongoose.model('platformtypereports')
 const citylanguagereports = mongoose.model('citylanguagereports')
 const phonemodelreports = mongoose.model('phonemodelreports')
+const spentreports = mongoose.model('spentreports')
 const adminauth  = require('../authenMiddleware/adminauth')
 
 router.get('/phonemake',adminauth,(req,res)=>{
     phonemakereports.find()
+    .then(result=>{
+        res.json(result)
+    }).catch(err=>res.status(422).json(err))
+})
+
+router.get('/spentrepo',adminauth,(req,res)=>{
+    spentreports.find()
     .then(result=>{
         res.json(result)
     }).catch(err=>res.status(422).json(err))
@@ -245,6 +253,18 @@ router.put('/uniqueusersbycampids2',adminauth,(req,res)=>{
     var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
     uniqueuserreports.aggregate([
         {$match:{campaignId:{$in:ids}}}
+    ])
+    .then(result=>res.json(result))
+    .catch(err=>res.status(422).json(err))
+})
+
+router.put('/spentallrepobyid',adminauth,(req,res)=>{
+    const {campaignId} = req.body
+    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    spentreports.aggregate([
+        {$match:{campaignId:{$in:ids}}},
+        {$group:{_id:'$appId',totalspent:{$sum:'$totalSpent'}}},
+        {$project:{_id:0,appId:'$_id',totalspent:1}}
     ])
     .then(result=>res.json(result))
     .catch(err=>res.status(422).json(err))
