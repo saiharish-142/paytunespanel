@@ -49,17 +49,17 @@ router.put('/addetailt',adminauth,(req,res)=>{
                     // console.log('type',rrr.adCategory,rrr.type,rrr.campaignId)
                     if(rrr.type==='audio'){
                         audio.push(id)
-                        audimpression += parseInt(rrr.targetImpression)
+                        audimpression += rrr.targetImpression ? parseInt(rrr.targetImpression) : 0
                         // console.log('audio',rrr.targetImpression)
                     }
                     if(rrr.type==='display'){
                         display.push(id)
-                        disimpression += parseInt(rrr.targetImpression)
+                        disimpression += rrr.targetImpression ? parseInt(rrr.targetImpression) : 0
                         // console.log('display',rrr.targetImpression)
                     }
                     if(rrr.type==='video'){
                         video.push(id)
-                        vidimpression += parseInt(rrr.targetImpression)
+                        vidimpression += rrr.targetImpression ? parseInt(rrr.targetImpression) : 0
                         // console.log('display',rrr.targetImpression)
                     }
                 }
