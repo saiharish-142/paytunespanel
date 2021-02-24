@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var streamingadObj = require('./../streamingads/streamingads.js');
+// var streamingadObj = require('./../streamingads/streamingads.js');
 var Schema = mongoose.Schema;
 var spentreportsSchema = new Schema({
     campaignId: { type: Schema.Types.ObjectId, ref: 'streamingadObj' },
