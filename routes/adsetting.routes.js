@@ -36,6 +36,7 @@ router.put('/addetailt',adminauth,(req,res)=>{
     .sort('-createdOn')
     .then(async (result)=>{
         var reu = result;
+        var spear = [];
         var audio = [];
         var audimpression = 0;
         var display = [];
@@ -66,20 +67,21 @@ router.put('/addetailt',adminauth,(req,res)=>{
             })
             if(!audio.includes(id)){
                 if(!display.includes(id)){
-                    audio.push(id)
-                    await StreamingAds.findById(id)
-                    .then(resus=>{
-                        var dadad =audimpression + parseInt(resus.TargetImpressions)
-                        // console.log(dadad)
-                        audimpression = dadad
-                    }).catch(err=>console.log(err))
+                    if(!video.includes(id)){
+                        spear.push(id)
+                    }
                 }
             }
             return id;
         })
         setTimeout(resultting,1000)
         // console.log(audimpression)
-        function resultting(){res.json({reu,audio,display,video,vidimpression,audimpression,disimpression})}
+        function resultting(){
+            audio = [...new Set(audio)];
+            display = [...new Set(display)];
+            video = [...new Set(video)];
+            res.json({reu,audio,display,video,vidimpression,audimpression,disimpression})
+        }
     })
     .catch(err => res.status(400).json(err))
 })
