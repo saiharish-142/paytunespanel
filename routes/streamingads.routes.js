@@ -40,7 +40,12 @@ router.put('/updatename/:id',adminauth,(req,res)=>{
 router.put('/reqtarget',adminauth,(req,res)=>{
     const {ids} = req.body
     StreamingAds.find({_id:{$in:ids}})
-    .then(result=>res.json(result))
+    .then(result=>{
+        var resu = result;
+        var resd = [];
+        resu.map(ad => resd.push({_id:ad._id,TargetImpressions:ad.TargetImpressions}))
+        res.json(resu)
+    })
     .catch(err=>{
         console.log(err)
         res.status(404).json(err)
