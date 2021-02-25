@@ -280,4 +280,13 @@ router.put('/spentallrepobyid',adminauth,(req,res)=>{
     .catch(err=>res.status(422).json(err))
 })
 
+router.put('/spentallrepobyid2',adminauth,(req,res)=>{
+    const {campaignId} = req.body
+    const dumd =[];
+    var ids = campaignId.length ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
+    spentreports.find({campaignId:{$in:ids}})
+    .then(result=>res.json(result))
+    .catch(err=>res.status(422).json(err))
+})
+
 module.exports = router
