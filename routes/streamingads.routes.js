@@ -41,7 +41,7 @@ router.put('/reqtarget',adminauth,(req,res)=>{
     const {ids} = req.body
     StreamingAds.aggregate([
         {$match:{_id:{$in:ids}}},
-        {$project:{_id:1,TargetImpressions:1}}
+        {$project:{_id:"$_id",TargetImpressions:"$TargetImpressions"}}
     ]).then(result=>res.json(result))
     .catch(err=>res.status(404).json(err))
 })

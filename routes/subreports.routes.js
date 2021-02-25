@@ -77,7 +77,8 @@ router.get('/phonemodelwise',adminauth,(req,res)=>{
 
 router.put('/phonemakebycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
-    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    const dumd =[];
+    var ids = campaignId.length ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     phonemakereports.aggregate([
         {$match:{campaignId:{$in:ids}}},
         {$group:{_id:{phoneMake:"$phoneMake",campaignId:"$campaignId"}, 
@@ -100,7 +101,8 @@ router.put('/phonemakebycampids',adminauth,(req,res)=>{
 
 router.put('/zipbycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
-    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    const dumd =[];
+    var ids = campaignId.length ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     zipreports.aggregate([
         {$match:{campaignId:{$in:ids}}},
         {$group:{_id:{zip:"$zip",campaignId:"$campaignId"}, 
@@ -123,7 +125,8 @@ router.put('/zipbycampids',adminauth,(req,res)=>{
 
 router.put('/regionbycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
-    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    const dumd =[];
+    var ids = campaignId.length ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     regionreports.aggregate([
         {$match:{campaignId:{$in:ids}}},
         {$group:{_id:{region:"$region",campaignId:"$campaignId"}, 
@@ -146,7 +149,8 @@ router.put('/regionbycampids',adminauth,(req,res)=>{
 
 router.put('/pptypebycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
-    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    const dumd =[];
+    var ids = campaignId.length ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     pptypereports.aggregate([
         {$match:{campaignId:{$in:ids}}},
         {$group:{_id:{pptype:"$pptype",campaignId:"$campaignId"}, 
@@ -169,7 +173,8 @@ router.put('/pptypebycampids',adminauth,(req,res)=>{
 
 router.put('/platformTypebycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
-    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    const dumd =[];
+    var ids = campaignId.length ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     platformtypereports.aggregate([
         {$match:{campaignId:{$in:ids}}},
         {$group:{_id:{platformType:"$platformType",campaignId:"$campaignId"}, 
@@ -192,7 +197,8 @@ router.put('/platformTypebycampids',adminauth,(req,res)=>{
 
 router.put('/citylanguagebycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
-    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    const dumd =[];
+    var ids = campaignId.length ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     citylanguagereports.aggregate([
         {$match:{campaignId:{$in:ids}}},
         {$group:{_id:{citylanguage:"$citylanguage",campaignId:"$campaignId"}, 
@@ -215,7 +221,8 @@ router.put('/citylanguagebycampids',adminauth,(req,res)=>{
 
 router.put('/phoneModelbycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
-    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    const dumd =[];
+    var ids = campaignId.length ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     phonemodelreports.aggregate([
         {$match:{campaignId:{$in:ids}}},
         {$group:{_id:{phoneModel:"$phoneModel",campaignId:"$campaignId"}, 
@@ -251,7 +258,8 @@ router.put('/uniqueusersbycampids',adminauth,(req,res)=>{
 
 router.put('/uniqueusersbycampids2',adminauth,(req,res)=>{
     const {campaignId} = req.body
-    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    const dumd =[];
+    var ids = campaignId.length ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     uniqueuserreports.aggregate([
         {$match:{campaignId:{$in:ids}}}
     ])
@@ -261,7 +269,8 @@ router.put('/uniqueusersbycampids2',adminauth,(req,res)=>{
 
 router.put('/spentallrepobyid',adminauth,(req,res)=>{
     const {campaignId} = req.body
-    var ids = campaignId.map(id=>mongoose.Types.ObjectId(id))
+    const dumd =[];
+    var ids = campaignId.length ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     spentreports.aggregate([
         {$match:{campaignId:{$in:ids}}},
         {$group:{_id:'$appId',totalspent:{$sum:'$totalSpent'}}},
