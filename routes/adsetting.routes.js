@@ -80,7 +80,7 @@ router.put('/addetailt',adminauth,(req,res)=>{
             audio = [...new Set(audio)];
             display = [...new Set(display)];
             video = [...new Set(video)];
-            res.json({reu,audio,display,video,vidimpression,audimpression,disimpression})
+            res.json({reu,audio,display,video,spear,vidimpression,audimpression,disimpression})
         }
     })
     .catch(err => res.status(400).json(err))
