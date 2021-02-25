@@ -43,7 +43,10 @@ router.put('/reqtarget',adminauth,(req,res)=>{
         {$match:{_id:{$in:ids}}},
         {$project:{_id:"$_id",TargetImpressions:"$TargetImpressions"}}
     ]).then(result=>res.json(result))
-    .catch(err=>res.status(404).json(err))
+    .catch(err=>{
+        console.log(err)
+        res.status(404).json(err)
+    })
 })
 
 router.get('/grouped',adminauth,(req,res)=>{
