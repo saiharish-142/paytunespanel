@@ -44,7 +44,7 @@ router.put('/reqtarget',adminauth,(req,res)=>{
         var resu = result;
         var resd = [];
         resu.map(ad => resd.push({_id:ad._id,TargetImpressions:ad.TargetImpressions}))
-        res.json(resu)
+        res.json(resd)
     })
     .catch(err=>{
         console.log(err)
