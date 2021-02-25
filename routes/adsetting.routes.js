@@ -80,6 +80,7 @@ router.put('/addetailt',adminauth,(req,res)=>{
             audio = [...new Set(audio)];
             display = [...new Set(display)];
             video = [...new Set(video)];
+            spear = [...new Set(spear)];
             res.json({reu,audio,display,video,spear,vidimpression,audimpression,disimpression})
         }
     })
