@@ -24,7 +24,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                 })
             }).then(res=>res.json())
             .then(result => {
-                console.log(result,url)
+                // console.log(result,url)
                 var loco = result
                 loco = loco.sort(function(a,b){
                     return b.impression - a.impression;
@@ -37,7 +37,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                     a.SovClickTracking ? a.SovClickTracking :0;
                 })
                 // console.log(typeof impression, impression)
-                console.log(totimpre,totclick)
+                // console.log(totimpre,totclick)
                 settotalimpre(totimpre)
                 settotalclick(totclick)
                 // console.log(loco,url)

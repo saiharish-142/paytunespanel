@@ -22,23 +22,28 @@ export default function BasicTable({singlead}) {
     const history = useHistory();
     const {state1} = useContext(IdContext)
     const [logs, setlogs] = useState([])
+    const [spentdata, setspentdata] = useState([])
     const [ids, setids] = useState({})
     const [impre, setimpre] = useState(0)
     const [fq, setfq] = useState(0)
     const [sq, setsq] = useState(0)
     const [tq, settq] = useState(0)
     const [complete, setcomplete] = useState(0)
-    const [fqd, setfqd] = useState(0)
-    const [sqd, setsqd] = useState(0)
-    const [tqd, settqd] = useState(0)
-    const [completed, setcompleted] = useState(0)
+    // const [fqd, setfqd] = useState(0)
+    // const [sqd, setsqd] = useState(0)
+    // const [tqd, settqd] = useState(0)
+    // const [completed, setcompleted] = useState(0)
     const [click, setclick] = useState(0)
     const [uniquesumcamp, setuniquesumcamp] = useState(0)
     const [uniquesumcampd, setuniquesumcampd] = useState(0)
+    const [uniquesumcampv, setuniquesumcampv] = useState(0)
     const [logsd, setlogsd] = useState([])
+    const [logsv, setlogsv] = useState([])
     // const [idsd, setidsd] = useState([])
     const [impred, setimpred] = useState(0)
     const [clickd, setclickd] = useState(0)
+    const [imprev, setimprev] = useState(0)
+    const [clickv, setclickv] = useState(0)
     const classes = useStyles();
     // const normal =(val)=>{
     //     let v = Math.round(val*100)/100
@@ -83,6 +88,26 @@ export default function BasicTable({singlead}) {
             .catch(err=>console.log(err))
         }
     },[ids])
+    // unique users finder video
+    useEffect(()=>{
+        if(ids){
+            fetch('/subrepo/uniqueusersbycampids',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:ids.video
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                console.log(result[0])
+                setuniquesumcampv(result[0].unique)
+            })
+            .catch(err=>console.log(err))
+        }
+    },[ids])
+    // id finder useEffect
     useEffect(()=>{
         if(state1){
             fetch('/streamingads/getids',{
@@ -106,13 +131,56 @@ export default function BasicTable({singlead}) {
                     })
                 }).then(res=>res.json())
                 .then(result => {
-                    setids(result)
-                    console.log(result)
+                    if(result.spear.length === 0){
+                        setids(result)
+                        console.log(result)
+                    }else{
+                        fetch('/streamingads/reqtarget',{
+                            method:'put',
+                            headers:{
+                                "Content-Type":"application/json",
+                                "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                            },body:JSON.stringify({
+                                ids:result.spear
+                            })
+                        }).then(res=>res.json())
+                        .then(resuda=>{
+                            setids(result)
+                            console.log(result)
+                            console.log(resuda)
+                        })
+                        .catch(err=>console.log(err))
+                    }
                 }).catch(err=>console.log(err))
             })
             .catch(err=>console.log(err))
         }
     },[state1])
+    // spent reciver of all data
+    useEffect(() => {
+        if(ids){
+            var allids = [];
+            allids = allids.concat(ids.audio)
+            allids = allids.concat(ids.display)
+            allids = allids.concat(ids.video)
+            console.log(allids)
+            fetch('/subrepo/spentallrepobyid2',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:allids
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                console.log(result)
+                setspentdata(result)
+            })
+            .catch(err=>console.log(err))
+        }
+    }, [ids])
+    // logs puller for audio campaigns
     useEffect(()=>{
         if(ids && ids.audio){
             fetch('/offreport/sumreportofcam22',{
@@ -227,6 +295,7 @@ export default function BasicTable({singlead}) {
             console.log(err)
         })
     }
+    // logs puller for display campaigns
     useEffect(()=>{
         if(ids && ids.display){
             fetch('/offreport/sumreportofcam22',{
@@ -306,14 +375,61 @@ export default function BasicTable({singlead}) {
             console.log(err)
         })
     }
+    // logs puller for video campaigns
+    useEffect(()=>{
+        if(ids && ids.video){
+            fetch('/offreport/sumreportofcam22',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:ids.video
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                var impressions1 = 0;
+                var clicks1 = 0;
+                var logss = result;
+                // console.log(result)
+                result.map((re)=>{
+                    if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                        re.nameads = 'Offline'
+                    }impressions1 += re.impressions
+                    clicks1 += re.clicks
+                })
+                logss = logss.sort(function(a,b){
+                    var d1 = new Date(a.updatedAt[0])
+                    var d2 = new Date(b.updatedAt[0])
+                    return d2 - d1
+                })
+                // console.log(logss)
+                if(logss.length)
+                setlogsv(logss)
+                if(impressions1)
+                setimprev(impressions1)
+                if(clicks1)
+                setclickv(clicks1)
+            })
+            .catch(err =>{
+                console.log(err)
+            })
+        }
+    },[ids])
     const timefinder = (da1,da2) => {
         var d1 = new Date(da1)
         var d2 = new Date(da2)
+        if(d1 === d2){
+            return 1;
+        }
         if(d1<d2){
             return 'completed campaign'
         }
         var show = d1.getTime() - d2.getTime();
         var resula = show/(1000 * 3600 * 24) ;
+        if(Math.round(resula*1)/1 === 0){
+            resula = 1;
+        }
         return Math.round(resula*1)/1 ;
     }
     const dateformatchanger = (date) => {
@@ -371,9 +487,45 @@ export default function BasicTable({singlead}) {
             return 'not found'
         }
     }
-    // console.log(Date('2020-11-28T18:30:00.541Z').toString())
-    // console.log(Date('2020-11-28T18:30:00.541Z'))
-    // console.log(Date('2020-11-28T18:30:00.541Z'))
+    const spentfinder = (appId,campaignId) => {
+        if(spentdata.length){
+            var datarq = spentdata.filter(x => x.campaignId === campaignId && x.appId === appId)
+            var spent = 0;
+            // console.log(datarq)
+            datarq.map(dat=>{
+                spent += parseInt(dat.totalSpent)
+            })
+            return spent;
+        }
+        return 0;
+    }
+    const completespentfider = (camstype) =>{
+        if(camstype === 'audio' && spentdata){
+            var allspentdatareq = spentdata.filter(x=> ids.audio.includes(x.campaignId))
+            var spent = 0;
+            allspentdatareq.map(dat => {
+                spent += parseFloat(dat.totalSpent)
+            })
+            return Math.round(spent*10000)/10000;
+        }
+        if(camstype === 'display' && spentdata){
+            var allspentdatareq = spentdata.filter(x=> ids.display.includes(x.campaignId))
+            var spent = 0;
+            allspentdatareq.map(dat => {
+                spent += parseFloat(dat.totalSpent)
+            })
+            return Math.round(spent*10000)/10000;
+        }
+        if(camstype === 'video' && spentdata){
+            var allspentdatareq = spentdata.filter(x=> ids.video.includes(x.campaignId))
+            var spent = 0;
+            allspentdatareq.map(dat => {
+                spent += parseFloat(dat.totalSpent)
+            })
+            return Math.round(spent*10000)/10000;
+        }
+        return 0;
+    }
     return (
         <>
         <IconBreadcrumbs />
@@ -393,6 +545,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Unique Users</TableCell>
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
+                <TableCell>Total spent</TableCell>
                 <TableCell>Total Clicks Delivered till date</TableCell>
                 <TableCell>CTR</TableCell>
                 <TableCell>Balance Impressions</TableCell>
@@ -420,6 +573,7 @@ export default function BasicTable({singlead}) {
                     <TableCell>{uniquesumcamp}</TableCell>
                     <TableCell>{ids &&  Math.round(ids.audimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{completespentfider('audio')}</TableCell>
                     <TableCell>{click}</TableCell>
                     <TableCell>{Math.round(click*100/impre *100)/100}%</TableCell>
                     <TableCell>{ids && ids.audimpression-impre}</TableCell>
@@ -443,6 +597,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Unique Users</TableCell>
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
+                <TableCell>Total spent</TableCell>
                 <TableCell>Total Clicks Delivered till date</TableCell>
                 <TableCell>CTR</TableCell>
                 <TableCell>Balance Impressions</TableCell>
@@ -470,9 +625,62 @@ export default function BasicTable({singlead}) {
                     <TableCell>{uniquesumcampd}</TableCell>
                     <TableCell>{ids && Math.round(ids.disimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{completespentfider('display')}</TableCell>
                     <TableCell>{clickd}</TableCell>
                     <TableCell>{Math.round(clickd*100/impred *100)/100}%</TableCell>
                     <TableCell>{ids && ids.disimpression-impred}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
+                    <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                </TableRow>
+            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
+            </TableBody>
+        </Table>
+        </TableContainer>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+        <div style={{margin:'5px',fontWeight:'bolder'}}>Video Type</div>
+        <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+            <TableRow>
+                <TableCell>Campaign Start Date</TableCell>
+                <TableCell>Campaign End Date</TableCell>
+                <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions to be delivered</TableCell>
+                <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Unique Users</TableCell>
+                <TableCell>Avg required</TableCell>
+                <TableCell>Avg Achieved</TableCell>
+                <TableCell>Total spent</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
+                <TableCell>Balance Impressions</TableCell>
+                <TableCell>Balance Days</TableCell>
+                <TableCell></TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {singlead._id && ids && (logsv.length>0) ?
+                <TableRow 
+                    style={{
+                        background: colorfinder(
+                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
+                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            ids && ids.disimpression,
+                            impred
+                        )
+                    }}
+                >
+                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{ids && ids.disimpression}</TableCell>
+                    <TableCell>{impred}</TableCell>
+                    <TableCell>{uniquesumcampv}</TableCell>
+                    <TableCell>{ids && Math.round(ids.disimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{completespentfider('display')}</TableCell>
+                    <TableCell>{clickv}</TableCell>
+                    <TableCell>{Math.round(clickv*100/imprev *100)/100}%</TableCell>
+                    <TableCell>{ids && ids.disimpression-imprev}</TableCell>
                     <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
                     <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                 </TableRow>
@@ -496,6 +704,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Unique Users</TableCell>
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
+                <TableCell>Total spent</TableCell>
                 <TableCell>Total Clicks Delivered till date</TableCell>
                 <TableCell>CTR</TableCell>
                 <TableCell>Balance Impressions</TableCell>
@@ -525,6 +734,7 @@ export default function BasicTable({singlead}) {
                         <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
+                        <TableCell>{spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
@@ -550,6 +760,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Unique Users</TableCell>
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
+                <TableCell>Total spent</TableCell>
                 <TableCell>Total Clicks Delivered till date</TableCell>
                 <TableCell>CTR</TableCell>
                 <TableCell>Balance Impressions</TableCell>
@@ -579,6 +790,63 @@ export default function BasicTable({singlead}) {
                         <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
+                        <TableCell>{spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
+                        <TableCell>{log.clicks}</TableCell>
+                        <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
+                        <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                    </TableRow>
+                })
+            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
+            </TableBody>
+        </Table>
+        </TableContainer>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Video Type</div>
+        <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+            <TableRow>
+                <TableCell>Publisher</TableCell>
+                <TableCell>Campaign Start Date</TableCell>
+                <TableCell>Campaign End Date</TableCell>
+                <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions to be delivered</TableCell>
+                <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Unique Users</TableCell>
+                <TableCell>Avg required</TableCell>
+                <TableCell>Avg Achieved</TableCell>
+                <TableCell>Total spent</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
+                <TableCell>Balance Impressions</TableCell>
+                <TableCell>Balance Days</TableCell>
+                <TableCell></TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {singlead._id ? logsv.length && 
+                logsv.map((log,i) => {
+                    return <TableRow key={i}
+                        style={{
+                            background: colorfinder(
+                                timefinder(log.campaignId.endDate,log.campaignId.startDate),
+                                timefinder(Date.now(),log.campaignId.startDate),
+                                log.campaignId.TargetImpressions && log.campaignId.TargetImpressions,
+                                log.impressions
+                            )
+                        }}
+                    >
+                        <TableCell>{log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
+                        <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
+                        <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
+                        <TableCell>{log.campaignId.TargetImpressions && log.campaignId.TargetImpressions}</TableCell>
+                        <TableCell>{log.impressions}</TableCell>
+                        <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell>
+                        <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
+                        <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
+                        <TableCell>{spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
@@ -650,30 +918,37 @@ export default function BasicTable({singlead}) {
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.audio} url='regionbycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.display} url='regionbycampids' />
+        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.video} url='regionbycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Language Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.audio} url='citylanguagebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.display} url='citylanguagebycampids' />
+        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.video} url='citylanguagebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Type Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.audio} url='phoneModelbycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.display} url='phoneModelbycampids' />
+        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.video} url='phoneModelbycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} url='platformTypebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} url='platformTypebycampids' />
+        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.video} url='platformTypebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} url='zipbycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.display} url='zipbycampids' />
+        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.video} url='zipbycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Model Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.audio} url='phonemakebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.display} url='phonemakebycampids' />
+        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.video} url='phonemakebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} url='pptypebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} url='pptypebycampids' />
+        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.video} url='pptypebycampids' />
         </>
     );
 }
