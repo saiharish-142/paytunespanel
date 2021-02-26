@@ -30,20 +30,26 @@ export default function BasicTable({singlead}) {
     const [complete, setcomplete] = useState(0)
     const [ratio, setratio] = useState(0)
     const [ratiod, setratiod] = useState(0)
+    const [ratiov, setratiov] = useState(0)
     const [click, setclick] = useState(0)
     const [imprada, setimprada] = useState(0)
     const [uniquesumcamp, setuniquesumcamp] = useState(0)
     const [uniquesumcampd, setuniquesumcampd] = useState(0)
+    const [uniquesumcampv, setuniquesumcampv] = useState(0)
     const [logsd, setlogsd] = useState([])
+    const [logsv, setlogsv] = useState([])
     // const [idsd, setidsd] = useState([])
     const [impred, setimpred] = useState(0)
     const [clickd, setclickd] = useState(0)
+    const [imprev, setimprev] = useState(0)
+    const [clickv, setclickv] = useState(0)
     const classes = useStyles();
     // const normal =(val)=>{
     //     let v = Math.round(val*100)/100
     //     // console.log(v)
     //     return v
     // }
+    // unique users finder audio
     useEffect(()=>{
         if(ids){
             fetch('/subrepo/uniqueusersbycampids',{
@@ -92,6 +98,30 @@ export default function BasicTable({singlead}) {
             .catch(err=>console.log(err))
         }
     },[ids,impred])
+    // unique users finder video
+    useEffect(()=>{
+        if(ids){
+            fetch('/subrepo/uniqueusersbycampids',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:ids.video
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                // console.log(result[0])
+                setuniquesumcampv(result[0].unique)
+                if(result[0].unique/impred < 0.5 || result[0].unique/impred > 1 ){
+                    setratiov(0.75)
+                }else{
+                    setratiov(result[0].unique/impre)
+                }
+            })
+            .catch(err=>console.log(err))
+        }
+    },[ids,imprev])
     useEffect(()=>{
         if(state1){
             fetch('/streamingads/getids',{
@@ -122,6 +152,7 @@ export default function BasicTable({singlead}) {
             .catch(err=>console.log(err))
         }
     },[state1])
+    // audio logs puller
     useEffect(()=>{
         if(ids && ids.audio){
             fetch('/offreport/sumreportofcam22',{
@@ -233,6 +264,7 @@ export default function BasicTable({singlead}) {
             console.log(err)
         })
     }
+    // display logs puller
     useEffect(()=>{
         if(ids && ids.display){
             fetch('/offreport/sumreportofcam22',{
@@ -310,6 +342,46 @@ export default function BasicTable({singlead}) {
             console.log(err)
         })
     }
+    // video logs puller
+    useEffect(()=>{
+        if(ids && ids.video){
+            fetch('/offreport/sumreportofcam22',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:ids.video
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                var impressions1 = 0;
+                var clicks1 = 0;
+                var logss = result;
+                // console.log(result)
+                result.map((re)=>{
+                    impressions1 += re.impressions
+                    clicks1 += re.clicks
+                })
+                logss = logss.concat(logs)
+                logss = logss.sort(function(a,b){
+                    var d1 = new Date(a.updatedAt[0])
+                    var d2 = new Date(b.updatedAt[0])
+                    return d2 - d1
+                })
+                // console.log(logss)
+                if(logss.length)
+                setlogsv(logss)
+                if(impressions1)
+                setimprev(impressions1)
+                if(clicks1)
+                setclickv(clicks1)
+            })
+            .catch(err =>{
+                console.log(err)
+            })
+        }
+    },[ids])
     const timefinder = (da1,da2) => {
         var d1 = new Date(da1)
         var d2 = new Date(da2)
@@ -464,6 +536,46 @@ export default function BasicTable({singlead}) {
             </TableBody>
         </Table>
         </TableContainer>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+        <div style={{margin:'5px',fontWeight:'bolder'}}>Video Type</div>
+        <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+            <TableRow>
+                <TableCell>Campaign Start Date</TableCell>
+                <TableCell>Campaign End Date</TableCell>
+                <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions to be delivered</TableCell>
+                <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Unique Users</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {singlead._id && ids && (logsd.length>0) ?
+                <TableRow 
+                    style={{
+                        background: colorfinder(
+                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
+                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            ids && ids.disimpression,
+                            impred
+                        )
+                    }}
+                >
+                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{ids && ids.disimpression}</TableCell>
+                    <TableCell>{imprev}</TableCell>
+                    <TableCell>{Math.round(ratiov*imprev) + 1}</TableCell>
+                    <TableCell>{clickv}</TableCell>
+                    <TableCell>{Math.round(clickv*100/imprev *100)/100}%</TableCell>
+                </TableRow>
+            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
+            </TableBody>
+        </Table>
+        </TableContainer>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Quartile Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <TableContainer  style={{margin:'20px 0'}} elevation={3} component={Paper}>
@@ -504,6 +616,7 @@ export default function BasicTable({singlead}) {
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} click={click} impression={impre} ratio={ratio} client={true} url='platformTypebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} click={clickd} impression={impred} ratio={ratiod} client={true} url='platformTypebycampids' />
+        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.video} click={clickv} impression={imprev} ratio={ratiov} client={true} url='platformTypebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' ratio={ratio} regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} click={click} impression={impre} ratio={ratio} client={true} url='zipbycampids' />
@@ -511,6 +624,7 @@ export default function BasicTable({singlead}) {
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} click={click} impression={impre} ratio={ratio} client={true} url='pptypebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} click={clickd} impression={impred} ratio={ratiod} client={true} url='pptypebycampids' />
+        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.video} click={clickv} impression={imprev} ratio={ratiov} client={true} url='pptypebycampids' />
         </>
     );
 }
