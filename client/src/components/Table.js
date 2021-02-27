@@ -555,7 +555,7 @@ export default function BasicTable({singlead}) {
             </TableHead>
             <TableBody>
             {singlead._id && (logs.length>0) && ids ?
-                <TableRow 
+                <TableRow
                     style={{
                         background: colorfinder(
                             timefinder(singlead.endDate[0],singlead.startDate[0]) ,
@@ -607,7 +607,7 @@ export default function BasicTable({singlead}) {
             </TableHead>
             <TableBody>
             {singlead._id && ids && (logsd.length>0) ?
-                <TableRow 
+                <TableRow
                     style={{
                         background: colorfinder(
                             timefinder(singlead.endDate[0],singlead.startDate[0]) ,
@@ -659,7 +659,7 @@ export default function BasicTable({singlead}) {
             </TableHead>
             <TableBody>
             {singlead._id && ids && (logsv.length>0) ?
-                <TableRow 
+                <TableRow
                     style={{
                         background: colorfinder(
                             timefinder(singlead.endDate[0],singlead.startDate[0]) ,
@@ -713,7 +713,7 @@ export default function BasicTable({singlead}) {
             </TableRow>
             </TableHead>
             <TableBody>
-            {singlead._id ? logs.length && 
+            {singlead._id ? logs.length &&
                 logs.map((log,i) => {
                     return <TableRow key={i}
                         style={{
@@ -742,7 +742,7 @@ export default function BasicTable({singlead}) {
                         <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                     </TableRow>
                 })
-            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
+            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
             </TableBody>
         </Table>
         </TableContainer>
@@ -769,7 +769,7 @@ export default function BasicTable({singlead}) {
             </TableRow>
             </TableHead>
             <TableBody>
-            {singlead._id ? logsd.length && 
+            {singlead._id ? logsd.length &&
                 logsd.map((log,i) => {
                     return <TableRow key={i}
                         style={{
@@ -798,7 +798,7 @@ export default function BasicTable({singlead}) {
                         <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                     </TableRow>
                 })
-            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
+            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
             </TableBody>
         </Table>
         </TableContainer>
@@ -825,7 +825,7 @@ export default function BasicTable({singlead}) {
             </TableRow>
             </TableHead>
             <TableBody>
-            {singlead._id ? logsv.length && 
+            {singlead._id ? logsv.length &&
                 logsv.map((log,i) => {
                     return <TableRow key={i}
                         style={{
@@ -854,7 +854,7 @@ export default function BasicTable({singlead}) {
                         <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                     </TableRow>
                 })
-            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>} 
+            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
             </TableBody>
         </Table>
         </TableContainer>
