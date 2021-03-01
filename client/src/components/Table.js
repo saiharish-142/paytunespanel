@@ -533,6 +533,58 @@ export default function BasicTable({singlead}) {
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Complete Report</div>
+        <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+            <TableRow>
+                <TableCell>Campaign Start Date</TableCell>
+                <TableCell>Campaign End Date</TableCell>
+                <TableCell>Total Days of Campaign</TableCell>
+                <TableCell>Total Impressions to be delivered</TableCell>
+                <TableCell>Total Impressions Delivered till date</TableCell>
+                <TableCell>Unique Users</TableCell>
+                <TableCell>Avg required</TableCell>
+                <TableCell>Avg Achieved</TableCell>
+                <TableCell>Total spent</TableCell>
+                <TableCell>Total Clicks Delivered till date</TableCell>
+                <TableCell>CTR</TableCell>
+                <TableCell>Balance Impressions</TableCell>
+                <TableCell>Balance Days</TableCell>
+                <TableCell></TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {singlead._id && (logs.length>0 || logsd.length>0 || logsv.length>0) && ids ?
+                <TableRow
+                    style={{
+                        background: colorfinder(
+                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
+                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ),
+                            impre + impred + imprev
+                        )
+                    }}
+                >
+                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ) }</TableCell>
+                    <TableCell>{impre + impred + imprev}</TableCell>
+                    <TableCell>{uniquesumcamp + uniquesumcampd + uniquesumcampv}</TableCell>
+                    <TableCell>{ids &&  Math.round(((ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ))/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{Math.round((impre + impred + imprev)/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{completespentfider('audio')}</TableCell>
+                    <TableCell>{click + clickd + clickv}</TableCell>
+                    <TableCell>{Math.round((click + clickd + clickv)*100/(impre + impred + imprev) *100)/100}%</TableCell>
+                    <TableCell>{ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 )- impre - impred - imprev}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
+                    <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                </TableRow>
+            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
+            </TableBody>
+        </Table>
+        </TableContainer>
+        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
             <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
@@ -672,10 +724,10 @@ export default function BasicTable({singlead}) {
                     <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
                     <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
                     <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
-                    <TableCell>{ids && ids.disimpression}</TableCell>
-                    <TableCell>{impred}</TableCell>
+                    <TableCell>{ids && ids.vidimpression}</TableCell>
+                    <TableCell>{imprev}</TableCell>
                     <TableCell>{uniquesumcampv}</TableCell>
-                    <TableCell>{ids && Math.round(ids.disimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{ids && Math.round(ids.vidimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{completespentfider('display')}</TableCell>
                     <TableCell>{clickv}</TableCell>
