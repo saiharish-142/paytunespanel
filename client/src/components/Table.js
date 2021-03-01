@@ -524,6 +524,14 @@ export default function BasicTable({singlead}) {
             })
             return Math.round(spent*10000)/10000;
         }
+        if(camstype === 'all' && spentdata){
+            var allspentdatareq = spentdata
+            var spent = 0;
+            allspentdatareq.map(dat=>{
+                spent += parseFloat(dat.totalSpent)
+            })
+            return Math.round(spent*10000)/10000;
+        }
         return 0;
     }
     return (
@@ -573,7 +581,7 @@ export default function BasicTable({singlead}) {
                     <TableCell>{uniquesumcamp + uniquesumcampd + uniquesumcampv}</TableCell>
                     <TableCell>{ids &&  Math.round(((ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ))/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round((impre + impred + imprev)/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{completespentfider('audio')}</TableCell>
+                    <TableCell>{completespentfider('all')}</TableCell>
                     <TableCell>{click + clickd + clickv}</TableCell>
                     <TableCell>{Math.round((click + clickd + clickv)*100/(impre + impred + imprev) *100)/100}%</TableCell>
                     <TableCell>{ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 )- impre - impred - imprev}</TableCell>
