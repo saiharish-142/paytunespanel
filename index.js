@@ -48,6 +48,7 @@ require('./models/spentreports')
 require('./models/uniqueuserreports')
 require('./models/zipreports')
 require('./models/zipuniqueuserreports')
+require('./models/bindingcollections.model')
 
 app.use('/auth',require('./routes/user.routes'))
 app.use('/streamingads',require('./routes/streamingads.routes'))
@@ -61,6 +62,7 @@ app.use('/offreport',require('./routes/campaignwisereports.routes'))
 app.use('/rtbreq',require('./routes/rtbrequest.routes'))
 app.use('/bundle',require('./routes/bundlenamereports.routes'))
 app.use('/subrepo',require('./routes/subreports.routes'))
+app.use('/bundles',require('./routes/bundling.routes'))
 
 if(process.env.NODE_ENV==="production"){
     app.use(express.static('client/build'))
