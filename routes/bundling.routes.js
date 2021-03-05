@@ -41,6 +41,8 @@ router.post('/createBundle',adminauth,(req,res)=>{
     })
 })
 
+// "id":"5fb93e0b1b949e4c52b43b93",
+
 router.put('/addadtobundle',adminauth,(req,res)=>{
     const {id,bundleid} = req.body
     bindstreamingads.findByIdAndUpdate(bundleid,{$push:{ids:id}},{new:true})
@@ -64,7 +66,7 @@ router.put('/removeadtobundle',adminauth,(req,res)=>{
             console.log(err)
             return res.status(422).json({error:'Error occured....!',err})
         }else{
-            return res.json({result,message:'id added...!'})
+            return res.json({result,message:'id removed...!'})
         }
     })
 })
