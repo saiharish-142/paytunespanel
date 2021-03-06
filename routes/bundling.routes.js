@@ -23,6 +23,15 @@ router.get('/:id',adminauth,(req,res)=>{
     }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
 })
 
+router.get('/title/:title',adminauth,(req,res)=>{
+    const {title} = req.params
+    bindstreamingads.findOne({bundleadtitle:title})
+    .populate('ids','_id AdTitle Category Advertiser Pricing PricingModel startDate endDate')
+    .then(result=>{
+        res.json(result)
+    }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
+})
+
 router.post('/createBundle',adminauth,(req,res)=>{
     const {Category,Advertiser,bundleadtitle,ids,Pricing,PricingModel,endDate,startDate} = req.body
     if(!ids || !bundleadtitle || !startDate || !endDate){

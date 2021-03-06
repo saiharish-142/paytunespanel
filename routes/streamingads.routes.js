@@ -4,8 +4,17 @@ const router = express.Router()
 const StreamingAds = mongoose.model('streamingads')
 const adminauth = require('../authenMiddleware/adminauth')
 
-router.get('/allads',adminauth,(req,res)=>{
+router.get('/',adminauth,(req,res)=>{
     StreamingAds.find()
+    .sort('-createdOn')
+    .then(ads=>{
+        res.json(ads)
+    })
+    .catch(err => console.log(err))
+})
+
+router.get('/allads',adminauth,(req,res)=>{
+    StreamingAds.find({},{_id:1,Advertiser:1,Category:1,Pricing:1,PricingModel:1,startDate:1,endDate:1,createdOn:1})
     .sort('-createdOn')
     .then(ads=>{
         res.json(ads)
