@@ -12,6 +12,7 @@ import DetailedTable from './screens/detailedReport';
 import ClientManage from './screens/ClientManage';
 import ClientReport from './screens/ClientReport';
 import ManageUser from './screens/ManageUser';
+import CampaignBundle from './screens/CampaignBundle';
 // import Dashmenu from './components/dashmenu';
 
 export const UserContext = createContext()
@@ -52,6 +53,16 @@ function App() {
               path='/manageAds'
               exact
               render={()=>(state ? (state.usertype === 'admin' ? <Dashboard /> : <ClientManage />) : <Redirect to='/login' />)}
+              /> 
+            <Route
+              path='/bundleManage/createbundle'
+              exact
+              render={()=>(state ? (state.usertype === 'admin' ? <CampaignBundle /> : <Redirect to='/manageAds' />) : <Redirect to='/login' />)}
+              /> 
+            <Route
+              path='/bundleManage/:bundlename/edit'
+              exact
+              render={()=>(state ? (state.usertype === 'admin' ? <CampaignBundle /> : <Redirect to='/manageAds' />) : <Redirect to='/login' />)}
               /> 
             <Route
               path='/clientSideCamp'

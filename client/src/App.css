@@ -8,6 +8,9 @@
 .navbar{
   background-color: rgb(209, 60, 60);
   height: 8vh;
+  position: sticky !important;
+  top: 0;
+  z-index: 3 !important;
   /* font-family: 'Kaushan Script', cursive; */
 }
 
@@ -87,11 +90,25 @@
 .breed_paper{
   display: flex;
   height: 40px;
-  width: 50%;
+  min-width: 50%;
+  max-width: fit-content;
   padding: 5px 20px;
   margin-top: -57px;
   margin-left: 150px;
-  overflow: auto;
+  overflow: hidden;
+}
+
+.titleManger{
+  display: flex;
+  width: 80%;
+  margin: 10px auto ;
+  text-align: center;
+  align-items: center;
+}
+
+.titleManger div{
+  margin: 0 20px;
+  width: 30%;
 }
 
 @media screen and (max-width: 700px){

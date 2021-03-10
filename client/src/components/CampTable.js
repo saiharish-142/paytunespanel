@@ -12,6 +12,7 @@ import { useHistory } from "react-router-dom";
 import { IdContext } from '../App'
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
+import EditIcon from '@material-ui/icons/Edit';
 
 const useStyles = makeStyles({
     root: {
@@ -217,66 +218,69 @@ export default function StickyHeadTable({streamingads,settingcamp,clientview}) {
         return Math.round(resula*1)/1 ;
     }
     return (
-        <Paper className={classes.root}>
-        <TableContainer className={classes.container}>
-            <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-                <TableRow>
-                    <TableCell align='left' onClick={()=>campaignssorter('cat')} style={{cursor:'pointer'}}>Name {sa==='cat' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                    <TableCell align='left' onClick={()=>campaignssorter('adv')} style={{cursor:'pointer'}}>Advertiser {sa==='adv' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                    <TableCell align='center' onClick={()=>campaignssorter('pri')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Pricing {sa==='pri' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                    <TableCell align='center' onClick={()=>campaignssorter('RO')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>RO from Advertiser {sa==='RO' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                    <TableCell align='center' onClick={()=>campaignssorter('pm')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Pricing Model {sa==='pm' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                    <TableCell align='center' onClick={()=>campaignssorter('cag')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Category {sa==='cag' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                    <TableCell align='center' onClick={()=>campaignssorter('create')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Created On {sa==='create' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                    <TableCell align='center' onClick={()=>campaignssorter('start')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Start Date {sa==='start' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                    <TableCell align='center' onClick={()=>campaignssorter('end')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>End Date {sa==='end' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                    <TableCell align='center' onDoubleClick={()=>campaignssorter('revremain')} onClick={()=>campaignssorter('remain')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Remaining Days {sa==='remain' &&  <ArrowUpwardRoundedIcon fontSize="small" />}{sa==='revremain' &&  <ArrowDownwardRoundedIcon fontSize="small" />}</TableCell>
-                    <TableCell></TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {adss.length >= 1 ? adss
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) =>{ 
-                    if(typeof row !== 'undefined'){
-                    return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
-                        <TableCell align='left'>{row.Adtitle && row.Adtitle}</TableCell>
-                        <TableCell align='left'>{row.Advertiser && row.Advertiser}</TableCell>
-                        <TableCell align='center'>{row.Pricing && row.Pricing}</TableCell>
-                        <TableCell align='center'>{row.ro && row.ro}</TableCell>
-                        <TableCell align='center'>{row.PricingModel && row.PricingModel}</TableCell>
-                        <TableCell align='center'>{row.Category && row.Category}</TableCell>
-                        <TableCell align='center'>{row.createdOn ? dateformatchanger(row.createdOn.substring(0,10)) : dateformatchanger(row.createdAt.substring(0,10))}</TableCell>
-                        <TableCell align='center'>{row.startDate && dateformatchanger(row.startDate[0])}</TableCell>
-                        <TableCell align='center'>{row.endDate && dateformatchanger(row.endDate[0])}</TableCell>
-                        <TableCell align='center'>{row.endDate&& timefinder(row.endDate[0])} days</TableCell>
-                        <TableCell align='center' className='mangeads__report' onClick={()=>{
-                            if(clientview){
-                                history.push(`/clientSideCamp/${row._id}`)
-                            }else{
-                                history.push(`/manageAds/${row._id}`)
-                            }
-                            dispatch1({type:"ID",payload:row._id})
-                        }}>Report</TableCell>
+        <>
+            <Paper className={classes.root}>
+            <TableContainer className={classes.container}>
+                <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                    <TableRow>
+                        <TableCell align='left' onClick={()=>campaignssorter('cat')} style={{cursor:'pointer'}}>Name {sa==='cat' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                        <TableCell align='left' onClick={()=>campaignssorter('adv')} style={{cursor:'pointer'}}>Advertiser {sa==='adv' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                        <TableCell align='center' onClick={()=>campaignssorter('pri')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Pricing {sa==='pri' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                        <TableCell align='center' onClick={()=>campaignssorter('RO')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>RO from Advertiser {sa==='RO' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                        <TableCell align='center' onClick={()=>campaignssorter('pm')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Pricing Model {sa==='pm' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                        <TableCell align='center' onClick={()=>campaignssorter('cag')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Category {sa==='cag' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                        <TableCell align='center' onClick={()=>campaignssorter('create')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Created On {sa==='create' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                        <TableCell align='center' onClick={()=>campaignssorter('start')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Start Date {sa==='start' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                        <TableCell align='center' onClick={()=>campaignssorter('end')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>End Date {sa==='end' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
+                        <TableCell align='center' onDoubleClick={()=>campaignssorter('revremain')} onClick={()=>campaignssorter('remain')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Remaining Days {sa==='remain' &&  <ArrowUpwardRoundedIcon fontSize="small" />}{sa==='revremain' &&  <ArrowDownwardRoundedIcon fontSize="small" />}</TableCell>
+                        <TableCell></TableCell>
                     </TableRow>
-                    );}else{
-                        return (<TableRow><TableCell>No aaads to display</TableCell></TableRow>)
-                    }
-                }) : <TableRow><TableCell>No ads to display</TableCell></TableRow>}
-            </TableBody>
-            </Table>
-        </TableContainer>
-        <TablePagination
-            rowsPerPageOptions={[5, 10, 25, 100]}
-            component="div"
-            count={adss.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-        </Paper>
+                </TableHead>
+                <TableBody>
+                    {adss.length >= 1 ? adss
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) =>{ 
+                        if(typeof row !== 'undefined'){
+                        return (
+                        <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
+                            <TableCell align='left'>{row.Adtitle && row.Adtitle}</TableCell>
+                            <TableCell align='left'>{row.Advertiser && row.Advertiser}</TableCell>
+                            <TableCell align='center'>{row.Pricing && row.Pricing}</TableCell>
+                            <TableCell align='center'>{row.ro && row.ro}</TableCell>
+                            <TableCell align='center'>{row.PricingModel && row.PricingModel}</TableCell>
+                            <TableCell align='center'>{row.Category && row.Category}</TableCell>
+                            <TableCell align='center'>{row.createdOn ? dateformatchanger(row.createdOn.substring(0,10)) : dateformatchanger(row.createdAt.substring(0,10))}</TableCell>
+                            <TableCell align='center'>{row.startDate && dateformatchanger(row.startDate[0])}</TableCell>
+                            <TableCell align='center'>{row.endDate && dateformatchanger(row.endDate[0])}</TableCell>
+                            <TableCell align='center'>{row.endDate&& timefinder(row.endDate[0])} days</TableCell>
+                            {!clientview &&<TableCell align='center' className='mangeads__report'><EditIcon /></TableCell>}
+                            <TableCell align='center' className='mangeads__report' onClick={()=>{
+                                if(clientview){
+                                    history.push(`/clientSideCamp/${row._id}`)
+                                }else{
+                                    history.push(`/manageAds/${row._id}`)
+                                }
+                                dispatch1({type:"ID",payload:row._id})
+                            }}>Report</TableCell>
+                        </TableRow>
+                        );}else{
+                            return (<TableRow><TableCell>No aaads to display</TableCell></TableRow>)
+                        }
+                    }) : <TableRow><TableCell>No ads to display</TableCell></TableRow>}
+                </TableBody>
+                </Table>
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25, 100]}
+                component="div"
+                count={adss.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+            />
+            </Paper>
+        </>
     );
 }

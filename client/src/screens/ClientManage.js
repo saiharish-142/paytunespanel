@@ -271,7 +271,7 @@ function ClientManage() {
         return Math.round(resula*1)/1 ;
     }
     return (
-        <div>
+        <div className='dashboard'>
             <SearchCampagin inval={searchval} setInval={onChange} />
             <Paper className={classes.root}>
                 <TableContainer className={classes.container}>

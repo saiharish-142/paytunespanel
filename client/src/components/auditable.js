@@ -100,8 +100,8 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                         return (
                         <TableRow key ={i} hover role="checkbox" tabIndex={-1} key={row._id}>
                             <TableCell>{row[jsotitle]}</TableCell>
-                            {!client && <TableCell>{dateformatchanger(streamingads.startDate[0].slice(0,10))}</TableCell>}
-                            {!client && <TableCell>{dateformatchanger(streamingads.endDate[0].slice(0,10))}</TableCell>}
+                            {!client && <TableCell>{streamingads.startDate && dateformatchanger(streamingads.startDate[0].slice(0,10))}</TableCell>}
+                            {!client && <TableCell>{streamingads.endDate && dateformatchanger(streamingads.endDate[0].slice(0,10))}</TableCell>}
                             {!client && <TableCell>{timefinder(streamingads.endDate[0],streamingads.startDate[0])} days</TableCell>}
                             {client? <TableCell>{Math.round(impression*row.impression/totalimpre)}</TableCell> : <TableCell>{row.impression}</TableCell>}
                             {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>{
