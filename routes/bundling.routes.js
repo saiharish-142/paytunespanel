@@ -50,7 +50,34 @@ router.post('/createBundle',adminauth,(req,res)=>{
     })
 })
 
-// "id":"5fb93e0b1b949e4c52b43b93",
+router.put('/UpdateBundle',adminauth,(req,res)=>{
+    const {Category,Advertiser,bundleadtitle,id,Pricing,PricingModel,endDate,startDate} = req.body
+    if(!id || !bundleadtitle || !startDate || !endDate){
+        return res.status(400).json({error:'Enter all the Given fields'})
+    }
+    bindstreamingads.findByIdAndUpdate(id)
+    .then(somebundle=>{
+        if(Category){somebundle.Category = Category}
+        if(Advertiser){somebundle.Advertiser = Advertiser}
+        if(bundleadtitle){somebundle.bundleadtitle = bundleadtitle}
+        if(Pricing){somebundle.Pricing = Pricing}
+        if(PricingModel){somebundle.PricingModel = PricingModel}
+        if(startDate){somebundle.startDate = startDate}
+        if(endDate){somebundle.endDate = endDate}
+        somebundle.save()
+        .then(result=>{
+            res.json({message:'saved...!',result})
+        })
+        .catch(err=>{
+            console.log(err)
+            return res.status(422).json({error:'Error occured....!',err})
+        })
+    })
+    .catch(err=>{
+        console.log(err)
+        return res.status(422).json({error:'Error occured....!',err})
+    })
+})
 
 router.put('/addadtobundle',adminauth,(req,res)=>{
     const {id,bundleid} = req.body
