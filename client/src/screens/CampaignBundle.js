@@ -101,6 +101,21 @@ function CampaignBundle() {
             }
         })
     },[])
+    // 
+    // useEffect(() => {
+    //     var data = searchedadsdata
+    //     var d = searchedselectedads
+    //     data = [...new Set(data)];
+    //     data = data.filter(x => !d.includes(x))
+    //     setsearchedadsdata(data)
+    // }, [searchedadsdata]);
+    // useEffect(() => {
+    //     var data = adsdata
+    //     var d = selectedads
+    //     data = [...new Set(data)];
+    //     data = data.filter(x => !d.includes(x))
+    //     setadsdata(data)
+    // }, [adsdata]);
     const campaignsorter = (campagins) =>{
         var cm = campagins.sort(function(a,b){
             var d1 = new Date(a.startDate)
@@ -222,6 +237,10 @@ function CampaignBundle() {
         campaignsorter(adss2)
         campaignsorter(selectedadss2)
         campaignsorter(selectedadss)
+        adss = [...new Set(adss)];
+        adss2 = [...new Set(adss2)];
+        selectedadss = [...new Set(selectedadss)];
+        selectedadss2 = [...new Set(selectedadss2)];
         setsearchedadsdata(adss2)
         setadsdata(adss)
         setsearchedselectedads(selectedadss2)
@@ -240,6 +259,10 @@ function CampaignBundle() {
         campaignsorter(adss2)
         campaignsorter(selectedadss2)
         campaignsorter(selectedadss)
+        adss = [...new Set(adss)];
+        adss2 = [...new Set(adss2)];
+        selectedadss = [...new Set(selectedadss)];
+        selectedadss2 = [...new Set(selectedadss2)];
         setsearchedadsdata(adss2)
         setadsdata(adss)
         setsearchedselectedads(selectedadss2)
