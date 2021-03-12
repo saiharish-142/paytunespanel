@@ -8,6 +8,7 @@ const publisherapps = mongoose.model('publisherapps')
 
 router.get('/reports',adminauth,(req,res)=>{
     campaignwisereports.find()
+    .limit(300)
     .then(result=>{
         res.json(result)
     })
@@ -126,9 +127,14 @@ router.put('/reportbycamp',adminauth,(req,res)=>{
     campaignwisereports.find({campaignId:{$in : ids}})
     .sort('-date')
     .then(reports=>{
-        publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
+        var data = reports;
+        var data2 = [];
+        data = data.filter(x => x.appId!== undefined && x.appId!== "")
+        data2 = reports.filter(x=>!data.includes(x))
+        publisherapps.populate(data,{path:'appId'},function(err,populatedreports){
             if(err){
-                res.status(422).json(err)
+                console.log(err)
+                res.status(422).json({err,data,data2})
             }
             res.json(populatedreports)
         })
