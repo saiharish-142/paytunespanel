@@ -100,9 +100,9 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                         return (
                         <TableRow key ={i} hover role="checkbox" tabIndex={-1} key={row._id}>
                             <TableCell>{row[jsotitle]}</TableCell>
-                            {!client && <TableCell>{streamingads.startDate && dateformatchanger(streamingads.startDate[0].slice(0,10))}</TableCell>}
-                            {!client && <TableCell>{streamingads.endDate && dateformatchanger(streamingads.endDate[0].slice(0,10))}</TableCell>}
-                            {!client && <TableCell>{timefinder(streamingads.endDate[0],streamingads.startDate[0])} days</TableCell>}
+                            {!client && <TableCell>{streamingads.startDate && dateformatchanger(streamingads.startDate.slice(0,10))}</TableCell>}
+                            {!client && <TableCell>{streamingads.endDate && dateformatchanger(streamingads.endDate.slice(0,10))}</TableCell>}
+                            {!client && <TableCell>{streamingads.endDate && timefinder(streamingads.endDate,streamingads.startDate)} days</TableCell>}
                             {client? <TableCell>{Math.round(impression*row.impression/totalimpre)}</TableCell> : <TableCell>{row.impression}</TableCell>}
                             {/* {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>{
                                 ratio ? (Math.round(ratio*row.impression) + 1) : row.unique
@@ -120,7 +120,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                                 row.SovClickTracking ? parseInt(row.SovClickTracking) :0)*click/totalclick)*100/(impression*parseInt(row.impression)/totalimpre) *100)/100 :
                                 Math.round((row.CompanionClickTracking ? parseInt(row.CompanionClickTracking) :0 + 
                                 row.SovClickTracking ? parseInt(row.SovClickTracking) :0)*100/parseInt(row.impression) *100)/100 }%</TableCell>
-                            {!client &&  <TableCell>{timefinder(streamingads.endDate[0],Date.now())} days</TableCell>}
+                            {!client &&  <TableCell>{streamingads.endDate && timefinder(streamingads.endDate,Date.now())} days</TableCell>}
                             {!client &&  <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>}
                         </TableRow>
                         );}}else{

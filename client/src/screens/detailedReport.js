@@ -16,6 +16,7 @@ export default function DetailedTable() {
     const {state1,dispatch1} = useContext(IdContext)
     const { campname } = useParams()
     const [ids, setids] = useState({})
+    const [title, settitle] = useState('')
     const [datelogs, setdatelogs] = useState([])
     const [publishlogs, setpublishlogs] = useState([])
     const [datelogsd, setdatelogsd] = useState([])
@@ -23,42 +24,85 @@ export default function DetailedTable() {
     const [datelogsv, setdatelogsv] = useState([])
     const [publishlogsv, setpublishlogsv] = useState([])
     const [currentad, setcurrentad] = useState('')
+    // id pusher to redux
     useEffect(() => {
         if(campname){
             dispatch1({type:"ID",payload:campname})
         }
     }, [campname])
+    // for title of page
     useEffect(()=>{
         if(campname){
-            fetch('/streamingads/getids',{
-                method:'put',
+            fetch(`/bundles/${campname}`,{
+                method:'get',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    adtitle:campname
-                })
+                }
+            }).then(res=>res.json())
+            .then(result=>{
+                settitle(result.bundleadtitle)
+                // setloading(false)
+                setcurrentad(result)
+                // console.log(result[0])
+            })
+            .catch(err =>{
+                // setloading(false)
+                console.log(err)
+            })
+        }
+    },[campname])
+    // to get the ids
+    useEffect(()=>{
+        if(state1){
+            fetch(`/bundles/unp/${state1}`,{
+                method:'get',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                }
             }).then(res=>res.json())
             .then(idds=>{
-                // setids(idds)
+                // console.log(idds.ids)
+                var idsa = idds.ids
+                idsa = [...new Set(idsa)];
+                // console.log(idds.ids,idsa)
                 fetch('/ads/addetailt',{
                     method:'put',
                     headers:{
                         "Content-Type":"application/json",
                         "Authorization" :"Bearer "+localStorage.getItem("jwt")
                     },body:JSON.stringify({
-                        campaignId:idds
+                        campaignId:idsa
                     })
                 }).then(res=>res.json())
                 .then(result => {
-                    setids(result)
-                    console.log(result)
+                    if(result.spear.length === 0){
+                        setids(result)
+                        console.log(result)
+                    }else{
+                        fetch('/streamingads/reqtarget',{
+                            method:'put',
+                            headers:{
+                                "Content-Type":"application/json",
+                                "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                            },body:JSON.stringify({
+                                ids:result.spear
+                            })
+                        }).then(res=>res.json())
+                        .then(resuda=>{
+                            setids(result)
+                            console.log(result.audio)
+                            console.log(result)
+                            console.log(resuda)
+                        })
+                        .catch(err=>console.log(err))
+                    }
                 }).catch(err=>console.log(err))
-                // console.log(idds)
             })
             .catch(err=>console.log(err))
         }
-    },[campname])
+    },[state1])
     useEffect(()=>{
         if(ids && ids.audio){
             fetch('/report/reportbycamp',{
@@ -237,26 +281,6 @@ export default function DetailedTable() {
         })
     }
     useEffect(()=>{
-        if(campname){
-            fetch(`/streamingads/groupedsingle`,{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    adtitle:campname
-                })
-            }).then(res=>res.json())
-            .then(result=>{
-                setcurrentad(result[0])
-                // console.log(result[0])
-            })
-            .catch(err =>{
-                console.log(err)
-            })
-        }
-    },[campname])
-    useEffect(()=>{
         if(ids && ids.audio){
             fetch('/report/detreportcambydat',{
                 method:'put',
@@ -422,11 +446,131 @@ export default function DetailedTable() {
         return datechanged;
     }
     const updatedatetimeseter = (date) => {
+        // console.log(date)
         // var datee = new Date(date);
-        // var datee = datee.toString();
         var s = new Date(date).toLocaleString(undefined, {timeZone: 'Asia/Kolkata'});
-        // console.log(s,date)
-        return s.slice(3,5) + '/' + s.slice(0,2) + '/' + s.slice(6,10) + ' ' + s.slice(11,)
+        // var datee = datee.toString();
+        // console.log(s,date,s.split('/'))
+        s = s.split('/')
+        return s[1] + '/' + s[0] + '/' + s[2]
+    }
+    const datefinder = () => {
+        if(datelogs.length){
+            if(datelogs[0].updatedAt && datelogs[0].updatedAt.length){
+                return updatedatetimeseter(datelogs[0].updatedAt[0])
+            }else{
+                if(datelogsd.length){
+                    if(datelogsd[0].updatedAt && datelogsd[0].updatedAt.length){
+                        return updatedatetimeseter(datelogsd[0].updatedAt[0])
+                    }else{
+                        if(datelogsv.length){
+                            if(datelogsv[0].updatedAt && datelogsv[0].updatedAt.length){
+                                return updatedatetimeseter(datelogsv[0].updatedAt[0])
+                            }else{
+                                return 'not found'
+                            }
+                        }else{
+                            return 'not found';
+                        }
+                    }
+                }else{
+                    if(datelogsv.length){
+                        if(datelogsv[0].updatedAt && datelogsv[0].updatedAt.length){
+                            return updatedatetimeseter(datelogsv[0].updatedAt[0])
+                        }else{
+                            return 'not found'
+                        }
+                    }else{
+                        return 'not found';
+                    }
+                }
+            }
+        }else{
+            if(datelogsd.length){
+                if(datelogsd[0].updatedAt && datelogsd[0].updatedAt.length){
+                    return updatedatetimeseter(datelogsd[0].updatedAt[0])
+                }else{
+                    if(datelogsv.length){
+                        if(datelogsv[0].updatedAt && datelogsv[0].updatedAt.length){
+                            return updatedatetimeseter(datelogsv[0].updatedAt[0])
+                        }else{
+                            return 'not found'
+                        }
+                    }else{
+                        return 'not found';
+                    }
+                }
+            }else{
+                if(datelogsv.length){
+                    if(datelogsv[0].updatedAt && datelogsv[0].updatedAt.length){
+                        return updatedatetimeseter(datelogsv[0].updatedAt[0])
+                    }else{
+                        return 'not found'
+                    }
+                }else{
+                    return 'not found';
+                }
+            }
+        }
+    }
+    const datefinderpublisher = () => {
+        if(publishlogs.length){
+            if(publishlogs[0].createdOn){
+                return updatedatetimeseter(publishlogs[0].createdOn)
+            }else{
+                if(publishlogsd.length){
+                    if(publishlogsd[0].createdOn){
+                        return updatedatetimeseter(publishlogsd[0].createdOn)
+                    }else{
+                        if(publishlogsv.length){
+                            if(publishlogsv[0].createdOn){
+                                return updatedatetimeseter(publishlogsv[0].createdOn)
+                            }else{
+                                return 'not found'
+                            }
+                        }else{
+                            return 'not found';
+                        }
+                    }
+                }else{
+                    if(publishlogsv.length){
+                        if(publishlogsv[0].createdOn){
+                            return updatedatetimeseter(publishlogsv[0].createdOn)
+                        }else{
+                            return 'not found'
+                        }
+                    }else{
+                        return 'not found';
+                    }
+                }
+            }
+        }else{
+            if(publishlogsd.length){
+                if(publishlogsd[0].createdOn){
+                    return updatedatetimeseter(publishlogsd[0].createdOn)
+                }else{
+                    if(publishlogsv.length){
+                        if(publishlogsv[0].createdOn){
+                            return updatedatetimeseter(publishlogsv[0].createdOn)
+                        }else{
+                            return 'not found'
+                        }
+                    }else{
+                        return 'not found';
+                    }
+                }
+            }else{
+                if(publishlogsv.length){
+                    if(publishlogsv[0].createdOn){
+                        return updatedatetimeseter(publishlogsv[0].createdOn)
+                    }else{
+                        return 'not found'
+                    }
+                }else{
+                    return 'not found';
+                }
+            }
+        }
     }
     return (
         <div style={{paddingBottom:'50px'}}>
@@ -436,13 +580,13 @@ export default function DetailedTable() {
                 style={{margin:'10px 0 20px 0',textAlign:'left'}}
             >Back</button></div><br />
         <IconBreadcrumbs />
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{state1 && state1.toUpperCase()} Campaign</div>
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{title && title.toUpperCase()} Campaign</div>
         <div style={{margin:'0px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Detailed Report</div>
         <TableContainer style={{margin:'10px auto',width:'fit-content'}} component={Paper}>
         <Typography variant="h6" id="tableTitle" component="div">
             Summary
         </Typography>
-        <div>last updated at - {datelogs.length ? (datelogs[0].updatedAt ? updatedatetimeseter(datelogs[0].updatedAt[0]) : (datelogs[0].createdOn ? updatedatetimeseter(datelogs[0].createdOn):'not found')) : 'no reports found'}</div>
+        <div>last updated at - {datefinder()}</div>
             <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
         <Table style={{margin:'20px',width:'fit-content',border:'1px lightgray solid'}} aria-label="simple table">
             <TableHead>
@@ -535,7 +679,7 @@ export default function DetailedTable() {
         <Typography variant="h6" id="tableTitle" component="div">
             Publishers wise Report
         </Typography>
-        <div>last updated at - {publishlogs.length ? (publishlogs[0] && publishlogs[0].updatedAt ? updatedatetimeseter(publishlogs[0].updatedAt) : (publishlogs[0] && publishlogs[0].createdOn ? updatedatetimeseter(publishlogs[0].createdOn):'not found')) : 'no reports found'}</div>
+        <div>last updated at - {datefinderpublisher()}</div>
             <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
         <Table style={{margin:'20px',width:'fit-content',border:'1px lightgray solid'}} aria-label="simple table">
             <TableHead>

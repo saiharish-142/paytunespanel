@@ -30,9 +30,9 @@ function IconBreadcrumbs() {
               }else{
                 history.push('/clientSideCamp')
               }
-            }}>Manage Ads /</div> : ''}</div>
+            }}>clientSideCamp /</div> : ''}</div>
             <div>{hypmark === 'detailed' ? <div>Detailed report /</div> : ''}</div>
-            <div>{hypmark !== 'manageAds' && hypmark !== 'detailed' ? <div style={{cursor:'pointer'}} onClick={()=>{
+            <div>{hypmark !== 'manageAds' && hypmark !== 'detailed'&& hypmark !== 'clientSideCamp' ? <div style={{cursor:'pointer'}} onClick={()=>{
               if(clientName){
                 history.push(`/manageusers/${clientName}/${hypmark}`)
               }else{

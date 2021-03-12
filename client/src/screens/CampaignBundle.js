@@ -47,7 +47,7 @@ function CampaignBundle() {
     useEffect(()=>{
         if(bundlename){
             console.log(bundlename)
-            fetch(`/bundles/title/${bundlename}`,{
+            fetch(`/bundles/${bundlename}`,{
                 method:'get',
                 headers:{
                     "Content-Type":"application/json",

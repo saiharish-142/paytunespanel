@@ -19,19 +19,17 @@ function Report() {
     }, [campname])
     useEffect(()=>{
         if(campname){
-            fetch(`/streamingads/groupedsingle`,{
-                method:'put',
+            fetch(`/bundles/${campname}`,{
+                method:'get',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    adtitle:campname
-                })
+                }
             }).then(res=>res.json())
             .then(result=>{
-                settitle(result[0].AdTitle)
+                settitle(result.bundleadtitle)
                 setloading(false)
-                setsinglead(result[0])
+                setsinglead(result)
                 // console.log(result[0])
             })
             .catch(err =>{
@@ -74,7 +72,7 @@ function Report() {
             >Back</button></div>
             {/* <TitlRname title={title} settitle={settitle} submit={submitTitle} setloading={setloading} loading={loading} /> */}
             {/* <div style={{margin:'0 auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div> */}
-            <EnhancedTable singlead={singlead} />
+            <EnhancedTable title={title} singlead={singlead} />
         </div>
     )
 }

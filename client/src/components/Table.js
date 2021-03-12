@@ -18,7 +18,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function BasicTable({singlead}) {
+export default function BasicTable({singlead,title}) {
     const history = useHistory();
     const {state1} = useContext(IdContext)
     const [logs, setlogs] = useState([])
@@ -110,24 +110,25 @@ export default function BasicTable({singlead}) {
     // id finder useEffect
     useEffect(()=>{
         if(state1){
-            fetch('/streamingads/getids',{
-                method:'put',
+            fetch(`/bundles/unp/${state1}`,{
+                method:'get',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    adtitle:state1
-                })
+                }
             }).then(res=>res.json())
             .then(idds=>{
-                // console.log(idds)
+                // console.log(idds.ids)
+                var idsa = idds.ids
+                idsa = [...new Set(idsa)];
+                // console.log(idds.ids,idsa)
                 fetch('/ads/addetailt',{
                     method:'put',
                     headers:{
                         "Content-Type":"application/json",
                         "Authorization" :"Bearer "+localStorage.getItem("jwt")
                     },body:JSON.stringify({
-                        campaignId:idds
+                        campaignId:idsa
                     })
                 }).then(res=>res.json())
                 .then(result => {
@@ -146,6 +147,7 @@ export default function BasicTable({singlead}) {
                         }).then(res=>res.json())
                         .then(resuda=>{
                             setids(result)
+                            console.log(result.audio)
                             console.log(result)
                             console.log(resuda)
                         })
@@ -163,7 +165,7 @@ export default function BasicTable({singlead}) {
             allids = allids.concat(ids.audio)
             allids = allids.concat(ids.display)
             allids = allids.concat(ids.video)
-            console.log(allids)
+            // console.log(allids)
             fetch('/subrepo/spentallrepobyid2',{
                 method:'put',
                 headers:{
@@ -200,7 +202,7 @@ export default function BasicTable({singlead}) {
                 var thir1 = 0;
                 var compo1 = 0;
                 var logss = result;
-                // console.log(result)
+                console.log(result)
                 result.map((re)=>{
                     if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
                         re.nameads = 'Offline'
@@ -477,7 +479,15 @@ export default function BasicTable({singlead}) {
                     if(logsd[0].updatedAt && logsd[0].updatedAt.length){
                         return updatedatetimeseter(logsd[0].updatedAt[0])
                     }else{
-                        return 'not found'
+                        if(logsv.length){
+                            if(logsv[0].updatedAt && logsv[0].updatedAt.length){
+                                return updatedatetimeseter(logsv[0].updatedAt[0])
+                            }else{
+                                return 'not found'
+                            }
+                        }else{
+                            return 'not found';
+                        }
                     }
                 }else{
                     return 'not found';
@@ -537,7 +547,7 @@ export default function BasicTable({singlead}) {
     return (
         <>
         <IconBreadcrumbs />
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{state1 && state1.toUpperCase()} Campaign</div>
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{title && title.toUpperCase()} Campaign</div>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
@@ -566,26 +576,26 @@ export default function BasicTable({singlead}) {
                 <TableRow
                     style={{
                         background: colorfinder(
-                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
-                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            timefinder(singlead.endDate,singlead.startDate) ,
+                            timefinder(Date.now(),singlead.startDate) ,
                             ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ),
                             impre + impred + imprev
                         )
                     }}
                 >
-                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ) }</TableCell>
                     <TableCell>{impre + impred + imprev}</TableCell>
                     {/* <TableCell>{uniquesumcamp + uniquesumcampd + uniquesumcampv}</TableCell> */}
-                    <TableCell>{ids &&  Math.round(((ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ))/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{Math.round((impre + impred + imprev)/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{ids &&  Math.round(((ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ))/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
+                    <TableCell>{Math.round((impre + impred + imprev)/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{completespentfider('all')}</TableCell>
                     <TableCell>{click + clickd + clickv}</TableCell>
                     <TableCell>{Math.round((click + clickd + clickv)*100/(impre + impred + imprev) *100)/100}%</TableCell>
                     <TableCell>{ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 )- impre - impred - imprev}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
                     <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                 </TableRow>
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
@@ -618,26 +628,26 @@ export default function BasicTable({singlead}) {
                 <TableRow
                     style={{
                         background: colorfinder(
-                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
-                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            timefinder(singlead.endDate,singlead.startDate) ,
+                            timefinder(Date.now(),singlead.startDate) ,
                             ids && ids.audimpression,
                             impre
                         )
                     }}
                 >
-                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.audimpression}</TableCell>
                     <TableCell>{impre}</TableCell>
                     {/* <TableCell>{uniquesumcamp}</TableCell> */}
-                    <TableCell>{ids &&  Math.round(ids.audimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{ids &&  Math.round(ids.audimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
+                    <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{completespentfider('audio')}</TableCell>
                     <TableCell>{click}</TableCell>
                     <TableCell>{Math.round(click*100/impre *100)/100}%</TableCell>
                     <TableCell>{ids && ids.audimpression-impre}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
                     <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                 </TableRow>
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
@@ -670,26 +680,26 @@ export default function BasicTable({singlead}) {
                 <TableRow
                     style={{
                         background: colorfinder(
-                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
-                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            timefinder(singlead.endDate,singlead.startDate) ,
+                            timefinder(Date.now(),singlead.startDate) ,
                             ids && ids.disimpression,
                             impred
                         )
                     }}
                 >
-                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.disimpression}</TableCell>
                     <TableCell>{impred}</TableCell>
                     {/* <TableCell>{uniquesumcampd}</TableCell> */}
-                    <TableCell>{ids && Math.round(ids.disimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{ids && Math.round(ids.disimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
+                    <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{completespentfider('display')}</TableCell>
                     <TableCell>{clickd}</TableCell>
                     <TableCell>{Math.round(clickd*100/impred *100)/100}%</TableCell>
                     <TableCell>{ids && ids.disimpression-impred}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
                     <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                 </TableRow>
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
@@ -722,26 +732,26 @@ export default function BasicTable({singlead}) {
                 <TableRow
                     style={{
                         background: colorfinder(
-                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
-                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            timefinder(singlead.endDate,singlead.startDate) ,
+                            timefinder(Date.now(),singlead.startDate) ,
                             ids && ids.disimpression,
                             impred
                         )
                     }}
                 >
-                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.vidimpression}</TableCell>
                     <TableCell>{imprev}</TableCell>
                     {/* <TableCell>{uniquesumcampv}</TableCell> */}
-                    <TableCell>{ids && Math.round(ids.vidimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{ids && Math.round(ids.vidimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
+                    <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{completespentfider('display')}</TableCell>
                     <TableCell>{clickv}</TableCell>
                     <TableCell>{Math.round(clickv*100/imprev *100)/100}%</TableCell>
                     <TableCell>{ids && ids.disimpression-imprev}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
                     <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                 </TableRow>
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}

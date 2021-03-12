@@ -18,7 +18,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function BasicTable({singlead}) {
+export default function BasicTable({singlead,title}) {
     const history = useHistory();
     const {state1} = useContext(IdContext)
     const [logs, setlogs] = useState([])
@@ -124,29 +124,49 @@ export default function BasicTable({singlead}) {
     // },[ids,imprev])
     useEffect(()=>{
         if(state1){
-            fetch('/streamingads/getids',{
-                method:'put',
+            fetch(`/bundles/unp/${state1}`,{
+                method:'get',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    adtitle:state1
-                })
+                }
             }).then(res=>res.json())
             .then(idds=>{
-                // console.log(idds)
+                // console.log(idds.ids)
+                var idsa = idds.ids
+                idsa = [...new Set(idsa)];
+                // console.log(idds.ids,idsa)
                 fetch('/ads/addetailt',{
                     method:'put',
                     headers:{
                         "Content-Type":"application/json",
                         "Authorization" :"Bearer "+localStorage.getItem("jwt")
                     },body:JSON.stringify({
-                        campaignId:idds
+                        campaignId:idsa
                     })
                 }).then(res=>res.json())
                 .then(result => {
-                    setids(result)
-                    console.log(result)
+                    if(result.spear.length === 0){
+                        setids(result)
+                        console.log(result)
+                    }else{
+                        fetch('/streamingads/reqtarget',{
+                            method:'put',
+                            headers:{
+                                "Content-Type":"application/json",
+                                "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                            },body:JSON.stringify({
+                                ids:result.spear
+                            })
+                        }).then(res=>res.json())
+                        .then(resuda=>{
+                            setids(result)
+                            console.log(result.audio)
+                            console.log(result)
+                            console.log(resuda)
+                        })
+                        .catch(err=>console.log(err))
+                    }
                 }).catch(err=>console.log(err))
             })
             .catch(err=>console.log(err))
@@ -453,7 +473,7 @@ export default function BasicTable({singlead}) {
     return (
         <>
         <IconBreadcrumbs />
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{state1 && state1.toUpperCase()} Campaign</div>
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{title && title.toUpperCase()} Campaign</div>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
@@ -476,16 +496,16 @@ export default function BasicTable({singlead}) {
                 <TableRow 
                     style={{
                         background: colorfinder(
-                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
-                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            timefinder(singlead.endDate,singlead.startDate) ,
+                            timefinder(Date.now(),singlead.startDate) ,
                             ids && ids.audimpression,
                             impre
                         )
                     }}
                 >
-                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.audimpression}</TableCell>
                     <TableCell>{impre}</TableCell>
                     <TableCell>{ratio && Math.round(ratio*impre) + 1}</TableCell>
@@ -516,16 +536,16 @@ export default function BasicTable({singlead}) {
                 <TableRow 
                     style={{
                         background: colorfinder(
-                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
-                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            timefinder(singlead.endDate,singlead.startDate) ,
+                            timefinder(Date.now(),singlead.startDate) ,
                             ids && ids.disimpression,
                             impred
                         )
                     }}
                 >
-                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.disimpression}</TableCell>
                     <TableCell>{impred}</TableCell>
                     <TableCell>{Math.round(ratiod*impred) + 1}</TableCell>
@@ -556,16 +576,16 @@ export default function BasicTable({singlead}) {
                 <TableRow 
                     style={{
                         background: colorfinder(
-                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
-                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            timefinder(singlead.endDate,singlead.startDate) ,
+                            timefinder(Date.now(),singlead.startDate) ,
                             ids && ids.disimpression,
                             impred
                         )
                     }}
                 >
-                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.disimpression}</TableCell>
                     <TableCell>{imprev}</TableCell>
                     <TableCell>{Math.round(ratiov*imprev) + 1}</TableCell>

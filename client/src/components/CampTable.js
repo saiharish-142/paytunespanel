@@ -58,8 +58,8 @@ export default function StickyHeadTable({streamingads,settingcamp,clientview}) {
         var datareq = streamingads;
         if(cmd === 'start'){
             datareq = datareq.sort(function(a,b){
-                var d1 = new Date(a.startDate[0])
-                var d2 = new Date(b.startDate[0])
+                var d1 = new Date(a.startDate)
+                var d2 = new Date(b.startDate)
                 return d2 - d1;
             })
             // console.log(datareq)
@@ -69,8 +69,8 @@ export default function StickyHeadTable({streamingads,settingcamp,clientview}) {
         }
         if(cmd === 'end'){
             datareq = datareq.sort(function(a,b){
-                var d1 = new Date(a.endDate[0])
-                var d2 = new Date(b.endDate[0])
+                var d1 = new Date(a.endDate)
+                var d2 = new Date(b.endDate)
                 return d2 - d1;
             })
             setsa('end')
@@ -159,14 +159,14 @@ export default function StickyHeadTable({streamingads,settingcamp,clientview}) {
         }
         if(cmd=== 'remain'){
             datareq = datareq.sort(function(a,b){
-                var d1 = new Date(a.endDate[0])
+                var d1 = new Date(a.endDate)
                 var d2 = new Date(Date.now())
                 // console.log(d1,d2)
                 var aa = d1.getTime() - d2.getTime();
                 if(d1<d2){
                     aa = null;
                 }
-                var db1 = new Date(b.endDate[0])
+                var db1 = new Date(b.endDate)
                 var db2 = new Date(Date.now())
                 // console.log(d1,d2)
                 var ba = db1.getTime() - db2.getTime();
@@ -183,14 +183,14 @@ export default function StickyHeadTable({streamingads,settingcamp,clientview}) {
         }
         if(cmd=== 'revremain'){
             datareq = datareq.sort(function(a,b){
-                var d1 = new Date(a.endDate[0])
+                var d1 = new Date(a.endDate)
                 var d2 = new Date(Date.now())
                 // console.log(d1,d2)
                 var aa = d1.getTime() - d2.getTime();
                 if(d1<d2){
                     aa = null;
                 }
-                var db1 = new Date(b.endDate[0])
+                var db1 = new Date(b.endDate)
                 var db2 = new Date(Date.now())
                 // console.log(d1,d2)
                 var ba = db1.getTime() - db2.getTime();
@@ -234,6 +234,7 @@ export default function StickyHeadTable({streamingads,settingcamp,clientview}) {
                         <TableCell align='center' onClick={()=>campaignssorter('start')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Start Date {sa==='start' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
                         <TableCell align='center' onClick={()=>campaignssorter('end')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>End Date {sa==='end' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
                         <TableCell align='center' onDoubleClick={()=>campaignssorter('revremain')} onClick={()=>campaignssorter('remain')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Remaining Days {sa==='remain' &&  <ArrowUpwardRoundedIcon fontSize="small" />}{sa==='revremain' &&  <ArrowDownwardRoundedIcon fontSize="small" />}</TableCell>
+                        {!clientview && <TableCell></TableCell>}
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
@@ -244,17 +245,17 @@ export default function StickyHeadTable({streamingads,settingcamp,clientview}) {
                         if(typeof row !== 'undefined'){
                         return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
-                            <TableCell align='left'>{row.Adtitle && row.Adtitle}</TableCell>
+                            <TableCell align='left'>{row.bundleadtitle && row.bundleadtitle}</TableCell>
                             <TableCell align='left'>{row.Advertiser && row.Advertiser}</TableCell>
                             <TableCell align='center'>{row.Pricing && row.Pricing}</TableCell>
                             <TableCell align='center'>{row.ro && row.ro}</TableCell>
                             <TableCell align='center'>{row.PricingModel && row.PricingModel}</TableCell>
                             <TableCell align='center'>{row.Category && row.Category}</TableCell>
                             <TableCell align='center'>{row.createdOn ? dateformatchanger(row.createdOn.substring(0,10)) : dateformatchanger(row.createdAt.substring(0,10))}</TableCell>
-                            <TableCell align='center'>{row.startDate && dateformatchanger(row.startDate[0])}</TableCell>
-                            <TableCell align='center'>{row.endDate && dateformatchanger(row.endDate[0])}</TableCell>
-                            <TableCell align='center'>{row.endDate&& timefinder(row.endDate[0])} days</TableCell>
-                            {!clientview &&<TableCell align='center' className='mangeads__report'><EditIcon /></TableCell>}
+                            <TableCell align='center'>{row.startDate && dateformatchanger(row.startDate)}</TableCell>
+                            <TableCell align='center'>{row.endDate && dateformatchanger(row.endDate)}</TableCell>
+                            <TableCell align='center'>{row.endDate&& timefinder(row.endDate)} days</TableCell>
+                            {!clientview &&<TableCell align='center' className='mangeads__report' onClick={()=>history.push(`/bundleManage/${row._id}/edit`)}><EditIcon /></TableCell>}
                             <TableCell align='center' className='mangeads__report' onClick={()=>{
                                 if(clientview){
                                     history.push(`/clientSideCamp/${row._id}`)
