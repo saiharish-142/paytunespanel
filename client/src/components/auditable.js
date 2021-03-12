@@ -84,7 +84,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                         {!client &&  <TableCell>Campaign End Date</TableCell>}
                         {!client &&  <TableCell>Total Days of Campaign</TableCell>}
                         <TableCell>Total Impressions Delivered till date</TableCell>
-                        {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>Unique Users</TableCell>}
+                        {/* {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>Unique Users</TableCell>} */}
                         <TableCell>Total Clicks Delivered till date</TableCell>
                         <TableCell>CTR</TableCell>
                         {!client &&  <TableCell>Balance Days</TableCell>}
@@ -104,9 +104,9 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                             {!client && <TableCell>{streamingads.endDate && dateformatchanger(streamingads.endDate[0].slice(0,10))}</TableCell>}
                             {!client && <TableCell>{timefinder(streamingads.endDate[0],streamingads.startDate[0])} days</TableCell>}
                             {client? <TableCell>{Math.round(impression*row.impression/totalimpre)}</TableCell> : <TableCell>{row.impression}</TableCell>}
-                            {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>{
+                            {/* {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>{
                                 ratio ? (Math.round(ratio*row.impression) + 1) : row.unique
-                            }</TableCell>}
+                            }</TableCell>} */}
                             <TableCell>{
                                 click ?
                                 Math.round(click*(row.CompanionClickTracking ? parseInt(row.CompanionClickTracking) :0 + 

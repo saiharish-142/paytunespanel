@@ -34,9 +34,9 @@ export default function BasicTable({singlead}) {
     // const [tqd, settqd] = useState(0)
     // const [completed, setcompleted] = useState(0)
     const [click, setclick] = useState(0)
-    const [uniquesumcamp, setuniquesumcamp] = useState(0)
-    const [uniquesumcampd, setuniquesumcampd] = useState(0)
-    const [uniquesumcampv, setuniquesumcampv] = useState(0)
+    // const [uniquesumcamp, setuniquesumcamp] = useState(0)
+    // const [uniquesumcampd, setuniquesumcampd] = useState(0)
+    // const [uniquesumcampv, setuniquesumcampv] = useState(0)
     const [logsd, setlogsd] = useState([])
     const [logsv, setlogsv] = useState([])
     // const [idsd, setidsd] = useState([])
@@ -51,62 +51,62 @@ export default function BasicTable({singlead}) {
     //     return v
     // }
     // unique users finder audio
-    useEffect(()=>{
-        if(ids){
-            fetch('/subrepo/uniqueusersbycampids',{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    campaignId:ids.audio
-                })
-            }).then(res=>res.json())
-            .then(result=>{
-                console.log(result[0])
-                setuniquesumcamp(result[0].unique)
-            })
-            .catch(err=>console.log(err))
-        }
-    },[ids])
+    // useEffect(()=>{
+    //     if(ids){
+    //         fetch('/subrepo/uniqueusersbycampids',{
+    //             method:'put',
+    //             headers:{
+    //                 "Content-Type":"application/json",
+    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
+    //             },body:JSON.stringify({
+    //                 campaignId:ids.audio
+    //             })
+    //         }).then(res=>res.json())
+    //         .then(result=>{
+    //             console.log(result[0])
+    //             setuniquesumcamp(result[0].unique)
+    //         })
+    //         .catch(err=>console.log(err))
+    //     }
+    // },[ids])
     // unique users finder display
-    useEffect(()=>{
-        if(ids){
-            fetch('/subrepo/uniqueusersbycampids',{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    campaignId:ids.display
-                })
-            }).then(res=>res.json())
-            .then(result=>{
-                console.log(result[0])
-                setuniquesumcampd(result[0].unique)
-            })
-            .catch(err=>console.log(err))
-        }
-    },[ids])
-    // unique users finder video
-    useEffect(()=>{
-        if(ids){
-            fetch('/subrepo/uniqueusersbycampids',{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    campaignId:ids.video
-                })
-            }).then(res=>res.json())
-            .then(result=>{
-                console.log(result[0])
-                setuniquesumcampv(result[0].unique)
-            })
-            .catch(err=>console.log(err))
-        }
-    },[ids])
+    // useEffect(()=>{
+    //     if(ids){
+    //         fetch('/subrepo/uniqueusersbycampids',{
+    //             method:'put',
+    //             headers:{
+    //                 "Content-Type":"application/json",
+    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
+    //             },body:JSON.stringify({
+    //                 campaignId:ids.display
+    //             })
+    //         }).then(res=>res.json())
+    //         .then(result=>{
+    //             console.log(result[0])
+    //             setuniquesumcampd(result[0].unique)
+    //         })
+    //         .catch(err=>console.log(err))
+    //     }
+    // },[ids])
+    // // unique users finder video
+    // useEffect(()=>{
+    //     if(ids){
+    //         fetch('/subrepo/uniqueusersbycampids',{
+    //             method:'put',
+    //             headers:{
+    //                 "Content-Type":"application/json",
+    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
+    //             },body:JSON.stringify({
+    //                 campaignId:ids.video
+    //             })
+    //         }).then(res=>res.json())
+    //         .then(result=>{
+    //             console.log(result[0])
+    //             setuniquesumcampv(result[0].unique)
+    //         })
+    //         .catch(err=>console.log(err))
+    //     }
+    // },[ids])
     // id finder useEffect
     useEffect(()=>{
         if(state1){
@@ -550,7 +550,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Unique Users</TableCell>
+                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total spent</TableCell>
@@ -578,7 +578,7 @@ export default function BasicTable({singlead}) {
                     <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
                     <TableCell>{ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ) }</TableCell>
                     <TableCell>{impre + impred + imprev}</TableCell>
-                    <TableCell>{uniquesumcamp + uniquesumcampd + uniquesumcampv}</TableCell>
+                    {/* <TableCell>{uniquesumcamp + uniquesumcampd + uniquesumcampv}</TableCell> */}
                     <TableCell>{ids &&  Math.round(((ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ))/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round((impre + impred + imprev)/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{completespentfider('all')}</TableCell>
@@ -602,7 +602,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Unique Users</TableCell>
+                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total spent</TableCell>
@@ -630,7 +630,7 @@ export default function BasicTable({singlead}) {
                     <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
                     <TableCell>{ids && ids.audimpression}</TableCell>
                     <TableCell>{impre}</TableCell>
-                    <TableCell>{uniquesumcamp}</TableCell>
+                    {/* <TableCell>{uniquesumcamp}</TableCell> */}
                     <TableCell>{ids &&  Math.round(ids.audimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{completespentfider('audio')}</TableCell>
@@ -654,7 +654,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Unique Users</TableCell>
+                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total spent</TableCell>
@@ -682,7 +682,7 @@ export default function BasicTable({singlead}) {
                     <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
                     <TableCell>{ids && ids.disimpression}</TableCell>
                     <TableCell>{impred}</TableCell>
-                    <TableCell>{uniquesumcampd}</TableCell>
+                    {/* <TableCell>{uniquesumcampd}</TableCell> */}
                     <TableCell>{ids && Math.round(ids.disimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{completespentfider('display')}</TableCell>
@@ -706,7 +706,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Unique Users</TableCell>
+                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total spent</TableCell>
@@ -734,7 +734,7 @@ export default function BasicTable({singlead}) {
                     <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
                     <TableCell>{ids && ids.vidimpression}</TableCell>
                     <TableCell>{imprev}</TableCell>
-                    <TableCell>{uniquesumcampv}</TableCell>
+                    {/* <TableCell>{uniquesumcampv}</TableCell> */}
                     <TableCell>{ids && Math.round(ids.vidimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{completespentfider('display')}</TableCell>
@@ -761,7 +761,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Unique Users</TableCell>
+                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total spent</TableCell>
@@ -794,7 +794,7 @@ export default function BasicTable({singlead}) {
                         <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
-                        <TableCell>{spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
+                        {/* <TableCell>{spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell> */}
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
@@ -817,7 +817,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Unique Users</TableCell>
+                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total spent</TableCell>
@@ -847,7 +847,7 @@ export default function BasicTable({singlead}) {
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && log.campaignId.TargetImpressions}</TableCell>
                         <TableCell>{log.impressions}</TableCell>
-                        <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell>
+                        {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
@@ -873,7 +873,7 @@ export default function BasicTable({singlead}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Unique Users</TableCell>
+                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total spent</TableCell>
@@ -903,7 +903,7 @@ export default function BasicTable({singlead}) {
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && log.campaignId.TargetImpressions}</TableCell>
                         <TableCell>{log.impressions}</TableCell>
-                        <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell>
+                        {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
@@ -984,7 +984,7 @@ export default function BasicTable({singlead}) {
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.audio} url='citylanguagebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.display} url='citylanguagebycampids' />
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.video} url='citylanguagebycampids' />
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Type Wise Summary Report</div>
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Make Model Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.audio} url='phoneModelbycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.display} url='phoneModelbycampids' />
@@ -999,11 +999,11 @@ export default function BasicTable({singlead}) {
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} url='zipbycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.display} url='zipbycampids' />
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.video} url='zipbycampids' />
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Model Wise Summary Report</div>
+        {/* <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Model Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.audio} url='phonemakebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.display} url='phonemakebycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.video} url='phonemakebycampids' />
+        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.video} url='phonemakebycampids' /> */}
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} url='pptypebycampids' />

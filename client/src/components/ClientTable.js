@@ -50,78 +50,78 @@ export default function BasicTable({singlead}) {
     //     return v
     // }
     // unique users finder audio
-    useEffect(()=>{
-        if(ids){
-            fetch('/subrepo/uniqueusersbycampids',{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    campaignId:ids.audio
-                })
-            }).then(res=>res.json())
-            .then(result=>{
-                // console.log(result[0])
-                setuniquesumcamp(result[0].unique)
-                if(result[0].unique/impre < 0.5 || result[0].unique/impre > 1 ){
-                    setratio(0.75)
-                }else{
-                    setratio(result[0].unique/impre)
-                }
-                // console.log(impre/result[0].unique)
-            })
-            .catch(err=>console.log(err))
-        }
-    },[ids,impre])
+    // useEffect(()=>{
+    //     if(ids){
+    //         fetch('/subrepo/uniqueusersbycampids',{
+    //             method:'put',
+    //             headers:{
+    //                 "Content-Type":"application/json",
+    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
+    //             },body:JSON.stringify({
+    //                 campaignId:ids.audio
+    //             })
+    //         }).then(res=>res.json())
+    //         .then(result=>{
+    //             // console.log(result[0])
+    //             setuniquesumcamp(result[0].unique)
+    //             if(result[0].unique/impre < 0.5 || result[0].unique/impre > 1 ){
+    //                 setratio(0.75)
+    //             }else{
+    //                 setratio(result[0].unique/impre)
+    //             }
+    //             // console.log(impre/result[0].unique)
+    //         })
+    //         .catch(err=>console.log(err))
+    //     }
+    // },[ids,impre])
     // unique users finder display
-    useEffect(()=>{
-        if(ids){
-            fetch('/subrepo/uniqueusersbycampids',{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    campaignId:ids.display
-                })
-            }).then(res=>res.json())
-            .then(result=>{
-                // console.log(result[0])
-                setuniquesumcampd(result[0].unique)
-                if(result[0].unique/impred < 0.5 || result[0].unique/impred > 1 ){
-                    setratiod(0.75)
-                }else{
-                    setratiod(result[0].unique/impre)
-                }
-            })
-            .catch(err=>console.log(err))
-        }
-    },[ids,impred])
+    // useEffect(()=>{
+    //     if(ids){
+    //         fetch('/subrepo/uniqueusersbycampids',{
+    //             method:'put',
+    //             headers:{
+    //                 "Content-Type":"application/json",
+    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
+    //             },body:JSON.stringify({
+    //                 campaignId:ids.display
+    //             })
+    //         }).then(res=>res.json())
+    //         .then(result=>{
+    //             // console.log(result[0])
+    //             setuniquesumcampd(result[0].unique)
+    //             if(result[0].unique/impred < 0.5 || result[0].unique/impred > 1 ){
+    //                 setratiod(0.75)
+    //             }else{
+    //                 setratiod(result[0].unique/impre)
+    //             }
+    //         })
+    //         .catch(err=>console.log(err))
+    //     }
+    // },[ids,impred])
     // unique users finder video
-    useEffect(()=>{
-        if(ids){
-            fetch('/subrepo/uniqueusersbycampids',{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    campaignId:ids.video
-                })
-            }).then(res=>res.json())
-            .then(result=>{
-                // console.log(result[0])
-                setuniquesumcampv(result[0].unique)
-                if(result[0].unique/impred < 0.5 || result[0].unique/impred > 1 ){
-                    setratiov(0.75)
-                }else{
-                    setratiov(result[0].unique/impre)
-                }
-            })
-            .catch(err=>console.log(err))
-        }
-    },[ids,imprev])
+    // useEffect(()=>{
+    //     if(ids){
+    //         fetch('/subrepo/uniqueusersbycampids',{
+    //             method:'put',
+    //             headers:{
+    //                 "Content-Type":"application/json",
+    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
+    //             },body:JSON.stringify({
+    //                 campaignId:ids.video
+    //             })
+    //         }).then(res=>res.json())
+    //         .then(result=>{
+    //             // console.log(result[0])
+    //             setuniquesumcampv(result[0].unique)
+    //             if(result[0].unique/impred < 0.5 || result[0].unique/impred > 1 ){
+    //                 setratiov(0.75)
+    //             }else{
+    //                 setratiov(result[0].unique/impre)
+    //             }
+    //         })
+    //         .catch(err=>console.log(err))
+    //     }
+    // },[ids,imprev])
     useEffect(()=>{
         if(state1){
             fetch('/streamingads/getids',{
@@ -423,11 +423,11 @@ export default function BasicTable({singlead}) {
         s = s.split('/')
         return s[1] + '/' + s[0] + '/' + s[2]
     }
-    const uniquetopfinder = (dataunique) => {
-        var gotdata = dataunique;
-        gotdata = gotdata.sort(function(a,b){return b-a;})
-        return gotdata[0];
-    }
+    // const uniquetopfinder = (dataunique) => {
+    //     var gotdata = dataunique;
+    //     gotdata = gotdata.sort(function(a,b){return b-a;})
+    //     return gotdata[0];
+    // }
     // console.log(Date('2020-11-28T18:30:00.541Z').toString())
     // console.log(Date('2020-11-28T18:30:00.541Z'))
     // console.log(Date('2020-11-28T18:30:00.541Z'))
@@ -614,17 +614,17 @@ export default function BasicTable({singlead}) {
         </TableContainer>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} click={click} impression={impre} ratio={ratio} client={true} url='platformTypebycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} click={clickd} impression={impred} ratio={ratiod} client={true} url='platformTypebycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.video} click={clickv} impression={imprev} ratio={ratiov} client={true} url='platformTypebycampids' />
+        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} click={click} impression={impre} client={true} url='platformTypebycampids' />
+        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} click={clickd} impression={impred} client={true} url='platformTypebycampids' />
+        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.video} click={clickv} impression={imprev} client={true} url='platformTypebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' ratio={ratio} regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} click={click} impression={impre} ratio={ratio} client={true} url='zipbycampids' />
+        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} click={click} impression={impre} client={true} url='zipbycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} click={click} impression={impre} ratio={ratio} client={true} url='pptypebycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} click={clickd} impression={impred} ratio={ratiod} client={true} url='pptypebycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.video} click={clickv} impression={imprev} ratio={ratiov} client={true} url='pptypebycampids' />
+        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} click={click} impression={impre} client={true} url='pptypebycampids' />
+        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} click={clickd} impression={impred} client={true} url='pptypebycampids' />
+        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.video} click={clickv} impression={imprev} client={true} url='pptypebycampids' />
         </>
     );
 }
