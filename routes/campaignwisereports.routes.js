@@ -20,7 +20,9 @@ router.put('/reportbydate',adminauth,(req,res)=>{
     campaignwisereports.find({date:date})
     .sort('-date')
     .then(reports=>{
-        publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
+        var data = reports;
+        data = data.filter(x => x.appId!== undefined && x.appId!== "")
+        publisherapps.populate(data,{path:'appId'},function(err,populatedreports){
             if(err){
                 res.status(422).json(err)
             }
@@ -36,7 +38,9 @@ router.put('/reportbydatereq',adminauth,(req,res)=>{
     campaignwisereports.find({date:date, campaignId:id, appId:appId})
     .sort('-date')
     .then(reports=>{
-        publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
+        var data = reports;
+        data = data.filter(x => x.appId!== undefined && x.appId!== "")
+        publisherapps.populate(data,{path:'appId'},function(err,populatedreports){
             if(err){
                 res.status(422).json(err)
             }
@@ -90,7 +94,9 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
         }}
     ])
     .then(reports=>{
-        publisherapps.populate(reports,{path:'Publisher'},function(err,populatedreports){
+        var data = reports;
+        data = data.filter(x => x.appId!== undefined && x.appId!== "")
+        publisherapps.populate(data,{path:'Publisher'},function(err,populatedreports){
             if(err){
                 return res.status(422).json(err)
             }
@@ -148,7 +154,10 @@ router.put('/detreportbycamp',adminauth,(req,res)=>{
     campaignwisereports.findOneAndUpdate({campaignId:id,date:date})
     .sort('-date')
     .then(reports=>{
-        publisherapps.populate(reports,{path:'appId'},function(err,populatedreports){
+        var data = reports;
+        var data2 = [];
+        data = data.filter(x => x.appId!== undefined && x.appId!== "")
+        publisherapps.populate(data,{path:'appId'},function(err,populatedreports){
             if(err){
                 res.status(422).json(err)
             }
