@@ -21,7 +21,7 @@ router.put('/reportbydate',adminauth,(req,res)=>{
     .sort('-date')
     .then(reports=>{
         var data = reports;
-        data = data.filter(x => x.appId!== undefined && x.appId!== "")
+        data = data.filter(x => x.appId!== "")
         publisherapps.populate(data,{path:'appId'},function(err,populatedreports){
             if(err){
                 res.status(422).json(err)
@@ -39,7 +39,7 @@ router.put('/reportbydatereq',adminauth,(req,res)=>{
     .sort('-date')
     .then(reports=>{
         var data = reports;
-        data = data.filter(x => x.appId!== undefined && x.appId!== "")
+        data = data.filter(x => x.appId!== "")
         publisherapps.populate(data,{path:'appId'},function(err,populatedreports){
             if(err){
                 res.status(422).json(err)
@@ -95,7 +95,7 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
     ])
     .then(reports=>{
         var data = reports;
-        data = data.filter(x => x.appId!== undefined && x.appId!== "")
+        data = data.filter(x => x.appId!== "")
         publisherapps.populate(data,{path:'Publisher'},function(err,populatedreports){
             if(err){
                 return res.status(422).json(err)
@@ -135,7 +135,7 @@ router.put('/reportbycamp',adminauth,(req,res)=>{
     .then(reports=>{
         var data = reports;
         var data2 = [];
-        data = data.filter(x => x.appId!== undefined && x.appId!== "")
+        data = data.filter(x => x.appId!== "")
         data2 = reports.filter(x=>!data.includes(x))
         publisherapps.populate(data,{path:'appId'},function(err,populatedreports){
             if(err){
@@ -156,7 +156,7 @@ router.put('/detreportbycamp',adminauth,(req,res)=>{
     .then(reports=>{
         var data = reports;
         var data2 = [];
-        data = data.filter(x => x.appId!== undefined && x.appId!== "")
+        data = data.filter(x => x.appId!== "")
         publisherapps.populate(data,{path:'appId'},function(err,populatedreports){
             if(err){
                 res.status(422).json(err)
