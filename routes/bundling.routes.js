@@ -23,6 +23,14 @@ router.get('/:id',adminauth,(req,res)=>{
     }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
 })
 
+router.get('/unp/:id',adminauth,(req,res)=>{
+    const {id} = req.params
+    bindstreamingads.findById(id)
+    .then(result=>{
+        res.json(result)
+    }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
+})
+
 router.get('/title/:title',adminauth,(req,res)=>{
     const {title} = req.params
     bindstreamingads.findOne({bundleadtitle:title})
