@@ -81,7 +81,19 @@ router.put('/phonemakebycampids',adminauth,(req,res)=>{
     var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     phonemakereports.aggregate([
         {$match:{campaignId:{$in:ids}}},
-        {$group:{_id:{phoneMake:"$phoneMake",campaignId:"$campaignId"}, 
+        {$project:{phoneMake:{$toLower:'$phoneMake'},
+            campaignId:"$campaignId",
+            impression:"$impression", 
+            CompanionClickTracking:"$CompanionClickTracking", 
+            SovClickTracking:"$SovClickTracking", 
+            start:"$start", 
+            midpoint:"$midpoint",
+            thirdQuartile:"$thirdQuartile",
+            complete:"$complete",
+            createdOn:"$createdOn"
+        }},
+        {$group:{_id:{phoneMake:"$phoneMake"}, 
+            campaignId:{$push:"$campaignId"},
             impression:{$sum:"$impression"}, 
             CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
             SovClickTracking:{$sum:"$SovClickTracking"}, 
@@ -105,7 +117,8 @@ router.put('/zipbycampids',adminauth,(req,res)=>{
     var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     zipreports.aggregate([
         {$match:{campaignId:{$in:ids}}},
-        {$group:{_id:{zip:"$zip",campaignId:"$campaignId"}, 
+        {$group:{_id:{zip:"$zip"}, 
+            campaignId:{$push:"$campaignId"}, 
             impression:{$sum:"$impression"}, 
             CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
             SovClickTracking:{$sum:"$SovClickTracking"}, 
@@ -129,7 +142,19 @@ router.put('/regionbycampids',adminauth,(req,res)=>{
     var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     regionreports.aggregate([
         {$match:{campaignId:{$in:ids}}},
-        {$group:{_id:{region:"$region",campaignId:"$campaignId"}, 
+        {$project:{region:{$toLower:'$region'},
+            campaignId:"$campaignId",
+            impression:"$impression", 
+            CompanionClickTracking:"$CompanionClickTracking", 
+            SovClickTracking:"$SovClickTracking", 
+            start:"$start", 
+            midpoint:"$midpoint",
+            thirdQuartile:"$thirdQuartile",
+            complete:"$complete",
+            createdOn:"$createdOn"
+        }},
+        {$group:{_id:{region:"$region"}, 
+            campaignId:{$push:"$campaignId"},
             impression:{$sum:"$impression"}, 
             CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
             SovClickTracking:{$sum:"$SovClickTracking"}, 
@@ -153,7 +178,19 @@ router.put('/pptypebycampids',adminauth,(req,res)=>{
     var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     pptypereports.aggregate([
         {$match:{campaignId:{$in:ids}}},
-        {$group:{_id:{pptype:"$pptype",campaignId:"$campaignId"}, 
+        {$project:{pptype:{$toLower:'$pptype'},
+            campaignId:"$campaignId",
+            impression:"$impression", 
+            CompanionClickTracking:"$CompanionClickTracking", 
+            SovClickTracking:"$SovClickTracking", 
+            start:"$start", 
+            midpoint:"$midpoint",
+            thirdQuartile:"$thirdQuartile",
+            complete:"$complete",
+            createdOn:"$createdOn"
+        }},
+        {$group:{_id:{pptype:"$pptype"}, 
+            campaignId:{$push:"$campaignId"},
             impression:{$sum:"$impression"}, 
             CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
             SovClickTracking:{$sum:"$SovClickTracking"}, 
@@ -177,7 +214,19 @@ router.put('/platformTypebycampids',adminauth,(req,res)=>{
     var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     platformtypereports.aggregate([
         {$match:{campaignId:{$in:ids}}},
-        {$group:{_id:{platformType:"$platformType",campaignId:"$campaignId"}, 
+        {$project:{platformType:{$toLower:'$platformType'},
+            campaignId:"$campaignId",
+            impression:"$impression", 
+            CompanionClickTracking:"$CompanionClickTracking", 
+            SovClickTracking:"$SovClickTracking", 
+            start:"$start", 
+            midpoint:"$midpoint",
+            thirdQuartile:"$thirdQuartile",
+            complete:"$complete",
+            createdOn:"$createdOn"
+        }},
+        {$group:{_id:{platformType:"$platformType"}, 
+            campaignId:{$push:"$campaignId"},
             impression:{$sum:"$impression"}, 
             CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
             SovClickTracking:{$sum:"$SovClickTracking"}, 
@@ -237,7 +286,19 @@ router.put('/citylanguagebycampids',adminauth,(req,res)=>{
     var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     citylanguagereports.aggregate([
         {$match:{campaignId:{$in:ids}}},
-        {$group:{_id:{citylanguage:"$citylanguage",campaignId:"$campaignId"}, 
+        {$project:{citylanguage:{$toLower:'$citylanguage'},
+            campaignId:"$campaignId",
+            impression:"$impression", 
+            CompanionClickTracking:"$CompanionClickTracking", 
+            SovClickTracking:"$SovClickTracking", 
+            start:"$start", 
+            midpoint:"$midpoint",
+            thirdQuartile:"$thirdQuartile",
+            complete:"$complete",
+            createdOn:"$createdOn"
+        }},
+        {$group:{_id:{citylanguage:"$citylanguage"}, 
+            campaignId:{$push:"$campaignId"},
             impression:{$sum:"$impression"}, 
             CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
             SovClickTracking:{$sum:"$SovClickTracking"}, 
@@ -261,7 +322,19 @@ router.put('/phoneModelbycampids',adminauth,(req,res)=>{
     var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     phonemodelreports.aggregate([
         {$match:{campaignId:{$in:ids}}},
-        {$group:{_id:{phoneModel:"$phoneModel",campaignId:"$campaignId"}, 
+        {$project:{phoneModel:{$toLower:'$phoneModel'},
+            campaignId:"$campaignId",
+            impression:"$impression", 
+            CompanionClickTracking:"$CompanionClickTracking", 
+            SovClickTracking:"$SovClickTracking", 
+            start:"$start", 
+            midpoint:"$midpoint",
+            thirdQuartile:"$thirdQuartile",
+            complete:"$complete",
+            createdOn:"$createdOn"
+        }},
+        {$group:{_id:{phoneModel:"$phoneModel"}, 
+            campaignId:{$push:"$campaignId"},
             impression:{$sum:"$impression"}, 
             CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
             SovClickTracking:{$sum:"$SovClickTracking"}, 
