@@ -95,7 +95,7 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
     ])
     .then(reports=>{
         var data = reports;
-        data = data.filter(x => x.appId!== "")
+        data = data.filter(x => x.Publisher!== "")
         publisherapps.populate(data,{path:'Publisher'},function(err,populatedreports){
             if(err){
                 return res.status(422).json(err)
