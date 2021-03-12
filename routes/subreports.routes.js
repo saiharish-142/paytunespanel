@@ -201,8 +201,19 @@ router.put('/platformTypebycampidstest',adminauth,(req,res)=>{
     var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     platformtypereports.aggregate([
         {$match:{campaignId:{$in:ids}}},
-        {$project:{platformType:{$toLower:'$platformType'}}},
-        {$group:{_id:{platformType:"$platformType",campaignId:"$campaignId"}, 
+        {$project:{platformType:{$toLower:'$platformType'},
+            campaignId:"$campaignId",
+            impression:"$impression", 
+            CompanionClickTracking:"$CompanionClickTracking", 
+            SovClickTracking:"$SovClickTracking", 
+            start:"$start", 
+            midpoint:"$midpoint",
+            thirdQuartile:"$thirdQuartile",
+            complete:"$complete",
+            createdOn:"$createdOn"
+        }},
+        {$group:{_id:{platformType:"$platformType"}, 
+            campaignId:{$push:"$campaignId"},
             impression:{$sum:"$impression"}, 
             CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
             SovClickTracking:{$sum:"$SovClickTracking"}, 
