@@ -36,6 +36,11 @@ export default function TemporaryDrawer() {
                         <ListItemText>Manage Ad Campaigns</ListItemText>
                     </ListItem>
                     <hr />
+                    <ListItem className='dashmenu__item' onClick={()=>history.push('/manageBundles')}>
+                        <ListItemIcon><i className='material-icons'>keyboard_arrow_right</i></ListItemIcon>
+                        <ListItemText>Manage Ad Bundles</ListItemText>
+                    </ListItem>
+                    <hr />
                     <ListItem className='dashmenu__item'>
                         <ListItemIcon><i className='material-icons'>keyboard_arrow_right</i></ListItemIcon>
                         <ListItemText>Manage Audio Creations</ListItemText>

@@ -13,6 +13,7 @@ import ClientManage from './screens/ClientManage';
 import ClientReport from './screens/ClientReport';
 import ManageUser from './screens/ManageUser';
 import CampaignBundle from './screens/CampaignBundle';
+import DashboardBundle from './screens/manageBundles';
 // import Dashmenu from './components/dashmenu';
 
 export const UserContext = createContext()
@@ -53,6 +54,11 @@ function App() {
               path='/manageAds'
               exact
               render={()=>(state ? (state.usertype === 'admin' ? <Dashboard /> : <ClientManage />) : <Redirect to='/login' />)}
+              /> 
+            <Route
+              path='/manageBundles'
+              exact
+              render={()=>(state ? (state.usertype === 'admin' ? <DashboardBundle /> : <ClientManage />) : <Redirect to='/login' />)}
               /> 
             <Route
               path='/bundleManage/createbundle'
