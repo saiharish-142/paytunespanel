@@ -10,7 +10,7 @@ function Dashboard({clientview}) {
     const [streamingads, setStreamingads] = useState([])
     const [streamingadsSearched, setStreamingadsSearched] = useState([])
     useEffect(() => {
-        fetch('/bundles/',{
+        fetch('/streamingads/grouped',{
             method:'get',
             headers:{
                 "Content-Type":"application/json",
@@ -21,8 +21,8 @@ function Dashboard({clientview}) {
             console.log(result)
             var datareq = result;
             datareq = datareq.sort(function(a,b){
-                var d1 = new Date(a.endDate)
-                var d2 = new Date(b.endDate)
+                var d1 = new Date(a.endDate[0])
+                var d2 = new Date(b.endDate[0])
                 return d2 - d1;
             })
             setloading(false)

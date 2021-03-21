@@ -11,7 +11,7 @@ import { IdContext } from '../App';
 import { Typography } from '@material-ui/core';
 import IconBreadcrumbs from '../components/breadBreed';
 
-export default function DetailedTable() {
+export default function DetailedTableBundle() {
     const history = useHistory();
     const {state1,dispatch1} = useContext(IdContext)
     const { campname } = useParams()
@@ -30,33 +30,56 @@ export default function DetailedTable() {
             dispatch1({type:"ID",payload:campname})
         }
     }, [campname])
-    // to get the ids
+    // for title of page
     useEffect(()=>{
         if(campname){
-            fetch('/streamingads/getids',{
-                method:'put',
+            fetch(`/bundles/${campname}`,{
+                method:'get',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    adtitle:campname
-                })
+                }
+            }).then(res=>res.json())
+            .then(result=>{
+                settitle(result.bundleadtitle)
+                // setloading(false)
+                setcurrentad(result)
+                // console.log(result[0])
+            })
+            .catch(err =>{
+                // setloading(false)
+                console.log(err)
+            })
+        }
+    },[campname])
+    // to get the ids
+    useEffect(()=>{
+        if(state1){
+            fetch(`/bundles/unp/${state1}`,{
+                method:'get',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                }
             }).then(res=>res.json())
             .then(idds=>{
-                // setids(idds)
+                // console.log(idds.ids)
+                var idsa = idds.ids
+                idsa = [...new Set(idsa)];
+                // console.log(idds.ids,idsa)
                 fetch('/ads/addetailt',{
                     method:'put',
                     headers:{
                         "Content-Type":"application/json",
                         "Authorization" :"Bearer "+localStorage.getItem("jwt")
                     },body:JSON.stringify({
-                        campaignId:idds
+                        campaignId:idsa
                     })
                 }).then(res=>res.json())
                 .then(result => {
                     if(result.spear.length === 0){
-                    setids(result)
-                    console.log(result)
+                        setids(result)
+                        console.log(result)
                     }else{
                         fetch('/streamingads/reqtarget',{
                             method:'put',
@@ -79,7 +102,7 @@ export default function DetailedTable() {
             })
             .catch(err=>console.log(err))
         }
-    },[campname])
+    },[state1])
     useEffect(()=>{
         if(ids && ids.audio){
             fetch('/report/reportbycamp',{
@@ -92,7 +115,7 @@ export default function DetailedTable() {
                 })
             }).then(res=>res.json())
             .then(result=>{
-                // setpublishlogs(result)
+                setpublishlogs(result)
                 offlinereportspublisher(result)
                 // console.log(result)
             })
@@ -151,7 +174,7 @@ export default function DetailedTable() {
                 })
             }).then(res=>res.json())
             .then(result=>{
-                // setpublishlogsd(result)
+                setpublishlogsd(result)
                 offlinereportspublisherd(result)
                 // console.log(result)
             })
@@ -210,7 +233,7 @@ export default function DetailedTable() {
                 })
             }).then(res=>res.json())
             .then(result=>{
-                // setpublishlogsv(result)
+                setpublishlogsv(result)
                 offlinereportspublisherv(result)
                 // console.log(result)
             })
@@ -269,7 +292,7 @@ export default function DetailedTable() {
                 })
             }).then(res=>res.json())
             .then(result=>{
-                // setdatelogs(result)
+                setdatelogs(result)
                 offlinereportsdate(result)
                 // console.log(result)
             })
@@ -322,7 +345,7 @@ export default function DetailedTable() {
                 })
             }).then(res=>res.json())
             .then(result=>{
-                // setdatelogsd(result)
+                setdatelogsd(result)
                 offlinereportsdated(result)
                 // console.log(result)
             })
@@ -375,7 +398,7 @@ export default function DetailedTable() {
                 })
             }).then(res=>res.json())
             .then(result=>{
-                // setdatelogsv(result)
+                setdatelogsv(result)
                 offlinereportsdatev(result)
                 // console.log(result)
             })
@@ -552,12 +575,12 @@ export default function DetailedTable() {
     return (
         <div style={{paddingBottom:'50px'}}>
         <div style={{width:'10vw'}}><button 
-                onClick={()=>history.push(`/manageAds/${state1}`)} 
+                onClick={()=>history.push(`/manageBundles/${state1}`)} 
                 className='btn #424242 grey darken-3'
                 style={{margin:'10px 0 20px 0',textAlign:'left'}}
             >Back</button></div><br />
         <IconBreadcrumbs />
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{state1 && state1.toUpperCase()} Campaign</div>
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{title && title.toUpperCase()} Campaign</div>
         <div style={{margin:'0px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Detailed Report</div>
         <TableContainer style={{margin:'10px auto',width:'fit-content'}} component={Paper}>
         <Typography variant="h6" id="tableTitle" component="div">
@@ -578,7 +601,7 @@ export default function DetailedTable() {
             </TableRow>
             </TableHead>
             <TableBody>
-            {datelogs.length ? datelogs.map((row,i) => (
+            {datelogs.length && currentad ? datelogs.map((row,i) => (
                 <TableRow key={i}>
                     <TableCell component="th" scope="row">
                         {dateformatchanger(row.date)}
@@ -590,7 +613,7 @@ export default function DetailedTable() {
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>
-            )) : 'loading or No Data Found'} 
+            )) : 'loading.....'} 
             </TableBody>
         </Table>
             <div style={{margin:'5px',fontWeight:'bolder'}}>Display Type</div>
@@ -607,7 +630,7 @@ export default function DetailedTable() {
             </TableRow>
             </TableHead>
             <TableBody>
-            {datelogsd.length ? datelogsd.map((row,i) => (
+            {datelogsd.length && currentad ? datelogsd.map((row,i) => (
                 <TableRow key={i}>
                     <TableCell component="th" scope="row">
                         {dateformatchanger(row.date)}
@@ -619,7 +642,7 @@ export default function DetailedTable() {
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>
-            )) : 'loading or No Data Found'} 
+            )) : 'loading.....'} 
             </TableBody>
         </Table>
             <div style={{margin:'5px',fontWeight:'bolder'}}>Video Type</div>
@@ -636,7 +659,7 @@ export default function DetailedTable() {
             </TableRow>
             </TableHead>
             <TableBody>
-            {datelogsv.length ? datelogsv.map((row,i) => (
+            {datelogsv.length && currentad ? datelogsv.map((row,i) => (
                 <TableRow key={i}>
                     <TableCell component="th" scope="row">
                         {dateformatchanger(row.date)}
@@ -648,7 +671,7 @@ export default function DetailedTable() {
                     <TableCell>{row.impressions}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>
-            )) : 'loading or No Data Found'} 
+            )) : 'loading.....'} 
             </TableBody>
         </Table>
         </TableContainer>
@@ -673,7 +696,7 @@ export default function DetailedTable() {
             </TableRow>
             </TableHead>
             <TableBody>
-            {publishlogs.length ? publishlogs.map((row,i) => (
+            {publishlogs.length && currentad ? publishlogs.map((row,i) => (
                 row && <TableRow key={i}>
                     <TableCell component="th" scope="row">
                         {dateformatchanger(row.date)}
@@ -687,7 +710,7 @@ export default function DetailedTable() {
                     <TableCell>{row.impressions ? row.impressions : row.impression}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>
-            )) : 'loading or No Data Found'} 
+            )) : 'loading.....'} 
             </TableBody>
         </Table>
             <div style={{margin:'5px',fontWeight:'bolder'}}>Display Type</div>
@@ -706,7 +729,7 @@ export default function DetailedTable() {
             </TableRow>
             </TableHead>
             <TableBody>
-            {publishlogsd.length ? publishlogsd.map((row,i) => (
+            {publishlogsd.length && currentad ? publishlogsd.map((row,i) => (
                 row && <TableRow key={i}>
                     <TableCell component="th" scope="row">
                         {dateformatchanger(row.date)}
@@ -720,7 +743,7 @@ export default function DetailedTable() {
                     <TableCell>{row.impressions ? row.impressions : row.impression}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>
-            )) : 'loading or No Data Found'} 
+            )) : 'loading.....'} 
             </TableBody>
         </Table>
             <div style={{margin:'5px',fontWeight:'bolder'}}>Video Type</div>
@@ -739,7 +762,7 @@ export default function DetailedTable() {
             </TableRow>
             </TableHead>
             <TableBody>
-            {publishlogsv.length ? publishlogsv.map((row,i) => (
+            {publishlogsv.length && currentad ? publishlogsv.map((row,i) => (
                 row && <TableRow key={i}>
                     <TableCell component="th" scope="row">
                         {dateformatchanger(row.date)}
@@ -753,7 +776,7 @@ export default function DetailedTable() {
                     <TableCell>{row.impressions ? row.impressions : row.impression}</TableCell>
                     <TableCell></TableCell>
                 </TableRow>
-            )) : 'loading or No Data Found'} 
+            )) : 'loading.....'} 
             </TableBody>
         </Table>
         </TableContainer>

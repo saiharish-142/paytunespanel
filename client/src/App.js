@@ -14,6 +14,8 @@ import ClientReport from './screens/ClientReport';
 import ManageUser from './screens/ManageUser';
 import CampaignBundle from './screens/CampaignBundle';
 import DashboardBundle from './screens/manageBundles';
+import ReportBundle from './screens/Reportbundle';
+import DetailedTableBundle from './screens/detailedReportBundle';
 // import Dashmenu from './components/dashmenu';
 
 export const UserContext = createContext()
@@ -73,7 +75,7 @@ function App() {
             <Route
               path='/clientSideCamp'
               exact
-              render={()=>(state ? (state.usertype === 'admin' && <Dashboard clientview={true} />) : <Redirect to='/login' />)}
+              render={()=>(state ? (state.usertype === 'admin' && <DashboardBundle clientview={true} />) : <Redirect to='/login' />)}
               /> 
             <Route
               path='/manageusers'
@@ -86,6 +88,11 @@ function App() {
               render={()=>(state ? (state.usertype === 'admin' ? <Report /> : <ClientReport />) : <Redirect to='/login' />)}
               /> 
             <Route
+              path='/manageBundles/:campname'
+              exact
+              render={()=>(state ? (state.usertype === 'admin' ? <ReportBundle /> : <ClientReport />) : <Redirect to='/login' />)}
+              /> 
+            <Route
               path='/clientSideCamp/:campname'
               exact
               render={()=>(state ? (state.usertype === 'admin' && <ClientReport />) : <Redirect to='/login' />)}
@@ -94,6 +101,11 @@ function App() {
               path='/manageAds/:campname/detailed'
               render={()=>(state ? (state.usertype === 'admin' ? <DetailedTable /> : <Redirect to={`/manageAds`}/>) : <Redirect to='/login' />)}
               />
+            <Route
+              path='/manageBundles/:campname/detailed'
+              exact
+              render={()=>(state ? (state.usertype === 'admin' ? <DetailedTableBundle /> : <ClientReport />) : <Redirect to='/login' />)}
+              /> 
           </>}
         </BrowserRouter>
       </div>
@@ -102,38 +114,3 @@ function App() {
   );
 }
 export default App;
-// var fu = []
-// fetch('https://serverprioritypulse.herokuapp.com/user',{
-//   method:"get",
-//   headers:{
-//       "Content-Type":"application/json",
-//     }
-//     // body:JSON.stringify({
-//     //     query:value
-//     // })
-//   }).then(res => res.json())
-// .then(results => {
-//     console.log(results)
-//     setusers(results)
-// })
-// const [users, setusers] = useState([])
-// const [foundusers, setfoundusers] = useState([])
-
-
-
-// const se = (val) => {
-//   fu =[]
-//   for(var i=0;i<users.length;i++){
-//     if((users[i].phoneNumber+'').indexOf(val) > -1){
-//       // console.log(val)
-//       fu.push(users[i])
-//     }
-//   }
-//   console.log(fu)
-// }
-
-// <input type='text' value={value} onChange={(e)=>{
-//   setvalue(e.target.value)
-//   se(e.target.value)
-//   // console.log((users[0].phoneNumber+'').indexOf(e.target.value))
-// }} />

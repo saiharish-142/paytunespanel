@@ -1,6 +1,6 @@
 import React,{ useEffect,useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import DataTable from '../components/CampTable'
+import StickyHeadTablebundle from '../components/BundleTable'
 import SearchCampagin from '../components/SearchCampagin'
 
 function DashboardBundle({clientview}) {
@@ -56,7 +56,7 @@ function DashboardBundle({clientview}) {
     return (
         <div className='dashboard'>
             <SearchCampagin inval={searchval} setInval={onChange} />
-            {!loading ? <DataTable clientview={clientview} streamingads={streamingadsSearched} settingcamp={setStreamingadsSearched} />: <div> loading... </div>}
+            {!loading ? <StickyHeadTablebundle clientview={clientview} streamingads={streamingadsSearched} settingcamp={setStreamingadsSearched} />: <div> loading... </div>}
             {/* {streamingads.length ? "": <div> Loading... </div>} */}
         </div>
     )

@@ -10,7 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import { useHistory } from 'react-router-dom';
 import { IdContext } from '../App';
 import IconBreadcrumbs from './breadBreed';
-import Auditable from './auditable.js'
+import AuditableBundle from './auditablebundle'
 
 const useStyles = makeStyles({
     table: {
@@ -18,7 +18,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function BasicTable({singlead}) {
+export default function BasicTableBundle({singlead,title}) {
     const history = useHistory();
     const {state1} = useContext(IdContext)
     const [logs, setlogs] = useState([])
@@ -29,14 +29,14 @@ export default function BasicTable({singlead}) {
     const [sq, setsq] = useState(0)
     const [tq, settq] = useState(0)
     const [complete, setcomplete] = useState(0)
-    const [fqd, setfqd] = useState(0)
-    const [sqd, setsqd] = useState(0)
-    const [tqd, settqd] = useState(0)
-    const [completed, setcompleted] = useState(0)
+    // const [fqd, setfqd] = useState(0)
+    // const [sqd, setsqd] = useState(0)
+    // const [tqd, settqd] = useState(0)
+    // const [completed, setcompleted] = useState(0)
     const [click, setclick] = useState(0)
-    const [uniquesumcamp, setuniquesumcamp] = useState(0)
-    const [uniquesumcampd, setuniquesumcampd] = useState(0)
-    const [uniquesumcampv, setuniquesumcampv] = useState(0)
+    // const [uniquesumcamp, setuniquesumcamp] = useState(0)
+    // const [uniquesumcampd, setuniquesumcampd] = useState(0)
+    // const [uniquesumcampv, setuniquesumcampv] = useState(0)
     const [logsd, setlogsd] = useState([])
     const [logsv, setlogsv] = useState([])
     // const [idsd, setidsd] = useState([])
@@ -51,89 +51,90 @@ export default function BasicTable({singlead}) {
     //     return v
     // }
     // unique users finder audio
-    useEffect(()=>{
-        if(ids){
-            fetch('/subrepo/uniqueusersbycampids',{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    campaignId:ids.audio
-                })
-            }).then(res=>res.json())
-            .then(result=>{
-                console.log(result[0])
-                console.log(ids)
-                setuniquesumcamp(result[0].unique)
-            })
-            .catch(err=>console.log(err))
-        }
-    },[ids])
+    // useEffect(()=>{
+    //     if(ids){
+    //         fetch('/subrepo/uniqueusersbycampids',{
+    //             method:'put',
+    //             headers:{
+    //                 "Content-Type":"application/json",
+    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
+    //             },body:JSON.stringify({
+    //                 campaignId:ids.audio
+    //             })
+    //         }).then(res=>res.json())
+    //         .then(result=>{
+    //             console.log(result[0])
+    //             setuniquesumcamp(result[0].unique)
+    //         })
+    //         .catch(err=>console.log(err))
+    //     }
+    // },[ids])
     // unique users finder display
-    useEffect(()=>{
-        if(ids){
-            fetch('/subrepo/uniqueusersbycampids',{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    campaignId:ids.display
-                })
-            }).then(res=>res.json())
-            .then(result=>{
-                console.log(result[0])
-                setuniquesumcampd(result[0].unique)
-            })
-            .catch(err=>console.log(err))
-        }
-    },[ids])
-    // unique users finder video
-    useEffect(()=>{
-        if(ids){
-            fetch('/subrepo/uniqueusersbycampids',{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    campaignId:ids.video
-                })
-            }).then(res=>res.json())
-            .then(result=>{
-                console.log(result[0])
-                setuniquesumcampv(result[0].unique)
-            })
-            .catch(err=>console.log(err))
-        }
-    },[ids])
+    // useEffect(()=>{
+    //     if(ids){
+    //         fetch('/subrepo/uniqueusersbycampids',{
+    //             method:'put',
+    //             headers:{
+    //                 "Content-Type":"application/json",
+    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
+    //             },body:JSON.stringify({
+    //                 campaignId:ids.display
+    //             })
+    //         }).then(res=>res.json())
+    //         .then(result=>{
+    //             console.log(result[0])
+    //             setuniquesumcampd(result[0].unique)
+    //         })
+    //         .catch(err=>console.log(err))
+    //     }
+    // },[ids])
+    // // unique users finder video
+    // useEffect(()=>{
+    //     if(ids){
+    //         fetch('/subrepo/uniqueusersbycampids',{
+    //             method:'put',
+    //             headers:{
+    //                 "Content-Type":"application/json",
+    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
+    //             },body:JSON.stringify({
+    //                 campaignId:ids.video
+    //             })
+    //         }).then(res=>res.json())
+    //         .then(result=>{
+    //             console.log(result[0])
+    //             setuniquesumcampv(result[0].unique)
+    //         })
+    //         .catch(err=>console.log(err))
+    //     }
+    // },[ids])
+    // id finder useEffect
     useEffect(()=>{
         if(state1){
-            fetch('/streamingads/getids',{
-                method:'put',
+            fetch(`/bundles/unp/${state1}`,{
+                method:'get',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    adtitle:state1
-                })
+                }
             }).then(res=>res.json())
             .then(idds=>{
-                // console.log(idds)
+                // console.log(idds.ids)
+                var idsa = idds.ids
+                idsa = [...new Set(idsa)];
+                // console.log(idds.ids,idsa)
                 fetch('/ads/addetailt',{
                     method:'put',
                     headers:{
                         "Content-Type":"application/json",
                         "Authorization" :"Bearer "+localStorage.getItem("jwt")
                     },body:JSON.stringify({
-                        campaignId:idds
+                        campaignId:idsa
                     })
                 }).then(res=>res.json())
                 .then(result => {
                     if(result.spear.length === 0){
-                    setids(result)
-                    console.log(result)
+                        setids(result)
+                        console.log(result)
                     }else{
                         fetch('/streamingads/reqtarget',{
                             method:'put',
@@ -546,7 +547,7 @@ export default function BasicTable({singlead}) {
     return (
         <>
         <IconBreadcrumbs />
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{state1 && state1.toUpperCase()} Campaign</div>
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{title && title.toUpperCase()} Campaign</div>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
@@ -575,27 +576,27 @@ export default function BasicTable({singlead}) {
                 <TableRow
                     style={{
                         background: colorfinder(
-                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
-                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            timefinder(singlead.endDate,singlead.startDate) ,
+                            timefinder(Date.now(),singlead.startDate) ,
                             ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ),
                             impre + impred + imprev
                         )
                     }}
                 >
-                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ) }</TableCell>
                     <TableCell>{impre + impred + imprev}</TableCell>
                     {/* <TableCell>{uniquesumcamp + uniquesumcampd + uniquesumcampv}</TableCell> */}
-                    <TableCell>{ids &&  Math.round(((ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ))/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{Math.round((impre + impred + imprev)/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{ids &&  Math.round(((ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ))/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
+                    <TableCell>{Math.round((impre + impred + imprev)/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{completespentfider('all')}</TableCell>
                     <TableCell>{click + clickd + clickv}</TableCell>
                     <TableCell>{Math.round((click + clickd + clickv)*100/(impre + impred + imprev) *100)/100}%</TableCell>
                     <TableCell>{ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 )- impre - impred - imprev}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
-                    <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
+                    <TableCell className='mangeads__report' onClick={()=>history.push(`/manageBundles/${state1}/detailed`)}>Detailed Report</TableCell>
                 </TableRow>
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
             </TableBody>
@@ -627,27 +628,27 @@ export default function BasicTable({singlead}) {
                 <TableRow
                     style={{
                         background: colorfinder(
-                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
-                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            timefinder(singlead.endDate,singlead.startDate) ,
+                            timefinder(Date.now(),singlead.startDate) ,
                             ids && ids.audimpression,
                             impre
                         )
                     }}
                 >
-                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.audimpression}</TableCell>
                     <TableCell>{impre}</TableCell>
                     {/* <TableCell>{uniquesumcamp}</TableCell> */}
-                    <TableCell>{ids &&  Math.round(ids.audimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{ids &&  Math.round(ids.audimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
+                    <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{completespentfider('audio')}</TableCell>
                     <TableCell>{click}</TableCell>
                     <TableCell>{Math.round(click*100/impre *100)/100}%</TableCell>
                     <TableCell>{ids && ids.audimpression-impre}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
-                    <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
+                    <TableCell className='mangeads__report' onClick={()=>history.push(`/manageBundles/${state1}/detailed`)}>Detailed Report</TableCell>
                 </TableRow>
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
             </TableBody>
@@ -679,27 +680,27 @@ export default function BasicTable({singlead}) {
                 <TableRow
                     style={{
                         background: colorfinder(
-                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
-                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            timefinder(singlead.endDate,singlead.startDate) ,
+                            timefinder(Date.now(),singlead.startDate) ,
                             ids && ids.disimpression,
                             impred
                         )
                     }}
                 >
-                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.disimpression}</TableCell>
                     <TableCell>{impred}</TableCell>
                     {/* <TableCell>{uniquesumcampd}</TableCell> */}
-                    <TableCell>{ids && Math.round(ids.disimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{ids && Math.round(ids.disimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
+                    <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{completespentfider('display')}</TableCell>
                     <TableCell>{clickd}</TableCell>
                     <TableCell>{Math.round(clickd*100/impred *100)/100}%</TableCell>
                     <TableCell>{ids && ids.disimpression-impred}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
-                    <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
+                    <TableCell className='mangeads__report' onClick={()=>history.push(`/manageBundles/${state1}/detailed`)}>Detailed Report</TableCell>
                 </TableRow>
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
             </TableBody>
@@ -731,27 +732,27 @@ export default function BasicTable({singlead}) {
                 <TableRow
                     style={{
                         background: colorfinder(
-                            timefinder(singlead.endDate[0],singlead.startDate[0]) ,
-                            timefinder(Date.now(),singlead.startDate[0]) ,
+                            timefinder(singlead.endDate,singlead.startDate) ,
+                            timefinder(Date.now(),singlead.startDate) ,
                             ids && ids.disimpression,
                             impred
                         )
                     }}
                 >
-                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                    <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
+                    <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.vidimpression}</TableCell>
                     <TableCell>{imprev}</TableCell>
                     {/* <TableCell>{uniquesumcampv}</TableCell> */}
-                    <TableCell>{ids && Math.round(ids.vidimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
+                    <TableCell>{ids && Math.round(ids.vidimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
+                    <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{completespentfider('display')}</TableCell>
                     <TableCell>{clickv}</TableCell>
                     <TableCell>{Math.round(clickv*100/imprev *100)/100}%</TableCell>
                     <TableCell>{ids && ids.disimpression-imprev}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
-                    <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                    <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
+                    <TableCell className='mangeads__report' onClick={()=>history.push(`/manageBundles/${state1}/detailed`)}>Detailed Report</TableCell>
                 </TableRow>
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
             </TableBody>
@@ -808,7 +809,7 @@ export default function BasicTable({singlead}) {
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
-                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageBundles/${state1}/detailed`)}>Detailed Report</TableCell>
                     </TableRow>
                 })
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
@@ -864,7 +865,7 @@ export default function BasicTable({singlead}) {
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
-                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageBundles/${state1}/detailed`)}>Detailed Report</TableCell>
                     </TableRow>
                 })
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
@@ -920,7 +921,7 @@ export default function BasicTable({singlead}) {
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
-                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                        <TableCell className='mangeads__report' onClick={()=>history.push(`/manageBundles/${state1}/detailed`)}>Detailed Report</TableCell>
                     </TableRow>
                 })
             : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
@@ -985,39 +986,39 @@ export default function BasicTable({singlead}) {
         </TableContainer>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Region Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.audio} url='regionbycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.display} url='regionbycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.video} url='regionbycampids' />
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.audio} url='regionbycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.display} url='regionbycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.video} url='regionbycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Language Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.audio} url='citylanguagebycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.display} url='citylanguagebycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.video} url='citylanguagebycampids' />
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.audio} url='citylanguagebycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.display} url='citylanguagebycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.video} url='citylanguagebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Make Model Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.audio} url='phoneModelbycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.display} url='phoneModelbycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.video} url='phoneModelbycampids' />
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.audio} url='phoneModelbycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.display} url='phoneModelbycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.video} url='phoneModelbycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} url='platformTypebycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} url='platformTypebycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.video} url='platformTypebycampids' />
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} url='platformTypebycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} url='platformTypebycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.video} url='platformTypebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} url='zipbycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.display} url='zipbycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.video} url='zipbycampids' />
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} url='zipbycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.display} url='zipbycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.video} url='zipbycampids' />
         {/* <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Model Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.audio} url='phonemakebycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.display} url='phonemakebycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.video} url='phonemakebycampids' /> */}
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.audio} url='phonemakebycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.display} url='phonemakebycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.video} url='phonemakebycampids' /> */}
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} url='pptypebycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} url='pptypebycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.video} url='pptypebycampids' />
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} url='pptypebycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} url='pptypebycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.video} url='pptypebycampids' />
         </>
     );
 }
