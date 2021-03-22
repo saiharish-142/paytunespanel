@@ -16,18 +16,14 @@ import CampaignBundle from './screens/CampaignBundle';
 import DashboardBundle from './screens/manageBundles';
 import ReportBundle from './screens/Reportbundle';
 import DetailedTableBundle from './screens/detailedReportBundle';
-// import Dashmenu from './components/dashmenu';
 
 export const UserContext = createContext()
 export const IdContext = createContext()
 
 
 function App() {
-  // const history = useHistory()
-  // const history = useHistory()
   const [state, dispatch] = useReducer(reducer, InitialState)
   const [state1, dispatch1] = useReducer(reducer1, InitialState1)
-  // const [showMenu, setshowMenu] = useState(true)
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"))
     if(user){
