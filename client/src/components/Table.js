@@ -219,7 +219,7 @@ export default function BasicTable({singlead}) {
                     var d2 = new Date(b.updatedAt[0])
                     return d2 - d1
                 })
-                // console.log(logss)
+                console.log(logss)
                 if(logss.length)
                 setlogs(logss)
                 if(impressions1)
@@ -314,9 +314,10 @@ export default function BasicTable({singlead}) {
                 var logss = result;
                 // console.log(result)
                 result.map((re)=>{
-                    if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                    if(re.Publisher && re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher && re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
                         re.nameads = 'Offline'
-                    }impressions1 += re.impressions
+                    }
+                    impressions1 += re.impressions
                     clicks1 += re.clicks
                 })
                 logss = logss.sort(function(a,b){
@@ -324,7 +325,7 @@ export default function BasicTable({singlead}) {
                     var d2 = new Date(b.updatedAt[0])
                     return d2 - d1
                 })
-                // console.log(logss)
+                console.log(logss)
                 if(logss.length)
                 setlogsd(logss)
                 if(impressions1)
@@ -794,16 +795,16 @@ export default function BasicTable({singlead}) {
                             )
                         }}
                     >
-                        <TableCell>{log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
+                        <TableCell>{log.Publisher && log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && log.campaignId.TargetImpressions}</TableCell>
                         <TableCell>{log.impressions}</TableCell>
-                        <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell>
+                        {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
-                        {/* <TableCell>{spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell> */}
+                        <TableCell>{log.Publisher && spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
@@ -850,7 +851,7 @@ export default function BasicTable({singlead}) {
                             )
                         }}
                     >
-                        <TableCell>{log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
+                        <TableCell>{log.Publisher && log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
@@ -859,7 +860,7 @@ export default function BasicTable({singlead}) {
                         {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
-                        <TableCell>{spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
+                        <TableCell>{log.Publisher && spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
@@ -906,7 +907,7 @@ export default function BasicTable({singlead}) {
                             )
                         }}
                     >
-                        <TableCell>{log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
+                        <TableCell>{log.Publisher && log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
@@ -915,7 +916,7 @@ export default function BasicTable({singlead}) {
                         {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
-                        <TableCell>{spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
+                        <TableCell>{log.Publisher && spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
