@@ -204,7 +204,7 @@ export default function BasicTableBundle({singlead,title}) {
                 var logss = result;
                 console.log(result)
                 result.map((re)=>{
-                    if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                    if(re.Publisher && re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher && re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
                         re.nameads = 'Offline'
                     }console.log(re)
                     impressions1 += re.impressions
@@ -315,7 +315,7 @@ export default function BasicTableBundle({singlead,title}) {
                 var logss = result;
                 // console.log(result)
                 result.map((re)=>{
-                    if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                    if(re.Publisher && re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher && re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
                         re.nameads = 'Offline'
                     }impressions1 += re.impressions
                     clicks1 += re.clicks
@@ -354,7 +354,7 @@ export default function BasicTableBundle({singlead,title}) {
             var logss = result;
             // console.log(result)
             result.map((re)=>{
-                if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                if(re.Publisher && re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher && re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
                     re.nameads = 'Offline'
                 }impressions1 += re.impressions
                 clicks1 += re.clicks
@@ -395,7 +395,7 @@ export default function BasicTableBundle({singlead,title}) {
                 var logss = result;
                 // console.log(result)
                 result.map((re)=>{
-                    if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                    if(re.Publisher && re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher && re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
                         re.nameads = 'Offline'
                     }impressions1 += re.impressions
                     clicks1 += re.clicks
@@ -795,7 +795,7 @@ export default function BasicTableBundle({singlead,title}) {
                             )
                         }}
                     >
-                        <TableCell>{log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
+                        <TableCell>{log.Publisher ? log.Publisher.AppName : 'No name found'} {log.nameads && log.nameads}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
@@ -804,7 +804,7 @@ export default function BasicTableBundle({singlead,title}) {
                         <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
-                        {/* <TableCell>{spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell> */}
+                        {/* <TableCell>{log.Publisher && spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell> */}
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
@@ -851,7 +851,7 @@ export default function BasicTableBundle({singlead,title}) {
                             )
                         }}
                     >
-                        <TableCell>{log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
+                        <TableCell>{log.Publisher ? log.Publisher.AppName : 'No name found'} {log.nameads && log.nameads}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
@@ -860,7 +860,7 @@ export default function BasicTableBundle({singlead,title}) {
                         {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
-                        <TableCell>{spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
+                        <TableCell>{log.Publisher && spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
@@ -907,7 +907,7 @@ export default function BasicTableBundle({singlead,title}) {
                             )
                         }}
                     >
-                        <TableCell>{log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
+                        <TableCell>{log.Publisher ? log.Publisher.AppName : 'No name found'} {log.nameads && log.nameads}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.startDate.slice(0,10))}</TableCell>
                         <TableCell>{dateformatchanger(log.campaignId.endDate.slice(0,10))}</TableCell>
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
@@ -916,7 +916,7 @@ export default function BasicTableBundle({singlead,title}) {
                         {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
-                        <TableCell>{spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
+                        <TableCell>{log.Publisher && spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
@@ -972,7 +972,7 @@ export default function BasicTableBundle({singlead,title}) {
                     {logs ? logs.map((log,i) => {
                         if(!log.nameads){
                             return <TableRow key = {i}>
-                                <TableCell>{log.Publisher.AppName}</TableCell>
+                                <TableCell>{log.Publisher ? log.Publisher.AppName : 'No name found'}</TableCell>
                                 <TableCell>{log.firstQuartile}</TableCell>
                                 <TableCell>{log.midpoint}</TableCell>
                                 <TableCell>{log.thirdQuartile}</TableCell>
