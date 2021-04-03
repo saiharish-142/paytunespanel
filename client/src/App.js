@@ -4,6 +4,7 @@ import { BrowserRouter, Redirect, Route } from 'react-router-dom'
 import Navbar from './components/Navbar';
 import { reducer, InitialState} from './reducer.js/reducer'
 import { reducer1, InitialState1} from './reducer.js/idreducer'
+import { reducer2, InitialState2} from './reducer.js/inrreducer'
 import Login from './screens/Login';
 import Dashboard from './screens/manageAds';
 import Home from './screens/Home';
@@ -19,11 +20,12 @@ import DetailedTableBundle from './screens/detailedReportBundle';
 
 export const UserContext = createContext()
 export const IdContext = createContext()
-
+export const USDINRratioContext = createContext()
 
 function App() {
   const [state, dispatch] = useReducer(reducer, InitialState)
   const [state1, dispatch1] = useReducer(reducer1, InitialState1)
+  const [stateru, dispatchru] = useReducer(reducer2, InitialState2)
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"))
     if(user){
@@ -32,8 +34,20 @@ function App() {
       return <Redirect to='/login' />
     }
   }, [])
+  useEffect(() => {
+    fetch('https://free.currconv.com/api/v7/convert?q=USD_INR&compact=ultra&apiKey=30b70a4db3f30dac36bf',{
+      method:'get'
+    }).then(res => res.json())
+    .then((result) => {
+      // console.log(result)
+      dispatchru({type:"ID",payload:result.USD_INR})
+    }).catch((err) => {
+      console.log(err)
+    });
+  }, [])
   return (
     <UserContext.Provider value={{state,dispatch}}>
+    <USDINRratioContext.Provider value={{stateru,dispatchru}}>
     <IdContext.Provider value={{state1,dispatch1}}>
       <div className="App">
         <BrowserRouter>
@@ -106,6 +120,7 @@ function App() {
         </BrowserRouter>
       </div>
     </IdContext.Provider>
+    </USDINRratioContext.Provider>
     </UserContext.Provider>
   );
 }

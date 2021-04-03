@@ -9,6 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { useHistory } from 'react-router-dom';
 import { IdContext } from '../App';
+import { USDINRratioContext } from '../App';
 import IconBreadcrumbs from './breadBreed';
 import Auditable from './auditable.js'
 
@@ -21,6 +22,7 @@ const useStyles = makeStyles({
 export default function BasicTable({singlead}) {
     const history = useHistory();
     const {state1} = useContext(IdContext)
+    const {stateru} = useContext(USDINRratioContext)
     const [logs, setlogs] = useState([])
     const [spentdata, setspentdata] = useState([])
     const [ids, setids] = useState({})
@@ -48,6 +50,7 @@ export default function BasicTable({singlead}) {
     const [imprev, setimprev] = useState(0)
     const [clickv, setclickv] = useState(0)
     const classes = useStyles();
+    // console.log(stateru)
     // const normal =(val)=>{
     //     let v = Math.round(val*100)/100
     //     // console.log(v)
@@ -211,11 +214,11 @@ export default function BasicTable({singlead}) {
                         re.nameads = 'Offline'
                         // Humgama
                         if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
-                            spentdodal += parseInt(re.impressions)*4.25/1000
+                            spentdodal += parseInt(re.impressions)*4.25/100
                         }
                         // Wynk
                         if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
-                            spentdodal += parseInt(re.impressions)*10/1000
+                            spentdodal += parseInt(re.impressions)*10/100
                         }
                     }console.log(re)
                     impressions1 += re.impressions
@@ -247,7 +250,7 @@ export default function BasicTable({singlead}) {
                 if(compo1)
                 setcomplete(compo1)
                 if(spentdodal){
-                    setspentOffline(spentdodal)
+                    setspentOffline(spentdodal/stateru)
                 }
             })
             .catch(err =>{
@@ -333,11 +336,11 @@ export default function BasicTable({singlead}) {
                     if(re.Publisher && re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher && re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
                         re.nameads = 'Offline'
                         if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
-                            spentdodal += parseInt(re.impressions)*4.25/1000
+                            spentdodal += parseInt(re.impressions)*4.25/100
                         }
                         // Wynk
                         if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
-                            spentdodal += parseInt(re.impressions)*10/1000
+                            spentdodal += parseInt(re.impressions)*10/100
                         }
                     }
                     impressions1 += re.impressions
@@ -356,7 +359,7 @@ export default function BasicTable({singlead}) {
                 if(clicks1)
                 setclickd(clicks1)
                 if(spentdodal){
-                    setspentOfflined(spentdodal)
+                    setspentOfflined(spentdodal/stateru)
                 }
             })
             .catch(err =>{
@@ -425,11 +428,11 @@ export default function BasicTable({singlead}) {
                     if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
                         re.nameads = 'Offline'
                         if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
-                            spentdodal += parseInt(re.impressions)*4.25/1000
+                            spentdodal += parseInt(re.impressions)*4.25/100
                         }
                         // Wynk
                         if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
-                            spentdodal += parseInt(re.impressions)*10/1000
+                            spentdodal += parseInt(re.impressions)*10/100
                         }
                     }impressions1 += re.impressions
                     clicks1 += re.clicks
@@ -447,7 +450,7 @@ export default function BasicTable({singlead}) {
                 if(clicks1)
                 setclickv(clicks1)
                 if(spentdodal){
-                    setspentOfflinev(spentdodal)
+                    setspentOfflinev(spentdodal/stateru)
                 }
             })
             .catch(err =>{
@@ -538,11 +541,11 @@ export default function BasicTable({singlead}) {
         if(spentdata.length){
             // Humgama
             if(appId.toString() === '5d10c405844dd970bf41e2af'){
-                return Math.round((parseInt(impressions)*4.25/1000)*10000)/10000;
+                return Math.round((parseInt(impressions)*4.25/(stateru*100))*10000)/10000;
             }
             // Wynk
             if(appId.toString() === '5b2210af504f3097e73e0d8b'){
-                return Math.round((parseInt(impressions)*10/1000)*10000)/10000;
+                return Math.round((parseInt(impressions)*10/(stateru*100))*10000)/10000;
             }
             var datarq = spentdata.filter(x => x.campaignId === campaignId && x.appId === appId)
             var spent = 0;
@@ -636,7 +639,7 @@ export default function BasicTable({singlead}) {
                     {/* <TableCell>{uniquesumcamp + uniquesumcampd + uniquesumcampv}</TableCell> */}
                     <TableCell>{ids &&  Math.round(((ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ))/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round((impre + impred + imprev)/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{completespentfider('all') + Math.round(spentOffline*10000)/10000 + Math.round(spentOfflined*10000)/10000 + Math.round(spentOfflinev*10000)/10000 }</TableCell>
+                    <TableCell>{Math.round(completespentfider('all')*1000)/1000 + Math.round(spentOffline*10000)/10000 + Math.round(spentOfflined*10000)/10000 + Math.round(spentOfflinev*10000)/10000 }</TableCell>
                     <TableCell>{click + clickd + clickv}</TableCell>
                     <TableCell>{Math.round((click + clickd + clickv)*100/(impre + impred + imprev) *100)/100}%</TableCell>
                     <TableCell>{ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 )- impre - impred - imprev}</TableCell>
@@ -688,7 +691,7 @@ export default function BasicTable({singlead}) {
                     {/* <TableCell>{uniquesumcamp}</TableCell> */}
                     <TableCell>{ids &&  Math.round(ids.audimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{completespentfider('audio') + Math.round(spentOffline*10000)/10000}</TableCell>
+                    <TableCell>{Math.round(completespentfider('audio')*10000)/10000 + Math.round(spentOffline*10000)/10000}</TableCell>
                     <TableCell>{click}</TableCell>
                     <TableCell>{Math.round(click*100/impre *100)/100}%</TableCell>
                     <TableCell>{ids && ids.audimpression-impre}</TableCell>

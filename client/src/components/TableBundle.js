@@ -8,7 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { useHistory } from 'react-router-dom';
-import { IdContext } from '../App';
+import { IdContext, USDINRratioContext } from '../App';
 import IconBreadcrumbs from './breadBreed';
 import AuditableBundle from './auditablebundle'
 
@@ -21,6 +21,7 @@ const useStyles = makeStyles({
 export default function BasicTableBundle({singlead,title}) {
     const history = useHistory();
     const {state1} = useContext(IdContext)
+    const {stateru} = useContext(USDINRratioContext)
     const [logs, setlogs] = useState([])
     const [spentdata, setspentdata] = useState([])
     const [ids, setids] = useState({})
@@ -211,11 +212,11 @@ export default function BasicTableBundle({singlead,title}) {
                     if(re.Publisher && re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher && re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
                         re.nameads = 'Offline'
                         if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
-                            spentdodal += parseInt(re.impressions)*4.25/1000
+                            spentdodal += parseInt(re.impressions)*4.25/100
                         }
                         // Wynk
                         if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
-                            spentdodal += parseInt(re.impressions)*10/1000
+                            spentdodal += parseInt(re.impressions)*10/100
                         }
                     }console.log(re)
                     impressions1 += re.impressions
@@ -247,7 +248,7 @@ export default function BasicTableBundle({singlead,title}) {
                 if(compo1)
                 setcomplete(compo1)
                 if(spentdodal){
-                    setspentOffline(spentdodal)
+                    setspentOffline(spentdodal/stateru)
                 }
             })
             .catch(err =>{
@@ -333,11 +334,11 @@ export default function BasicTableBundle({singlead,title}) {
                     if(re.Publisher && re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher && re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
                         re.nameads = 'Offline'
                         if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
-                            spentdodal += parseInt(re.impressions)*4.25/1000
+                            spentdodal += parseInt(re.impressions)*4.25/100
                         }
                         // Wynk
                         if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
-                            spentdodal += parseInt(re.impressions)*10/1000
+                            spentdodal += parseInt(re.impressions)*10/100
                         }
                     }impressions1 += re.impressions
                     clicks1 += re.clicks
@@ -355,7 +356,7 @@ export default function BasicTableBundle({singlead,title}) {
                 if(clicks1)
                 setclickd(clicks1)
                 if(spentdodal){
-                    setspentOfflined(spentdodal)
+                    setspentOfflined(spentdodal/stateru)
                 }
             })
             .catch(err =>{
@@ -424,11 +425,11 @@ export default function BasicTableBundle({singlead,title}) {
                     if(re.Publisher && re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher && re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
                         re.nameads = 'Offline'
                         if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
-                            spentdodal += parseInt(re.impressions)*4.25/1000
+                            spentdodal += parseInt(re.impressions)*4.25/100
                         }
                         // Wynk
                         if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
-                            spentdodal += parseInt(re.impressions)*10/1000
+                            spentdodal += parseInt(re.impressions)*10/100
                         }
                     }impressions1 += re.impressions
                     clicks1 += re.clicks
@@ -446,7 +447,7 @@ export default function BasicTableBundle({singlead,title}) {
                 if(clicks1)
                 setclickv(clicks1)
                 if(spentdodal){
-                    setspentOfflinev(spentdodal)
+                    setspentOfflinev(spentdodal/stateru)
                 }
             })
             .catch(err =>{
@@ -537,11 +538,11 @@ export default function BasicTableBundle({singlead,title}) {
         if(spentdata.length){
             // Humgama
             if(appId.toString() === '5d10c405844dd970bf41e2af'){
-                return Math.round((parseInt(impressions)*4.25/1000)*1000)/1000;
+                return Math.round((parseInt(impressions)*4.25/(100*stateru))*1000)/1000;
             }
             // Wynk
             if(appId.toString() === '5b2210af504f3097e73e0d8b'){
-                return Math.round((parseInt(impressions)*10/1000)*1000)/1000;
+                return Math.round((parseInt(impressions)*10/(100*stateru))*1000)/1000;
             }
             var datarq = spentdata.filter(x => x.campaignId === campaignId && x.appId === appId)
             var spent = 0;
