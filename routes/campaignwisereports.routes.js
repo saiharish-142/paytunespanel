@@ -143,7 +143,6 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
     .catch(err=>console.log(err))
 })
 
-
 router.put('/reportbycamp',adminauth,(req,res)=>{
     const { campaignId } = req.body
     var ids = campaignId.map(id => mongoose.Types.ObjectId(id))

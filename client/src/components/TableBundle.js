@@ -636,7 +636,7 @@ export default function BasicTableBundle({singlead,title}) {
                     {/* <TableCell>{uniquesumcamp + uniquesumcampd + uniquesumcampv}</TableCell> */}
                     <TableCell>{ids &&  Math.round(((ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ))/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round((impre + impred + imprev)/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
-                    <TableCell>{completespentfider('all') + Math.round(spentOffline*1000)/1000 + Math.round(spentOfflined*1000)/1000 + Math.round(spentOfflinev*1000)/1000}</TableCell>
+                    <TableCell>{Math.round((completespentfider('all') + Math.round(spentOffline*1000)/1000 + Math.round(spentOfflined*1000)/1000 + Math.round(spentOfflinev*1000)/1000)*1)/1}</TableCell>
                     <TableCell>{click + clickd + clickv}</TableCell>
                     <TableCell>{Math.round((click + clickd + clickv)*100/(impre + impred + imprev) *100)/100}%</TableCell>
                     <TableCell>{ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 )- impre - impred - imprev}</TableCell>
@@ -688,7 +688,7 @@ export default function BasicTableBundle({singlead,title}) {
                     {/* <TableCell>{uniquesumcamp}</TableCell> */}
                     <TableCell>{ids &&  Math.round(ids.audimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
-                    <TableCell>{completespentfider('audio') + Math.round(spentOffline*1000)/1000}</TableCell>
+                    <TableCell>{Math.round((completespentfider('audio') + Math.round(spentOffline*1000)/1000)*1)/1}</TableCell>
                     <TableCell>{click}</TableCell>
                     <TableCell>{Math.round(click*100/impre *100)/100}%</TableCell>
                     <TableCell>{ids && ids.audimpression-impre}</TableCell>
@@ -740,7 +740,7 @@ export default function BasicTableBundle({singlead,title}) {
                     {/* <TableCell>{uniquesumcampd}</TableCell> */}
                     <TableCell>{ids && Math.round(ids.disimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
-                    <TableCell>{completespentfider('display') + Math.round(spentOfflined*1000)/1000}</TableCell>
+                    <TableCell>{Math.round((completespentfider('display') + Math.round(spentOfflined*1000)/1000)*1)/1}</TableCell>
                     <TableCell>{clickd}</TableCell>
                     <TableCell>{Math.round(clickd*100/impred *100)/100}%</TableCell>
                     <TableCell>{ids && ids.disimpression-impred}</TableCell>
@@ -792,7 +792,7 @@ export default function BasicTableBundle({singlead,title}) {
                     {/* <TableCell>{uniquesumcampv}</TableCell> */}
                     <TableCell>{ids && Math.round(ids.vidimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
-                    <TableCell>{completespentfider('display') + Math.round(spentOfflinev*1000)/1000}</TableCell>
+                    <TableCell>{Math.round((completespentfider('display') + Math.round(spentOfflinev*1000)/1000)*1)/1}</TableCell>
                     <TableCell>{clickv}</TableCell>
                     <TableCell>{Math.round(clickv*100/imprev *100)/100}%</TableCell>
                     <TableCell>{ids && ids.vidimpression-imprev}</TableCell>
@@ -849,7 +849,7 @@ export default function BasicTableBundle({singlead,title}) {
                         {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
-                        <TableCell>{log.Publisher && spentfinder(log.Publisher._id,log.campaignId._id,log.impressions)}</TableCell>
+                        <TableCell>{log.Publisher && Math.round(spentfinder(log.Publisher._id,log.campaignId._id,log.impressions)*1)/1}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
@@ -905,7 +905,7 @@ export default function BasicTableBundle({singlead,title}) {
                         {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
-                        <TableCell>{log.Publisher && spentfinder(log.Publisher._id,log.campaignId._id,log.impressions)}</TableCell>
+                        <TableCell>{log.Publisher && Math.round(spentfinder(log.Publisher._id,log.campaignId._id,log.impressions)*1)/1}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
@@ -961,7 +961,7 @@ export default function BasicTableBundle({singlead,title}) {
                         {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
-                        <TableCell>{log.Publisher && spentfinder(log.Publisher._id,log.campaignId._id,log.impressions)}</TableCell>
+                        <TableCell>{log.Publisher && Math.round(spentfinder(log.Publisher._id,log.campaignId._id,log.impressions)*1)/1}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>

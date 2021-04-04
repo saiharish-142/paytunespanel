@@ -22,6 +22,7 @@ module.exports = {
     pb : 'Punjab',
     rj : 'Rajasthan',
     sk : 'Sikkim',
+    tg: 'Telangana',
     tn : 'Tamil Nadu',
     tr : 'Tripura',
     uk : 'Uttarakhand',
