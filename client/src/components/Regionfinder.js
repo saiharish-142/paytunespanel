@@ -3,7 +3,7 @@ module.exports = {
     ar : 'Arunachal Pradesh',
     as : 'Assam',
     br : 'Bihar',
-    cg : 'Chhattisgarh',
+    cg : 'Chattisgarh',
     ga : 'Goa',
     gj : 'Gujarat',
     hr : 'Haryana',
@@ -36,5 +36,9 @@ module.exports = {
     dd : 'Daman and Diu',
     dl : 'Delhi',
     ld : 'Lakshadweep',
-    py : 'Pondicherry'
+    py : 'Pondicherry',
+    ct : 'Chattisgarh',
+    dn : 'Dadra and Nagar Haveli',
+    ut : 'Uttarakhand',
+    la : 'Ladakh'
 }
