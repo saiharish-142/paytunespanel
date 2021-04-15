@@ -1039,9 +1039,9 @@ export default function BasicTable({singlead}) {
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.video} url='regionbycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Language Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.audio} url='citylanguagebycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.display} url='citylanguagebycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.video} url='citylanguagebycampids' />
+        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.audio} url='citylanguagebycampids' />
+        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.display} url='citylanguagebycampids' />
+        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.video} url='citylanguagebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Make Model Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.audio} url='phoneModelbycampids' />
