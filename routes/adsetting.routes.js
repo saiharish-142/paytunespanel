@@ -68,7 +68,7 @@ router.put('/addetailt',adminauth,(req,res)=>{
             if(!audio.includes(id)){
                 if(!display.includes(id)){
                     if(!video.includes(id)){
-                        spear.push(id)
+                            audio.push(id)
                     }
                 }
             }
