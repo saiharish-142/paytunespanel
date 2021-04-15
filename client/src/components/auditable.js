@@ -97,7 +97,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row,i) =>{ 
                         if(typeof row !== 'undefined'){
-                        if(row[jsotitle] && row[jsotitle] !== " - " && row[jsotitle] && row[jsotitle] !== undefined){
+                        if(row[jsotitle] !== undefined){
                         return (
                         <TableRow key ={i} hover role="checkbox" tabIndex={-1} key={row._id}>
                             {jsotitle === 'region' ? <TableCell>{regiondata[row[jsotitle]] ? regiondata[row[jsotitle]] : row[jsotitle]}</TableCell> : <TableCell>{row[jsotitle]}</TableCell>}

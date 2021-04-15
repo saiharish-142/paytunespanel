@@ -138,8 +138,8 @@ export default function BasicTable({singlead}) {
                 }).then(res=>res.json())
                 .then(result => {
                     if(result.spear.length === 0){
-                    setids(result)
-                    console.log(result)
+                        setids(result)
+                        console.log(result)
                     }else{
                         fetch('/streamingads/reqtarget',{
                             method:'put',
