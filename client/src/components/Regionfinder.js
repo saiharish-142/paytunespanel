@@ -1,4 +1,4 @@
-module.exports = {
+const regiondata = {
     ap : 'Andhra Pradesh',
     ar : 'Arunachal Pradesh',
     as : 'Assam',
@@ -42,3 +42,5 @@ module.exports = {
     ut : 'Uttarakhand',
     la : 'Ladakh'
 }
+
+export default regiondata
