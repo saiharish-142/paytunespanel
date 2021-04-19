@@ -2,6 +2,7 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 import React, {useEffect} from 'react'
 import TablePagination from "@material-ui/core/TablePagination";
 import { useHistory } from 'react-router-dom';
+import regiondata from './Regionfinder'
 
 function AuditableBundle({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,client,ratio,impression,click}) {
     // console.log(click,ratio)
@@ -99,7 +100,7 @@ function AuditableBundle({streamingads,title,jsotitle,ids,url,regtitle,adtype,st
                         if(row[jsotitle] && row[jsotitle] !== " - " && row[jsotitle] && row[jsotitle] !== undefined){
                         return (
                         <TableRow key ={i} hover role="checkbox" tabIndex={-1} key={row._id}>
-                            <TableCell>{row[jsotitle]}</TableCell>
+                            {jsotitle === 'region' ? <TableCell>{regiondata[row[jsotitle]] ? regiondata[row[jsotitle]] : row[jsotitle]}</TableCell> : <TableCell>{row[jsotitle]}</TableCell>}
                             {!client && <TableCell>{streamingads.startDate && dateformatchanger(streamingads.startDate.slice(0,10))}</TableCell>}
                             {!client && <TableCell>{streamingads.endDate && dateformatchanger(streamingads.endDate.slice(0,10))}</TableCell>}
                             {!client && <TableCell>{streamingads.endDate && timefinder(streamingads.endDate,streamingads.startDate)} days</TableCell>}

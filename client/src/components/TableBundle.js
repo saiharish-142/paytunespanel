@@ -8,7 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { useHistory } from 'react-router-dom';
-import { IdContext } from '../App';
+import { IdContext, USDINRratioContext } from '../App';
 import IconBreadcrumbs from './breadBreed';
 import AuditableBundle from './auditablebundle'
 
@@ -21,6 +21,7 @@ const useStyles = makeStyles({
 export default function BasicTableBundle({singlead,title}) {
     const history = useHistory();
     const {state1} = useContext(IdContext)
+    const {stateru} = useContext(USDINRratioContext)
     const [logs, setlogs] = useState([])
     const [spentdata, setspentdata] = useState([])
     const [ids, setids] = useState({})
@@ -29,6 +30,9 @@ export default function BasicTableBundle({singlead,title}) {
     const [sq, setsq] = useState(0)
     const [tq, settq] = useState(0)
     const [complete, setcomplete] = useState(0)
+    const [spentOffline, setspentOffline] = useState(0)
+    const [spentOfflined, setspentOfflined] = useState(0)
+    const [spentOfflinev, setspentOfflinev] = useState(0)
     // const [fqd, setfqd] = useState(0)
     // const [sqd, setsqd] = useState(0)
     // const [tqd, settqd] = useState(0)
@@ -202,10 +206,18 @@ export default function BasicTableBundle({singlead,title}) {
                 var thir1 = 0;
                 var compo1 = 0;
                 var logss = result;
+                var spentdodal = 0;
                 console.log(result)
                 result.map((re)=>{
                     if(re.Publisher && re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher && re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
                         re.nameads = 'Offline'
+                        if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                            spentdodal += parseInt(re.impressions)*4.25/100
+                        }
+                        // Wynk
+                        if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
+                            spentdodal += parseInt(re.impressions)*10/100
+                        }
                     }console.log(re)
                     impressions1 += re.impressions
                     clicks1 += re.clicks
@@ -235,6 +247,9 @@ export default function BasicTableBundle({singlead,title}) {
                 settq(thir1)
                 if(compo1)
                 setcomplete(compo1)
+                if(spentdodal){
+                    setspentOffline(spentdodal/stateru)
+                }
             })
             .catch(err =>{
                 console.log(err)
@@ -313,10 +328,18 @@ export default function BasicTableBundle({singlead,title}) {
                 var impressions1 = 0;
                 var clicks1 = 0;
                 var logss = result;
+                var spentdodal = 0;
                 // console.log(result)
                 result.map((re)=>{
                     if(re.Publisher && re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher && re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
                         re.nameads = 'Offline'
+                        if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                            spentdodal += parseInt(re.impressions)*4.25/100
+                        }
+                        // Wynk
+                        if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
+                            spentdodal += parseInt(re.impressions)*10/100
+                        }
                     }impressions1 += re.impressions
                     clicks1 += re.clicks
                 })
@@ -332,6 +355,9 @@ export default function BasicTableBundle({singlead,title}) {
                 setimpred(impressions1)
                 if(clicks1)
                 setclickd(clicks1)
+                if(spentdodal){
+                    setspentOfflined(spentdodal/stateru)
+                }
             })
             .catch(err =>{
                 console.log(err)
@@ -393,10 +419,18 @@ export default function BasicTableBundle({singlead,title}) {
                 var impressions1 = 0;
                 var clicks1 = 0;
                 var logss = result;
+                var spentdodal = 0;
                 // console.log(result)
                 result.map((re)=>{
                     if(re.Publisher && re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher && re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
                         re.nameads = 'Offline'
+                        if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                            spentdodal += parseInt(re.impressions)*4.25/100
+                        }
+                        // Wynk
+                        if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
+                            spentdodal += parseInt(re.impressions)*10/100
+                        }
                     }impressions1 += re.impressions
                     clicks1 += re.clicks
                 })
@@ -412,6 +446,9 @@ export default function BasicTableBundle({singlead,title}) {
                 setimprev(impressions1)
                 if(clicks1)
                 setclickv(clicks1)
+                if(spentdodal){
+                    setspentOfflinev(spentdodal/stateru)
+                }
             })
             .catch(err =>{
                 console.log(err)
@@ -497,8 +534,16 @@ export default function BasicTableBundle({singlead,title}) {
             return 'not found'
         }
     }
-    const spentfinder = (appId,campaignId) => {
+    const spentfinder = (appId,campaignId,impressions) => {
         if(spentdata.length){
+            // Humgama
+            if(appId.toString() === '5d10c405844dd970bf41e2af'){
+                return Math.round((parseInt(impressions)*4.25/(100*stateru))*1000)/1000;
+            }
+            // Wynk
+            if(appId.toString() === '5b2210af504f3097e73e0d8b'){
+                return Math.round((parseInt(impressions)*10/(100*stateru))*1000)/1000;
+            }
             var datarq = spentdata.filter(x => x.campaignId === campaignId && x.appId === appId)
             var spent = 0;
             // console.log(datarq)
@@ -591,7 +636,7 @@ export default function BasicTableBundle({singlead,title}) {
                     {/* <TableCell>{uniquesumcamp + uniquesumcampd + uniquesumcampv}</TableCell> */}
                     <TableCell>{ids &&  Math.round(((ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ))/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round((impre + impred + imprev)/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
-                    <TableCell>{completespentfider('all')}</TableCell>
+                    <TableCell>{Math.round((completespentfider('all') + Math.round(spentOffline*1000)/1000 + Math.round(spentOfflined*1000)/1000 + Math.round(spentOfflinev*1000)/1000)*1)/1}</TableCell>
                     <TableCell>{click + clickd + clickv}</TableCell>
                     <TableCell>{Math.round((click + clickd + clickv)*100/(impre + impred + imprev) *100)/100}%</TableCell>
                     <TableCell>{ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 )- impre - impred - imprev}</TableCell>
@@ -643,7 +688,7 @@ export default function BasicTableBundle({singlead,title}) {
                     {/* <TableCell>{uniquesumcamp}</TableCell> */}
                     <TableCell>{ids &&  Math.round(ids.audimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
-                    <TableCell>{completespentfider('audio')}</TableCell>
+                    <TableCell>{Math.round((completespentfider('audio') + Math.round(spentOffline*1000)/1000)*1)/1}</TableCell>
                     <TableCell>{click}</TableCell>
                     <TableCell>{Math.round(click*100/impre *100)/100}%</TableCell>
                     <TableCell>{ids && ids.audimpression-impre}</TableCell>
@@ -695,7 +740,7 @@ export default function BasicTableBundle({singlead,title}) {
                     {/* <TableCell>{uniquesumcampd}</TableCell> */}
                     <TableCell>{ids && Math.round(ids.disimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
-                    <TableCell>{completespentfider('display')}</TableCell>
+                    <TableCell>{Math.round((completespentfider('display') + Math.round(spentOfflined*1000)/1000)*1)/1}</TableCell>
                     <TableCell>{clickd}</TableCell>
                     <TableCell>{Math.round(clickd*100/impred *100)/100}%</TableCell>
                     <TableCell>{ids && ids.disimpression-impred}</TableCell>
@@ -734,8 +779,8 @@ export default function BasicTableBundle({singlead,title}) {
                         background: colorfinder(
                             timefinder(singlead.endDate,singlead.startDate) ,
                             timefinder(Date.now(),singlead.startDate) ,
-                            ids && ids.disimpression,
-                            impred
+                            ids && ids.vidimpression,
+                            imprev
                         )
                     }}
                 >
@@ -747,10 +792,10 @@ export default function BasicTableBundle({singlead,title}) {
                     {/* <TableCell>{uniquesumcampv}</TableCell> */}
                     <TableCell>{ids && Math.round(ids.vidimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
-                    <TableCell>{completespentfider('display')}</TableCell>
+                    <TableCell>{Math.round((completespentfider('display') + Math.round(spentOfflinev*1000)/1000)*1)/1}</TableCell>
                     <TableCell>{clickv}</TableCell>
                     <TableCell>{Math.round(clickv*100/imprev *100)/100}%</TableCell>
-                    <TableCell>{ids && ids.disimpression-imprev}</TableCell>
+                    <TableCell>{ids && ids.vidimpression-imprev}</TableCell>
                     <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
                     <TableCell className='mangeads__report' onClick={()=>history.push(`/manageBundles/${state1}/detailed`)}>Detailed Report</TableCell>
                 </TableRow>
@@ -801,10 +846,10 @@ export default function BasicTableBundle({singlead,title}) {
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && log.campaignId.TargetImpressions}</TableCell>
                         <TableCell>{log.impressions}</TableCell>
-                        <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell>
+                        {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
-                        {/* <TableCell>{log.Publisher && spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell> */}
+                        <TableCell>{log.Publisher && Math.round(spentfinder(log.Publisher._id,log.campaignId._id,log.impressions)*1)/1}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
@@ -860,7 +905,7 @@ export default function BasicTableBundle({singlead,title}) {
                         {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
-                        <TableCell>{log.Publisher && spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
+                        <TableCell>{log.Publisher && Math.round(spentfinder(log.Publisher._id,log.campaignId._id,log.impressions)*1)/1}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
@@ -916,7 +961,7 @@ export default function BasicTableBundle({singlead,title}) {
                         {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
-                        <TableCell>{log.Publisher && spentfinder(log.Publisher._id,log.campaignId._id)}</TableCell>
+                        <TableCell>{log.Publisher && Math.round(spentfinder(log.Publisher._id,log.campaignId._id,log.impressions)*1)/1}</TableCell>
                         <TableCell>{log.clicks}</TableCell>
                         <TableCell>{Math.round(log.clicks*100/log.impressions *100)/100}%</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions&& log.campaignId.TargetImpressions-log.impressions}</TableCell>
@@ -991,9 +1036,9 @@ export default function BasicTableBundle({singlead,title}) {
         <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.video} url='regionbycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Language Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
-        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.audio} url='citylanguagebycampids' />
-        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.display} url='citylanguagebycampids' />
-        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='language' ids={ids && ids.video} url='citylanguagebycampids' />
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.audio} url='citylanguagebycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.display} url='citylanguagebycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.video} url='citylanguagebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Make Model Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.audio} url='phoneModelbycampids' />
