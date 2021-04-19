@@ -41,7 +41,7 @@ function App() {
           <Route
             path='/login' 
             render={()=>(state ? (state.usertype === 'admin' && <Redirect to='/' />) : <Login />)}
-            />
+          />
           <Route
             path='/'
             exact

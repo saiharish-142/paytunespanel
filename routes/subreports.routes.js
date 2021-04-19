@@ -75,13 +75,50 @@ router.get('/phonemodelwise',adminauth,(req,res)=>{
     }).catch(err=>res.status(422).json(err))
 })
 
-router.put('/phonemakebycampids',adminauth,(req,res)=>{
-    const {campaignId} = req.body
-    const dumd =[];
-    var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
-    phonemakereports.aggregate([
-        {$match:{campaignId:{$in:ids}}},
-        {$project:{phoneMake:{$toLower:'$phoneMake'},
+router.put('/phonemakebycampids',adminauth,async(req,res)=>{
+    // const {campaignId} = req.body
+    // const dumd =[];
+    // var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
+    // phonemakereports.aggregate([
+    //     {$match:{campaignId:{$in:ids}}},
+    //     {$project:{phoneMake:{$toLower:'$phoneMake'},
+    //         campaignId:"$campaignId",
+    //         impression:"$impression", 
+    //         CompanionClickTracking:"$CompanionClickTracking", 
+    //         SovClickTracking:"$SovClickTracking", 
+    //         start:"$start", 
+    //         midpoint:"$midpoint",
+    //         thirdQuartile:"$thirdQuartile",
+    //         complete:"$complete",
+    //         createdOn:"$createdOn"
+    //     }},
+    //     {$group:{_id:{phoneMake:"$phoneMake"}, 
+    //         campaignId:{$push:"$campaignId"},
+    //         impression:{$sum:"$impression"}, 
+    //         CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+    //         SovClickTracking:{$sum:"$SovClickTracking"}, 
+    //         start:{$sum:"$start"}, 
+    //         midpoint:{$sum:"$midpoint"},
+    //         thirdQuartile:{$sum:"$thirdQuartile"},
+    //         complete:{$sum:"$complete"},
+    //         createdOn:{$push:"$createdOn"}
+    //     }},{$project:{
+    //         phoneMake:"$_id.phoneMake", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+    //         start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
+    //     }}
+    // ])
+    // .then(result=>res.json(result))
+    // .catch(err=>res.status(422).json(err))
+
+    let {audio,video,layout}=req.body
+    audio=audio.map(aud=>mongoose.Types.ObjectId(aud))
+    video=video.map(aud=>mongoose.Types.ObjectId(aud))
+    layout=layout.map(aud=>mongoose.Types.ObjectId(aud))
+    const result=await phonemakereports.aggregate([{
+        $facet:{
+            'audio':[
+                {$match:{campaignId:{$in:audio}}},
+                {$project:{phoneMake:{$toLower:'$phoneMake'},
             campaignId:"$campaignId",
             impression:"$impression", 
             CompanionClickTracking:"$CompanionClickTracking", 
@@ -106,9 +143,44 @@ router.put('/phonemakebycampids',adminauth,(req,res)=>{
             phoneMake:"$_id.phoneMake", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
             start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
         }}
-    ])
-    .then(result=>res.json(result))
-    .catch(err=>res.status(422).json(err))
+            ],
+            'video':[
+                {$match:{campaignId:{$in:video}}},
+                {$project:{phoneMake:{$toLower:'$phoneMake'},
+            campaignId:"$campaignId",
+            impression:"$impression", 
+            CompanionClickTracking:"$CompanionClickTracking", 
+            SovClickTracking:"$SovClickTracking", 
+            start:"$start", 
+            midpoint:"$midpoint",
+            thirdQuartile:"$thirdQuartile",
+            complete:"$complete",
+            createdOn:"$createdOn"
+        }},
+        {$group:{_id:{phoneMake:"$phoneMake"}, 
+            campaignId:{$push:"$campaignId"},
+            impression:{$sum:"$impression"}, 
+            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+            SovClickTracking:{$sum:"$SovClickTracking"}, 
+            start:{$sum:"$start"}, 
+            midpoint:{$sum:"$midpoint"},
+            thirdQuartile:{$sum:"$thirdQuartile"},
+            complete:{$sum:"$complete"},
+            createdOn:{$push:"$createdOn"}
+        }},{$project:{
+            phoneMake:"$_id.phoneMake", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
+        }}
+            ],
+            'layout':[
+                {$match:{campaignId:{$in:layout}}}
+            ]
+        }
+    }
+])
+    console.log(result)
+    res.status(200).send(result)
+
 })
 
 router.put('/zipbycampids',adminauth,(req,res)=>{
@@ -283,7 +355,8 @@ router.put('/platformTypebycampidstest',adminauth,(req,res)=>{
 router.put('/citylanguagebycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
     const dumd =[];
-    var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
+    
+    var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd  
     citylanguagereports.aggregate([
         {$match:{campaignId:{$in:ids}}},
         {$project:{citylanguage:{$toLower:'$citylanguage'},
@@ -308,7 +381,7 @@ router.put('/citylanguagebycampids',adminauth,(req,res)=>{
             complete:{$sum:"$complete"},
             createdOn:{$push:"$createdOn"}
         }},{$project:{
-            citylanguage:"$_id.citylanguage", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+            citylanguage:"$_id.citylanguage", campaignId:"$campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
             start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
         }}
     ])
