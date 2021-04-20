@@ -30,7 +30,7 @@ function ManageUser() {
             }
         }).then(res=>res.json())
         .then(uss=>{
-            // console.log(uss)
+            console.log(uss)
             setusers(uss)
         }).catch(err => console.log(err))
     },[])
@@ -228,7 +228,7 @@ function ManageUser() {
                                 <TableCell align='center'>{data.email}</TableCell>
                                 <TableCell align='center'>{data.usertype}</TableCell>
                                 {data.usertype!=='admin' && <TableCell align='center' onClick={()=>deleteUSer(data.username)} style={{cursor:'pointer'}}><DeleteOutlinedIcon /></TableCell>}
-                                {data.usertype!=='admin' && <TableCell align='center' style={{cursor:'pointer'}}><EditIcon /></TableCell>}
+                                {data.usertype!=='admin' && <TableCell align='center' onClick={()=>history.push(`/EditUser/${data._id}`)} style={{cursor:'pointer'}}><EditIcon /></TableCell>}
                             </TableRow>
                         })}
                     </TableBody>
