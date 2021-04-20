@@ -103,7 +103,7 @@ router.get('/:id',adminauth,(req,res)=>{
     // if(req.user.usertype !== 'admin'){
     //     return res.json({message:'You Should be an admin'})
     // }
-    admin.findById(req.params.id)
+    admin.find({_id:req.params.id})
     .select('-password')
     .then(erre=>{
         res.json(erre)
