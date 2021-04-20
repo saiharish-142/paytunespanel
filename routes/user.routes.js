@@ -103,12 +103,8 @@ router.put('/addbundleOrcampaigns',adminauth,(req,res)=>{
     const { id, campagins, bundles } = req.body
     admin.findOne({_id:id})
     .then(user=>{
-        var campaignids = user.campaigns
-        var bundlesids = user.bundles
-        campaignids = campaignids.concat(campagins)
-        bundlesids = bundlesids.concat(bundles)
-        user.campagins = [...new Set(campaignids)];
-        user.bundles = [...new Set(bundlesids)];
+        user.campagins = [...new Set(campagins)];
+        user.bundles = [...new Set(bundles)];
         user.save()
         .then(respo=>{
             res.json({message:'Updated Successfully',user:respo})
