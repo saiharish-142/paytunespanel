@@ -26,8 +26,8 @@ const useStyles = makeStyles({
 
 function ClientManage() {
     const {clientName} = useParams()
-    const {state,dispatch} = useContext(UserContext)
-    const {state1,dispatch1} = useContext(IdContext)
+    const {state} = useContext(UserContext)
+    const {dispatch1} = useContext(IdContext)
     // console.log(state1,state)
     const classes = useStyles();
     const history = useHistory()
@@ -39,13 +39,13 @@ function ClientManage() {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     useEffect(() => {
-        fetch('/streamingads/clientgrouped',{
+        fetch('/streamingads/clientgroupedbyids',{
             method:'put',
             headers:{
                 "Content-Type":"application/json",
                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
             },body:JSON.stringify({
-                Advertiser: clientName ? clientName : state.username
+                campaignId: state.campaigns
             })
         }).then(res=>res.json())
         .then(result =>{
@@ -272,7 +272,7 @@ function ClientManage() {
     }
     return (
         <div className='dashboard'>
-            <SearchCampagin inval={searchval} setInval={onChange} />
+            <SearchCampagin state={state && state.usertype} inval={searchval} setInval={onChange} />
             <Paper className={classes.root}>
                 <TableContainer className={classes.container}>
                     <Table stickyHeader aria-label="sticky table">
@@ -298,7 +298,7 @@ function ClientManage() {
                             if(typeof row !== 'undefined'){
                             return (
                             <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
-                                <TableCell align='left'>{row.Adtitle && row.Adtitle}</TableCell>
+                                <TableCell align='left'>{row.Adtitle && row.Adtitle[0].toUpperCase() + row.Adtitle.substring(1,)}</TableCell>
                                 <TableCell align='left'>{row.Advertiser && row.Advertiser}</TableCell>
                                 <TableCell align='center'>{row.Pricing && row.Pricing}</TableCell>
                                 <TableCell align='center'>{row.ro && row.ro}</TableCell>

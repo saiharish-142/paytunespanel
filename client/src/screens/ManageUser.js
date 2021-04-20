@@ -1,7 +1,9 @@
-import { Button, FormControl, InputLabel, Paper, Select, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core'
+import { Button, FormControl, Input, InputLabel, Paper, Select, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import EditIcon from '@material-ui/icons/Edit';
+import CancelIcon from '@material-ui/icons/Cancel';
 import M from 'materialize-css'
 import { useHistory } from 'react-router-dom';
 
@@ -12,6 +14,13 @@ function ManageUser() {
     const [usertype, setusertype] = useState('')
     const [username, setusername] = useState('')
     const [users, setusers] = useState([])
+    const [selectedcampaigns, setselectedcampaigns] = useState([])
+    const [searchedcampaigns, setsearchedcampaigns] = useState([])
+    const [campaigns, setcampaigns] = useState([])
+    const [selectedbundles, setselectedbundles] = useState([])
+    const [searchedbundles, setsearchedbundles] = useState([])
+    const [bundles, setbundles] = useState([])
+    // Get users
     useEffect(()=>{
         fetch('/auth/users',{
             method:'get',
@@ -25,17 +34,49 @@ function ManageUser() {
             setusers(uss)
         }).catch(err => console.log(err))
     },[])
+    // Get bundles
+    useEffect(()=>{
+        fetch('/bundles/names',{
+            method:'get',
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization" :"Bearer "+localStorage.getItem("jwt")
+            }
+        }).then(res=>res.json())
+        .then(uss=>{
+            // console.log(uss)
+            setbundles(uss)
+            setsearchedbundles(uss)
+        }).catch(err => console.log(err))
+    },[])
+    // Get Campaigns
+    useEffect(()=>{
+        fetch('/streamingads/names',{
+            method:'get',
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization" :"Bearer "+localStorage.getItem("jwt")
+            }
+        }).then(res=>res.json())
+        .then(uss=>{
+            // console.log(uss)
+            setcampaigns(uss)
+            setsearchedcampaigns(uss)
+        }).catch(err => console.log(err))
+    },[])
     useEffect(() => {
         console.log('users updated')
     }, [users])
     function createUser(){
+        var bundleids = selectedbundles.map(bundle=>{return bundle._id})
+        var campids = selectedcampaigns.map(camp=>{return camp._id})
         fetch('/auth/createUser',{
             method:'put',
             headers:{
                 "Content-Type":"application/json",
                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
             },body:JSON.stringify({
-                username, password, email, usertype
+                username, password, email, usertype, bundles:bundleids, campaigns:campids
             })
         }).then(res=>res.json())
         .then(result=>{
@@ -47,6 +88,20 @@ function ManageUser() {
                 // console.log(data)
                 M.toast({html:result.message, classes:'#69f0ae green accent-2'})
                 setusers(data)
+                setemail('')
+                setpassword('')
+                setusertype('')
+                setusername('')
+                var campsel = selectedcampaigns
+                var bundsel = selectedbundles
+                var bundlen = bundles
+                var campn = campaigns
+                bundlen.concat(bundsel)
+                campn.concat(campsel)
+                setselectedbundles([])
+                setselectedcampaigns([])
+                setcampaigns(campn)
+                setbundles(bundlen)
                 history.push('/manageusers')
             }
         }).catch(err => console.log(err))
@@ -87,12 +142,76 @@ function ManageUser() {
                             <option value='client'>Client</option>
                         </Select>
                     </FormControl>
+                    <div className='title'>Selected Bundles</div>
+                    <div className='selectedList'>{
+                        selectedbundles.map((bundle,i)=>{
+                            return <div key={i} className='selectedListItem'>{bundle.bundleadtitle}<CancelIcon style={{cursor:'pointer'}} onClick={()=>{
+                                var selectedbundlelist = selectedbundles.filter(x=> x.bundleadtitle !== bundle.bundleadtitle)
+                                var searchedbundlesnew = searchedbundles
+                                var bundlesnew = bundles
+                                searchedbundlesnew.push(bundle)
+                                bundlesnew.push(bundle)
+                                setselectedbundles(selectedbundlelist)
+                                setsearchedbundles(searchedbundlesnew)
+                                setbundles(bundlesnew)
+                            }} /></div>
+                        })
+                    }</div>
+                    <Input placeholder='search bundles' onChange={(e)=>{
+                        var bundlesdata = bundles.filter(x=> x.bundleadtitle.toLowerCase().includes(e.target.value.toLowerCase()))
+                        setsearchedbundles(bundlesdata)
+                    }} />
+                    <div className='List'>{
+                        searchedbundles.map((bundle,i)=>{
+                            return <div key={i} className='ListItem' onClick={()=>{
+                                var bundlesnew = bundles.filter(x => x.bundleadtitle!==bundle.bundleadtitle)
+                                var searchedbundlesnew = searchedbundles.filter(x => x.bundleadtitle!==bundle.bundleadtitle)
+                                var selectedbun = selectedbundles
+                                selectedbun.push(bundle)
+                                setselectedbundles(selectedbun)
+                                setsearchedbundles(searchedbundlesnew)
+                                setbundles(bundlesnew)
+                            }}>{bundle.bundleadtitle}</div>
+                        })
+                    }</div>
+                    <div className='title'>Selected Campaigns</div>
+                    <div className='selectedList'>{
+                        selectedcampaigns.map((camp,i)=>{
+                            return <div key={i} className='selectedListItem'>{camp.AdTitle}<CancelIcon style={{cursor:'pointer'}} onClick={()=>{
+                                var selectedcampaignlist = selectedcampaigns.filter(x=> x.AdTitle !== camp.AdTitle)
+                                var searchedcampaignsnew = searchedcampaigns
+                                var campaignsnew = campaigns
+                                searchedcampaignsnew.push(camp)
+                                campaignsnew.push(camp)
+                                setselectedcampaigns(selectedcampaignlist)
+                                setsearchedcampaigns(searchedcampaignsnew)
+                                setcampaigns(campaignsnew)
+                            }} /></div>
+                        })
+                    }</div>
+                    <Input placeholder='search campaigns' onChange={(e)=>{
+                        var campaignsdata = campaigns.filter(x=> x.AdTitle.toLowerCase().includes(e.target.value.toLowerCase()))
+                        setsearchedcampaigns(campaignsdata)
+                    }} />
+                    <div className='List'>{
+                        searchedcampaigns.map((camp,i)=>{
+                            return <div key={i} className='ListItem' onClick={()=>{
+                                var campaignsnew = campaigns.filter(x => x.AdTitle!==camp.AdTitle)
+                                var searchedcampaignsnew = searchedcampaigns.filter(x => x.AdTitle!==camp.AdTitle)
+                                var selectedcamp = selectedcampaigns
+                                selectedcamp.push(camp)
+                                setselectedcampaigns(selectedcamp)
+                                setsearchedcampaigns(searchedcampaignsnew)
+                                setcampaigns(campaignsnew)
+                            }}>{camp.AdTitle}</div>
+                        })
+                        }</div>
                     <input placeholder='Email' required value={email} onChange={(e)=>setemail(e.target.value)} />
                     <input type='password' placeholder='Password' required value={password} onChange={(e)=>setpassword(e.target.value)} />
                     <Button type='submit' color="primary" variant="contained">Create User</Button>
                 </form>
             </Paper>
-            <Paper style={{width:'50%',margin:'0 auto',padding:'20px'}}>
+            <Paper style={{width:'50%',margin:'0 auto 20px auto',padding:'20px'}}>
                 <b style={{fontSize:'20px'}}>Users List</b>
                 <Table>
                     <TableHead>
@@ -109,6 +228,7 @@ function ManageUser() {
                                 <TableCell align='center'>{data.email}</TableCell>
                                 <TableCell align='center'>{data.usertype}</TableCell>
                                 {data.usertype!=='admin' && <TableCell align='center' onClick={()=>deleteUSer(data.username)} style={{cursor:'pointer'}}><DeleteOutlinedIcon /></TableCell>}
+                                {data.usertype!=='admin' && <TableCell align='center' style={{cursor:'pointer'}}><EditIcon /></TableCell>}
                             </TableRow>
                         })}
                     </TableBody>

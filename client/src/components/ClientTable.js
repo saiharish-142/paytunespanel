@@ -28,14 +28,13 @@ export default function BasicTable({singlead,title}) {
     const [sq, setsq] = useState(0)
     const [tq, settq] = useState(0)
     const [complete, setcomplete] = useState(0)
-    const [ratio, setratio] = useState(0)
-    const [ratiod, setratiod] = useState(0)
-    const [ratiov, setratiov] = useState(0)
+    // const [ratio, setratio] = useState(0)
+    // const [ratiod, setratiod] = useState(0)
+    // const [ratiov, setratiov] = useState(0)
     const [click, setclick] = useState(0)
-    const [imprada, setimprada] = useState(0)
-    const [uniquesumcamp, setuniquesumcamp] = useState(0)
-    const [uniquesumcampd, setuniquesumcampd] = useState(0)
-    const [uniquesumcampv, setuniquesumcampv] = useState(0)
+    // const [uniquesumcamp, setuniquesumcamp] = useState(0)
+    // const [uniquesumcampd, setuniquesumcampd] = useState(0)
+    // const [uniquesumcampv, setuniquesumcampv] = useState(0)
     const [logsd, setlogsd] = useState([])
     const [logsv, setlogsv] = useState([])
     // const [idsd, setidsd] = useState([])
@@ -44,6 +43,7 @@ export default function BasicTable({singlead,title}) {
     const [imprev, setimprev] = useState(0)
     const [clickv, setclickv] = useState(0)
     const classes = useStyles();
+    // console.log(singlead)
     // const normal =(val)=>{
     //     let v = Math.round(val*100)/100
     //     // console.log(v)
@@ -124,25 +124,24 @@ export default function BasicTable({singlead,title}) {
     // },[ids,imprev])
     useEffect(()=>{
         if(state1){
-            fetch(`/bundles/unp/${state1}`,{
-                method:'get',
+            fetch('/streamingads/getids',{
+                method:'put',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                }
+                },body:JSON.stringify({
+                    adtitle:state1
+                })
             }).then(res=>res.json())
             .then(idds=>{
-                // console.log(idds.ids)
-                var idsa = idds.ids
-                idsa = [...new Set(idsa)];
-                // console.log(idds.ids,idsa)
+                // console.log(idds)
                 fetch('/ads/addetailt',{
                     method:'put',
                     headers:{
                         "Content-Type":"application/json",
                         "Authorization" :"Bearer "+localStorage.getItem("jwt")
                     },body:JSON.stringify({
-                        campaignId:idsa
+                        campaignId:idds
                     })
                 }).then(res=>res.json())
                 .then(result => {
@@ -192,7 +191,7 @@ export default function BasicTable({singlead,title}) {
                 var thir1 = 0;
                 var compo1 = 0;
                 var logss = result;
-                // console.log(result)
+                console.log(result)
                 result.map((re)=>{
                     re.nameads = 'Offline'
                     impressions1 += re.impressions
@@ -413,8 +412,8 @@ export default function BasicTable({singlead,title}) {
         return Math.round(resula*1)/1 ;
     }
     const dateformatchanger = (date) => {
-        var dategot = date.toString();
-        var datechanged = dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
+        var dategot = date && date.toString();
+        var datechanged = dategot && dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
         return datechanged;
     }
     const colorfinder = (totaltime,lefttime,tobeimpress,impress) => {
@@ -486,13 +485,13 @@ export default function BasicTable({singlead,title}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Unique Users</TableCell>
+                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Total Clicks Delivered till date</TableCell>
                 <TableCell>CTR</TableCell>
             </TableRow>
             </TableHead>
             <TableBody>
-            {singlead._id && (logs.length>0) && ids ?
+            {singlead && (logs.length>0) && ids ?
                 <TableRow 
                     style={{
                         background: colorfinder(
@@ -508,7 +507,7 @@ export default function BasicTable({singlead,title}) {
                     <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.audimpression}</TableCell>
                     <TableCell>{impre}</TableCell>
-                    <TableCell>{ratio && Math.round(ratio*impre) + 1}</TableCell>
+                    {/* <TableCell>{ratio && Math.round(ratio*impre) + 1}</TableCell> */}
                     <TableCell>{click}</TableCell>
                     <TableCell>{Math.round(click*100/impre *100)/100}%</TableCell>
                 </TableRow>
@@ -526,7 +525,7 @@ export default function BasicTable({singlead,title}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Unique Users</TableCell>
+                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Total Clicks Delivered till date</TableCell>
                 <TableCell>CTR</TableCell>
             </TableRow>
@@ -548,7 +547,7 @@ export default function BasicTable({singlead,title}) {
                     <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.disimpression}</TableCell>
                     <TableCell>{impred}</TableCell>
-                    <TableCell>{Math.round(ratiod*impred) + 1}</TableCell>
+                    {/* <TableCell>{Math.round(ratiod*impred) + 1}</TableCell> */}
                     <TableCell>{clickd}</TableCell>
                     <TableCell>{Math.round(clickd*100/impred *100)/100}%</TableCell>
                 </TableRow>
@@ -566,7 +565,7 @@ export default function BasicTable({singlead,title}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Unique Users</TableCell>
+                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Total Clicks Delivered till date</TableCell>
                 <TableCell>CTR</TableCell>
             </TableRow>
@@ -588,7 +587,7 @@ export default function BasicTable({singlead,title}) {
                     <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.disimpression}</TableCell>
                     <TableCell>{imprev}</TableCell>
-                    <TableCell>{Math.round(ratiov*imprev) + 1}</TableCell>
+                    {/* <TableCell>{Math.round(ratiov*imprev) + 1}</TableCell> */}
                     <TableCell>{clickv}</TableCell>
                     <TableCell>{Math.round(clickv*100/imprev *100)/100}%</TableCell>
                 </TableRow>
@@ -614,10 +613,10 @@ export default function BasicTable({singlead,title}) {
                         {fq>0 && sq>0 && tq>0 ?
                             <TableRow>
                                     <TableCell>Impressions</TableCell>
-                                    <TableCell>{Math.round(fq*impre/imprada)}</TableCell>
-                                    <TableCell>{Math.round(sq*impre/imprada)}</TableCell>
-                                    <TableCell>{Math.round(tq*impre/imprada)}</TableCell>
-                                    <TableCell>{Math.round(complete*impre/imprada)}</TableCell>
+                                    <TableCell>{Math.round(fq*impre/complete)}</TableCell>
+                                    <TableCell>{Math.round(sq*impre/complete)}</TableCell>
+                                    <TableCell>{Math.round(tq*impre/complete)}</TableCell>
+                                    <TableCell>{Math.round(complete*impre/complete)}</TableCell>
                                     <TableCell>{impre}</TableCell>
                             </TableRow>:
                             <TableRow>

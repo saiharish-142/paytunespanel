@@ -1,14 +1,15 @@
 import React,{ useEffect, useContext } from 'react'
 import { useState } from 'react'
 import {useHistory, useParams} from 'react-router-dom'
-import { IdContext } from '../App'
+import { IdContext, UserContext } from '../App'
 import EnhancedTable from '../components/ClientTable'
 import M from 'materialize-css'
 
 function ClientReport() {
     const {campname} = useParams()
     const history = useHistory();
-    const {state1,dispatch1} = useContext(IdContext)
+    const {state} = useContext(UserContext)
+    const {dispatch1} = useContext(IdContext)
     const [singlead, setsinglead] = useState({})
     const [title, settitle] = useState('')
     const [loading, setloading] = useState(true)
@@ -19,18 +20,20 @@ function ClientReport() {
     }, [campname])
     useEffect(()=>{
         if(campname){
-            fetch(`/bundles/${campname}`,{
-                method:'get',
+            fetch(`/streamingads/groupedsingle/`,{
+                method:'put',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                }
+                },body:JSON.stringify({
+                    adtitle:campname
+                })
             }).then(res=>res.json())
             .then(result=>{
-                settitle(result.bundleadtitle)
+                settitle(result[0]._id)
                 setloading(false)
-                setsinglead(result)
-                // console.log(result[0])
+                setsinglead(result[0])
+                // console.log(result)
             })
             .catch(err =>{
                 setloading(false)
@@ -41,13 +44,19 @@ function ClientReport() {
     return (
         <div style={{padding:'20px'}}>
             <div style={{width:'10vw'}}><button 
-                onClick={()=>history.push(`/clientSideCamp`)} 
+                onClick={()=>{
+                    if(state.usertype==='admin'){
+                        history.push(`/clientSideCamp`)
+                    }else{
+                        history.push(`/manageAds`)
+                    }
+                }} 
                 className='btn #424242 grey darken-3'
                 style={{margin:'20px',textAlign:'left'}}
             >Back</button></div>
             {/* <TitlRname title={title} settitle={settitle} submit={submitTitle} setloading={setloading} loading={loading} /> */}
             {/* <div style={{margin:'0 auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div> */}
-            <EnhancedTable title={title} singlead={singlead} />
+            <EnhancedTable title={campname} singlead={singlead} />
         </div>
     )
 }

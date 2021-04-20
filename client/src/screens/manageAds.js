@@ -1,10 +1,12 @@
-import React,{ useEffect,useState } from 'react'
+import React,{ useContext, useEffect,useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import DataTable from '../components/CampTable'
 import SearchCampagin from '../components/SearchCampagin'
+import { UserContext } from '../App'
 
 function Dashboard({clientview}) {
     const history = useHistory()
+    const {state,dispatch} = useContext(UserContext)
     const [loading, setloading] = useState(true)
     const [searchval, setSearchval] = useState('')
     const [streamingads, setStreamingads] = useState([])
@@ -55,7 +57,7 @@ function Dashboard({clientview}) {
     }
     return (
         <div className='dashboard'>
-            <SearchCampagin inval={searchval} setInval={onChange} />
+            <SearchCampagin state={state && state.usertype} inval={searchval} setInval={onChange} />
             {!loading ? <DataTable clientview={clientview} streamingads={streamingadsSearched} settingcamp={setStreamingadsSearched} />: <div> loading... </div>}
             {/* {streamingads.length ? "": <div> Loading... </div>} */}
         </div>

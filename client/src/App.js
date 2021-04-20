@@ -17,6 +17,7 @@ import CampaignBundle from './screens/CampaignBundle';
 import DashboardBundle from './screens/manageBundles';
 import ReportBundle from './screens/Reportbundle';
 import DetailedTableBundle from './screens/detailedReportBundle';
+import EditUser from './screens/EditUser';
 
 export const UserContext = createContext()
 export const IdContext = createContext()
@@ -91,6 +92,11 @@ function App() {
               path='/manageusers'
               exact
               render={()=>(state && (state.usertype === 'admin' ? <ManageUser /> : <Home />))}
+              />
+            <Route
+              path='/EditUser/:id'
+              exact
+              render={()=>(state && (state.usertype === 'admin' ? <EditUser /> : <Home />))}
               />
             <Route
               path='/manageAds/:campname'

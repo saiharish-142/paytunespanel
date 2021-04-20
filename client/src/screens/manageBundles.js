@@ -1,10 +1,12 @@
-import React,{ useEffect,useState } from 'react'
+import React,{ useContext, useEffect,useState } from 'react'
 import { useHistory } from 'react-router-dom'
+import { UserContext } from '../App'
 import StickyHeadTablebundle from '../components/BundleTable'
 import SearchCampagin from '../components/SearchCampagin'
 
 function DashboardBundle({clientview}) {
     const history = useHistory()
+    const {state,dispatch} = useContext(UserContext)
     const [loading, setloading] = useState(true)
     const [searchval, setSearchval] = useState('')
     const [streamingads, setStreamingads] = useState([])
@@ -55,7 +57,7 @@ function DashboardBundle({clientview}) {
     }
     return (
         <div className='dashboard'>
-            <SearchCampagin inval={searchval} setInval={onChange} />
+            <SearchCampagin state={state && state.usertype} inval={searchval} setInval={onChange} />
             {!loading ? <StickyHeadTablebundle clientview={clientview} streamingads={streamingadsSearched} settingcamp={setStreamingadsSearched} />: <div> loading... </div>}
             {/* {streamingads.length ? "": <div> Loading... </div>} */}
         </div>
