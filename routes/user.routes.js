@@ -61,7 +61,10 @@ router.post('/signin',(req,res)=>{
 })
 
 router.put('/createUser',adminauth,(req,res)=>{
-    const { username, password, email, usertype } = req.body
+    const { username, password, email, usertype, bundles, campaigns } = req.body
+    if(!username || !password || !email || !usertype ){
+        return res.status(422).json({error:'Enter the all required fields'})
+    }
     admin.findOne({email:email})
     .then(oneofuser=>{
         if(oneofuser){
@@ -72,7 +75,7 @@ router.put('/createUser',adminauth,(req,res)=>{
         bcrypt.hash(password,12)
         .then(hashpass => {
             const adminU = new admin({
-                username,password:hashpass,email,usertype
+                username,password:hashpass,email,usertype,bundles,campaigns
             })
             adminU.save()
             .then(savedAdmin => {
@@ -94,6 +97,29 @@ router.get('/users',adminauth,(req,res)=>{
         res.json(erre)
     })
     .catch(err=>res.status(422).json(err))
+})
+
+router.put('/addbundleOrcampaigns',adminauth,(req,res)=>{
+    const { id, campagins, bundles } = req.body
+    admin.findOne({_id:id})
+    .then(user=>{
+        var campaignids = user.campaigns
+        var bundlesids = user.bundles
+        campaignids = campaignids.concat(campagins)
+        bundlesids = bundlesids.concat(bundles)
+        user.campagins = [...new Set(campaignids)];
+        user.bundles = [...new Set(bundlesids)];
+        user.save()
+        .then(respo=>{
+            res.json({message:'Updated Successfully',user:respo})
+        }).catch(err=>{
+            console.log(err)
+            return res.status(400).json({error:'error occured..',err:err})
+        })
+    }).catch(err=>{
+        console.log(err)
+        return res.status(400).json({error:'error occured..',err:err})
+    })
 })
 
 router.delete('/deleteUser',adminauth,(req,res)=>{

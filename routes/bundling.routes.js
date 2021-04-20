@@ -14,6 +14,13 @@ router.get('/',adminauth,(req,res)=>{
     }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
 })
 
+router.get('/names',adminauth,(req,res)=>{
+    bindstreamingads.find({},{_id:1,bundleadtitle:1})
+    .then(result=>{
+        res.json(result)
+    }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
+})
+
 router.get('/:id',adminauth,(req,res)=>{
     const {id} = req.params
     bindstreamingads.findById(id)
