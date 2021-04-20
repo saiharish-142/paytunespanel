@@ -99,8 +99,20 @@ router.get('/users',adminauth,(req,res)=>{
     .catch(err=>res.status(422).json(err))
 })
 
+router.get('/:id',adminauth,(req,res)=>{
+    // if(req.user.usertype !== 'admin'){
+    //     return res.json({message:'You Should be an admin'})
+    // }
+    admin.findById(req.params.id)
+    .select('-password')
+    .then(erre=>{
+        res.json(erre)
+    })
+    .catch(err=>res.status(422).json(err))
+})
+
 router.put('/addbundleOrcampaigns',adminauth,(req,res)=>{
-    const { id, campagins, bundles } = req.body
+    const { id, campagins, bundles, username, email, usertype, } = req.body
     admin.findOne({_id:id})
     .then(user=>{
         user.campagins = [...new Set(campagins)];
