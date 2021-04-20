@@ -13,6 +13,17 @@ router.get('/',adminauth,(req,res)=>{
     .catch(err => console.log(err))
 })
 
+router.put('/byids',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
+    StreamingAds.find({_id:{$in:ids}})
+    .sort('-createdOn')
+    .then(ads=>{
+        res.json(ads)
+    })
+    .catch(err => console.log(err))
+})
+
 router.get('/names',adminauth,(req,res)=>{
     StreamingAds.find({},{_id:1,AdTitle:1})
     .sort('-createdOn')
