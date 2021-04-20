@@ -98,9 +98,11 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                     .map((row,i) =>{ 
                         if(typeof row !== 'undefined'){
                         if(row[jsotitle] && row[jsotitle] !== " - " && row[jsotitle] && row[jsotitle] !== undefined){
+                            // console.log(row[jsotitle] && row[jsotitle][0].toUpperCase() + row[jsotitle].substring(1,))
+                            // console.log(row[jsotitle] && row[jsotitle][0])
                         return (
                         <TableRow key ={i} hover role="checkbox" tabIndex={-1} key={row._id}>
-                            {jsotitle === 'region' ? <TableCell>{regiondata[row[jsotitle]] ? regiondata[row[jsotitle]] : row[jsotitle]}</TableCell> : <TableCell>{row[jsotitle]}</TableCell>}
+                            {jsotitle === 'region' ? <TableCell>{regiondata[row[jsotitle]] ? regiondata[row[jsotitle]] : row[jsotitle]}</TableCell> : (jsotitle==='zip' ? <TableCell>{row[jsotitle]}</TableCell> : <TableCell>{row[jsotitle] && row[jsotitle][0] != undefined && row[jsotitle][0].toUpperCase() + row[jsotitle].substring(1,)}</TableCell>)}
                             {!client && <TableCell>{dateformatchanger(streamingads && streamingads.startDate[0].slice(0,10))}</TableCell>}
                             {!client && <TableCell>{dateformatchanger(streamingads && streamingads.endDate[0].slice(0,10))}</TableCell>}
                             {!client && <TableCell>{timefinder(streamingads && streamingads.endDate[0],streamingads.startDate[0])} days</TableCell>}

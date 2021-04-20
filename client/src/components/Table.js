@@ -541,17 +541,17 @@ export default function BasicTable({singlead}) {
         if(spentdata.length){
             // Humgama
             if(appId.toString() === '5d10c405844dd970bf41e2af'){
-                return Math.round((parseInt(impressions)*4.25/(stateru*100))*10000)/10000;
+                return parseInt(impressions)*4.25/(stateru*100);
             }
             // Wynk
             if(appId.toString() === '5b2210af504f3097e73e0d8b'){
-                return Math.round((parseInt(impressions)*10/(stateru*100))*10000)/10000;
+                return parseInt(impressions)*10/(stateru*100);
             }
             var datarq = spentdata.filter(x => x.campaignId === campaignId && x.appId === appId)
             var spent = 0;
             // console.log(datarq)
             datarq.map(dat=>{
-                spent += parseInt(dat.totalSpent)
+                spent += parseFloat(dat.totalSpent)
             })
             return spent;
         }
@@ -564,7 +564,7 @@ export default function BasicTable({singlead}) {
             allspentdatareq.map(dat => {
                 spent += parseFloat(dat.totalSpent)
             })
-            return Math.round(spent*10000)/10000;
+            return spent;
         }
         if(camstype === 'display' && spentdata){
             var allspentdatareq = spentdata.filter(x=> ids.display.includes(x.campaignId))
@@ -572,7 +572,7 @@ export default function BasicTable({singlead}) {
             allspentdatareq.map(dat => {
                 spent += parseFloat(dat.totalSpent)
             })
-            return Math.round(spent*10000)/10000;
+            return spent;
         }
         if(camstype === 'video' && spentdata){
             var allspentdatareq = spentdata.filter(x=> ids.video.includes(x.campaignId))
@@ -580,7 +580,7 @@ export default function BasicTable({singlead}) {
             allspentdatareq.map(dat => {
                 spent += parseFloat(dat.totalSpent)
             })
-            return Math.round(spent*10000)/10000;
+            return spent;
         }
         if(camstype === 'all' && spentdata){
             var allspentdatareq = spentdata
@@ -588,7 +588,7 @@ export default function BasicTable({singlead}) {
             allspentdatareq.map(dat=>{
                 spent += parseFloat(dat.totalSpent)
             })
-            return Math.round(spent*10000)/10000;
+            return spent;
         }
         return 0;
     }
@@ -639,7 +639,7 @@ export default function BasicTable({singlead}) {
                     {/* <TableCell>{uniquesumcamp + uniquesumcampd + uniquesumcampv}</TableCell> */}
                     <TableCell>{ids &&  Math.round(((ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ))/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round((impre + impred + imprev)/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{Math.round((Math.round(completespentfider('all')*1000)/1000 + Math.round(spentOffline*10000)/10000 + Math.round(spentOfflined*10000)/10000 + Math.round(spentOfflinev*10000)/10000 )*1)/1}</TableCell>
+                    <TableCell>{Math.round((completespentfider('all') + spentOffline + spentOfflined + spentOfflinev )*1)/1}</TableCell>
                     <TableCell>{click + clickd + clickv}</TableCell>
                     <TableCell>{Math.round((click + clickd + clickv)*100/(impre + impred + imprev) *100)/100}%</TableCell>
                     <TableCell>{ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 )- impre - impred - imprev}</TableCell>
@@ -691,7 +691,7 @@ export default function BasicTable({singlead}) {
                     {/* <TableCell>{uniquesumcamp}</TableCell> */}
                     <TableCell>{ids &&  Math.round(ids.audimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{Math.round((Math.round(completespentfider('audio')*10000)/10000 + Math.round(spentOffline*10000)/10000)*1)/1}</TableCell>
+                    <TableCell>{Math.round((completespentfider('audio') + spentOffline)*1)/1}</TableCell>
                     <TableCell>{click}</TableCell>
                     <TableCell>{Math.round(click*100/impre *100)/100}%</TableCell>
                     <TableCell>{ids && ids.audimpression-impre}</TableCell>
@@ -743,7 +743,7 @@ export default function BasicTable({singlead}) {
                     {/* <TableCell>{uniquesumcampd}</TableCell> */}
                     <TableCell>{ids && Math.round(ids.disimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{Math.round((completespentfider('display') + Math.round(spentOfflined*10000)/10000)*1)/1}</TableCell>
+                    <TableCell>{Math.round((completespentfider('display') + spentOfflined*10000)*1)/1}</TableCell>
                     <TableCell>{clickd}</TableCell>
                     <TableCell>{Math.round(clickd*100/impred *100)/100}%</TableCell>
                     <TableCell>{ids && ids.disimpression-impred}</TableCell>
@@ -795,7 +795,7 @@ export default function BasicTable({singlead}) {
                     {/* <TableCell>{uniquesumcampv}</TableCell> */}
                     <TableCell>{ids && Math.round(ids.vidimpression/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
                     <TableCell>{Math.round(imprev/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
-                    <TableCell>{Math.round((completespentfider('video') + Math.round(spentOfflinev*10000)/10000)*1)/1}</TableCell>
+                    <TableCell>{Math.round((completespentfider('video') + spentOfflinev)*1)/1}</TableCell>
                     <TableCell>{clickv}</TableCell>
                     <TableCell>{Math.round(clickv*100/imprev *100)/100}%</TableCell>
                     <TableCell>{ids && ids.vidimpression-imprev}</TableCell>
