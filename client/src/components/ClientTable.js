@@ -605,7 +605,7 @@ export default function BasicTable({singlead,title}) {
             </TableBody>
         </Table>
         </TableContainer>
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Quartile Summary Report</div>
+        {/* <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Quartile Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <TableContainer  style={{margin:'20px 0'}} elevation={3} component={Paper}>
             <Table>
@@ -640,7 +640,7 @@ export default function BasicTable({singlead,title}) {
                         }
                 </TableBody>
             </Table>
-        </TableContainer>
+        </TableContainer> */}
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
         <div>last updated at - {datefinder()}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} click={click} impression={impre} client={true} url='platformTypebycampids' />
