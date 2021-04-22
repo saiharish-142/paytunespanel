@@ -436,7 +436,7 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
             if(id_spliter.length){
                 // 
             }else{
-                data.ids.audio.concat(ids)
+                data.ids.audio = ids
             }
             var resstartDate = [].concat.apply([], data.startDate);
             resstartDate = [...new Set(resstartDate)];
