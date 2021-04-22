@@ -471,7 +471,6 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     return diff;
                 }
                 var leftids = arr_diff(selectedids,data.id)
-
                 // var leftids = ids.filter(x=> !selectedids.includes(x))
                 data.leftids = leftids
                 if(leftids){

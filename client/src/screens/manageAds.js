@@ -1,12 +1,12 @@
 import React,{ useContext, useEffect,useState } from 'react'
-import { useHistory } from 'react-router-dom'
+// import { useHistory } from 'react-router-dom'
 import DataTable from '../components/CampTable'
 import SearchCampagin from '../components/SearchCampagin'
 import { UserContext } from '../App'
 
 function Dashboard({clientview}) {
-    const history = useHistory()
-    const {state,dispatch} = useContext(UserContext)
+    // const history = useHistory()
+    const {state} = useContext(UserContext)
     const [loading, setloading] = useState(true)
     const [searchval, setSearchval] = useState('')
     const [streamingads, setStreamingads] = useState([])
