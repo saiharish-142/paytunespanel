@@ -433,8 +433,8 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
         resendDate = [...new Set(resendDate)];
         data.endDate = resendDate
         var tottar = 0;
-        data.TargetImpressions.forEach(num=> tottar += parseInt(num))
-        data.TargetImpressions = tottar
+        // data.TargetImpressions.forEach(num=> tottar += parseInt(num))
+        // data.TargetImpressions = tottar
         res.json(data)
     })
     .catch(err => console.log(err))
