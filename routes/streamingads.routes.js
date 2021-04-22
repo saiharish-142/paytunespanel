@@ -366,6 +366,7 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
     const { adtitle } = req.body
     StreamingAds.aggregate([
         {$project:{
+            id:"$_id",
             AdTitle:{$toLower:"$AdTitle"},
             startDate:"$startDate",
             endDate:"$endDate",
@@ -374,18 +375,21 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
         }},{$match:{
             AdTitle:{$regex:adtitle.toLowerCase()}
         }},{$project:{
+            id:"$id",
             AdTitle:{$split:["$AdTitle","_"]},
             startDate:"$startDate",
             endDate:"$endDate",
             TargetImpressions:"$TargetImpressions",
             createdOn:"$createdOn"
         }},{$project:{
+            id:"$id",
             AdTitle:{$slice:["$AdTitle",2]} ,
             startDate:"$startDate",
             endDate:"$endDate",
             TargetImpressions:"$TargetImpressions",
             createdOn:{$substr:["$createdOn",0,10]}
         }},{$project:{
+            id:"$id",
             AdTitle:{
                 '$reduce': {
                     'input': '$AdTitle',
@@ -403,12 +407,14 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
             TargetImpressions:"$TargetImpressions",
             createdOn:"$createdOn"
         }},{$sort: {createdOn: -1}},{$group:{
+            id:{$push:"$id"},
             _id:"$AdTitle",
             startDate:{$push : "$startDate"},
             endDate:{$push : "$endDate"},
             TargetImpressions:{$push : "$TargetImpressions"}, 
             createdOn:{$push : "$createdOn"}
         }},{$project:{
+            id:"$id",
             Adtitle:"$_id",
             startDate:"$startDate",
             endDate:"$endDate",
