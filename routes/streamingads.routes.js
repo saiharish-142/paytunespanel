@@ -479,7 +479,7 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
             var resendDate = [].concat.apply([], data.endDate);
             resendDate = [...new Set(resendDate)];
             data.endDate = resendDate
-            data.splendid = id_spliter
+            // data.splendid = id_spliter
             // var tottar = 0;
             // data.TargetImpressions.forEach(num=> tottar += parseInt(num))
             // data.TargetImpressions = tottar
