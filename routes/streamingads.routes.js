@@ -432,11 +432,32 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                 typeof campaignId !== 'object') ? 
                 data.id.map(id=>mongoose.Types.ObjectId(id)) : data.id
             let id_spliter = await adsetting.find({campaignId:{$in:ids}},{campaignId:1,type:1}).catch(err=>console.log(err))
-            data.ids = {audio:[],display:[],video:[]}
+            data.ids = {audio:[],audimpression:0,display:[],disimpression:0,video:[],vidimpression:0}
             if(id_spliter.length){
-                // 
+                var audioids = id_spliter.filter(x => x.type === "audio")
+                var displayids = id_spliter.filter(x => x.type === "display")
+                var videoids = id_spliter.filter(x => x.type === "video")
+                var selectedids = [];
+                audioids.map(x=>{
+                    data.ids.audio.push(x.campaignId)
+                    selectedids.push(x.campaignId)
+                })
+                displayids.map(x=>{
+                    data.ids.display.push(x.campaignId)
+                    selectedids.push(x.campaignId)
+                })
+                videoids.map(x=>{
+                    data.ids.video.push(x.campaignId)
+                    selectedids.push(x.campaignId)
+                })
+                var leftids = ids.filter(x=> !selectedids.includes(x))
+                data.leftids = leftids
             }else{
                 data.ids.audio = ids
+                var dattarget = data.TargetImpressions
+                dattarget.map(ar=>{
+                    data.ids.audimpression += parseInt(ar.TR)
+                })
             }
             var resstartDate = [].concat.apply([], data.startDate);
             resstartDate = [...new Set(resstartDate)];
