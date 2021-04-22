@@ -442,14 +442,17 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     data.ids.audio.push(x.campaignId)
                     selectedids.push(x.campaignId)
                 })
+                data.ids.audio = [...new Set(data.ids.audio)];
                 displayids.map(x=>{
                     data.ids.display.push(x.campaignId)
                     selectedids.push(x.campaignId)
                 })
+                data.ids.display = [...new Set(data.ids.display)];
                 videoids.map(x=>{
                     data.ids.video.push(x.campaignId)
                     selectedids.push(x.campaignId)
                 })
+                data.ids.video = [...new Set(data.ids.video)];
                 var leftids = ids.filter(x=> !selectedids.includes(x))
                 data.leftids = leftids
             }else{
