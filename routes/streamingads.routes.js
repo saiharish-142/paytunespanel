@@ -422,21 +422,19 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
             createdOn:{$arrayElemAt : ["$createdOn",0]}
         }},{$sort: {createdOn: -1}}
     ])
-    .then((respo)=>{
-        var data = [];
-        data = respo
-        data.forEach(ad => {
-            var resstartDate = [].concat.apply([], ad.startDate);
-            resstartDate = [...new Set(resstartDate)];
-            ad.startDate = resstartDate
-            var resendDate = [].concat.apply([], ad.endDate);
-            resendDate = [...new Set(resendDate)];
-            ad.endDate = resendDate
-            var tottar = 0;
-            ad.TargetImpressions.forEach(num=> tottar += parseInt(num))
-            ad.TargetImpressions = tottar
-            return ad;
-        })
+    .then(async (respo)=>{
+        var data;
+        data = respo.length && respo[0];
+        // let id_spliter = await
+        var resstartDate = [].concat.apply([], data.startDate);
+        resstartDate = [...new Set(resstartDate)];
+        data.startDate = resstartDate
+        var resendDate = [].concat.apply([], data.endDate);
+        resendDate = [...new Set(resendDate)];
+        data.endDate = resendDate
+        var tottar = 0;
+        data.TargetImpressions.forEach(num=> tottar += parseInt(num))
+        data.TargetImpressions = tottar
         res.json(data)
     })
     .catch(err => console.log(err))
