@@ -412,9 +412,10 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
             _id:"$AdTitle",
             startDate:{$push : "$startDate"},
             endDate:{$push : "$endDate"},
-            TargetImpressions:{$push :{TR: "$TargetImpressions",id:"%id"}}, 
+            TargetImpressions:{$push :{TR: "$TargetImpressions",id:"$id"}}, 
             createdOn:{$push : "$createdOn"}
         }},{$project:{
+            id:"$id",
             Adtitle:"$_id",
             startDate:"$startDate",
             endDate:"$endDate",
@@ -425,17 +426,22 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
     .then(async (respo)=>{
         var data;
         data = respo.length && respo[0];
-        // let id_spliter = await adsetting.find({campaignId:{$in:ids}}).catch(err=>console.log(err))
-        var resstartDate = [].concat.apply([], data.startDate);
-        resstartDate = [...new Set(resstartDate)];
-        data.startDate = resstartDate
-        var resendDate = [].concat.apply([], data.endDate);
-        resendDate = [...new Set(resendDate)];
-        data.endDate = resendDate
-        var tottar = 0;
-        // data.TargetImpressions.forEach(num=> tottar += parseInt(num))
-        // data.TargetImpressions = tottar
-        res.json(data)
+        if(data){
+            let id_spliter = await adsetting.find({campaignId:{$in:data.id}},{campaignId:1,type:1}).catch(err=>console.log(err))
+            var resstartDate = [].concat.apply([], data.startDate);
+            resstartDate = [...new Set(resstartDate)];
+            data.startDate = resstartDate
+            var resendDate = [].concat.apply([], data.endDate);
+            resendDate = [...new Set(resendDate)];
+            data.endDate = resendDate
+            data.splendid = id_spliter
+            // var tottar = 0;
+            // data.TargetImpressions.forEach(num=> tottar += parseInt(num))
+            // data.TargetImpressions = tottar
+            res.json(data)
+        }else{
+            res.status(422).json({error:"somthing went wrong try again"})
+        }
     })
     .catch(err => console.log(err))
 })
