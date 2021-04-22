@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const router = express.Router()
 const StreamingAds = mongoose.model('streamingads')
+const adsetting = mongoose.model('adsetting')
 const adminauth = require('../authenMiddleware/adminauth')
 
 router.get('/',adminauth,(req,res)=>{
@@ -411,10 +412,9 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
             _id:"$AdTitle",
             startDate:{$push : "$startDate"},
             endDate:{$push : "$endDate"},
-            TargetImpressions:{$push : "$TargetImpressions"}, 
+            TargetImpressions:{$push :{TR: "$TargetImpressions",id:"%id"}}, 
             createdOn:{$push : "$createdOn"}
         }},{$project:{
-            id:"$id",
             Adtitle:"$_id",
             startDate:"$startDate",
             endDate:"$endDate",
@@ -425,7 +425,7 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
     .then(async (respo)=>{
         var data;
         data = respo.length && respo[0];
-        // let id_spliter = await
+        // let id_spliter = await adsetting.find({campaignId:{$in:ids}}).catch(err=>console.log(err))
         var resstartDate = [].concat.apply([], data.startDate);
         resstartDate = [...new Set(resstartDate)];
         data.startDate = resstartDate
