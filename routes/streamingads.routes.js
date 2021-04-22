@@ -457,10 +457,7 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                 var leftids = ids.filter(x=> !selectedids.includes(x))
                 data.leftids = leftids
                 if(leftids){
-                    var ai = [];
-                    ai = data.ids.audio
-                    ai.concat(leftids)
-                    data.ids.audio = ai
+                    leftids && leftids.map(id=>data.ids.audio.push(id))
                 }
             }else{
                 data.ids.audio = ids
