@@ -427,7 +427,11 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
         var data;
         data = respo.length && respo[0];
         if(data){
-            let id_spliter = await adsetting.find({campaignId:{$in:data.id}},{campaignId:1,type:1}).catch(err=>console.log(err))
+            var ids = (typeof campaignId !== 'undefined' && 
+                typeof campaignId !== 'string' && 
+                typeof campaignId !== 'object') ? 
+                data.id.map(id=>mongoose.Types.ObjectId(id)) : data.id
+            let id_spliter = await adsetting.find({campaignId:{$in:ids}},{campaignId:1,type:1}).catch(err=>console.log(err))
             var resstartDate = [].concat.apply([], data.startDate);
             resstartDate = [...new Set(resstartDate)];
             data.startDate = resstartDate
