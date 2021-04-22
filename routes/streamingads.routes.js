@@ -453,7 +453,25 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     selectedids.push(x.campaignId)
                 })
                 data.ids.video = [...new Set(data.ids.video)];
-                var leftids = data.id.filter(x=> !selectedids.includes(x))
+                function arr_diff (a1, a2) {
+                    var a = [], diff = [];
+                    for (var i = 0; i < a1.length; i++) {
+                        a[a1[i]] = true;
+                    }
+                    for (var i = 0; i < a2.length; i++) {
+                        if (a[a2[i]]) {
+                            delete a[a2[i]];
+                        } else {
+                            a[a2[i]] = true;
+                        }
+                    }
+                    for (var k in a) {
+                        diff.push(k);
+                    }
+                    return diff;
+                }
+                var leftids = arr_diff(selectedids,data.id)
+
                 // var leftids = ids.filter(x=> !selectedids.includes(x))
                 data.leftids = leftids
                 if(leftids){
