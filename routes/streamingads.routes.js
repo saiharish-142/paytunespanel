@@ -453,8 +453,15 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     selectedids.push(x.campaignId)
                 })
                 data.ids.video = [...new Set(data.ids.video)];
+                // var leftids = ids.filter(x=> !selectedids.includes(x.toString()))
                 var leftids = ids.filter(x=> !selectedids.includes(x))
                 data.leftids = leftids
+                if(leftids){
+                    var ai = [];
+                    ai = data.ids.audio
+                    ai.concat(leftids)
+                    data.ids.audio = ai
+                }
             }else{
                 data.ids.audio = ids
                 var dattarget = data.TargetImpressions
