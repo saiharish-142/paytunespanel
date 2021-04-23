@@ -493,12 +493,12 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                         // console.log(tar.id,x.campaignId,tar.id===x.campaignId,tar.id==x.campaignId,x.campaignId.equals(tar.id))
                         if(x.campaignId.equals(tar.id)){
                             console.log(tar)
-                            audioimpre += parseInt(tar.TR)
+                            data.ids.audimpression += parseInt(tar.TR)
                         }
                     })
                 })
                 data.ids.audio = [...new Set(data.ids.audio)];
-                data.ids.audimpression = audioimpre;
+                // data.ids.audimpression = audioimpre;
                 displayids.map(x=>{
                     data.ids.display.push(x.campaignId.toString())
                     selectedids.push(x.campaignId.toString())
@@ -513,6 +513,12 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                 videoids.map(x=>{
                     data.ids.video.push(x.campaignId.toString())
                     selectedids.push(x.campaignId.toString())
+                    data.TargetImpressions.map(tar=>{
+                        if(x.campaignId.equals(tar.id)){
+                            console.log(tar)
+                            data.ids.vidimpression += parseInt(tar.TR)
+                        }
+                    })
                 })
                 data.ids.video = [...new Set(data.ids.video)];
                 var leftids = arr_diff(selectedids,data.id)
@@ -521,14 +527,8 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                 if(leftids){
                     await leftids.map(id=>data.ids.audio.push(id))
                     data.ids.audio = [...new Set(data.ids.audio)];
+                    data.ids.audio = removeDuplicates(data.ids.audio)
                 }
-                // var audiotarg = data.TargetImpressions.filter(x=> data.ids.audio.includes(x.id))
-                // var displaytarg = data.TargetImpressions.filter(x=> data.ids.display.includes(x.id))
-                // var videotarg = data.TargetImpressions.filter(x=> data.ids.video.includes(x.id))
-                // data.audiotarg = audiotarg
-                // audiotarg.map(tar=> parseInt(data.ids.audimpression) += parseInt(tar.TR))
-                // displaytarg.map(tar=> parseInt(data.ids.disimpression) += parseInt(tar.TR))
-                // videotarg.map(tar=> parseInt(data.ids.vidimpression) += parseInt(tar.TR))
             }else{
                 data.ids.audio = ids
                 var dattarget = data.TargetImpressions
@@ -542,7 +542,7 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
             var resendDate = [].concat.apply([], data.endDate);
             resendDate = [...new Set(resendDate)];
             data.endDate = resendDate
-            data.splendid = id_spliter
+            // data.splendid = id_spliter
             // var tottar = 0;
             // data.TargetImpressions.forEach(num=> tottar += parseInt(num))
             // data.TargetImpressions = tottar
