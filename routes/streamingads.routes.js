@@ -520,13 +520,19 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     data.ids.audimpression += parseInt(ar.TR)
                 })
             }
-            var resstartDate = [].concat.apply([], data.startDate);
-            resstartDate = [...new Set(resstartDate)];
-            data.startDate = resstartDate
-            var resendDate = [].concat.apply([], data.endDate);
-            resendDate = [...new Set(resendDate)];
-            data.endDate = resendDate
-            // data.splendid = id_spliter
+            function resultting(){
+                data.ids.audio = [...new Set(data.ids.audio)];
+                data.ids.display = [...new Set(data.ids.display)];
+                data.ids.video = [...new Set(data.ids.video)];
+                var resstartDate = [].concat.apply([], data.startDate);
+                resstartDate = [...new Set(resstartDate)];
+                data.startDate = resstartDate
+                var resendDate = [].concat.apply([], data.endDate);
+                resendDate = [...new Set(resendDate)];
+                data.endDate = resendDate
+                data.splendid = id_spliter
+            }
+            setTimeout(resultting,1000)
             // var tottar = 0;
             // data.TargetImpressions.forEach(num=> tottar += parseInt(num))
             // data.TargetImpressions = tottar
