@@ -462,39 +462,57 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                 data.id.map(id=>mongoose.Types.ObjectId(id)) : data.id
             let id_spliter = await adsetting.find({campaignId:{$in:ids}},{campaignId:1,type:1}).catch(err=>console.log(err))
             data.ids = {audio:[],audimpression:0,display:[],disimpression:0,video:[],vidimpression:0}
+            data.TargetImpressions = [...new Set(data.TargetImpressions)];
             if(id_spliter.length){
-                var audioids = id_spliter.filter(x => x.type === "audio")
-                var displayids = id_spliter.filter(x => x.type === "display")
-                var videoids = id_spliter.filter(x => x.type === "video")
-                var selectedids = [];
-                audioids.map(x=>{
-                    data.ids.audio.push(x.campaignId)
-                    selectedids.push(x.campaignId)
+                data.TargetImpressions.map(id=>{
+                    id_spliter.map(typdata=>{
+                        if(id.id===typdata.campaignId){
+                            if(typdata.type === "display"){
+                                data.ids.display.push(typdata.campaignId)
+                                data.ids.disimpression += parseInt(id.TR)
+                            }
+                            else if(typdata.type === "video"){
+                                data.ids.video.push(typdata.campaignId)
+                                data.ids.vidimpression += parseInt(id.TR)
+                            }else{
+                                data.ids.audio.push(typdata.campaignId)
+                                data.ids.audimpression += parseInt(id.TR)
+                            }
+                        }
+                    })
                 })
-                data.ids.audio = [...new Set(data.ids.audio)];
-                displayids.map(x=>{
-                    data.ids.display.push(x.campaignId)
-                    selectedids.push(x.campaignId)
-                })
-                data.ids.display = [...new Set(data.ids.display)];
-                videoids.map(x=>{
-                    data.ids.video.push(x.campaignId)
-                    selectedids.push(x.campaignId)
-                })
-                data.ids.video = [...new Set(data.ids.video)];
-                var leftids = arr_diff(selectedids,data.id)
-                // var leftids = ids.filter(x=> !selectedids.includes(x))
-                data.leftids = leftids
-                if(leftids){
-                    await leftids.map(id=>data.ids.audio.push(id))
-                    data.ids.audio = [...new Set(data.ids.audio)];
-                }
-                var audiotarg = data.TargetImpressions.filter(x=> data.ids.audio.includes(x.id))
-                var displaytarg = data.TargetImpressions.filter(x=> data.ids.display.includes(x.id))
-                var videotarg = data.TargetImpressions.filter(x=> data.ids.video.includes(x.id))
-                audiotarg.map(tar=>data.ids.audimpression+=parseInt(tar.TR))
-                displaytarg.map(tar=>data.ids.disimpression+=parseInt(tar.TR))
-                videotarg.map(tar=>data.ids.vidimpression+=parseInt(tar.TR))
+                // var audioids = id_spliter.filter(x => x.type === "audio")
+                // var displayids = id_spliter.filter(x => x.type === "display")
+                // var videoids = id_spliter.filter(x => x.type === "video")
+                // var selectedids = [];
+                // audioids.map(x=>{
+                //     data.ids.audio.push(x.campaignId)
+                //     selectedids.push(x.campaignId)
+                // })
+                // data.ids.audio = [...new Set(data.ids.audio)];
+                // displayids.map(x=>{
+                //     data.ids.display.push(x.campaignId)
+                //     selectedids.push(x.campaignId)
+                // })
+                // data.ids.display = [...new Set(data.ids.display)];
+                // videoids.map(x=>{
+                //     data.ids.video.push(x.campaignId)
+                //     selectedids.push(x.campaignId)
+                // })
+                // data.ids.video = [...new Set(data.ids.video)];
+                // var leftids = arr_diff(selectedids,data.id)
+                // // var leftids = ids.filter(x=> !selectedids.includes(x))
+                // data.leftids = leftids
+                // if(leftids){
+                //     await leftids.map(id=>data.ids.audio.push(id))
+                //     data.ids.audio = [...new Set(data.ids.audio)];
+                // }
+                // var audiotarg = data.TargetImpressions.filter(x=> data.ids.audio.includes(x.id))
+                // var displaytarg = data.TargetImpressions.filter(x=> data.ids.display.includes(x.id))
+                // var videotarg = data.TargetImpressions.filter(x=> data.ids.video.includes(x.id))
+                // audiotarg.map(tar=>data.ids.audimpression+=parseInt(tar.TR))
+                // displaytarg.map(tar=>data.ids.disimpression+=parseInt(tar.TR))
+                // videotarg.map(tar=>data.ids.vidimpression+=parseInt(tar.TR))
             }else{
                 data.ids.audio = ids
                 var dattarget = data.TargetImpressions
