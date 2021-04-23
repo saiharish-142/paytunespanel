@@ -381,6 +381,20 @@ function arr_diff (a1, a2) {
     return diff;
 }
 
+function remove_duplicates_arrayobject (gotarray,unique){
+    var obj = {};
+    var array = gotarray;
+    // console.log(array)
+    for ( var i=0, len=array.length; i < len; i++ )
+        obj[array[i][unique]] = array[i];
+
+    array = new Array();
+    for ( var key in obj )
+        array.push(obj[key]);
+
+    return array;
+}
+
 const removeDuplicates = inputArray => {
     const ids = [];
     return inputArray.reduce((sum, element) => {
@@ -463,50 +477,34 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
             let id_spliter = await adsetting.find({campaignId:{$in:ids}},{campaignId:1,type:1}).catch(err=>console.log(err))
             data.ids = {audio:[],audimpression:0,display:[],disimpression:0,video:[],vidimpression:0}
             data.TargetImpressions = [...new Set(data.TargetImpressions)];
+            id_spliter = remove_duplicates_arrayobject(id_spliter,"campaignId")
             if(id_spliter.length){
-                data.TargetImpressions.map(id=>{
-                    id_spliter.map(typdata=>{
-                        if(id.id===typdata.campaignId){
-                            if(typdata.type === "display"){
-                                data.ids.display.push(typdata.campaignId)
-                                data.ids.disimpression += parseInt(id.TR)
-                            }
-                            else if(typdata.type === "video"){
-                                data.ids.video.push(typdata.campaignId)
-                                data.ids.vidimpression += parseInt(id.TR)
-                            }else{
-                                data.ids.audio.push(typdata.campaignId)
-                                data.ids.audimpression += parseInt(id.TR)
-                            }
-                        }
-                    })
+                var audioids = id_spliter.filter(x => x.type === "audio")
+                var displayids = id_spliter.filter(x => x.type === "display")
+                var videoids = id_spliter.filter(x => x.type === "video")
+                var selectedids = [];
+                audioids.map(x=>{
+                    data.ids.audio.push(x.campaignId)
+                    selectedids.push(x.campaignId)
                 })
-                // var audioids = id_spliter.filter(x => x.type === "audio")
-                // var displayids = id_spliter.filter(x => x.type === "display")
-                // var videoids = id_spliter.filter(x => x.type === "video")
-                // var selectedids = [];
-                // audioids.map(x=>{
-                //     data.ids.audio.push(x.campaignId)
-                //     selectedids.push(x.campaignId)
-                // })
-                // data.ids.audio = [...new Set(data.ids.audio)];
-                // displayids.map(x=>{
-                //     data.ids.display.push(x.campaignId)
-                //     selectedids.push(x.campaignId)
-                // })
-                // data.ids.display = [...new Set(data.ids.display)];
-                // videoids.map(x=>{
-                //     data.ids.video.push(x.campaignId)
-                //     selectedids.push(x.campaignId)
-                // })
-                // data.ids.video = [...new Set(data.ids.video)];
-                // var leftids = arr_diff(selectedids,data.id)
-                // // var leftids = ids.filter(x=> !selectedids.includes(x))
-                // data.leftids = leftids
-                // if(leftids){
-                //     await leftids.map(id=>data.ids.audio.push(id))
-                //     data.ids.audio = [...new Set(data.ids.audio)];
-                // }
+                data.ids.audio = [...new Set(data.ids.audio)];
+                displayids.map(x=>{
+                    data.ids.display.push(x.campaignId)
+                    selectedids.push(x.campaignId)
+                })
+                data.ids.display = [...new Set(data.ids.display)];
+                videoids.map(x=>{
+                    data.ids.video.push(x.campaignId)
+                    selectedids.push(x.campaignId)
+                })
+                data.ids.video = [...new Set(data.ids.video)];
+                var leftids = arr_diff(selectedids,data.id)
+                // var leftids = ids.filter(x=> !selectedids.includes(x))
+                data.leftids = leftids
+                if(leftids){
+                    await leftids.map(id=>data.ids.audio.push(id))
+                    data.ids.audio = [...new Set(data.ids.audio)];
+                }
                 // var audiotarg = data.TargetImpressions.filter(x=> data.ids.audio.includes(x.id))
                 // var displaytarg = data.TargetImpressions.filter(x=> data.ids.display.includes(x.id))
                 // var videotarg = data.TargetImpressions.filter(x=> data.ids.video.includes(x.id))
@@ -520,19 +518,13 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     data.ids.audimpression += parseInt(ar.TR)
                 })
             }
-            function resultting(){
-                data.ids.audio = [...new Set(data.ids.audio)];
-                data.ids.display = [...new Set(data.ids.display)];
-                data.ids.video = [...new Set(data.ids.video)];
-                var resstartDate = [].concat.apply([], data.startDate);
-                resstartDate = [...new Set(resstartDate)];
-                data.startDate = resstartDate
-                var resendDate = [].concat.apply([], data.endDate);
-                resendDate = [...new Set(resendDate)];
-                data.endDate = resendDate
-                data.splendid = id_spliter
-            }
-            setTimeout(resultting,1000)
+            var resstartDate = [].concat.apply([], data.startDate);
+            resstartDate = [...new Set(resstartDate)];
+            data.startDate = resstartDate
+            var resendDate = [].concat.apply([], data.endDate);
+            resendDate = [...new Set(resendDate)];
+            data.endDate = resendDate
+            data.splendid = id_spliter
             // var tottar = 0;
             // data.TargetImpressions.forEach(num=> tottar += parseInt(num))
             // data.TargetImpressions = tottar
