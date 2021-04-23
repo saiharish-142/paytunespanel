@@ -505,7 +505,12 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     await leftids.map(id=>data.ids.audio.push(id))
                     data.ids.audio = [...new Set(data.ids.audio)];
                 }
-                var audiotarg = data.TargetImpressions.filter(x=> data.ids.audio.includes(x.id))
+                var audiotarg = [];
+                data.TargetImpressions.map(x=>{
+                    if(data.ids.audio.includes(x.id)){
+                        audiotarg.push(x)
+                    }
+                })
                 var displaytarg = data.TargetImpressions.filter(x=> data.ids.display.includes(x.id))
                 var videotarg = data.TargetImpressions.filter(x=> data.ids.video.includes(x.id))
                 data.audiotarg = audiotarg
