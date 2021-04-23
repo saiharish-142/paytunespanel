@@ -484,18 +484,18 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                 var videoids = id_spliter.filter(x => x.type === "video")
                 var selectedids = [];
                 audioids.map(x=>{
-                    data.ids.audio.push(x.campaignId)
-                    selectedids.push(x.campaignId)
+                    data.ids.audio.push(x.campaignId.toString())
+                    selectedids.push(x.campaignId.toString())
                 })
                 data.ids.audio = [...new Set(data.ids.audio)];
                 displayids.map(x=>{
-                    data.ids.display.push(x.campaignId)
-                    selectedids.push(x.campaignId)
+                    data.ids.display.push(x.campaignId.toString())
+                    selectedids.push(x.campaignId.toString())
                 })
                 data.ids.display = [...new Set(data.ids.display)];
                 videoids.map(x=>{
-                    data.ids.video.push(x.campaignId)
-                    selectedids.push(x.campaignId)
+                    data.ids.video.push(x.campaignId.toString())
+                    selectedids.push(x.campaignId.toString())
                 })
                 data.ids.video = [...new Set(data.ids.video)];
                 var leftids = arr_diff(selectedids,data.id)
@@ -507,7 +507,7 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                 }
                 var audiotarg = [];
                 data.TargetImpressions.map(x=>{
-                    if(data.ids.audio.includes(x.id)){
+                    if(data.ids.audio.includes(x.id.toString())){
                         audiotarg.push(x)
                     }
                 })
