@@ -363,6 +363,35 @@ router.put('/clientgroupedbyids',adminauth,(req,res)=>{
     .catch(err => console.log(err))
 })
 
+function arr_diff (a1, a2) {
+    var a = [], diff = [];
+    for (var i = 0; i < a1.length; i++) {
+        a[a1[i]] = true;
+    }
+    for (var i = 0; i < a2.length; i++) {
+        if (a[a2[i]]) {
+            delete a[a2[i]];
+        } else {
+            a[a2[i]] = true;
+        }
+    }
+    for (var k in a) {
+        diff.push(k);
+    }
+    return diff;
+}
+
+const removeDuplicates = inputArray => {
+    const ids = [];
+    return inputArray.reduce((sum, element) => {
+        if(!ids.includes(element.toString())){
+            sum.push(element);
+            ids.push(element.toString());
+        }
+       return sum;
+    }, []);
+};
+
 router.put('/groupedsingle',adminauth,(req,res)=>{
     const { adtitle } = req.body
     StreamingAds.aggregate([
@@ -434,60 +463,55 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
             let id_spliter = await adsetting.find({campaignId:{$in:ids}},{campaignId:1,type:1}).catch(err=>console.log(err))
             data.ids = {audio:[],audimpression:0,display:[],disimpression:0,video:[],vidimpression:0}
             if(id_spliter.length){
+                var audio = [];
+                var display = [];
+                var video = [];
+                var audimpression = 0;
+                var disimpression = 0;
+                var video = 0;
                 var audioids = id_spliter.filter(x => x.type === "audio")
                 var displayids = id_spliter.filter(x => x.type === "display")
                 var videoids = id_spliter.filter(x => x.type === "video")
                 var selectedids = [];
                 audioids.map(x=>{
-                    data.ids.audio.push(x.campaignId)
+                    audio.push(x.campaignId)
                     selectedids.push(x.campaignId)
                 })
-                data.ids.audio = [...new Set(data.ids.audio)];
+                audio = [...new Set(audio)];
                 displayids.map(x=>{
-                    data.ids.display.push(x.campaignId)
+                    display.push(x.campaignId)
                     selectedids.push(x.campaignId)
                 })
-                data.ids.display = [...new Set(data.ids.display)];
+                display = [...new Set(display)];
                 videoids.map(x=>{
-                    data.ids.video.push(x.campaignId)
+                    video.push(x.campaignId)
                     selectedids.push(x.campaignId)
                 })
-                data.ids.video = [...new Set(data.ids.video)];
-                function arr_diff (a1, a2) {
-                    var a = [], diff = [];
-                    for (var i = 0; i < a1.length; i++) {
-                        a[a1[i]] = true;
-                    }
-                    for (var i = 0; i < a2.length; i++) {
-                        if (a[a2[i]]) {
-                            delete a[a2[i]];
-                        } else {
-                            a[a2[i]] = true;
-                        }
-                    }
-                    for (var k in a) {
-                        diff.push(k);
-                    }
-                    return diff;
-                }
+                video = [...new Set(video)];
                 var leftids = arr_diff(selectedids,data.id)
                 // var leftids = ids.filter(x=> !selectedids.includes(x))
                 data.leftids = leftids
                 if(leftids){
-                    await leftids.map(id=>data.ids.audio.push(id))
-                    data.ids.audio = [...new Set(data.ids.audio)];
+                    await leftids.map(id=>audio.push(id))
+                    audio = [...new Set(audio)];
                 }
-                var audiotarg = data.TargetImpressions.filter(x=> data.ids.audio.includes(x.id))
-                var displaytarg = data.TargetImpressions.filter(x=> data.ids.display.includes(x.id))
-                var videotarg = data.TargetImpressions.filter(x=> data.ids.video.includes(x.id))
-                audiotarg.map(tar=>data.ids.audimpression+=parseInt(tar.TR))
-                displaytarg.map(tar=>data.ids.disimpression+=parseInt(tar.TR))
-                videotarg.map(tar=>data.ids.vidimpression+=parseInt(tar.TR))
+                var audiotarg = data.TargetImpressions.filter(x=> audio.includes(x.id))
+                var displaytarg = data.TargetImpressions.filter(x=> display.includes(x.id))
+                var videotarg = data.TargetImpressions.filter(x=> video.includes(x.id))
+                audiotarg.map(tar=>audimpression += parseInt(tar.TR))
+                displaytarg.map(tar=>disimpression += parseInt(tar.TR))
+                videotarg.map(tar=>vidimpression += parseInt(tar.TR))
+                data.ids.audio = audio;
+                data.ids.display = display;
+                data.ids.video =video;
+                data.ids.audimpression = audimpression;
+                data.ids.disimpression = disimpression;
+                data.ids.vidimpression = vidimpression;
             }else{
-                data.ids.audio = ids
+                audio = ids
                 var dattarget = data.TargetImpressions
                 dattarget.map(ar=>{
-                    data.ids.audimpression += parseInt(ar.TR)
+                    audimpression += parseInt(ar.TR)
                 })
             }
             var resstartDate = [].concat.apply([], data.startDate);
