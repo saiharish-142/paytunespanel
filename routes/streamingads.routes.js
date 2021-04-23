@@ -490,8 +490,8 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     data.ids.audio.push(x.campaignId.toString())
                     selectedids.push(x.campaignId.toString())
                     data.TargetImpressions.map(tar=>{
-                        console.log(tar.id,x.campaignId,tar.id===x.campaignId,tar.id==x.campaignId,x.campaignId.equals(tar.id))
-                        if(tar.id.equals(x.toString())){
+                        // console.log(tar.id,x.campaignId,tar.id===x.campaignId,tar.id==x.campaignId,x.campaignId.equals(tar.id))
+                        if(x.campaignId.equals(tar.id)){
                             console.log(tar)
                             audioimpre += parseInt(tar.TR)
                         }
@@ -502,6 +502,12 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                 displayids.map(x=>{
                     data.ids.display.push(x.campaignId.toString())
                     selectedids.push(x.campaignId.toString())
+                    data.TargetImpressions.map(tar=>{
+                        if(x.campaignId.equals(tar.id)){
+                            console.log(tar)
+                            data.ids.disimpression += parseInt(tar.TR)
+                        }
+                    })
                 })
                 data.ids.display = [...new Set(data.ids.display)];
                 videoids.map(x=>{
