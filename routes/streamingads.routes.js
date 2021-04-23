@@ -490,6 +490,7 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     data.ids.audio.push(x.campaignId.toString())
                     selectedids.push(x.campaignId.toString())
                     data.TargetImpressions.map(tar=>{
+                        console.log(tar.id,x,tar.id===x,tar.id==x,x.equals(tar.id))
                         if(tar.id.equals(x.toString())){
                             console.log(tar)
                             audioimpre += parseInt(tar.TR)
