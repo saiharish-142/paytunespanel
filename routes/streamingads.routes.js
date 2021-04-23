@@ -468,7 +468,7 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                 var video = [];
                 var audimpression = 0;
                 var disimpression = 0;
-                var video = 0;
+                var vidimpression = 0;
                 var audioids = id_spliter.filter(x => x.type === "audio")
                 var displayids = id_spliter.filter(x => x.type === "display")
                 var videoids = id_spliter.filter(x => x.type === "video")
