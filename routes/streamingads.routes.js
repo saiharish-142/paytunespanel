@@ -486,6 +486,11 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                 audioids.map(x=>{
                     data.ids.audio.push(x.campaignId.toString())
                     selectedids.push(x.campaignId.toString())
+                    data.TargetImpressions.map(tar=>{
+                        if(tar.id.equals(x)){
+                            parseInt(data.ids.audimpression) += parseInt(tar.TR)
+                        }
+                    })
                 })
                 data.ids.audio = [...new Set(data.ids.audio)];
                 displayids.map(x=>{
@@ -505,13 +510,13 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     await leftids.map(id=>data.ids.audio.push(id))
                     data.ids.audio = [...new Set(data.ids.audio)];
                 }
-                var audiotarg = data.TargetImpressions.filter(x=> data.ids.audio.includes(x.id))
-                var displaytarg = data.TargetImpressions.filter(x=> data.ids.display.includes(x.id))
-                var videotarg = data.TargetImpressions.filter(x=> data.ids.video.includes(x.id))
-                data.audiotarg = audiotarg
-                audiotarg.map(tar=> parseInt(data.ids.audimpression) += parseInt(tar.TR))
-                displaytarg.map(tar=> parseInt(data.ids.disimpression) += parseInt(tar.TR))
-                videotarg.map(tar=> parseInt(data.ids.vidimpression) += parseInt(tar.TR))
+                // var audiotarg = data.TargetImpressions.filter(x=> data.ids.audio.includes(x.id))
+                // var displaytarg = data.TargetImpressions.filter(x=> data.ids.display.includes(x.id))
+                // var videotarg = data.TargetImpressions.filter(x=> data.ids.video.includes(x.id))
+                // data.audiotarg = audiotarg
+                // audiotarg.map(tar=> parseInt(data.ids.audimpression) += parseInt(tar.TR))
+                // displaytarg.map(tar=> parseInt(data.ids.disimpression) += parseInt(tar.TR))
+                // videotarg.map(tar=> parseInt(data.ids.vidimpression) += parseInt(tar.TR))
             }else{
                 data.ids.audio = ids
                 var dattarget = data.TargetImpressions
