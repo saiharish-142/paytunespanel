@@ -230,7 +230,7 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         }}
     ])
     .then(reports=>{
-        var response = reports.cursor.firstBatch
+        var response = reports
         res.json(response)
         // var data = reports;
         // data = data.filter(x => x.Publisher!== "")
