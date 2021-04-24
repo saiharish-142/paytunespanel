@@ -306,6 +306,9 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         response.audio = await publisherapps.populate(response.audio,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
         response.display = await publisherapps.populate(response.display,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
         response.video = await publisherapps.populate(response.video,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
+        response.audio = await StreamingAds.populate(response.audio,{path:'campaignId',select:'_id TargetImpressions'}).catch(err=>console.log(err))
+        response.display = await StreamingAds.populate(response.display,{path:'campaignId',select:'_id TargetImpressions'}).catch(err=>console.log(err))
+        response.video = await StreamingAds.populate(response.video,{path:'campaignId',select:'_id TargetImpressions'}).catch(err=>console.log(err))
         res.json(response)
         // var data = reports;
         // data = data.filter(x => x.Publisher!== "")
