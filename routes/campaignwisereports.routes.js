@@ -154,6 +154,20 @@ const removeDuplicates = inputArray => {
     }, []);
 };
 
+function remove_duplicates_arrayobject (gotarray,unique){
+    var obj = {};
+    var array = gotarray;
+    // console.log(array)
+    for ( var i=0, len=array.length; i < len; i++ )
+        obj[array[i][unique]] = array[i];
+
+    array = new Array();
+    for ( var key in obj )
+        array.push(obj[key]);
+
+    return array;
+}
+
 router.put('/sumreportofcamall',adminauth,(req,res)=>{
     const { campaignId } = req.body
     // var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
@@ -246,9 +260,15 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         var audioCompleteReport   = {impressions : 0,clicks : 0,complete : 0,firstQuartile : 0,midpoint : 0,thirdQuartile : 0}
         var displayCompleteReport = {impressions : 0,clicks : 0,complete : 0,firstQuartile : 0,midpoint : 0,thirdQuartile : 0}
         var videoCompleteReport   = {impressions : 0,clicks : 0,complete : 0,firstQuartile : 0,midpoint : 0,thirdQuartile : 0}
+        response.audio = await publisherapps.populate(response.audio,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
+        response.display = await publisherapps.populate(response.display,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
+        response.video = await publisherapps.populate(response.video,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
+        response.audio = await StreamingAds.populate(response.audio,{path:'campaignId',select:'_id TargetImpressions'}).catch(err=>console.log(err))
+        response.display = await StreamingAds.populate(response.display,{path:'campaignId',select:'_id TargetImpressions'}).catch(err=>console.log(err))
+        response.video = await StreamingAds.populate(response.video,{path:'campaignId',select:'_id TargetImpressions'}).catch(err=>console.log(err))
         response.audio && response.audio.map(x=>{
             x.updatedAt = [...new Set(x.updatedAt)];
-            x.campaignId = removeDuplicates(x.campaignId)
+            x.campaignId = remove_duplicates_arrayobject(x.campaignId,'_id')
             audioCompleteReport.impressions += parseInt(x.impressions)
             audioCompleteReport.clicks += parseInt(x.clicks)
             audioCompleteReport.complete += parseInt(x.complete)
@@ -264,7 +284,7 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         })
         response.display && response.display.map(x=>{
             x.updatedAt = [...new Set(x.updatedAt)];
-            x.campaignId = removeDuplicates(x.campaignId)
+            x.campaignId = remove_duplicates_arrayobject(x.campaignId)
             displayCompleteReport.impressions += parseInt(x.impressions)
             displayCompleteReport.clicks += parseInt(x.clicks)
             displayCompleteReport.complete += parseInt(x.complete)
@@ -280,7 +300,7 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         })
         response.video && response.video.map(x=>{
             x.updatedAt = [...new Set(x.updatedAt)];
-            x.campaignId = removeDuplicates(x.campaignId)
+            x.campaignId = remove_duplicates_arrayobject(x.campaignId)
             videoCompleteReport.impressions += parseInt(x.impressions)
             videoCompleteReport.clicks += parseInt(x.clicks)
             videoCompleteReport.complete += parseInt(x.complete)
@@ -306,12 +326,6 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         response.videoCompleteReport = videoCompleteReport
         response.summaryCompleteReport = summaryCompleteReport
         response.allrecentupdate = updatedAtTimes ? updatedAtTimes[0] : undefined;
-        response.audio = await publisherapps.populate(response.audio,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
-        response.display = await publisherapps.populate(response.display,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
-        response.video = await publisherapps.populate(response.video,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
-        response.audio = await StreamingAds.populate(response.audio,{path:'campaignId',select:'_id TargetImpressions'}).catch(err=>console.log(err))
-        response.display = await StreamingAds.populate(response.display,{path:'campaignId',select:'_id TargetImpressions'}).catch(err=>console.log(err))
-        response.video = await StreamingAds.populate(response.video,{path:'campaignId',select:'_id TargetImpressions'}).catch(err=>console.log(err))
         res.json(response)
         // var data = reports;
         // data = data.filter(x => x.Publisher!== "")
