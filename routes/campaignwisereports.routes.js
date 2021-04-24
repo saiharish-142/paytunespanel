@@ -143,211 +143,125 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
     .catch(err=>console.log(err))
 })
 
-router.put('/sumreportofcamall',adminauth,async (req,res)=>{
+router.put('/sumreportofcamall',adminauth,(req,res)=>{
     const { campaignId } = req.body
-    var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
+    // var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
     var audio = campaignId.audio.map(id => mongoose.Types.ObjectId(id))
     var display = campaignId.display.map(id => mongoose.Types.ObjectId(id))
     var video = campaignId.video.map(id => mongoose.Types.ObjectId(id))
-    var resu = [];
-    let uniqueuserslist = await campaignwisereports.db.db.command({
-        aggregate:"campaignwisereports",
-        pipeline:[
-            {$facet:{
-                "audio":[
-                    {$match:{
-                        "campaignId":{$in:audio}
-                    }},{$group:{
-                        _id:"$appId", 
-                        updatedAt:{$push:"$createdOn"}, 
-                        camp:{$push:"$campaignId"} , 
-                        impressions:{$sum:"$impression"}, 
-                        complete:{$sum:"$completedAudioImpressions"}, 
-                        clicks:{$sum:"$CompanionClickTracking"},
-                        thirdQuartile:{$sum:"$thirdQuartile"}, 
-                        firstQuartile:{$sum:"$firstQuartile"}, 
-                        midpoint:{$sum:"$midpoint"}
-                    }},{$project:{
-                        Publisher:"$_id", 
-                        updatedAt:"$updatedAt", 
-                        campaignId:"$camp", 
-                        impressions:"$impressions", 
-                        complete:"$complete", 
-                        clicks:"$clicks" ,
-                        midpoint:"$midpoint", 
-                        firstQuartile:"$firstQuartile", 
-                        thirdQuartile:"$thirdQuartile",
-                        _id:0
-                    }}],
-                "display":[
-                    {$match:{
-                        "campaignId":{$in:display}
-                    }},{$group:{
-                        _id:"$appId", 
-                        updatedAt:{$push:"$createdOn"}, 
-                        camp:{$push:"$campaignId"} , 
-                        impressions:{$sum:"$impression"}, 
-                        complete:{$sum:"$completedAudioImpressions"}, 
-                        clicks:{$sum:"$CompanionClickTracking"},
-                        thirdQuartile:{$sum:"$thirdQuartile"}, 
-                        firstQuartile:{$sum:"$firstQuartile"}, 
-                        midpoint:{$sum:"$midpoint"}
-                    }},{$project:{
-                        Publisher:"$_id", 
-                        updatedAt:"$updatedAt", 
-                        campaignId:"$camp", 
-                        impressions:"$impressions", 
-                        complete:"$complete", 
-                        clicks:"$clicks" ,
-                        midpoint:"$midpoint", 
-                        firstQuartile:"$firstQuartile", 
-                        thirdQuartile:"$thirdQuartile",
-                        _id:0
-                    }}],
-                "video":[
-                    {$match:{
-                        "campaignId":{$in:video}
-                    }},{$group:{
-                        _id:"$appId", 
-                        updatedAt:{$push:"$createdOn"}, 
-                        camp:{$push:"$campaignId"} , 
-                        impressions:{$sum:"$impression"}, 
-                        complete:{$sum:"$completedAudioImpressions"}, 
-                        clicks:{$sum:"$CompanionClickTracking"},
-                        thirdQuartile:{$sum:"$thirdQuartile"}, 
-                        firstQuartile:{$sum:"$firstQuartile"}, 
-                        midpoint:{$sum:"$midpoint"}
-                    }},{$project:{
-                        Publisher:"$_id", 
-                        updatedAt:"$updatedAt", 
-                        campaignId:"$camp", 
-                        impressions:"$impressions", 
-                        complete:"$complete", 
-                        clicks:"$clicks" ,
-                        midpoint:"$midpoint", 
-                        firstQuartile:"$firstQuartile", 
-                        thirdQuartile:"$thirdQuartile",
-                        _id:0
-                    }}],
-            }}
-        ],
-        allowDiskUse:true,
-        cursor:{}
+    // var resu = [];
+    campaignwisereports.aggregate([
+        {$facet:{
+            "audio":[
+                {$match:{
+                    "campaignId":{$in:audio}
+                }},{$group:{
+                    _id:"$appId", 
+                    updatedAt:{$push:"$createdOn"}, 
+                    camp:{$push:"$campaignId"} , 
+                    impressions:{$sum:"$impression"}, 
+                    complete:{$sum:"$completedAudioImpressions"}, 
+                    clicks:{$sum:"$CompanionClickTracking"},
+                    thirdQuartile:{$sum:"$thirdQuartile"}, 
+                    firstQuartile:{$sum:"$firstQuartile"}, 
+                    midpoint:{$sum:"$midpoint"}
+                }},{$project:{
+                    Publisher:"$_id", 
+                    updatedAt:"$updatedAt", 
+                    campaignId:"$camp", 
+                    impressions:"$impressions", 
+                    complete:"$complete", 
+                    clicks:"$clicks" ,
+                    midpoint:"$midpoint", 
+                    firstQuartile:"$firstQuartile", 
+                    thirdQuartile:"$thirdQuartile",
+                    _id:0
+                }}],
+            "display":[
+                {$match:{
+                    "campaignId":{$in:display}
+                }},{$group:{
+                    _id:"$appId", 
+                    updatedAt:{$push:"$createdOn"}, 
+                    camp:{$push:"$campaignId"} , 
+                    impressions:{$sum:"$impression"}, 
+                    complete:{$sum:"$completedAudioImpressions"}, 
+                    clicks:{$sum:"$CompanionClickTracking"},
+                    thirdQuartile:{$sum:"$thirdQuartile"}, 
+                    firstQuartile:{$sum:"$firstQuartile"}, 
+                    midpoint:{$sum:"$midpoint"}
+                }},{$project:{
+                    Publisher:"$_id", 
+                    updatedAt:"$updatedAt", 
+                    campaignId:"$camp", 
+                    impressions:"$impressions", 
+                    complete:"$complete", 
+                    clicks:"$clicks" ,
+                    midpoint:"$midpoint", 
+                    firstQuartile:"$firstQuartile", 
+                    thirdQuartile:"$thirdQuartile",
+                    _id:0
+                }}],
+            "video":[
+                {$match:{
+                    "campaignId":{$in:video}
+                }},{$group:{
+                    _id:"$appId", 
+                    updatedAt:{$push:"$createdOn"}, 
+                    camp:{$push:"$campaignId"} , 
+                    impressions:{$sum:"$impression"}, 
+                    complete:{$sum:"$completedAudioImpressions"}, 
+                    clicks:{$sum:"$CompanionClickTracking"},
+                    thirdQuartile:{$sum:"$thirdQuartile"}, 
+                    firstQuartile:{$sum:"$firstQuartile"}, 
+                    midpoint:{$sum:"$midpoint"}
+                }},{$project:{
+                    Publisher:"$_id", 
+                    updatedAt:"$updatedAt", 
+                    campaignId:"$camp", 
+                    impressions:"$impressions", 
+                    complete:"$complete", 
+                    clicks:"$clicks" ,
+                    midpoint:"$midpoint", 
+                    firstQuartile:"$firstQuartile", 
+                    thirdQuartile:"$thirdQuartile",
+                    _id:0
+                }}],
+        }}
+    ])
+    .then(reports=>{
+        var response = reports.cursor.firstBatch
+        res.json(response)
+        // var data = reports;
+        // data = data.filter(x => x.Publisher!== "")
+        // publisherapps.populate(data,{path:'Publisher'},function(err,populatedreports){
+        //     if(err){
+        //         return res.status(422).json(err)
+        //     }
+        //     resu = populatedreports;
+        //     // console.log(populatedreports)
+        //     resu.map((det)=>{
+        //         var resregion = [].concat.apply([], det.region);
+        //         resregion = [...new Set(resregion)];
+        //         det.region = resregion
+        //         var rescampaignId = [].concat.apply([], det.campaignId);
+        //         rescampaignId = [...new Set(rescampaignId)];
+        //         det.campaignId = rescampaignId[0]
+        //         var updatedDate = det.updatedAt
+        //         updatedDate.sort(function(a,b){
+        //             return new Date(b) - new Date(a);
+        //         });
+        //         det.updatedAt = updatedDate
+        //     })
+        //     StreamingAds.populate(resu,{path:'campaignId'},function(err,populatedres){
+        //         if(err){
+        //             return res.status(422).json(resu)
+        //         }
+        //         res.json(populatedres)
+        //     })
+        // })
     })
-    uniqueuserslist = uniqueuserslist.cursor.firstBatch
-    res.json(uniqueuserslist)
-    // campaignwisereports.aggregate([
-    //     {$facet:{
-    //         "audio":[
-    //             {$match:{
-    //                 "campaignId":{$in:audio}
-    //             }},{$group:{
-    //                 _id:"$appId", 
-    //                 updatedAt:{$push:"$createdOn"}, 
-    //                 camp:{$push:"$campaignId"} , 
-    //                 impressions:{$sum:"$impression"}, 
-    //                 complete:{$sum:"$completedAudioImpressions"}, 
-    //                 clicks:{$sum:"$CompanionClickTracking"},
-    //                 thirdQuartile:{$sum:"$thirdQuartile"}, 
-    //                 firstQuartile:{$sum:"$firstQuartile"}, 
-    //                 midpoint:{$sum:"$midpoint"}
-    //             }},{$project:{
-    //                 Publisher:"$_id", 
-    //                 updatedAt:"$updatedAt", 
-    //                 campaignId:"$camp", 
-    //                 impressions:"$impressions", 
-    //                 complete:"$complete", 
-    //                 clicks:"$clicks" ,
-    //                 midpoint:"$midpoint", 
-    //                 firstQuartile:"$firstQuartile", 
-    //                 thirdQuartile:"$thirdQuartile",
-    //                 _id:0
-    //             }}],
-    //         "display":[
-    //             {$match:{
-    //                 "campaignId":{$in:display}
-    //             }},{$group:{
-    //                 _id:"$appId", 
-    //                 updatedAt:{$push:"$createdOn"}, 
-    //                 camp:{$push:"$campaignId"} , 
-    //                 impressions:{$sum:"$impression"}, 
-    //                 complete:{$sum:"$completedAudioImpressions"}, 
-    //                 clicks:{$sum:"$CompanionClickTracking"},
-    //                 thirdQuartile:{$sum:"$thirdQuartile"}, 
-    //                 firstQuartile:{$sum:"$firstQuartile"}, 
-    //                 midpoint:{$sum:"$midpoint"}
-    //             }},{$project:{
-    //                 Publisher:"$_id", 
-    //                 updatedAt:"$updatedAt", 
-    //                 campaignId:"$camp", 
-    //                 impressions:"$impressions", 
-    //                 complete:"$complete", 
-    //                 clicks:"$clicks" ,
-    //                 midpoint:"$midpoint", 
-    //                 firstQuartile:"$firstQuartile", 
-    //                 thirdQuartile:"$thirdQuartile",
-    //                 _id:0
-    //             }}],
-    //         "video":[
-    //             {$match:{
-    //                 "campaignId":{$in:video}
-    //             }},{$group:{
-    //                 _id:"$appId", 
-    //                 updatedAt:{$push:"$createdOn"}, 
-    //                 camp:{$push:"$campaignId"} , 
-    //                 impressions:{$sum:"$impression"}, 
-    //                 complete:{$sum:"$completedAudioImpressions"}, 
-    //                 clicks:{$sum:"$CompanionClickTracking"},
-    //                 thirdQuartile:{$sum:"$thirdQuartile"}, 
-    //                 firstQuartile:{$sum:"$firstQuartile"}, 
-    //                 midpoint:{$sum:"$midpoint"}
-    //             }},{$project:{
-    //                 Publisher:"$_id", 
-    //                 updatedAt:"$updatedAt", 
-    //                 campaignId:"$camp", 
-    //                 impressions:"$impressions", 
-    //                 complete:"$complete", 
-    //                 clicks:"$clicks" ,
-    //                 midpoint:"$midpoint", 
-    //                 firstQuartile:"$firstQuartile", 
-    //                 thirdQuartile:"$thirdQuartile",
-    //                 _id:0
-    //             }}],
-    //     }}
-    // ])
-    // .then(reports=>{
-    //     // var response = reports.cursor.firstBatch
-    //     res.json({reports})
-    //     // var data = reports;
-    //     // data = data.filter(x => x.Publisher!== "")
-    //     // publisherapps.populate(data,{path:'Publisher'},function(err,populatedreports){
-    //     //     if(err){
-    //     //         return res.status(422).json(err)
-    //     //     }
-    //     //     resu = populatedreports;
-    //     //     // console.log(populatedreports)
-    //     //     resu.map((det)=>{
-    //     //         var resregion = [].concat.apply([], det.region);
-    //     //         resregion = [...new Set(resregion)];
-    //     //         det.region = resregion
-    //     //         var rescampaignId = [].concat.apply([], det.campaignId);
-    //     //         rescampaignId = [...new Set(rescampaignId)];
-    //     //         det.campaignId = rescampaignId[0]
-    //     //         var updatedDate = det.updatedAt
-    //     //         updatedDate.sort(function(a,b){
-    //     //             return new Date(b) - new Date(a);
-    //     //         });
-    //     //         det.updatedAt = updatedDate
-    //     //     })
-    //     //     StreamingAds.populate(resu,{path:'campaignId'},function(err,populatedres){
-    //     //         if(err){
-    //     //             return res.status(422).json(resu)
-    //     //         }
-    //     //         res.json(populatedres)
-    //     //     })
-    //     // })
-    // })
-    // .catch(err=>console.log(err))
+    .catch(err=>console.log(err))
 })
 
 router.put('/reportbycamp',adminauth,(req,res)=>{
