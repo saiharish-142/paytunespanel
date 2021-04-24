@@ -302,7 +302,10 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         response.displayCompleteReport = displayCompleteReport
         response.videoCompleteReport = videoCompleteReport
         response.summaryCompleteReport = summaryCompleteReport
-        response.allrecentupdate = updatedAtTimes[0]
+        response.allrecentupdate = updatedAtTimes ? updatedAtTimes[0] : undefined;
+        response.audio = publisherapps.populate(response.audio,{path:'Publisher'}).catch(err=>console.log(err))
+        response.display = publisherapps.populate(response.display,{path:'Publisher'}).catch(err=>console.log(err))
+        response.video = publisherapps.populate(response.video,{path:'Publisher'}).catch(err=>console.log(err))
         res.json(response)
         // var data = reports;
         // data = data.filter(x => x.Publisher!== "")
