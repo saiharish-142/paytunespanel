@@ -294,9 +294,14 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         updatedAtTimes.sort(function(a,b){
             return new Date(b) - new Date(a);
         })
+        var summaryCompleteReport = {impressions : 0,clicks : 0,complete : 0}
+        summaryCompleteReport.impressions += parseInt(audioCompleteReport.impressions) + parseInt(displayCompleteReport.impressions) + parseInt(videoCompleteReport.impressions)
+        summaryCompleteReport.clicks += parseInt(audioCompleteReport.clicks) + parseInt(displayCompleteReport.clicks) + parseInt(videoCompleteReport.clicks)
+        summaryCompleteReport.complete += parseInt(audioCompleteReport.complete) + parseInt(displayCompleteReport.complete) + parseInt(videoCompleteReport.complete)
         response.audioCompleteReport = audioCompleteReport
         response.displayCompleteReport = displayCompleteReport
         response.videoCompleteReport = videoCompleteReport
+        response.summaryCompleteReport = summaryCompleteReport
         response.allrecentupdate = updatedAtTimes[0]
         res.json(response)
         // var data = reports;
