@@ -230,8 +230,8 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         }}
     ])
     .then(reports=>{
-        var response = reports.cursor.firstBatch
-        res.json(response)
+        // var response = reports.cursor.firstBatch
+        res.json(reports)
         // var data = reports;
         // data = data.filter(x => x.Publisher!== "")
         // publisherapps.populate(data,{path:'Publisher'},function(err,populatedreports){
