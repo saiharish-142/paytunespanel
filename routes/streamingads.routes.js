@@ -483,9 +483,6 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                 var displayids = id_spliter.filter(x => x.type === "display")
                 var videoids = id_spliter.filter(x => x.type === "video")
                 var selectedids = [];
-                var audioimpre = 0;
-                var displayimpre = 0;
-                var displayimpre = 0;
                 audioids.map(x=>{
                     data.ids.audio.push(x.campaignId.toString())
                     selectedids.push(x.campaignId.toString())
@@ -528,6 +525,15 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     await leftids.map(id=>data.ids.audio.push(id))
                     data.ids.audio = [...new Set(data.ids.audio)];
                     data.ids.audio = removeDuplicates(data.ids.audio)
+                    leftids.map(x=>{
+                        data.TargetImpressions.map(tar=>{
+                            if(x.equals(tar.id)){
+                                console.log(tar)
+                                data.ids.audimpression += parseInt(tar.TR)
+                            }
+                        })
+                    })
+                    data.ids.audio = [...new Set(data.ids.audio)];
                 }
             }else{
                 data.ids.audio = ids
