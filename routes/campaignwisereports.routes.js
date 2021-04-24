@@ -143,6 +143,17 @@ router.put('/sumreportofcam22',adminauth,(req,res)=>{
     .catch(err=>console.log(err))
 })
 
+const removeDuplicates = inputArray => {
+    const ids = [];
+    return inputArray.reduce((sum, element) => {
+        if(!ids.includes(element.toString())){
+            sum.push(element);
+            ids.push(element.toString());
+        }
+       return sum;
+    }, []);
+};
+
 router.put('/sumreportofcamall',adminauth,(req,res)=>{
     const { campaignId } = req.body
     // var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
@@ -234,11 +245,14 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         var updatedAtTimes = [];
         response.audio.map(x=>{
             x.updatedAt = [...new Set(x.updatedAt)];
-            x.campaignId = [...new Set(x.campaignId)];
+            x.campaignId = removeDuplicates(x.campaignId)
             x.updatedAt.sort(function(a,b){
                 return new Date(b) - new Date(a);
             })
+            x.updatedAt = x.updatedAt[0]
+            updatedAtTimes.push(x.updatedAt)
         })
+        response.allrecentupdate = updatedAtTimes
         res.json(response)
         // var data = reports;
         // data = data.filter(x => x.Publisher!== "")
