@@ -259,6 +259,7 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
                 return new Date(b) - new Date(a);
             })
             x.updatedAt = x.updatedAt[0]
+            x.campaignId = x.campaignId[0]
             updatedAtTimes.push(x.updatedAt)
         })
         response.display && response.display.map(x=>{
@@ -274,6 +275,7 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
                 return new Date(b) - new Date(a);
             })
             x.updatedAt = x.updatedAt[0]
+            x.campaignId = x.campaignId[0]
             updatedAtTimes.push(x.updatedAt)
         })
         response.video && response.video.map(x=>{
@@ -289,6 +291,7 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
                 return new Date(b) - new Date(a);
             })
             x.updatedAt = x.updatedAt[0]
+            x.campaignId = x.campaignId[0]
             updatedAtTimes.push(x.updatedAt)
         })
         updatedAtTimes.sort(function(a,b){
