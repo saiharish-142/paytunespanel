@@ -40,7 +40,7 @@ function App() {
       method:'get'
     }).then(res => res.json())
     .then((result) => {
-      // console.log(result)
+      console.log(result)
       dispatchru({type:"ID",payload:result.USD_INR})
     }).catch((err) => {
       console.log(err)
