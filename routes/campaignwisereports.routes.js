@@ -243,9 +243,18 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
     .then(reports=>{
         var response = reports[0]
         var updatedAtTimes = [];
+        var audioCompleteReport   = {impressions : 0,clicks : 0,complete : 0,firstQuartile : 0,midpoint : 0,thirdQuartile : 0}
+        var displayCompleteReport = {impressions : 0,clicks : 0,complete : 0,firstQuartile : 0,midpoint : 0,thirdQuartile : 0}
+        var videoCompleteReport   = {impressions : 0,clicks : 0,complete : 0,firstQuartile : 0,midpoint : 0,thirdQuartile : 0}
         response.audio && response.audio.map(x=>{
             x.updatedAt = [...new Set(x.updatedAt)];
             x.campaignId = removeDuplicates(x.campaignId)
+            audioCompleteReport.impressions += parseInt(x.impressions)
+            audioCompleteReport.clicks += parseInt(x.clicks)
+            audioCompleteReport.complete += parseInt(x.complete)
+            audioCompleteReport.midpoint += parseInt(x.midpoint)
+            audioCompleteReport.firstQuartile += parseInt(x.firstQuartile)
+            audioCompleteReport.thirdQuartile += parseInt(x.thirdQuartile)
             x.updatedAt.sort(function(a,b){
                 return new Date(b) - new Date(a);
             })
@@ -255,6 +264,12 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         response.display && response.display.map(x=>{
             x.updatedAt = [...new Set(x.updatedAt)];
             x.campaignId = removeDuplicates(x.campaignId)
+            displayCompleteReport.impressions += parseInt(x.impressions)
+            displayCompleteReport.clicks += parseInt(x.clicks)
+            displayCompleteReport.complete += parseInt(x.complete)
+            displayCompleteReport.midpoint += parseInt(x.midpoint)
+            displayCompleteReport.firstQuartile += parseInt(x.firstQuartile)
+            displayCompleteReport.thirdQuartile += parseInt(x.thirdQuartile)
             x.updatedAt.sort(function(a,b){
                 return new Date(b) - new Date(a);
             })
@@ -264,6 +279,12 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         response.video && response.video.map(x=>{
             x.updatedAt = [...new Set(x.updatedAt)];
             x.campaignId = removeDuplicates(x.campaignId)
+            videoCompleteReport.impressions += parseInt(x.impressions)
+            videoCompleteReport.clicks += parseInt(x.clicks)
+            videoCompleteReport.complete += parseInt(x.complete)
+            videoCompleteReport.midpoint += parseInt(x.midpoint)
+            videoCompleteReport.firstQuartile += parseInt(x.firstQuartile)
+            videoCompleteReport.thirdQuartile += parseInt(x.thirdQuartile)
             x.updatedAt.sort(function(a,b){
                 return new Date(b) - new Date(a);
             })
@@ -273,6 +294,9 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         updatedAtTimes.sort(function(a,b){
             return new Date(b) - new Date(a);
         })
+        response.audioCompleteReport = audioCompleteReport
+        response.displayCompleteReport = displayCompleteReport
+        response.videoCompleteReport = videoCompleteReport
         response.allrecentupdate = updatedAtTimes[0]
         res.json(response)
         // var data = reports;
