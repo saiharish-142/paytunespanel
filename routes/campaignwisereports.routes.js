@@ -230,7 +230,15 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         }}
     ])
     .then(reports=>{
-        var response = reports
+        var response = reports[0]
+        var updatedAtTimes = [];
+        response.audio.map(x=>{
+            x.updatedAt = [...new Set(x.updatedAt)];
+            x.campaignId = [...new Set(x.campaignId)];
+            x.updatedAt.sort(function(a,b){
+                return new Date(b) - new Date(a);
+            })
+        })
         res.json(response)
         // var data = reports;
         // data = data.filter(x => x.Publisher!== "")
