@@ -303,9 +303,9 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         response.videoCompleteReport = videoCompleteReport
         response.summaryCompleteReport = summaryCompleteReport
         response.allrecentupdate = updatedAtTimes ? updatedAtTimes[0] : undefined;
-        response.audio = await publisherapps.populate(response.audio,{path:'Publisher'}).catch(err=>console.log(err))
-        response.display = await publisherapps.populate(response.display,{path:'Publisher'}).catch(err=>console.log(err))
-        response.video = await publisherapps.populate(response.video,{path:'Publisher'}).catch(err=>console.log(err))
+        response.audio = await publisherapps.populate(response.audio,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
+        response.display = await publisherapps.populate(response.display,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
+        response.video = await publisherapps.populate(response.video,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
         res.json(response)
         // var data = reports;
         // data = data.filter(x => x.Publisher!== "")
