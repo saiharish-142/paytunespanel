@@ -240,7 +240,7 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
                 }}],
         }}
     ])
-    .then(reports=>{
+    .then(async (reports)=>{
         var response = reports[0]
         var updatedAtTimes = [];
         var audioCompleteReport   = {impressions : 0,clicks : 0,complete : 0,firstQuartile : 0,midpoint : 0,thirdQuartile : 0}
@@ -303,9 +303,9 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         response.videoCompleteReport = videoCompleteReport
         response.summaryCompleteReport = summaryCompleteReport
         response.allrecentupdate = updatedAtTimes ? updatedAtTimes[0] : undefined;
-        response.audio = publisherapps.populate(response.audio,{path:'Publisher'}).catch(err=>console.log(err))
-        response.display = publisherapps.populate(response.display,{path:'Publisher'}).catch(err=>console.log(err))
-        response.video = publisherapps.populate(response.video,{path:'Publisher'}).catch(err=>console.log(err))
+        response.audio = await publisherapps.populate(response.audio,{path:'Publisher'}).catch(err=>console.log(err))
+        response.display = await publisherapps.populate(response.display,{path:'Publisher'}).catch(err=>console.log(err))
+        response.video = await publisherapps.populate(response.video,{path:'Publisher'}).catch(err=>console.log(err))
         res.json(response)
         // var data = reports;
         // data = data.filter(x => x.Publisher!== "")
