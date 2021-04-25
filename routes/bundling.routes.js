@@ -39,7 +39,7 @@ router.get('/grp/:id',adminauth,(req,res)=>{
                 typeof campaignId !== 'string' && 
                 typeof campaignId !== 'object') ? 
                 data.ids.map(id=>mongoose.Types.ObjectId(id)) : data.ids
-        let groupedIdsTitle = await StreamingAds.aggregate([
+        let groupedIdsTitle = await streamingAds.aggregate([
             {$match:{"_id":{$in:ids}}},
             {$project:{
                 AdTitle:{$toLower:"$AdTitle"},
