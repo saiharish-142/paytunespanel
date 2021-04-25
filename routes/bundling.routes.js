@@ -68,7 +68,7 @@ router.get('/grp/:id',adminauth,(req,res)=>{
         ]).catch(err=>console.log(err))
         data.groupedTitles = groupedIdsTitle
         let idsTar = await streamingads.find({_id:{$in:ids}},{_id:1,TargetImpressions:1}).catch(err=>console.log(err))
-        let id_spliter = await adsetting.find({campaignId:{$in:ids}},{campaignId:1,type:1}).catch(err=>console.log(err))
+        let id_spliter = await adsetting.find({campaignId:{$in:ids}},{campaignId:1,type:1,targetImpression:1}).catch(err=>console.log(err))
         data.idsTar = idsTar
         data.id_spliter = id_spliter
         res.json({data,idsTar,id_spliter})
