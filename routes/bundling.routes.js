@@ -30,11 +30,11 @@ router.get('/:id',adminauth,(req,res)=>{
     }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
 })
 
-router.put('/single',adminauth,(req,res)=>{
-    const {id} = req.body
+router.get('/grp/:id',adminauth,(req,res)=>{
+    const {id} = req.params
     bindstreamingads.findById(id)
-    .then(async(resulta)=>{
-        var result = resulta
+    .then(async(result)=>{
+        var data = result
         var ids = result.ids ? result.ids.map(id=>mongoose.Types.ObjectId(id)) : null
         let groupedIdsTitle = await StreamingAds.aggregate([
             {$match:{"_id":{$in:ids}}},
