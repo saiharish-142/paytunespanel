@@ -34,7 +34,8 @@ router.get('/grp/:id',adminauth,(req,res)=>{
     const {id} = req.params
     bindstreamingads.findById(id)
     .then(async(result)=>{
-        var data = result
+        var data;
+        data = result
         data.idsTar = []
         data.id_spliter = []
         var ids = (typeof campaignId !== 'undefined' && 
