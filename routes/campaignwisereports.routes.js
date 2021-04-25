@@ -263,9 +263,9 @@ router.put('/sumreportofcamall',adminauth,(req,res)=>{
         response.audio = await publisherapps.populate(response.audio,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
         response.display = await publisherapps.populate(response.display,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
         response.video = await publisherapps.populate(response.video,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
-        response.audio = await StreamingAds.populate(response.audio,{path:'campaignId',select:'_id TargetImpressions'}).catch(err=>console.log(err))
-        response.display = await StreamingAds.populate(response.display,{path:'campaignId',select:'_id TargetImpressions'}).catch(err=>console.log(err))
-        response.video = await StreamingAds.populate(response.video,{path:'campaignId',select:'_id TargetImpressions'}).catch(err=>console.log(err))
+        response.audio = await StreamingAds.populate(response.audio,{path:'campaignId',select:'_id TargetImpressions startDate endDate'}).catch(err=>console.log(err))
+        response.display = await StreamingAds.populate(response.display,{path:'campaignId',select:'_id TargetImpressions startDate endDate'}).catch(err=>console.log(err))
+        response.video = await StreamingAds.populate(response.video,{path:'campaignId',select:'_id TargetImpressions startDate endDate'}).catch(err=>console.log(err))
         response.audio && response.audio.map(x=>{
             x.updatedAt = [...new Set(x.updatedAt)];
             x.campaignId = remove_duplicates_arrayobject(x.campaignId,'_id')
