@@ -34,7 +34,8 @@ router.get('/grp/:id',adminauth,(req,res)=>{
     const {id} = req.params
     bindstreamingads.findById(id)
     .then(async(result)=>{
-        var data = {ids:[],_id:0,Category:'',Advertiser:'',bundleadtitle:'',Pricing:'',PricingModel:'',startDate:'',endDate:''}
+        var data = {ids:[],id_final:{},_id:0,Category:'',Advertiser:'',bundleadtitle:'',Pricing:'',PricingModel:'',startDate:'',endDate:''}
+        data.id_final = {audio:[],audimpression:0,display:[],disimpression:0,video:[],vidimpression:0}
         data.ids = result.ids
         data._id = result._id
         data.Category = result.Category
@@ -78,11 +79,29 @@ router.get('/grp/:id',adminauth,(req,res)=>{
             }},{$sort: {createdOn: -1}}
         ]).catch(err=>console.log(err))
         data.groupedTitles = groupedIdsTitle
-        let idsTar = await streamingads.find({_id:{$in:ids}},{_id:1,TargetImpressions:1}).catch(err=>console.log(err))
+        // let idsTar = await streamingads.find({_id:{$in:ids}},{_id:1,TargetImpressions:1}).catch(err=>console.log(err))
         let id_spliter = await adsetting.find({campaignId:{$in:ids}},{campaignId:1,type:1,targetImpression:1}).catch(err=>console.log(err))
-        data.idsTar = idsTar
         data.id_spliter = id_spliter
-        res.json({data,idsTar,id_spliter})
+        var audio = id_spliter.map(x=>x.type==='audio')
+        var display = id_spliter.map(x=>x.type==='display')
+        var video = id_spliter.map(x=>x.type==='video')
+        var selectedId = [];
+        audio.map(x=>{
+            data.id_final.audio.push(x.campaignId)
+            selectedId.push(x.campaignId)
+            data.id_final.audimpression += parseInt(x.targetImpression)
+        })
+        display.map(x=>{
+            data.id_final.display.push(x.campaignId)
+            selectedId.push(x.campaignId)
+            data.id_final.disimpression += parseInt(x.targetImpression)
+        })
+        video.map(x=>{
+            data.id_final.video.push(x.campaignId)
+            selectedId.push(x.campaignId)
+            data.id_final.vidimpression += parseInt(x.targetImpression)
+        })
+        res.json(data)
     }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
 })
 
