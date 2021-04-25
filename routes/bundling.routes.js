@@ -30,6 +30,44 @@ router.get('/:id',adminauth,(req,res)=>{
     }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
 })
 
+router.get('/grp/:id',adminauth,(req,res)=>{
+    const {id} = req.params
+    bindstreamingads.findById(id)
+    .then(async (resulta)=>{
+        var result = resulta
+        var ids = result.ids ? result.ids.map(id=>mongoose.Types.ObjectId(id)) : null
+        let groupedIdsTitle = await StreamingAds.aggregate([
+            {$match:{"_id":{$in:ids}}},
+            {$project:{
+                AdTitle:{$toLower:"$AdTitle"},
+            }},{$project:{
+                AdTitle:{$split:["$AdTitle","_"]},
+            }},{$project:{
+                AdTitle:{$slice:["$AdTitle",2]} ,
+            }},{$project:{
+                AdTitle:{
+                    '$reduce': {
+                        'input': '$AdTitle',
+                        'initialValue': '',
+                        'in': {
+                            '$concat': [
+                                '$$value',
+                                {'$cond': [{'$eq': ['$$value', '']}, '', '_']}, 
+                                '$$this']
+                        }
+                    }
+                },
+            }},{$sort: {createdOn: -1}},{$group:{
+                _id:"$AdTitle",
+            }},{$project:{
+                Adtitle:"$_id",
+            }},{$sort: {createdOn: -1}}
+        ]).catch(err=>console.log(err))
+        // 
+        res.json({result,groupedIdsTitle,ids})
+    }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
+})
+
 router.get('/unp/:id',adminauth,(req,res)=>{
     const {id} = req.params
     bindstreamingads.findById(id)
