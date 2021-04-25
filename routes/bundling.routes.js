@@ -66,8 +66,12 @@ router.get('/grp/:id',adminauth,(req,res)=>{
                 Adtitle:"$_id",
             }},{$sort: {createdOn: -1}}
         ]).catch(err=>console.log(err))
-        // // 
-        res.json({data,ids,groupedIdsTitle})
+        data.groupedTitles = groupedIdsTitle
+        let idsTar = await streamingads.find({_id:{$in:ids}},{_id:1,TargetImpressions:1}).catch(err=>console.log(err))
+        let id_spliter = await adsetting.find({campaignId:{$in:ids}},{campaignId:1,type:1}).catch(err=>console.log(err))
+        data.idsTar = idsTar
+        data.id_spliter = id_spliter
+        res.json(data)
     }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
 })
 
