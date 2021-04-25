@@ -49,6 +49,17 @@ function arr_diff (a1, a2) {
     return diff;
 }
 
+const removeDuplicates = inputArray => {
+    const ids = [];
+    return inputArray.reduce((sum, element) => {
+        if(!ids.includes(element.toString())){
+            sum.push(element);
+            ids.push(element.toString());
+        }
+       return sum;
+    }, []);
+};
+
 router.get('/grp/:id',adminauth,(req,res)=>{
     const {id} = req.params
     bindstreamingads.findById(id)
@@ -123,6 +134,9 @@ router.get('/grp/:id',adminauth,(req,res)=>{
         var leftids = arr_diff(ids, selectedId)
         data.leftids = leftids
         data.id_final.audio.concat(leftids)
+        data.id_final.audio = removeDuplicates(data.id_final.audio)
+        data.id_final.display = removeDuplicates(data.id_final.display)
+        data.id_final.video = removeDuplicates(data.id_final.video)
         res.json(data)
     }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
 })
