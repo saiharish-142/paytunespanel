@@ -35,36 +35,39 @@ router.get('/grp/:id',adminauth,(req,res)=>{
     bindstreamingads.findById(id)
     .then(async(result)=>{
         var data = result
-        // var ids = result.ids ? result.ids.map(id=>mongoose.Types.ObjectId(id)) : null
-        // let groupedIdsTitle = await StreamingAds.aggregate([
-        //     {$match:{"_id":{$in:ids}}},
-        //     {$project:{
-        //         AdTitle:{$toLower:"$AdTitle"},
-        //     }},{$project:{
-        //         AdTitle:{$split:["$AdTitle","_"]},
-        //     }},{$project:{
-        //         AdTitle:{$slice:["$AdTitle",2]} ,
-        //     }},{$project:{
-        //         AdTitle:{
-        //             '$reduce': {
-        //                 'input': '$AdTitle',
-        //                 'initialValue': '',
-        //                 'in': {
-        //                     '$concat': [
-        //                         '$$value',
-        //                         {'$cond': [{'$eq': ['$$value', '']}, '', '_']}, 
-        //                         '$$this']
-        //                 }
-        //             }
-        //         },
-        //     }},{$sort: {createdOn: -1}},{$group:{
-        //         _id:"$AdTitle",
-        //     }},{$project:{
-        //         Adtitle:"$_id",
-        //     }},{$sort: {createdOn: -1}}
-        // ]).catch(err=>console.log(err))
+        var ids = (typeof campaignId !== 'undefined' && 
+                typeof campaignId !== 'string' && 
+                typeof campaignId !== 'object') ? 
+                data.ids.map(id=>mongoose.Types.ObjectId(id)) : data.ids
+        let groupedIdsTitle = await StreamingAds.aggregate([
+            {$match:{"_id":{$in:ids}}},
+            {$project:{
+                AdTitle:{$toLower:"$AdTitle"},
+            }},{$project:{
+                AdTitle:{$split:["$AdTitle","_"]},
+            }},{$project:{
+                AdTitle:{$slice:["$AdTitle",2]} ,
+            }},{$project:{
+                AdTitle:{
+                    '$reduce': {
+                        'input': '$AdTitle',
+                        'initialValue': '',
+                        'in': {
+                            '$concat': [
+                                '$$value',
+                                {'$cond': [{'$eq': ['$$value', '']}, '', '_']}, 
+                                '$$this']
+                        }
+                    }
+                },
+            }},{$sort: {createdOn: -1}},{$group:{
+                _id:"$AdTitle",
+            }},{$project:{
+                Adtitle:"$_id",
+            }},{$sort: {createdOn: -1}}
+        ]).catch(err=>console.log(err))
         // // 
-        res.json({data})
+        res.json({data,ids,groupedIdsTitle})
     }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
 })
 
