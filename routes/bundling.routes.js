@@ -101,7 +101,7 @@ router.get('/grp/:id',adminauth,(req,res)=>{
         //     selectedId.push(x)
         //     data.id_final.vidimpression += parseInt(x.targetImpression)
         // })
-        // res.json(data)
+        res.json(data)
     }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
 })
 
