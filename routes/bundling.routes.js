@@ -82,9 +82,9 @@ router.get('/grp/:id',adminauth,(req,res)=>{
         // let idsTar = await streamingads.find({_id:{$in:ids}},{_id:1,TargetImpressions:1}).catch(err=>console.log(err))
         let id_spliter = await adsetting.find({campaignId:{$in:ids}},{campaignId:1,type:1,targetImpression:1}).catch(err=>console.log(err))
         data.id_spliter = id_spliter
-        var audio = id_spliter.map(x=>x.type==='audio')
-        var display = id_spliter.map(x=>x.type==='display')
-        var video = id_spliter.map(x=>x.type==='video')
+        var audio = id_spliter.filter(x=>x.type==='audio')
+        var display = id_spliter.filter(x=>x.type==='display')
+        var video = id_spliter.filter(x=>x.type==='video')
         var selectedId = [];
         audio.map(x=>{
             data.id_final.audio.push(x.campaignId)
