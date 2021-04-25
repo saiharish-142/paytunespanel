@@ -71,7 +71,7 @@ router.get('/grp/:id',adminauth,(req,res)=>{
         let id_spliter = await adsetting.find({campaignId:{$in:ids}},{campaignId:1,type:1}).catch(err=>console.log(err))
         data.idsTar = idsTar
         data.id_spliter = id_spliter
-        res.json(data)
+        res.json({data,idsTar,id_spliter})
     }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
 })
 
