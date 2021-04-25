@@ -91,6 +91,7 @@ router.get('/grp/:id',adminauth,(req,res)=>{
             selectedId.push(x)
             data.id_final.audimpression += parseInt(x.targetImpression)
         })
+        data.selectedId = selectedId
         // display.map(x=>{
         //     data.id_final.display.push(x.campaignId)
         //     selectedId.push(x)
