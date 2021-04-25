@@ -2,16 +2,14 @@ import React,{ useEffect, useContext } from 'react'
 import { useState } from 'react'
 import {useHistory, useParams} from 'react-router-dom'
 import { IdContext } from '../App'
-import M from 'materialize-css'
 import BasicTableBundle from '../components/TableBundle'
 
 function ReportBundle() {
     const {campname} = useParams()
     const history = useHistory();
-    const {state1,dispatch1} = useContext(IdContext)
+    const {dispatch1} = useContext(IdContext)
     const [singlead, setsinglead] = useState({})
     const [title, settitle] = useState('')
-    const [loading, setloading] = useState(true)
     useEffect(() => {
         if(campname){
             dispatch1({type:"ID",payload:campname})
@@ -19,7 +17,7 @@ function ReportBundle() {
     }, [campname])
     useEffect(()=>{
         if(campname){
-            fetch(`/bundles/${campname}`,{
+            fetch(`/bundles/grp/${campname}`,{
                 method:'get',
                 headers:{
                     "Content-Type":"application/json",
@@ -28,40 +26,38 @@ function ReportBundle() {
             }).then(res=>res.json())
             .then(result=>{
                 settitle(result.bundleadtitle)
-                setloading(false)
                 setsinglead(result)
-                // console.log(result[0])
+                console.log(result)
             })
             .catch(err =>{
-                setloading(false)
                 console.log(err)
             })
         }
     },[campname])
-    const submitTitle = (adtitle) =>{
-        if(adtitle){
-            fetch(`/streamingads/updatename/${campname}`,{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    adtitle
-                })
-            }).then(res=>res.json())
-            .then(result=>{
-                setloading(false)
-                setsinglead(result)
-                // console.log(result)
-            })
-            .catch(err =>{
-                setloading(false)
-                console.log(err)
-            })
-        }else{
-            M.toast({html:"Ad Title Shouldn't be empty", classes:'#ff5252 red accent-2'})
-        }
-    }
+    // const submitTitle = (adtitle) =>{
+    //     if(adtitle){
+    //         fetch(`/streamingads/updatename/${campname}`,{
+    //             method:'put',
+    //             headers:{
+    //                 "Content-Type":"application/json",
+    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
+    //             },body:JSON.stringify({
+    //                 adtitle
+    //             })
+    //         }).then(res=>res.json())
+    //         .then(result=>{
+    //             setloading(false)
+    //             setsinglead(result)
+    //             // console.log(result)
+    //         })
+    //         .catch(err =>{
+    //             setloading(false)
+    //             console.log(err)
+    //         })
+    //     }else{
+    //         M.toast({html:"Ad Title Shouldn't be empty", classes:'#ff5252 red accent-2'})
+    //     }
+    // }
     // console.log(id)
     return (
         <div style={{padding:'20px'}}>

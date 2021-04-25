@@ -1,12 +1,12 @@
 import React,{ useContext, useEffect,useState } from 'react'
-import { useHistory } from 'react-router-dom'
+// import { useHistory } from 'react-router-dom'
 import { UserContext } from '../App'
 import StickyHeadTablebundle from '../components/BundleTable'
 import SearchCampagin from '../components/SearchCampagin'
 
 function DashboardBundle({clientview}) {
-    const history = useHistory()
-    const {state,dispatch} = useContext(UserContext)
+    // const history = useHistory()
+    const {state} = useContext(UserContext)
     const [loading, setloading] = useState(true)
     const [searchval, setSearchval] = useState('')
     const [streamingads, setStreamingads] = useState([])

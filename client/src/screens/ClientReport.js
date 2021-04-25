@@ -3,7 +3,6 @@ import { useState } from 'react'
 import {useHistory, useParams} from 'react-router-dom'
 import { IdContext, UserContext } from '../App'
 import EnhancedTable from '../components/ClientTable'
-import M from 'materialize-css'
 
 function ClientReport() {
     const {campname} = useParams()
@@ -12,7 +11,6 @@ function ClientReport() {
     const {dispatch1} = useContext(IdContext)
     const [singlead, setsinglead] = useState({})
     const [title, settitle] = useState('')
-    const [loading, setloading] = useState(true)
     useEffect(() => {
         if(campname){
             dispatch1({type:"ID",payload:campname})
@@ -20,23 +18,19 @@ function ClientReport() {
     }, [campname])
     useEffect(()=>{
         if(campname){
-            fetch(`/streamingads/groupedsingle/`,{
-                method:'put',
+            fetch(`/bundles/grp/${campname}`,{
+                method:'get',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    adtitle:campname
-                })
+                }
             }).then(res=>res.json())
             .then(result=>{
-                settitle(result[0]._id)
-                setloading(false)
-                setsinglead(result[0])
-                // console.log(result)
+                setsinglead(result)
+                settitle(result.bundleadtitle)
+                console.log(result)
             })
             .catch(err =>{
-                setloading(false)
                 console.log(err)
             })
         }
@@ -56,7 +50,7 @@ function ClientReport() {
             >Back</button></div>
             {/* <TitlRname title={title} settitle={settitle} submit={submitTitle} setloading={setloading} loading={loading} /> */}
             {/* <div style={{margin:'0 auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div> */}
-            <EnhancedTable title={campname} singlead={singlead} />
+            <EnhancedTable title={title} singlead={singlead} />
         </div>
     )
 }

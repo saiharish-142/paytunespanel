@@ -32,7 +32,7 @@ export default function BasicTable({singlead}) {
     const [audiologs, setaudiologs] = useState([])
     const [displaylogs, setdisplaylogs] = useState([])
     const [videologs, setvideologs] = useState([])
-    const [logs, setlogs] = useState([])
+    // const [logs, setlogs] = useState([])
     const [spentdata, setspentdata] = useState([])
     const [ids, setids] = useState({})
     const [impre, setimpre] = useState(0)
@@ -43,21 +43,21 @@ export default function BasicTable({singlead}) {
     const [spentOffline, setspentOffline] = useState(0)
     const [spentOfflined, setspentOfflined] = useState(0)
     const [spentOfflinev, setspentOfflinev] = useState(0)
-    const [fqd, setfqd] = useState(0)
-    const [sqd, setsqd] = useState(0)
-    const [tqd, settqd] = useState(0)
-    const [completed, setcompleted] = useState(0)
-    const [click, setclick] = useState(0)
+    // const [fqd, setfqd] = useState(0)
+    // const [sqd, setsqd] = useState(0)
+    // const [tqd, settqd] = useState(0)
+    // const [completed, setcompleted] = useState(0)
+    // const [click, setclick] = useState(0)
     // const [uniquesumcamp, setuniquesumcamp] = useState(0)
     // const [uniquesumcampd, setuniquesumcampd] = useState(0)
     // const [uniquesumcampv, setuniquesumcampv] = useState(0)
-    const [logsd, setlogsd] = useState([])
-    const [logsv, setlogsv] = useState([])
+    // const [logsd, setlogsd] = useState([])
+    // const [logsv, setlogsv] = useState([])
     // const [idsd, setidsd] = useState([])
-    const [impred, setimpred] = useState(0)
-    const [clickd, setclickd] = useState(0)
-    const [imprev, setimprev] = useState(0)
-    const [clickv, setclickv] = useState(0)
+    // const [impred, setimpred] = useState(0)
+    // const [clickd, setclickd] = useState(0)
+    // const [imprev, setimprev] = useState(0)
+    // const [clickv, setclickv] = useState(0)
     const classes = useStyles();
     // ids setter
     useEffect(() => {
@@ -115,7 +115,7 @@ export default function BasicTable({singlead}) {
             setdisplayReport(result.displayCompleteReport)
             setvideoReport(result.videoCompleteReport)
             setimpre(result.audioCompleteReport.impressions)
-            setclick(result.audioCompleteReport.clicks)
+            // setclick(result.audioCompleteReport.clicks)
             setcomplete(result.audioCompleteReport.complete)
             setfq(result.audioCompleteReport.firstQuartile)
             setsq(result.audioCompleteReport.midpoint)
@@ -216,38 +216,6 @@ export default function BasicTable({singlead}) {
         // console.log(s,date,s.split('/'))
         s = s.split('/')
         return s[1] + '/' + s[0] + '/' + s[2]
-    }
-    const uniquetopfinder = (dataunique) => {
-        var gotdata = dataunique;
-        gotdata = gotdata.sort(function(a,b){return b-a;})
-        return gotdata[0];
-    }
-    const datefinder = () => {
-        if(logs.length){
-            if(logs[0].updatedAt && logs[0].updatedAt.length){
-                return updatedatetimeseter(logs[0].updatedAt[0])
-            }else{
-                if(logsd.length){
-                    if(logsd[0].updatedAt && logsd[0].updatedAt.length){
-                        return updatedatetimeseter(logsd[0].updatedAt[0])
-                    }else{
-                        if(logsv.length){
-                            if(logsv[0].updatedAt && logsv[0].updatedAt.length){
-                                return updatedatetimeseter(logsv[0].updatedAt[0])
-                            }else{
-                                return 'not found'
-                            }
-                        }else{
-                            return 'not found';
-                        }
-                    }
-                }else{
-                    return 'not found';
-                }
-            }
-        }else{
-            return 'not found'
-        }
     }
     const spentfinder = (appId,campaignId,impressions) => {
         if(spentdata.length){
@@ -428,12 +396,12 @@ export default function BasicTable({singlead}) {
         {SummaryTable('Display', displayReport,ids && ids.disimpression,completespentfider('display')+spentOfflined)}
         {SummaryTable('Video', videoReport,ids && ids.vidimpression,completespentfider('video')+spentOfflinev)}
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Publisher Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         {PublisherTable('Audio',audiologs)}
         {PublisherTable('Display',displaylogs)}
         {PublisherTable('video',videologs)}
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Quartile Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <TableContainer  style={{margin:'20px 0'}} elevation={3} component={Paper}>
             <Table>
                 <TableHead>
@@ -489,37 +457,37 @@ export default function BasicTable({singlead}) {
             </Table>
         </TableContainer>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Region Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.audio} url='regionbycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.display} url='regionbycampids' />
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.video} url='regionbycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Language Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.audio} url='citylanguagebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.display} url='citylanguagebycampids' />
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.video} url='citylanguagebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Make Model Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.audio} url='phoneModelbycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.display} url='phoneModelbycampids' />
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.video} url='phoneModelbycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} url='platformTypebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} url='platformTypebycampids' />
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.video} url='platformTypebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} url='zipbycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.display} url='zipbycampids' />
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.video} url='zipbycampids' />
         {/* <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Model Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.audio} url='phonemakebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.display} url='phonemakebycampids' />
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.video} url='phonemakebycampids' /> */}
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} url='pptypebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} url='pptypebycampids' />
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.video} url='pptypebycampids' />

@@ -86,7 +86,7 @@ function App() {
             <Route
               path='/clientSideCamp'
               exact
-              render={()=>(state ? (state.usertype === 'admin' && <DashboardBundle clientview={true} />) : <Redirect to='/login' />)}
+              render={()=>(state ? (state.usertype === 'admin' ? <DashboardBundle clientview={true} /> : <Redirect to='/manageAds' />) : <Redirect to='/login' />)}
               /> 
             <Route
               path='/manageusers'
@@ -111,7 +111,7 @@ function App() {
             <Route
               path='/clientSideCamp/:campname'
               exact
-              render={()=>(state ? (state.usertype === 'admin' && <ClientReport />) : <Redirect to='/login' />)}
+              render={()=>(state ? (state.usertype === 'admin' ? <ClientReport /> : <Redirect to='/manageAds' />) : <Redirect to='/login' />)}
               /> 
             <Route
               path='/manageAds/:campname/detailed'
