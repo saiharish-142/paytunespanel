@@ -88,20 +88,20 @@ router.get('/grp/:id',adminauth,(req,res)=>{
         var selectedId = [];
         audio.map(x=>{
             data.id_final.audio.push(x.campaignId)
-            selectedId.push(x.campaignId)
+            selectedId.push(x)
             data.id_final.audimpression += parseInt(x.targetImpression)
         })
-        display.map(x=>{
-            data.id_final.display.push(x.campaignId)
-            selectedId.push(x.campaignId)
-            data.id_final.disimpression += parseInt(x.targetImpression)
-        })
-        video.map(x=>{
-            data.id_final.video.push(x.campaignId)
-            selectedId.push(x.campaignId)
-            data.id_final.vidimpression += parseInt(x.targetImpression)
-        })
-        res.json(data)
+        // display.map(x=>{
+        //     data.id_final.display.push(x.campaignId)
+        //     selectedId.push(x)
+        //     data.id_final.disimpression += parseInt(x.targetImpression)
+        // })
+        // video.map(x=>{
+        //     data.id_final.video.push(x.campaignId)
+        //     selectedId.push(x)
+        //     data.id_final.vidimpression += parseInt(x.targetImpression)
+        // })
+        // res.json(data)
     }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
 })
 
