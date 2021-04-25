@@ -1,10 +1,10 @@
-const { json } = require('express')
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 const adminauth  = require('../authenMiddleware/adminauth')
 const bindstreamingads = mongoose.model('bindstreamingads')
 const streamingads = mongoose.model('streamingads')
+const adsetting = mongoose.model('adsetting')
 
 router.get('/',adminauth,(req,res)=>{
     bindstreamingads.find()
