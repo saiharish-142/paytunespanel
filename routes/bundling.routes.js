@@ -30,6 +30,25 @@ router.get('/:id',adminauth,(req,res)=>{
     }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
 })
 
+
+function arr_diff (a1, a2) {
+    var a = [], diff = [];
+    for (var i = 0; i < a1.length; i++) {
+        a[a1[i]] = true;
+    }
+    for (var i = 0; i < a2.length; i++) {
+        if (a[a2[i]]) {
+            delete a[a2[i]];
+        } else {
+            a[a2[i]] = true;
+        }
+    }
+    for (var k in a) {
+        diff.push(k);
+    }
+    return diff;
+}
+
 router.get('/grp/:id',adminauth,(req,res)=>{
     const {id} = req.params
     bindstreamingads.findById(id)
@@ -88,20 +107,22 @@ router.get('/grp/:id',adminauth,(req,res)=>{
         var selectedId = [];
         audio.map(x=>{
             data.id_final.audio.push(x.campaignId)
-            selectedId.push(x)
+            selectedId.push(x.campaignId)
             data.id_final.audimpression += parseInt(x.targetImpression)
         })
-        data.selectedId = selectedId
-        // display.map(x=>{
-        //     data.id_final.display.push(x.campaignId)
-        //     selectedId.push(x)
-        //     data.id_final.disimpression += parseInt(x.targetImpression)
-        // })
-        // video.map(x=>{
-        //     data.id_final.video.push(x.campaignId)
-        //     selectedId.push(x)
-        //     data.id_final.vidimpression += parseInt(x.targetImpression)
-        // })
+        display.map(x=>{
+            data.id_final.display.push(x.campaignId)
+            selectedId.push(x.campaignId)
+            data.id_final.disimpression += parseInt(x.targetImpression)
+        })
+        video.map(x=>{
+            data.id_final.video.push(x.campaignId)
+            selectedId.push(x.campaignId)
+            data.id_final.vidimpression += parseInt(x.targetImpression)
+        })
+        var leftids = arr_diff(ids, selectedId)
+        data.leftids = leftids
+        data.id_final.audio.concat(leftids)
         res.json(data)
     }).catch(err=>res.status(422).json({error:'Error occured....!',err}))
 })
