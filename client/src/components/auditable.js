@@ -90,6 +90,9 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                         <TableCell>CTR</TableCell>
                         {!client &&  <TableCell>Balance Days</TableCell>}
                         {!client &&  <TableCell></TableCell>}
+                        {jsotitle==="phoneModel"?<TableCell> Type</TableCell>:""}
+                        {jsotitle==="phoneModel"?<TableCell>Cost</TableCell>:""}
+                        
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -122,7 +125,10 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                                 Math.round((row.CompanionClickTracking ? parseInt(row.CompanionClickTracking) :0 + 
                                 row.SovClickTracking ? parseInt(row.SovClickTracking) :0)*100/parseInt(row.impression) *100)/100 }%</TableCell>
                             {!client &&  <TableCell>{timefinder(streamingads && streamingads.endDate[0],Date.now())} days</TableCell>}
+                            {jsotitle==="phoneModel" && <TableCell>{adss.cost}</TableCell>}
+                            { jsotitle==="phoneModel"&& <TableCell>{adss.type}</TableCell>}
                             {!client &&  <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>}
+                        
                         </TableRow>
                         );}}else{
                             return (<TableRow><TableCell>No aaads to display</TableCell></TableRow>)

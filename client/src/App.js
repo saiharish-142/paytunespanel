@@ -17,6 +17,8 @@ import CampaignBundle from './screens/CampaignBundle';
 import DashboardBundle from './screens/manageBundles';
 import ReportBundle from './screens/Reportbundle';
 import DetailedTableBundle from './screens/detailedReportBundle';
+import Biddata from './components/biddata'
+import Phonedata from './components/phonedata'
 
 export const UserContext = createContext()
 export const IdContext = createContext()
@@ -61,12 +63,23 @@ function App() {
             exact
             render={()=>(state ? <Home />: <Redirect to='/login' />)}
             />
+            <Route
+              path='/biddata'
+              exact
+              render={()=>(state ?  <Biddata />  : <Biddata/>)}
+              /> 
+              <Route
+              path='/phonedata'
+              exact
+              render={()=>(state ?  <Phonedata />  : <Phonedata/>)}
+              /> 
           {state && <> 
             <Route
               path='/manageAds'
               exact
               render={()=>(state ? (state.usertype === 'admin' ? <Dashboard /> : <ClientManage />) : <Redirect to='/login' />)}
               /> 
+              
             <Route
               path='/manageBundles'
               exact

@@ -23,4 +23,4 @@ const campaginwisereportSchema = new mongoose.Schema({
     createdOn : {type:Date}
 },{timestamps:true})
 
-mongoose.model('campaignwisereports',campaginwisereportSchema)
+module.exports=mongoose.model('campaignwisereports',campaginwisereportSchema)
