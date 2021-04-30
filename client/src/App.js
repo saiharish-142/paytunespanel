@@ -19,6 +19,7 @@ import ReportBundle from './screens/Reportbundle';
 import DetailedTableBundle from './screens/detailedReportBundle';
 import Biddata from './components/biddata'
 import Phonedata from './components/phonedata'
+import EditUser from './screens/EditUser';
 
 export const UserContext = createContext()
 export const IdContext = createContext()
@@ -41,7 +42,7 @@ function App() {
       method:'get'
     }).then(res => res.json())
     .then((result) => {
-      // console.log(result)
+      console.log(result)
       dispatchru({type:"ID",payload:result.USD_INR})
     }).catch((err) => {
       console.log(err)
@@ -98,12 +99,17 @@ function App() {
             <Route
               path='/clientSideCamp'
               exact
-              render={()=>(state ? (state.usertype === 'admin' && <DashboardBundle clientview={true} />) : <Redirect to='/login' />)}
+              render={()=>(state ? (state.usertype === 'admin' ? <DashboardBundle clientview={true} /> : <Redirect to='/manageAds' />) : <Redirect to='/login' />)}
               /> 
             <Route
               path='/manageusers'
               exact
               render={()=>(state && (state.usertype === 'admin' ? <ManageUser /> : <Home />))}
+              />
+            <Route
+              path='/EditUser/:id'
+              exact
+              render={()=>(state && (state.usertype === 'admin' ? <EditUser /> : <Home />))}
               />
             <Route
               path='/manageAds/:campname'
@@ -118,7 +124,7 @@ function App() {
             <Route
               path='/clientSideCamp/:campname'
               exact
-              render={()=>(state ? (state.usertype === 'admin' && <ClientReport />) : <Redirect to='/login' />)}
+              render={()=>(state ? (state.usertype === 'admin' ? <ClientReport /> : <Redirect to='/manageAds' />) : <Redirect to='/login' />)}
               /> 
             <Route
               path='/manageAds/:campname/detailed'

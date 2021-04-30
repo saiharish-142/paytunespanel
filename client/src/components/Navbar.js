@@ -12,10 +12,10 @@ function Navbar() {
     return (
         <>
         <div className='navbar'>
+            <div className='navbar__dasboard' >
+                {state && <div style={{fontSize:'30px',paddingLeft:'20px',cursor:'pointer',color:"white"}}><TemporaryDrawer /></div>}
+            </div>
             <div className='navbar__logo' onClick={()=>history.push('/')} >PayTunes Music Ads</div>
-            {state ? <div className='navbar__dasboard' >
-                    <div style={{fontSize:'30px',paddingLeft:'20px',cursor:'pointer',color:"white"}}><TemporaryDrawer /></div>
-                </div> : ''}
             <div className='navbar__icons'>
                 {state ? 
                     <button className='btn #ef5350 red lighten-1' onClick={()=>{

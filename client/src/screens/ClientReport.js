@@ -1,17 +1,16 @@
 import React,{ useEffect, useContext } from 'react'
 import { useState } from 'react'
 import {useHistory, useParams} from 'react-router-dom'
-import { IdContext } from '../App'
+import { IdContext, UserContext } from '../App'
 import EnhancedTable from '../components/ClientTable'
-import M from 'materialize-css'
 
 function ClientReport() {
     const {campname} = useParams()
     const history = useHistory();
-    const {state1,dispatch1} = useContext(IdContext)
+    const {state} = useContext(UserContext)
+    const {dispatch1} = useContext(IdContext)
     const [singlead, setsinglead] = useState({})
     const [title, settitle] = useState('')
-    const [loading, setloading] = useState(true)
     useEffect(() => {
         if(campname){
             dispatch1({type:"ID",payload:campname})
@@ -19,7 +18,7 @@ function ClientReport() {
     }, [campname])
     useEffect(()=>{
         if(campname){
-            fetch(`/bundles/${campname}`,{
+            fetch(`/bundles/grp/${campname}`,{
                 method:'get',
                 headers:{
                     "Content-Type":"application/json",
@@ -27,13 +26,11 @@ function ClientReport() {
                 }
             }).then(res=>res.json())
             .then(result=>{
-                settitle(result.bundleadtitle)
-                setloading(false)
                 setsinglead(result)
-                // console.log(result[0])
+                settitle(result.bundleadtitle)
+                console.log(result)
             })
             .catch(err =>{
-                setloading(false)
                 console.log(err)
             })
         }
@@ -41,7 +38,13 @@ function ClientReport() {
     return (
         <div style={{padding:'20px'}}>
             <div style={{width:'10vw'}}><button 
-                onClick={()=>history.push(`/clientSideCamp`)} 
+                onClick={()=>{
+                    if(state.usertype==='admin'){
+                        history.push(`/clientSideCamp`)
+                    }else{
+                        history.push(`/manageAds`)
+                    }
+                }} 
                 className='btn #424242 grey darken-3'
                 style={{margin:'20px',textAlign:'left'}}
             >Back</button></div>

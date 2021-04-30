@@ -2,10 +2,31 @@ const express = require('express')
 const mongoose = require('mongoose')
 const router = express.Router()
 const StreamingAds = mongoose.model('streamingads')
+const adsetting = mongoose.model('adsetting')
 const adminauth = require('../authenMiddleware/adminauth')
 
 router.get('/',adminauth,(req,res)=>{
     StreamingAds.find()
+    .sort('-createdOn')
+    .then(ads=>{
+        res.json(ads)
+    })
+    .catch(err => console.log(err))
+})
+
+router.put('/byids',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
+    StreamingAds.find({_id:{$in:ids}})
+    .sort('-createdOn')
+    .then(ads=>{
+        res.json(ads)
+    })
+    .catch(err => console.log(err))
+})
+
+router.get('/names',adminauth,(req,res)=>{
+    StreamingAds.find({},{_id:1,AdTitle:1})
     .sort('-createdOn')
     .then(ads=>{
         res.json(ads)
@@ -247,10 +268,149 @@ router.put('/clientgrouped',adminauth,(req,res)=>{
     .catch(err => console.log(err))
 })
 
+router.put('/clientgroupedbyids',adminauth,(req,res)=>{
+    const { campaignId } = req.body
+    var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
+    StreamingAds.aggregate([
+        {$match:{"_id":{$in:ids}}},
+        {$project:{
+            AdTitle:{$toLower:"$AdTitle"},
+            Category:"$Category",
+            startDate:"$startDate",
+            endDate:"$endDate",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            PricingModel:"$PricingModel",
+            createdOn:"$createdOn"
+        }},{$project:{
+            AdTitle:{$split:["$AdTitle","_"]},
+            Category:"$Category",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            startDate:"$startDate",
+            endDate:"$endDate",
+            PricingModel:"$PricingModel",
+            createdOn:"$createdOn"
+        }},{$project:{
+            AdTitle:{$slice:["$AdTitle",2]} ,
+            Category:"$Category",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            startDate:"$startDate",
+            endDate:"$endDate",
+            PricingModel:"$PricingModel",
+            createdOn:{$substr:["$createdOn",0,10]}
+        }},{$project:{
+            AdTitle:{
+                '$reduce': {
+                    'input': '$AdTitle',
+                    'initialValue': '',
+                    'in': {
+                        '$concat': [
+                            '$$value',
+                            {'$cond': [{'$eq': ['$$value', '']}, '', '_']}, 
+                            '$$this']
+                    }
+                }
+            },
+            Category:"$Category",
+            startDate:"$startDate",
+            endDate:"$endDate",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            PricingModel:"$PricingModel",
+            createdOn:"$createdOn"
+        }},{$sort: {createdOn: -1}},{$group:{
+            _id:"$AdTitle",
+            Category:{$push : "$Category"},
+            Advertiser:{$push : "$Advertiser"},
+            Pricing:{$push : "$Pricing"},
+            startDate:{$push : "$startDate"},
+            endDate:{$push : "$endDate"}, 
+            PricingModel:{$push : "$PricingModel"},
+            createdOn:{$push : "$createdOn"}
+        }},{$project:{
+            Adtitle:"$_id",
+            Category:"$Category",
+            Advertiser:"$Advertiser",
+            Pricing:"$Pricing", 
+            startDate:"$startDate",
+            endDate:"$endDate",
+            PricingModel:"$PricingModel",
+            createdOn:{$arrayElemAt : ["$createdOn",0]}
+        }},{$sort: {createdOn: -1}}
+    ])
+    .then((respo)=>{
+        var data = [];
+        data = respo
+        data.forEach(ad => {
+            var resCategory = [].concat.apply([], ad.Category);
+            resCategory = [...new Set(resCategory)];
+            ad.Category = resCategory
+            var resAdvertiser = [].concat.apply([], ad.Advertiser);
+            resAdvertiser = [...new Set(resAdvertiser)];
+            ad.Advertiser = resAdvertiser
+            var resPricing = [].concat.apply([], ad.Pricing);
+            resPricing = [...new Set(resPricing)];
+            ad.Pricing = resPricing
+            var resPricingModel = [].concat.apply([], ad.PricingModel);
+            resPricingModel = [...new Set(resPricingModel)];
+            ad.PricingModel = resPricingModel
+            return ad;
+        })
+        res.json(data)
+    })
+    .catch(err => console.log(err))
+})
+
+function arr_diff (a1, a2) {
+    var a = [], diff = [];
+    for (var i = 0; i < a1.length; i++) {
+        a[a1[i]] = true;
+    }
+    for (var i = 0; i < a2.length; i++) {
+        if (a[a2[i]]) {
+            delete a[a2[i]];
+        } else {
+            a[a2[i]] = true;
+        }
+    }
+    for (var k in a) {
+        diff.push(k);
+    }
+    return diff;
+}
+
+function remove_duplicates_arrayobject (gotarray,unique){
+    var obj = {};
+    var array = gotarray;
+    // console.log(array)
+    for ( var i=0, len=array.length; i < len; i++ )
+        obj[array[i][unique]] = array[i];
+
+    array = new Array();
+    for ( var key in obj )
+        array.push(obj[key]);
+
+    return array;
+}
+
+const removeDuplicates = inputArray => {
+    const ids = [];
+    return inputArray.reduce((sum, element) => {
+        if(!ids.includes(element.toString())){
+            sum.push(element);
+            ids.push(element.toString());
+        }
+       return sum;
+    }, []);
+};
+
 router.put('/groupedsingle',adminauth,(req,res)=>{
     const { adtitle } = req.body
     StreamingAds.aggregate([
         {$project:{
+            id:"$_id",
             AdTitle:{$toLower:"$AdTitle"},
             startDate:"$startDate",
             endDate:"$endDate",
@@ -259,18 +419,21 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
         }},{$match:{
             AdTitle:{$regex:adtitle.toLowerCase()}
         }},{$project:{
+            id:"$id",
             AdTitle:{$split:["$AdTitle","_"]},
             startDate:"$startDate",
             endDate:"$endDate",
             TargetImpressions:"$TargetImpressions",
             createdOn:"$createdOn"
         }},{$project:{
+            id:"$id",
             AdTitle:{$slice:["$AdTitle",2]} ,
             startDate:"$startDate",
             endDate:"$endDate",
             TargetImpressions:"$TargetImpressions",
             createdOn:{$substr:["$createdOn",0,10]}
         }},{$project:{
+            id:"$id",
             AdTitle:{
                 '$reduce': {
                     'input': '$AdTitle',
@@ -288,12 +451,14 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
             TargetImpressions:"$TargetImpressions",
             createdOn:"$createdOn"
         }},{$sort: {createdOn: -1}},{$group:{
+            id:{$push:"$id"},
             _id:"$AdTitle",
             startDate:{$push : "$startDate"},
             endDate:{$push : "$endDate"},
-            TargetImpressions:{$push : "$TargetImpressions"}, 
+            TargetImpressions:{$push :{TR: "$TargetImpressions",id:"$id"}}, 
             createdOn:{$push : "$createdOn"}
         }},{$project:{
+            id:"$id",
             Adtitle:"$_id",
             startDate:"$startDate",
             endDate:"$endDate",
@@ -301,22 +466,96 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
             createdOn:{$arrayElemAt : ["$createdOn",0]}
         }},{$sort: {createdOn: -1}}
     ])
-    .then((respo)=>{
-        var data = [];
-        data = respo
-        data.forEach(ad => {
-            var resstartDate = [].concat.apply([], ad.startDate);
+    .then(async (respo)=>{
+        var data;
+        data = respo.length && respo[0];
+        if(data){
+            var ids = (typeof campaignId !== 'undefined' && 
+                typeof campaignId !== 'string' && 
+                typeof campaignId !== 'object') ? 
+                data.id.map(id=>mongoose.Types.ObjectId(id)) : data.id
+            let id_spliter = await adsetting.find({campaignId:{$in:ids}},{campaignId:1,type:1}).catch(err=>console.log(err))
+            data.ids = {audio:[],audimpression:0,display:[],disimpression:0,video:[],vidimpression:0}
+            data.TargetImpressions = [...new Set(data.TargetImpressions)];
+            id_spliter = remove_duplicates_arrayobject(id_spliter,"campaignId")
+            if(id_spliter.length){
+                var audioids = id_spliter.filter(x => x.type === "audio")
+                var displayids = id_spliter.filter(x => x.type === "display")
+                var videoids = id_spliter.filter(x => x.type === "video")
+                var selectedids = [];
+                audioids.map(x=>{
+                    data.ids.audio.push(x.campaignId.toString())
+                    selectedids.push(x.campaignId.toString())
+                    data.TargetImpressions.map(tar=>{
+                        // console.log(tar.id,x.campaignId,tar.id===x.campaignId,tar.id==x.campaignId,x.campaignId.equals(tar.id))
+                        if(x.campaignId.equals(tar.id)){
+                            console.log(tar)
+                            data.ids.audimpression += parseInt(tar.TR)
+                        }
+                    })
+                })
+                data.ids.audio = [...new Set(data.ids.audio)];
+                // data.ids.audimpression = audioimpre;
+                displayids.map(x=>{
+                    data.ids.display.push(x.campaignId.toString())
+                    selectedids.push(x.campaignId.toString())
+                    data.TargetImpressions.map(tar=>{
+                        if(x.campaignId.equals(tar.id)){
+                            console.log(tar)
+                            data.ids.disimpression += parseInt(tar.TR)
+                        }
+                    })
+                })
+                data.ids.display = [...new Set(data.ids.display)];
+                videoids.map(x=>{
+                    data.ids.video.push(x.campaignId.toString())
+                    selectedids.push(x.campaignId.toString())
+                    data.TargetImpressions.map(tar=>{
+                        if(x.campaignId.equals(tar.id)){
+                            console.log(tar)
+                            data.ids.vidimpression += parseInt(tar.TR)
+                        }
+                    })
+                })
+                data.ids.video = [...new Set(data.ids.video)];
+                var leftids = arr_diff(selectedids,data.id)
+                // var leftids = ids.filter(x=> !selectedids.includes(x))
+                data.leftids = leftids
+                if(leftids){
+                    await leftids.map(id=>data.ids.audio.push(id))
+                    data.ids.audio = [...new Set(data.ids.audio)];
+                    data.ids.audio = removeDuplicates(data.ids.audio)
+                    leftids.map(x=>{
+                        data.TargetImpressions.map(tar=>{
+                            if(x.equals(tar.id)){
+                                console.log(tar)
+                                data.ids.audimpression += parseInt(tar.TR)
+                            }
+                        })
+                    })
+                    data.ids.audio = [...new Set(data.ids.audio)];
+                }
+            }else{
+                data.ids.audio = ids
+                var dattarget = data.TargetImpressions
+                dattarget.map(ar=>{
+                    data.ids.audimpression += parseInt(ar.TR)
+                })
+            }
+            var resstartDate = [].concat.apply([], data.startDate);
             resstartDate = [...new Set(resstartDate)];
-            ad.startDate = resstartDate
-            var resendDate = [].concat.apply([], ad.endDate);
+            data.startDate = resstartDate
+            var resendDate = [].concat.apply([], data.endDate);
             resendDate = [...new Set(resendDate)];
-            ad.endDate = resendDate
-            var tottar = 0;
-            ad.TargetImpressions.forEach(num=> tottar += parseInt(num))
-            ad.TargetImpressions = tottar
-            return ad;
-        })
-        res.json(data)
+            data.endDate = resendDate
+            // data.splendid = id_spliter
+            // var tottar = 0;
+            // data.TargetImpressions.forEach(num=> tottar += parseInt(num))
+            // data.TargetImpressions = tottar
+            res.json(data)
+        }else{
+            res.status(422).json({error:"somthing went wrong try again"})
+        }
     })
     .catch(err => console.log(err))
 })

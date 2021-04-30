@@ -8,10 +8,10 @@ import M from 'materialize-css'
 function Report() {
     const {campname} = useParams()
     const history = useHistory();
-    const {state1,dispatch1} = useContext(IdContext)
+    const {dispatch1} = useContext(IdContext)
     const [singlead, setsinglead] = useState({})
-    const [title, settitle] = useState('')
-    const [loading, setloading] = useState(true)
+    // const [title, settitle] = useState('')
+    // const [loading, setloading] = useState(true)
     useEffect(() => {
         if(campname){
             dispatch1({type:"ID",payload:campname})
@@ -29,41 +29,17 @@ function Report() {
                 })
             }).then(res=>res.json())
             .then(result=>{
-                settitle(result[0].AdTitle)
-                setloading(false)
-                setsinglead(result[0])
-                // console.log(result[0])
+                // settitle(result[0].AdTitle)
+                // setloading(false)
+                setsinglead(result)
+                console.log(result)
             })
             .catch(err =>{
-                setloading(false)
+                // setloading(false)
                 console.log(err)
             })
         }
     },[campname])
-    const submitTitle = (adtitle) =>{
-        if(adtitle){
-            fetch(`/streamingads/updatename/${campname}`,{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    adtitle
-                })
-            }).then(res=>res.json())
-            .then(result=>{
-                setloading(false)
-                setsinglead(result)
-                // console.log(result)
-            })
-            .catch(err =>{
-                setloading(false)
-                console.log(err)
-            })
-        }else{
-            M.toast({html:"Ad Title Shouldn't be empty", classes:'#ff5252 red accent-2'})
-        }
-    }
     // console.log(id)
     return (
         <div style={{padding:'20px'}}>

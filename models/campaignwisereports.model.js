@@ -1,26 +1,30 @@
 const mongoose = require('mongoose')
 const {ObjectId} = mongoose.Schema.Types
 
-const campaginwisereportSchema = new mongoose.Schema({
-    date : {type:String},
-    campaignId : {type:ObjectId},
-    appId : {type:String},
-    requests : {type:Number},
-    ads : {type:Number},
-    servedAudioImpressions : {type:Number},
-    servedCompanionAds : {type:Number},
-    completedAudioImpressions : {type:Number},
-    error : {type:Number},
-    impression : {type:Number},
-    start : {type:Number},
-    midpoint : {type:Number},
-    thirdQuartile : {type:Number},
-    complete : {type:Number},
-    progress : {type:Number},
-    creativeView : {type:Number},
-    CompanioncreativeView : {type:Number},
-    CompanionClickTracking : {type:Number},
-    createdOn : {type:Date}
-},{timestamps:true})
+var campaignwisereportsSchema = new mongoose.Schema({
+    date: { type: String },
+    campaignId: { type: ObjectId, ref: 'streamingadObj' },
+    appId: String,
+    language: String,
+    requests: Number,
+    ads: Number, ///AdServed
+    servedAudioImpressions: Number,
+    servedCompanionAds: Number,
+    completedAudioImpressions: Number,
+    error: Number,
+    impression: Number,
+    start: Number,
+    firstQuartile: Number,
+    midpoint: Number,
+    thirdQuartile: Number,
+    complete: Number,
+    progress: Number,
+    creativeView: Number,
+    CompanioncreativeView: Number,
+    CompanionClickTracking: Number,
+    SovcreativeView: Number,
+    SovClickTracking: Number,
+    createdOn: { type: Date, default: Date.now },
+});
 
-module.exports=mongoose.model('campaignwisereports',campaginwisereportSchema)
+mongoose.model('campaignwisereports',campaignwisereportsSchema)

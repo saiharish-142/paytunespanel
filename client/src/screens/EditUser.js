@@ -1,39 +1,26 @@
-import { Button, FormControl, Input, InputLabel, Paper, Select, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core'
+import { Button, CircularProgress, FormControl, Input, InputLabel, Paper, Select, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import EditIcon from '@material-ui/icons/Edit';
 import CancelIcon from '@material-ui/icons/Cancel';
 import M from 'materialize-css'
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
-function ManageUser() {
+function EditUser() {
+    const {id} = useParams();
     const history = useHistory()
     const [email, setemail] = useState('')
-    const [password, setpassword] = useState('')
     const [usertype, setusertype] = useState('')
     const [username, setusername] = useState('')
-    const [users, setusers] = useState([])
+    const [loading, setloading] = useState(true)
+    const [user, setuser] = useState({})
     const [selectedcampaigns, setselectedcampaigns] = useState([])
     const [searchedcampaigns, setsearchedcampaigns] = useState([])
     const [campaigns, setcampaigns] = useState([])
     const [selectedbundles, setselectedbundles] = useState([])
     const [searchedbundles, setsearchedbundles] = useState([])
     const [bundles, setbundles] = useState([])
-    // Get users
-    useEffect(()=>{
-        fetch('/auth/users',{
-            method:'get',
-            headers:{
-                "Content-Type":"application/json",
-                "Authorization" :"Bearer "+localStorage.getItem("jwt")
-            }
-        }).then(res=>res.json())
-        .then(uss=>{
-            console.log(uss)
-            setusers(uss)
-        }).catch(err => console.log(err))
-    },[])
     // Get bundles
     useEffect(()=>{
         fetch('/bundles/names',{
@@ -64,9 +51,23 @@ function ManageUser() {
             setsearchedcampaigns(uss)
         }).catch(err => console.log(err))
     },[])
+    // updating User
     useEffect(() => {
-        console.log('users updated')
-    }, [users])
+        fetch(`/auth/:id`,{
+            method:'get',
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization" :"Bearer "+localStorage.getItem("jwt")
+            }
+        }).then(res=>res.json())
+        .then(user=>{
+            if(user){
+                console.log(user)
+                setloading(false)
+            }
+        })
+    }, [id])
+    // Edit User
     function createUser(){
         var bundleids = selectedbundles.map(bundle=>{return bundle._id})
         var campids = selectedcampaigns.map(camp=>{return camp._id})
@@ -76,20 +77,15 @@ function ManageUser() {
                 "Content-Type":"application/json",
                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
             },body:JSON.stringify({
-                username, password, email, usertype, bundles:bundleids, campaigns:campids
+                username, email, usertype, bundles:bundleids, campaigns:campids
             })
         }).then(res=>res.json())
         .then(result=>{
             if(result.error){
                 M.toast({html:result.error, classes:'#ff5252 red accent-2'}) 
             }else{
-                var data = users
-                data.push({username:username,usertype:usertype,email:email})
-                // console.log(data)
                 M.toast({html:result.message, classes:'#69f0ae green accent-2'})
-                setusers(data)
                 setemail('')
-                setpassword('')
                 setusertype('')
                 setusername('')
                 var campsel = selectedcampaigns
@@ -106,28 +102,10 @@ function ManageUser() {
             }
         }).catch(err => console.log(err))
     }
-    function deleteUSer(susername) {
-        // console.log(susername)
-        fetch('/auth/deleteUser',{
-            method:'delete',
-            headers:{
-                "Content-Type":"application/json",
-                "Authorization" :"Bearer "+localStorage.getItem("jwt")
-            },body:JSON.stringify({
-                username:susername
-            })
-        }).then(res=>res.json())
-        .then(result=>{
-                var data = users
-                data = data.filter(x => x.username !== susername)
-                M.toast({html:result.message, classes:'#69f0ae green accent-2'})
-                setusers(data)
-        }).catch(err => console.log(err))
-    }
     return (
-        <>
+        <div>
             <Paper style={{width:'40%',padding:'30px',margin:'30px auto',display:'flex'}}>
-                <form onSubmit={(e)=>{
+                {loading ? <CircularProgress style={{width:'fit-content',margin:'0px auto'}} /> :<form onSubmit={(e)=>{
                     e.preventDefault()
                     // console.log(usertype,username,password)
                     createUser()
@@ -207,35 +185,11 @@ function ManageUser() {
                         })
                         }</div>
                     <input placeholder='Email' required value={email} onChange={(e)=>setemail(e.target.value)} />
-                    <input type='password' placeholder='Password' required value={password} onChange={(e)=>setpassword(e.target.value)} />
                     <Button type='submit' color="primary" variant="contained">Create User</Button>
-                </form>
+                </form>}
             </Paper>
-            <Paper style={{width:'50%',margin:'0 auto 20px auto',padding:'20px'}}>
-                <b style={{fontSize:'20px'}}>Users List</b>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align='center'>Username</TableCell>
-                            <TableCell align='center'>Email</TableCell>
-                            <TableCell align='center'>User Type</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {users && users.map((data,i)=>{
-                            return <TableRow key={i}>
-                                <TableCell align='center'>{data.username}</TableCell>
-                                <TableCell align='center'>{data.email}</TableCell>
-                                <TableCell align='center'>{data.usertype}</TableCell>
-                                {data.usertype!=='admin' && <TableCell align='center' onClick={()=>deleteUSer(data.username)} style={{cursor:'pointer'}}><DeleteOutlinedIcon /></TableCell>}
-                                {data.usertype!=='admin' && <TableCell align='center' onClick={()=>history.push(`/EditUser/${data._id}`)} style={{cursor:'pointer'}}><EditIcon /></TableCell>}
-                            </TableRow>
-                        })}
-                    </TableBody>
-                </Table>
-            </Paper>
-        </>
+        </div>
     )
 }
 
-export default ManageUser
+export default EditUser

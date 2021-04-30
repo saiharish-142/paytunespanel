@@ -30,7 +30,7 @@ export default function StickyHeadTablebundle({streamingads,settingcamp,clientvi
     const [sa, setsa] = useState('remain')
     const [adss, setadss] = useState(streamingads)
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const {state1,dispatch1} = useContext(IdContext)
+    const {dispatch1} = useContext(IdContext)
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };

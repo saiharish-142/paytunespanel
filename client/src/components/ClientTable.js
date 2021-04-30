@@ -7,7 +7,6 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { useHistory } from 'react-router-dom';
 import { IdContext } from '../App';
 import IconBreadcrumbs from './breadBreed';
 import Auditable from './auditable.js'
@@ -19,389 +18,68 @@ const useStyles = makeStyles({
 });
 
 export default function BasicTable({singlead,title}) {
-    const history = useHistory();
     const {state1} = useContext(IdContext)
-    const [logs, setlogs] = useState([])
+    // const [logs, setlogs] = useState([])
     const [ids, setids] = useState({})
+    const [audioReport, setaudioReport] = useState({})
+    const [displayReport, setdisplayReport] = useState({})
+    const [videoReport, setvideoReport] = useState({})
+    const [lastUpdated, setlastUpdated] = useState('')
+    // const [audiologs, setaudiologs] = useState([])
+    // const [displaylogs, setdisplaylogs] = useState([])
+    // const [videologs, setvideologs] = useState([])
+    // const [fq, setfq] = useState(0)
+    // const [sq, setsq] = useState(0)
+    // const [tq, settq] = useState(0)
+    // const [complete, setcomplete] = useState(0)
     const [impre, setimpre] = useState(0)
-    const [fq, setfq] = useState(0)
-    const [sq, setsq] = useState(0)
-    const [tq, settq] = useState(0)
-    const [complete, setcomplete] = useState(0)
-    const [ratio, setratio] = useState(0)
-    const [ratiod, setratiod] = useState(0)
-    const [ratiov, setratiov] = useState(0)
     const [click, setclick] = useState(0)
-    const [imprada, setimprada] = useState(0)
-    const [uniquesumcamp, setuniquesumcamp] = useState(0)
-    const [uniquesumcampd, setuniquesumcampd] = useState(0)
-    const [uniquesumcampv, setuniquesumcampv] = useState(0)
-    const [logsd, setlogsd] = useState([])
-    const [logsv, setlogsv] = useState([])
-    // const [idsd, setidsd] = useState([])
     const [impred, setimpred] = useState(0)
     const [clickd, setclickd] = useState(0)
     const [imprev, setimprev] = useState(0)
     const [clickv, setclickv] = useState(0)
     const classes = useStyles();
-    // const normal =(val)=>{
-    //     let v = Math.round(val*100)/100
-    //     // console.log(v)
-    //     return v
-    // }
-    // unique users finder audio
-    // useEffect(()=>{
-    //     if(ids){
-    //         fetch('/subrepo/uniqueusersbycampids',{
-    //             method:'put',
-    //             headers:{
-    //                 "Content-Type":"application/json",
-    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
-    //             },body:JSON.stringify({
-    //                 campaignId:ids.audio
-    //             })
-    //         }).then(res=>res.json())
-    //         .then(result=>{
-    //             // console.log(result[0])
-    //             setuniquesumcamp(result[0].unique)
-    //             if(result[0].unique/impre < 0.5 || result[0].unique/impre > 1 ){
-    //                 setratio(0.75)
-    //             }else{
-    //                 setratio(result[0].unique/impre)
-    //             }
-    //             // console.log(impre/result[0].unique)
-    //         })
-    //         .catch(err=>console.log(err))
-    //     }
-    // },[ids,impre])
-    // unique users finder display
-    // useEffect(()=>{
-    //     if(ids){
-    //         fetch('/subrepo/uniqueusersbycampids',{
-    //             method:'put',
-    //             headers:{
-    //                 "Content-Type":"application/json",
-    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
-    //             },body:JSON.stringify({
-    //                 campaignId:ids.display
-    //             })
-    //         }).then(res=>res.json())
-    //         .then(result=>{
-    //             // console.log(result[0])
-    //             setuniquesumcampd(result[0].unique)
-    //             if(result[0].unique/impred < 0.5 || result[0].unique/impred > 1 ){
-    //                 setratiod(0.75)
-    //             }else{
-    //                 setratiod(result[0].unique/impre)
-    //             }
-    //         })
-    //         .catch(err=>console.log(err))
-    //     }
-    // },[ids,impred])
-    // unique users finder video
-    // useEffect(()=>{
-    //     if(ids){
-    //         fetch('/subrepo/uniqueusersbycampids',{
-    //             method:'put',
-    //             headers:{
-    //                 "Content-Type":"application/json",
-    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
-    //             },body:JSON.stringify({
-    //                 campaignId:ids.video
-    //             })
-    //         }).then(res=>res.json())
-    //         .then(result=>{
-    //             // console.log(result[0])
-    //             setuniquesumcampv(result[0].unique)
-    //             if(result[0].unique/impred < 0.5 || result[0].unique/impred > 1 ){
-    //                 setratiov(0.75)
-    //             }else{
-    //                 setratiov(result[0].unique/impre)
-    //             }
-    //         })
-    //         .catch(err=>console.log(err))
-    //     }
-    // },[ids,imprev])
+    // console.log(singlead)
     useEffect(()=>{
-        if(state1){
-            fetch(`/bundles/unp/${state1}`,{
-                method:'get',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                }
-            }).then(res=>res.json())
-            .then(idds=>{
-                // console.log(idds.ids)
-                var idsa = idds.ids
-                idsa = [...new Set(idsa)];
-                // console.log(idds.ids,idsa)
-                fetch('/ads/addetailt',{
-                    method:'put',
-                    headers:{
-                        "Content-Type":"application/json",
-                        "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                    },body:JSON.stringify({
-                        campaignId:idsa
-                    })
-                }).then(res=>res.json())
-                .then(result => {
-                    if(result.spear.length === 0){
-                        setids(result)
-                        console.log(result)
-                    }else{
-                        fetch('/streamingads/reqtarget',{
-                            method:'put',
-                            headers:{
-                                "Content-Type":"application/json",
-                                "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                            },body:JSON.stringify({
-                                ids:result.spear
-                            })
-                        }).then(res=>res.json())
-                        .then(resuda=>{
-                            setids(result)
-                            console.log(result.audio)
-                            console.log(result)
-                            console.log(resuda)
-                        })
-                        .catch(err=>console.log(err))
-                    }
-                }).catch(err=>console.log(err))
-            })
-            .catch(err=>console.log(err))
+        if(singlead && singlead.id_final){
+            setids(singlead.id_final)
+            logsPuller(singlead.id_final)
         }
-    },[state1])
-    // audio logs puller
-    useEffect(()=>{
-        if(ids && ids.audio){
-            fetch('/offreport/sumreportofcam22',{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    campaignId:ids.audio
-                })
-            }).then(res=>res.json())
-            .then(async (result)=>{
-                var impressions1 = 0;
-                var clicks1 = 0;
-                var firt1 = 0;
-                var sec1 = 0;
-                var thir1 = 0;
-                var compo1 = 0;
-                var logss = result;
-                // console.log(result)
-                result.map((re)=>{
-                    re.nameads = 'Offline'
-                    impressions1 += re.impressions
-                    clicks1 += re.clicks
-                    firt1 += re.firstQuartile ? re.firstQuartile : 0
-                    sec1 += re.midpoint ? re.midpoint : 0
-                    thir1 += re.thirdQuartile ? re.thirdQuartile : 0
-                    compo1 += re.complete ? re.complete : 0
-                })
-                logss = logss.filter(x => x.impressions!==0)
-                logss = logss.sort(function(a,b){
-                    var d1 = new Date(a.updatedAt[0])
-                    var d2 = new Date(b.updatedAt[0])
-                    return d2 - d1
-                })
-                console.log(logss)
-                if(logss.length)
-                setlogs(logss)
-                if(impressions1)
-                setimpre(impressions1)
-                if(clicks1)
-                setclick(clicks1)
-                if(firt1)
-                setfq(firt1)
-                if(sec1)
-                setsq(sec1)
-                if(thir1)
-                settq(thir1)
-                if(compo1)
-                setcomplete(compo1)
-            })
-            .catch(err =>{
-                console.log(err)
-            })
-        }
-    },[ids])
-    const offlineReports = (logs,imp,clck,firq,secq,thirq,compo) => {
-        fetch('/offreport/sumreportofcam22',{
+    },[singlead])
+    // logs puller
+    const logsPuller = (idData) =>{
+        console.log(idData)
+        fetch('/offreport/sumreportofcamall',{
             method:'put',
             headers:{
                 "Content-Type":"application/json",
                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
             },body:JSON.stringify({
-                campaignId:ids.audio
+                campaignId:idData
             })
         }).then(res=>res.json())
-        .then(result=>{
-            var impressions1 = imp;
-            var clicks1 = clck;
-            var firt1 = firq;
-            var sec1 = secq;
-            var thir1 = thirq;
-            var compo1 = compo;
-            var logss = result;
-            // console.log(result)
-            result.map((re)=>{
-                re.nameads = 'Offline'
-                impressions1 += re.impressions
-                clicks1 += re.clicks
-                firt1 += re.firstQuartile ? re.firstQuartile : 0
-                sec1 += re.midpoint ? re.midpoint : 0
-                thir1 += re.thirdQuartile ? re.thirdQuartile : 0
-                compo1 += re.complete ? re.complete : 0
-            })
-            logss = logss.concat(logs)
-            logss = logss.filter(x => x.impressions!==0)
-            logss = logss.sort(function(a,b){
-                var d1 = new Date(a.updatedAt[0])
-                var d2 = new Date(b.updatedAt[0])
-                return d2 - d1
-            })
-            console.log(logss)
-            if(logss.length)
-            setlogs(logss)
-            if(impressions1)
-            setimpre(impressions1)
-            if(clicks1)
-            setclick(clicks1)
-            if(firt1)
-            setfq(firt1)
-            if(sec1)
-            setsq(sec1)
-            if(thir1)
-            settq(thir1)
-            if(compo1)
-            setcomplete(compo1)
-        })
-        .catch(err =>{
-            console.log(err)
-        })
+        .then(resulta=>{
+            var result = resulta
+            console.log(result)
+            setlastUpdated(result.allrecentupdate)
+            setaudioReport(result.audioCompleteReport)
+            setdisplayReport(result.displayCompleteReport)
+            setvideoReport(result.videoCompleteReport)
+            setimpre(result.audioCompleteReport.impressions)
+            setimpred(result.displayCompleteReport.impressions)
+            setimprev(result.videoCompleteReport.impressions)
+            setclick(result.audioCompleteReport.clicks)
+            setclickd(result.displayCompleteReport.clicks)
+            setclickv(result.videoCompleteReport.clicks)
+            // setcomplete(result.audioCompleteReport.complete)
+            // setfq(result.audioCompleteReport.firstQuartile)
+            // setsq(result.audioCompleteReport.midpoint)
+            // settq(result.audioCompleteReport.thirdQuartile)
+            // setaudiologs(result.audio)
+            // setdisplaylogs(result.display)
+            // setvideologs(result.video)
+        }).catch(err=>console.log(err))
     }
-    // display logs puller
-    useEffect(()=>{
-        if(ids && ids.display){
-            fetch('/offreport/sumreportofcam22',{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    campaignId:ids.display
-                })
-            }).then(res=>res.json())
-            .then(result=>{
-                var impressions1 = 0;
-                var clicks1 = 0;
-                var logss = result;
-                // console.log(result)
-                result.map((re)=>{
-                    impressions1 += re.impressions
-                    clicks1 += re.clicks
-                })
-                logss = logss.concat(logs)
-                logss = logss.sort(function(a,b){
-                    var d1 = new Date(a.updatedAt[0])
-                    var d2 = new Date(b.updatedAt[0])
-                    return d2 - d1
-                })
-                // console.log(logss)
-                if(logss.length)
-                setlogsd(logss)
-                if(impressions1)
-                setimpred(impressions1)
-                if(clicks1)
-                setclickd(clicks1)
-            })
-            .catch(err =>{
-                console.log(err)
-            })
-        }
-    },[ids])
-    const offlineReportsd = (logs,imp,clck) => {
-        fetch('/offreport/sumreportofcam22',{
-            method:'put',
-            headers:{
-                "Content-Type":"application/json",
-                "Authorization" :"Bearer "+localStorage.getItem("jwt")
-            },body:JSON.stringify({
-                campaignId:ids.display
-            })
-        }).then(res=>res.json())
-        .then(result=>{
-            var impressions1 = imp;
-            var clicks1 = clck;
-            var logss = result;
-            // console.log(result)
-            result.map((re)=>{
-                re.nameads = 'Offline'
-                impressions1 += re.impressions
-                clicks1 += re.clicks
-            })
-            logss = logss.concat(logs)
-            logss = logss.sort(function(a,b){
-                var d1 = new Date(a.updatedAt[0])
-                var d2 = new Date(b.updatedAt[0])
-                return d2 - d1
-            })
-            // console.log(logss)
-            if(logss.length)
-            setlogsd(logss)
-            if(impressions1)
-            setimpred(impressions1)
-            if(clicks1)
-            setclickd(clicks1)
-        })
-        .catch(err =>{
-            console.log(err)
-        })
-    }
-    // video logs puller
-    useEffect(()=>{
-        if(ids && ids.video){
-            fetch('/offreport/sumreportofcam22',{
-                method:'put',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                },body:JSON.stringify({
-                    campaignId:ids.video
-                })
-            }).then(res=>res.json())
-            .then(result=>{
-                var impressions1 = 0;
-                var clicks1 = 0;
-                var logss = result;
-                // console.log(result)
-                result.map((re)=>{
-                    impressions1 += re.impressions
-                    clicks1 += re.clicks
-                })
-                logss = logss.concat(logs)
-                logss = logss.sort(function(a,b){
-                    var d1 = new Date(a.updatedAt[0])
-                    var d2 = new Date(b.updatedAt[0])
-                    return d2 - d1
-                })
-                // console.log(logss)
-                if(logss.length)
-                setlogsv(logss)
-                if(impressions1)
-                setimprev(impressions1)
-                if(clicks1)
-                setclickv(clicks1)
-            })
-            .catch(err =>{
-                console.log(err)
-            })
-        }
-    },[ids])
     const timefinder = (da1,da2) => {
         var d1 = new Date(da1)
         var d2 = new Date(da2)
@@ -413,8 +91,8 @@ export default function BasicTable({singlead,title}) {
         return Math.round(resula*1)/1 ;
     }
     const dateformatchanger = (date) => {
-        var dategot = date.toString();
-        var datechanged = dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
+        var dategot = date && date.toString();
+        var datechanged = dategot && dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
         return datechanged;
     }
     const colorfinder = (totaltime,lefttime,tobeimpress,impress) => {
@@ -443,205 +121,66 @@ export default function BasicTable({singlead,title}) {
         s = s.split('/')
         return s[1] + '/' + s[0] + '/' + s[2]
     }
-    // const uniquetopfinder = (dataunique) => {
-    //     var gotdata = dataunique;
-    //     gotdata = gotdata.sort(function(a,b){return b-a;})
-    //     return gotdata[0];
-    // }
-    // console.log(Date('2020-11-28T18:30:00.541Z').toString())
-    // console.log(Date('2020-11-28T18:30:00.541Z'))
-    // console.log(Date('2020-11-28T18:30:00.541Z'))
-    const datefinder = () => {
-        if(logs.length){
-            if(logs[0].updatedAt && logs[0].updatedAt.length){
-                return updatedatetimeseter(logs[0].updatedAt[0])
-            }else{
-                if(logsd.length){
-                    if(logsd[0].updatedAt && logsd[0].updatedAt.length){
-                        return updatedatetimeseter(logsd[0].updatedAt[0])
-                    }else{
-                        return 'not found'
-                    }
-                }else{
-                    return 'not found';
-                }
-            }
-        }else{
-            return 'not found'
-        }
+    const SummaryTable = (title,report,target,ent) =>{
+        // console.log(report)
+        return(
+            <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+                <div style={{margin:'5px',fontWeight:'bolder'}}>{title} Report</div>
+                {singlead._id && report && ids && (report.impressions>0 || report.clicks>0) ?
+                    <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Campaign Start Date</TableCell>
+                                <TableCell>Campaign End Date</TableCell>
+                                <TableCell>Total Days of Campaign</TableCell>
+                                <TableCell>Total Impressions to be delivered</TableCell>
+                                <TableCell>Total Impressions Delivered till date</TableCell>
+                                <TableCell>Total Clicks Delivered till date</TableCell>
+                                <TableCell>CTR</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow style={{
+                                background: colorfinder(
+                                    timefinder(singlead.endDate,singlead.startDate) ,
+                                    timefinder(Date.now(),singlead.startDate) ,
+                                    target,
+                                    report.impressions
+                                )
+                            }}>
+                                <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
+                                <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
+                                <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
+                                <TableCell>{target}</TableCell>
+                                <TableCell>{report.impressions}</TableCell>
+                                <TableCell>{report.clicks}</TableCell>
+                                <TableCell>{Math.round((report.clicks*100/report.impressions)*100)/100}%</TableCell>
+                            </TableRow> 
+                        </TableBody>
+                    </Table> 
+                : <div style={{margin:'10px',fontSize:'20px'}}>Loading or No Data Found</div>}
+            </TableContainer> 
+        )
     }
     return (
         <>
         <IconBreadcrumbs />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{title && title.toUpperCase()} Campaign</div>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
-        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
-            <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
-        <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-            <TableRow>
-                <TableCell>Campaign Start Date</TableCell>
-                <TableCell>Campaign End Date</TableCell>
-                <TableCell>Total Days of Campaign</TableCell>
-                <TableCell>Total Impressions to be delivered</TableCell>
-                <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Unique Users</TableCell>
-                <TableCell>Total Clicks Delivered till date</TableCell>
-                <TableCell>CTR</TableCell>
-            </TableRow>
-            </TableHead>
-            <TableBody>
-            {singlead._id && (logs.length>0) && ids ?
-                <TableRow 
-                    style={{
-                        background: colorfinder(
-                            timefinder(singlead.endDate,singlead.startDate) ,
-                            timefinder(Date.now(),singlead.startDate) ,
-                            ids && ids.audimpression,
-                            impre
-                        )
-                    }}
-                >
-                    <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
-                    <TableCell>{ids && ids.audimpression}</TableCell>
-                    <TableCell>{impre}</TableCell>
-                    <TableCell>{ratio && Math.round(ratio*impre) + 1}</TableCell>
-                    <TableCell>{click}</TableCell>
-                    <TableCell>{Math.round(click*100/impre *100)/100}%</TableCell>
-                </TableRow>
-            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
-            </TableBody>
-        </Table>
-        </TableContainer>
-        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
-        <div style={{margin:'5px',fontWeight:'bolder'}}>Display Type</div>
-        <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-            <TableRow>
-                <TableCell>Campaign Start Date</TableCell>
-                <TableCell>Campaign End Date</TableCell>
-                <TableCell>Total Days of Campaign</TableCell>
-                <TableCell>Total Impressions to be delivered</TableCell>
-                <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Unique Users</TableCell>
-                <TableCell>Total Clicks Delivered till date</TableCell>
-                <TableCell>CTR</TableCell>
-            </TableRow>
-            </TableHead>
-            <TableBody>
-            {singlead._id && ids && (logsd.length>0) ?
-                <TableRow 
-                    style={{
-                        background: colorfinder(
-                            timefinder(singlead.endDate,singlead.startDate) ,
-                            timefinder(Date.now(),singlead.startDate) ,
-                            ids && ids.disimpression,
-                            impred
-                        )
-                    }}
-                >
-                    <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
-                    <TableCell>{ids && ids.disimpression}</TableCell>
-                    <TableCell>{impred}</TableCell>
-                    <TableCell>{Math.round(ratiod*impred) + 1}</TableCell>
-                    <TableCell>{clickd}</TableCell>
-                    <TableCell>{Math.round(clickd*100/impred *100)/100}%</TableCell>
-                </TableRow>
-            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
-            </TableBody>
-        </Table>
-        </TableContainer>
-        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
-        <div style={{margin:'5px',fontWeight:'bolder'}}>Video Type</div>
-        <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-            <TableRow>
-                <TableCell>Campaign Start Date</TableCell>
-                <TableCell>Campaign End Date</TableCell>
-                <TableCell>Total Days of Campaign</TableCell>
-                <TableCell>Total Impressions to be delivered</TableCell>
-                <TableCell>Total Impressions Delivered till date</TableCell>
-                <TableCell>Unique Users</TableCell>
-                <TableCell>Total Clicks Delivered till date</TableCell>
-                <TableCell>CTR</TableCell>
-            </TableRow>
-            </TableHead>
-            <TableBody>
-            {singlead._id && ids && (logsd.length>0) ?
-                <TableRow 
-                    style={{
-                        background: colorfinder(
-                            timefinder(singlead.endDate,singlead.startDate) ,
-                            timefinder(Date.now(),singlead.startDate) ,
-                            ids && ids.disimpression,
-                            impred
-                        )
-                    }}
-                >
-                    <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
-                    <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
-                    <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
-                    <TableCell>{ids && ids.disimpression}</TableCell>
-                    <TableCell>{imprev}</TableCell>
-                    <TableCell>{Math.round(ratiov*imprev) + 1}</TableCell>
-                    <TableCell>{clickv}</TableCell>
-                    <TableCell>{Math.round(clickv*100/imprev *100)/100}%</TableCell>
-                </TableRow>
-            : <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
-            </TableBody>
-        </Table>
-        </TableContainer>
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Quartile Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
-        <TableContainer  style={{margin:'20px 0'}} elevation={3} component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell>First Quartile</TableCell>
-                        <TableCell>Second Quartile</TableCell>
-                        <TableCell>Third Quartile</TableCell>
-                        <TableCell>Complete</TableCell>
-                        <TableCell>Total Impresions</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                        {fq>0 && sq>0 && tq>0 ?
-                            <TableRow>
-                                    <TableCell>Impressions</TableCell>
-                                    <TableCell>{Math.round(fq*impre/imprada)}</TableCell>
-                                    <TableCell>{Math.round(sq*impre/imprada)}</TableCell>
-                                    <TableCell>{Math.round(tq*impre/imprada)}</TableCell>
-                                    <TableCell>{Math.round(complete*impre/imprada)}</TableCell>
-                                    <TableCell>{impre}</TableCell>
-                            </TableRow>:
-                            <TableRow>
-                                <TableCell>Impressions</TableCell>
-                                <TableCell>{impre}</TableCell>
-                                <TableCell>{impre}</TableCell>
-                                <TableCell>{impre}</TableCell>
-                                <TableCell>{impre}</TableCell>
-                                <TableCell>{impre}</TableCell>
-                            </TableRow>
-                        }
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        {SummaryTable('Audio', audioReport,ids && ids.audimpression)}
+        {SummaryTable('Display', displayReport,ids && ids.disimpression)}
+        {SummaryTable('Video', videoReport,ids && ids.vidimpression)}
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} click={click} impression={impre} client={true} url='platformTypebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} click={clickd} impression={impred} client={true} url='platformTypebycampids' />
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.video} click={clickv} impression={imprev} client={true} url='platformTypebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} click={click} impression={impre} client={true} url='zipbycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} click={click} impression={impre} client={true} url='pptypebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} click={clickd} impression={impred} client={true} url='pptypebycampids' />
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.video} click={clickv} impression={imprev} client={true} url='pptypebycampids' />

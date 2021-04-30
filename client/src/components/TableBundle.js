@@ -22,6 +22,15 @@ export default function BasicTableBundle({singlead,title}) {
     const history = useHistory();
     const {state1} = useContext(IdContext)
     const {stateru} = useContext(USDINRratioContext)
+    const [usinr, setusinr] = useState(74.94715)
+    const [summaryReport, setsummaryReport] = useState({})
+    const [audioReport, setaudioReport] = useState({})
+    const [displayReport, setdisplayReport] = useState({})
+    const [videoReport, setvideoReport] = useState({})
+    const [lastUpdated, setlastUpdated] = useState('')
+    const [audiologs, setaudiologs] = useState([])
+    const [displaylogs, setdisplaylogs] = useState([])
+    const [videologs, setvideologs] = useState([])
     const [logs, setlogs] = useState([])
     const [spentdata, setspentdata] = useState([])
     const [ids, setids] = useState({})
@@ -37,146 +46,43 @@ export default function BasicTableBundle({singlead,title}) {
     // const [sqd, setsqd] = useState(0)
     // const [tqd, settqd] = useState(0)
     // const [completed, setcompleted] = useState(0)
-    const [click, setclick] = useState(0)
+    // const [click, setclick] = useState(0)
     // const [uniquesumcamp, setuniquesumcamp] = useState(0)
     // const [uniquesumcampd, setuniquesumcampd] = useState(0)
     // const [uniquesumcampv, setuniquesumcampv] = useState(0)
-    const [logsd, setlogsd] = useState([])
-    const [logsv, setlogsv] = useState([])
-    // const [idsd, setidsd] = useState([])
-    const [impred, setimpred] = useState(0)
-    const [clickd, setclickd] = useState(0)
-    const [imprev, setimprev] = useState(0)
-    const [clickv, setclickv] = useState(0)
+    // const [logsd, setlogsd] = useState([])
+    // const [logsv, setlogsv] = useState([])
+    // // const [idsd, setidsd] = useState([])
+    // const [impred, setimpred] = useState(0)
+    // const [clickd, setclickd] = useState(0)
+    // const [imprev, setimprev] = useState(0)
+    // const [clickv, setclickv] = useState(0)
     const classes = useStyles();
-    // const normal =(val)=>{
-    //     let v = Math.round(val*100)/100
-    //     // console.log(v)
-    //     return v
-    // }
-    // unique users finder audio
-    // useEffect(()=>{
-    //     if(ids){
-    //         fetch('/subrepo/uniqueusersbycampids',{
-    //             method:'put',
-    //             headers:{
-    //                 "Content-Type":"application/json",
-    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
-    //             },body:JSON.stringify({
-    //                 campaignId:ids.audio
-    //             })
-    //         }).then(res=>res.json())
-    //         .then(result=>{
-    //             console.log(result[0])
-    //             setuniquesumcamp(result[0].unique)
-    //         })
-    //         .catch(err=>console.log(err))
-    //     }
-    // },[ids])
-    // unique users finder display
-    // useEffect(()=>{
-    //     if(ids){
-    //         fetch('/subrepo/uniqueusersbycampids',{
-    //             method:'put',
-    //             headers:{
-    //                 "Content-Type":"application/json",
-    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
-    //             },body:JSON.stringify({
-    //                 campaignId:ids.display
-    //             })
-    //         }).then(res=>res.json())
-    //         .then(result=>{
-    //             console.log(result[0])
-    //             setuniquesumcampd(result[0].unique)
-    //         })
-    //         .catch(err=>console.log(err))
-    //     }
-    // },[ids])
-    // // unique users finder video
-    // useEffect(()=>{
-    //     if(ids){
-    //         fetch('/subrepo/uniqueusersbycampids',{
-    //             method:'put',
-    //             headers:{
-    //                 "Content-Type":"application/json",
-    //                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
-    //             },body:JSON.stringify({
-    //                 campaignId:ids.video
-    //             })
-    //         }).then(res=>res.json())
-    //         .then(result=>{
-    //             console.log(result[0])
-    //             setuniquesumcampv(result[0].unique)
-    //         })
-    //         .catch(err=>console.log(err))
-    //     }
-    // },[ids])
+    useEffect(() => {
+        // console.log(spentOffline)
+        console.log(stateru)
+        if(stateru){
+            setusinr(stateru)
+        }
+    }, [stateru])
     // id finder useEffect
     useEffect(()=>{
-        if(state1){
-            fetch(`/bundles/unp/${state1}`,{
-                method:'get',
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                }
-            }).then(res=>res.json())
-            .then(idds=>{
-                // console.log(idds.ids)
-                var idsa = idds.ids
-                idsa = [...new Set(idsa)];
-                // console.log(idds.ids,idsa)
-                fetch('/ads/addetailt',{
-                    method:'put',
-                    headers:{
-                        "Content-Type":"application/json",
-                        "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                    },body:JSON.stringify({
-                        campaignId:idsa
-                    })
-                }).then(res=>res.json())
-                .then(result => {
-                    if(result.spear.length === 0){
-                        setids(result)
-                        console.log(result)
-                    }else{
-                        fetch('/streamingads/reqtarget',{
-                            method:'put',
-                            headers:{
-                                "Content-Type":"application/json",
-                                "Authorization" :"Bearer "+localStorage.getItem("jwt")
-                            },body:JSON.stringify({
-                                ids:result.spear
-                            })
-                        }).then(res=>res.json())
-                        .then(resuda=>{
-                            setids(result)
-                            console.log(result.audio)
-                            console.log(result)
-                            console.log(resuda)
-                        })
-                        .catch(err=>console.log(err))
-                    }
-                }).catch(err=>console.log(err))
-            })
-            .catch(err=>console.log(err))
+        if(singlead && singlead.id_final){
+            setids(singlead.id_final)
+            logsPuller(singlead.id_final)
+            spentPuller(singlead.ids)
         }
-    },[state1])
+    },[singlead])
     // spent reciver of all data
-    useEffect(() => {
-        if(ids){
-            var allids = [];
-            allids = allids.concat(ids.audio)
-            allids = allids.concat(ids.display)
-            allids = allids.concat(ids.video)
-            // console.log(allids)
+    const spentPuller = (idsa) => {
+        if(idsa){
             fetch('/subrepo/spentallrepobyid2',{
                 method:'put',
                 headers:{
                     "Content-Type":"application/json",
                     "Authorization" :"Bearer "+localStorage.getItem("jwt")
                 },body:JSON.stringify({
-                    campaignId:allids
+                    campaignId:idsa
                 })
             }).then(res=>res.json())
             .then(result=>{
@@ -185,8 +91,410 @@ export default function BasicTableBundle({singlead,title}) {
             })
             .catch(err=>console.log(err))
         }
-    }, [ids])
-    // logs puller for audio campaigns
+    }
+    // logs puller
+    const logsPuller = (idData) =>{
+        console.log(idData)
+        fetch('/offreport/sumreportofcamall',{
+            method:'put',
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization" :"Bearer "+localStorage.getItem("jwt")
+            },body:JSON.stringify({
+                campaignId:idData
+            })
+        }).then(res=>res.json())
+        .then(resulta=>{
+            var result = resulta
+            console.log(result)
+            setlastUpdated(result.allrecentupdate)
+            setsummaryReport(result.summaryCompleteReport)
+            setaudioReport(result.audioCompleteReport)
+            setdisplayReport(result.displayCompleteReport)
+            setvideoReport(result.videoCompleteReport)
+            setimpre(result.audioCompleteReport.impressions)
+            // setclick(result.audioCompleteReport.clicks)
+            setcomplete(result.audioCompleteReport.complete)
+            setfq(result.audioCompleteReport.firstQuartile)
+            setsq(result.audioCompleteReport.midpoint)
+            settq(result.audioCompleteReport.thirdQuartile)
+            var audiospentOffline = 0;
+            var displayspentOffline = 0;
+            var videospentOffline = 0;
+            result.audio && result.audio.map(re => {
+                if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                    re.nameads = 'Offline'
+                    // Humgama
+                    if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                        audiospentOffline += parseInt(re.impressions)*4.25/100
+                    }
+                    // Wynk
+                    if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
+                        audiospentOffline += parseInt(re.impressions)*10/100
+                    }
+                }
+            })
+            result.display && result.display.map(re => {
+                if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                    re.nameads = 'Offline'
+                    // Humgama
+                    if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                        displayspentOffline += parseInt(re.impressions)*4.25/100
+                    }
+                    // Wynk
+                    if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
+                        displayspentOffline += parseInt(re.impressions)*10/100
+                    }
+                }
+            })
+            result.video && result.video.map(re => {
+                if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                    re.nameads = 'Offline'
+                    // Humgama
+                    if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                        videospentOffline += parseInt(re.impressions)*4.25/100
+                    }
+                    // Wynk
+                    if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
+                        videospentOffline += parseInt(re.impressions)*10/100
+                    }
+                }
+            })
+            setaudiologs(result.audio)
+            setdisplaylogs(result.display)
+            setvideologs(result.video)
+            setspentOffline(audiospentOffline/usinr)
+            setspentOfflined(displayspentOffline/usinr)
+            setspentOfflinev(videospentOffline/usinr)
+        }).catch(err=>console.log(err))
+    }
+    const timefinder = (da1,da2) => {
+        var d1 = new Date(da1)
+        var d2 = new Date(da2)
+        if(d1 === d2){
+            return 1;
+        }
+        if(d1<d2){
+            return 'completed campaign'
+        }
+        var show = d1.getTime() - d2.getTime();
+        var resula = show/(1000 * 3600 * 24) ;
+        if(Math.round(resula*1)/1 === 0){
+            resula = 1;
+        }
+        return Math.round(resula*1)/1 ;
+    }
+    const dateformatchanger = (date) => {
+        var dategot = date.toString();
+        var datechanged = dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
+        return datechanged;
+    }
+    const colorfinder = (totaltime,lefttime,tobeimpress,impress) => {
+        if(tobeimpress > 0){
+            if(impress <= tobeimpress){
+                if(impress === 0){
+                    return 'white'
+                }
+                if((tobeimpress/totaltime) <= (impress/lefttime)){
+                    return 'white'
+                }
+                if((tobeimpress/totaltime) > (impress/lefttime)){
+                    return 'yellow';
+                }
+            }else{
+                return '#ff6666'
+            }
+        }
+    }
+    const updatedatetimeseter = (date) => {
+        // console.log(date)
+        // var datee = new Date(date);
+        var s = new Date(date).toLocaleString(undefined, {timeZone: 'Asia/Kolkata'});
+        // var datee = datee.toString();
+        // console.log(s,date,s.split('/'))
+        s = s.split('/')
+        return s[1] + '/' + s[0] + '/' + s[2]
+    }
+    const spentfinder = (appId,campaignId,impressions) => {
+        if(spentdata.length){
+            // Humgama
+            if(appId.toString() === '5d10c405844dd970bf41e2af'){
+                return parseInt(impressions)*4.25/(usinr*100);
+            }
+            // Wynk
+            if(appId.toString() === '5b2210af504f3097e73e0d8b'){
+                return parseInt(impressions)*10/(usinr*100);
+            }
+            var datarq = spentdata.filter(x => x.campaignId === campaignId && x.appId === appId)
+            var spent = 0;
+            // console.log(datarq)
+            datarq.map(dat=>{
+                spent += parseFloat(dat.totalSpent)
+            })
+            return spent;
+        }
+        return 0;
+    }
+    const completespentfider = (camstype) =>{
+        if(camstype === 'audio' && spentdata){
+            var allspentdatareq = spentdata.filter(x=> ids.audio.includes(x.campaignId))
+            var spent = 0;
+            allspentdatareq.map(dat => {
+                spent += parseFloat(dat.totalSpent)
+            })
+            return spent;
+        }
+        if(camstype === 'display' && spentdata){
+            var allspentdatareq = spentdata.filter(x=> ids.display.includes(x.campaignId))
+            var spent = 0;
+            allspentdatareq.map(dat => {
+                spent += parseFloat(dat.totalSpent)
+            })
+            return spent;
+        }
+        if(camstype === 'video' && spentdata){
+            var allspentdatareq = spentdata.filter(x=> ids.video.includes(x.campaignId))
+            var spent = 0;
+            allspentdatareq.map(dat => {
+                spent += parseFloat(dat.totalSpent)
+            })
+            return spent;
+        }
+        if(camstype === 'all' && spentdata){
+            var allspentdatareq = spentdata
+            var spent = 0;
+            allspentdatareq.map(dat=>{
+                spent += parseFloat(dat.totalSpent)
+            })
+            return spent;
+        }
+        return 0;
+    }
+    const SummaryTable = (title,report,target,spent) =>{
+        // console.log(report)
+        return(
+            <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+                <div style={{margin:'5px',fontWeight:'bolder'}}>{title} Report</div>
+                {singlead._id && report && ids && (report.impressions>0 || report.clicks>0) ?
+                    <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Campaign Start Date</TableCell>
+                                <TableCell>Campaign End Date</TableCell>
+                                <TableCell>Total Days of Campaign</TableCell>
+                                <TableCell>Total Impressions to be delivered</TableCell>
+                                <TableCell>Total Impressions Delivered till date</TableCell>
+                                <TableCell>Avg required</TableCell>
+                                <TableCell>Avg Achieved</TableCell>
+                                <TableCell>Total spent</TableCell>
+                                <TableCell>Total Clicks Delivered till date</TableCell>
+                                <TableCell>CTR</TableCell>
+                                <TableCell>Balance Impressions</TableCell>
+                                <TableCell>Balance Days</TableCell>
+                                <TableCell></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow style={{
+                                background: colorfinder(
+                                    timefinder(singlead.endDate,singlead.startDate) ,
+                                    timefinder(Date.now(),singlead.startDate) ,
+                                    target,
+                                    report.impressions
+                                )
+                            }}>
+                                <TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
+                                <TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
+                                <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
+                                <TableCell>{target}</TableCell>
+                                <TableCell>{report.impressions}</TableCell>
+                                <TableCell>{Math.round(target/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
+                                <TableCell>{Math.round(report.impressions/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
+                                <TableCell>{Math.round(spent*1)/1}</TableCell>
+                                <TableCell>{report.clicks}</TableCell>
+                                <TableCell>{Math.round((report.clicks*100/report.impressions)*100)/100}%</TableCell>
+                                <TableCell>{target - report.impressions}</TableCell>
+                                <TableCell>{timefinder(singlead.endDate,Date.now())} days</TableCell>
+                                <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                            </TableRow> 
+                        </TableBody>
+                    </Table> 
+                : <div style={{margin:'10px',fontSize:'20px'}}>Loading or No Data Found</div>}
+            </TableContainer> 
+        )
+    }
+    const PublisherTable = (title,report) => {
+        return (
+            <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+                <div style={{margin:'5px',fontWeight:'bolder'}}>{title} Report</div>
+                {singlead._id && report.length && ids ?
+                    <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Publisher</TableCell>
+                                <TableCell>Campaign Start Date</TableCell>
+                                <TableCell>Campaign End Date</TableCell>
+                                <TableCell>Total Days of Campaign</TableCell>
+                                <TableCell>Total Impressions to be delivered</TableCell>
+                                <TableCell>Total Impressions Delivered till date</TableCell>
+                                <TableCell>Avg required</TableCell>
+                                <TableCell>Avg Achieved</TableCell>
+                                <TableCell>Total spent</TableCell>
+                                <TableCell>Total Clicks Delivered till date</TableCell>
+                                <TableCell>CTR</TableCell>
+                                <TableCell>Balance Impressions</TableCell>
+                                <TableCell>Balance Days</TableCell>
+                                <TableCell></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {report.map((log,i)=>{
+                                return <TableRow key={i} style={{
+                                    background: colorfinder(
+                                        timefinder(log.campaignId.endDate,log.campaignId.startDate) ,
+                                        timefinder(Date.now(),log.campaignId.startDate) ,
+                                        parseInt(log.campaignId.TargetImpressions),
+                                        log.impressions
+                                    )
+                                }}>
+                                    <TableCell>{log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
+                                    <TableCell>{dateformatchanger(log.campaignId.startDate)}</TableCell>
+                                    <TableCell>{dateformatchanger(log.campaignId.endDate)}</TableCell>
+                                    <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
+                                    <TableCell>{parseInt(log.campaignId.TargetImpressions)}</TableCell>
+                                    <TableCell>{log.impressions}</TableCell>
+                                    <TableCell>{Math.round(parseInt(log.campaignId.TargetImpressions)/timefinder(log.campaignId.endDate,log.campaignId.startDate)*10)/10}</TableCell>
+                                    <TableCell>{Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate)*10)/10}</TableCell>
+                                    <TableCell>{Math.round((spentfinder(log.Publisher._id,log.campaignId._id,log.impressions) + 
+                                        parseInt(title === 'audio' ? spentOffline : 0) +
+                                        parseInt(title === 'display' ? spentOfflined : 0) +
+                                        parseInt(title === 'video' ? spentOfflinev : 0) 
+                                    )*1)/1}</TableCell>
+                                    <TableCell>{log.clicks}</TableCell>
+                                    <TableCell>{Math.round((log.clicks*100/log.impressions)*100)/100}%</TableCell>
+                                    <TableCell>{parseInt(log.campaignId.TargetImpressions) - log.impressions}</TableCell>
+                                    <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
+                                    <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
+                                </TableRow> 
+                            })}
+                        </TableBody>
+                    </Table> 
+                : <div style={{margin:'10px',fontSize:'20px'}}>Loading or No Data Found</div>}
+            </TableContainer>
+        )
+    }
+    return (
+        <>
+        <IconBreadcrumbs />
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{title && title.toUpperCase()} Campaign</div>
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        {SummaryTable('Complete',summaryReport,ids && ids.audimpression+ids.disimpression+ids.vidimpression,completespentfider('all')+spentOffline+spentOfflined+spentOfflinev)}
+        {SummaryTable('Audio', audioReport,ids && ids.audimpression,completespentfider('audio')+spentOffline)}
+        {SummaryTable('Display', displayReport,ids && ids.disimpression,completespentfider('display')+spentOfflined)}
+        {SummaryTable('Video', videoReport,ids && ids.vidimpression,completespentfider('video')+spentOfflinev)}
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Publisher Wise Summary Report</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        {PublisherTable('Audio',audiologs)}
+        {PublisherTable('Display',displaylogs)}
+        {PublisherTable('video',videologs)}
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Quartile Summary Report</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        <TableContainer  style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell></TableCell>
+                        <TableCell>First Quartile</TableCell>
+                        <TableCell>Second Quartile</TableCell>
+                        <TableCell>Third Quartile</TableCell>
+                        <TableCell>Complete</TableCell>
+                        <TableCell>Total Impresions</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    <TableRow>
+                        <TableCell>Impressions</TableCell>
+                        <TableCell>{fq}</TableCell>
+                        <TableCell>{sq > 0 && sq}</TableCell>
+                        <TableCell>{tq}</TableCell>
+                        <TableCell>{complete > 0 && complete}</TableCell>
+                        <TableCell>{impre}</TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
+        </TableContainer>
+        <TableContainer  style={{margin:'20px 0'}} elevation={3} component={Paper}>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Publisher Wise</div>
+            <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Publisher</TableCell>
+                        <TableCell>First Quartile</TableCell>
+                        <TableCell>Second Quartile</TableCell>
+                        <TableCell>Third Quartile</TableCell>
+                        <TableCell>Complete</TableCell>
+                        <TableCell>Total Impresions</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                {audiologs ? audiologs.map((log,i) => {
+                        if(!log.nameads){
+                            return <TableRow key = {i}>
+                                <TableCell>{log.Publisher.AppName}</TableCell>
+                                <TableCell>{log.firstQuartile}</TableCell>
+                                <TableCell>{log.midpoint}</TableCell>
+                                <TableCell>{log.thirdQuartile}</TableCell>
+                                <TableCell>{log.complete}</TableCell>
+                                <TableCell>{log.impressions}</TableCell>
+                            </TableRow>
+                        }
+                    }): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
+                </TableBody>
+            </Table>
+        </TableContainer>
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Region Wise Summary Report</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.audio} url='regionbycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.display} url='regionbycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.video} url='regionbycampids' />
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Language Wise Summary Report</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.audio} url='citylanguagebycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.display} url='citylanguagebycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.video} url='citylanguagebycampids' />
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Make Model Wise Summary Report</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.audio} url='phoneModelbycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.display} url='phoneModelbycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.video} url='phoneModelbycampids' />
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} url='platformTypebycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} url='platformTypebycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.video} url='platformTypebycampids' />
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} url='zipbycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.display} url='zipbycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.video} url='zipbycampids' />
+        {/* <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Model Wise Summary Report</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.audio} url='phonemakebycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.display} url='phonemakebycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.video} url='phonemakebycampids' /> */}
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} url='pptypebycampids' />
+        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} url='pptypebycampids' />
+        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.video} url='pptypebycampids' />
+        </>
+    );
+}
+
+/**
+ * // logs puller for audio campaigns
     useEffect(()=>{
         if(ids && ids.audio){
             fetch('/offreport/sumreportofcam22',{
@@ -455,147 +763,7 @@ export default function BasicTableBundle({singlead,title}) {
             })
         }
     },[ids])
-    const timefinder = (da1,da2) => {
-        var d1 = new Date(da1)
-        var d2 = new Date(da2)
-        if(d1 === d2){
-            return 1;
-        }
-        if(d1<d2){
-            return 'completed campaign'
-        }
-        var show = d1.getTime() - d2.getTime();
-        var resula = show/(1000 * 3600 * 24) ;
-        if(Math.round(resula*1)/1 === 0){
-            resula = 1;
-        }
-        return Math.round(resula*1)/1 ;
-    }
-    const dateformatchanger = (date) => {
-        var dategot = date.toString();
-        var datechanged = dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
-        return datechanged;
-    }
-    const colorfinder = (totaltime,lefttime,tobeimpress,impress) => {
-        if(tobeimpress > 0){
-            if(impress <= tobeimpress){
-                if(impress === 0){
-                    return 'white'
-                }
-                if((tobeimpress/totaltime) <= (impress/lefttime)){
-                    return 'white'
-                }
-                if((tobeimpress/totaltime) > (impress/lefttime)){
-                    return 'yellow';
-                }
-            }else{
-                return '#ff6666'
-            }
-        }
-    }
-    const updatedatetimeseter = (date) => {
-        // console.log(date)
-        // var datee = new Date(date);
-        var s = new Date(date).toLocaleString(undefined, {timeZone: 'Asia/Kolkata'});
-        // var datee = datee.toString();
-        // console.log(s,date,s.split('/'))
-        s = s.split('/')
-        return s[1] + '/' + s[0] + '/' + s[2]
-    }
-    const uniquetopfinder = (dataunique) => {
-        var gotdata = dataunique;
-        gotdata = gotdata.sort(function(a,b){return b-a;})
-        return gotdata[0];
-    }
-    const datefinder = () => {
-        if(logs.length){
-            if(logs[0].updatedAt && logs[0].updatedAt.length){
-                return updatedatetimeseter(logs[0].updatedAt[0])
-            }else{
-                if(logsd.length){
-                    if(logsd[0].updatedAt && logsd[0].updatedAt.length){
-                        return updatedatetimeseter(logsd[0].updatedAt[0])
-                    }else{
-                        if(logsv.length){
-                            if(logsv[0].updatedAt && logsv[0].updatedAt.length){
-                                return updatedatetimeseter(logsv[0].updatedAt[0])
-                            }else{
-                                return 'not found'
-                            }
-                        }else{
-                            return 'not found';
-                        }
-                    }
-                }else{
-                    return 'not found';
-                }
-            }
-        }else{
-            return 'not found'
-        }
-    }
-    const spentfinder = (appId,campaignId,impressions) => {
-        if(spentdata.length){
-            // Humgama
-            if(appId.toString() === '5d10c405844dd970bf41e2af'){
-                return Math.round((parseInt(impressions)*4.25/(100*stateru))*1000)/1000;
-            }
-            // Wynk
-            if(appId.toString() === '5b2210af504f3097e73e0d8b'){
-                return Math.round((parseInt(impressions)*10/(100*stateru))*1000)/1000;
-            }
-            var datarq = spentdata.filter(x => x.campaignId === campaignId && x.appId === appId)
-            var spent = 0;
-            // console.log(datarq)
-            datarq.map(dat=>{
-                spent += parseInt(dat.totalSpent)
-            })
-            return spent;
-        }
-        return 0;
-    }
-    const completespentfider = (camstype) =>{
-        if(camstype === 'audio' && spentdata){
-            var allspentdatareq = spentdata.filter(x=> ids.audio.includes(x.campaignId))
-            var spent = 0;
-            allspentdatareq.map(dat => {
-                spent += parseFloat(dat.totalSpent)
-            })
-            return Math.round(spent*10000)/10000;
-        }
-        if(camstype === 'display' && spentdata){
-            var allspentdatareq = spentdata.filter(x=> ids.display.includes(x.campaignId))
-            var spent = 0;
-            allspentdatareq.map(dat => {
-                spent += parseFloat(dat.totalSpent)
-            })
-            return Math.round(spent*10000)/10000;
-        }
-        if(camstype === 'video' && spentdata){
-            var allspentdatareq = spentdata.filter(x=> ids.video.includes(x.campaignId))
-            var spent = 0;
-            allspentdatareq.map(dat => {
-                spent += parseFloat(dat.totalSpent)
-            })
-            return Math.round(spent*10000)/10000;
-        }
-        if(camstype === 'all' && spentdata){
-            var allspentdatareq = spentdata
-            var spent = 0;
-            allspentdatareq.map(dat=>{
-                spent += parseFloat(dat.totalSpent)
-            })
-            return Math.round(spent*10000)/10000;
-        }
-        return 0;
-    }
-    return (
-        <>
-        <IconBreadcrumbs />
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{title && title.toUpperCase()} Campaign</div>
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
-        <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
+ * <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
             <div style={{margin:'5px',fontWeight:'bolder'}}>Complete Report</div>
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
@@ -605,7 +773,6 @@ export default function BasicTableBundle({singlead,title}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total spent</TableCell>
@@ -633,7 +800,6 @@ export default function BasicTableBundle({singlead,title}) {
                     <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && (ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ) }</TableCell>
                     <TableCell>{impre + impred + imprev}</TableCell>
-                    {/* <TableCell>{uniquesumcamp + uniquesumcampd + uniquesumcampv}</TableCell> */}
                     <TableCell>{ids &&  Math.round(((ids.audimpression ? ids.audimpression : 0 ) + (ids.disimpression ? ids.disimpression : 0 ) + (ids.vidimpression ? ids.vidimpression : 0 ))/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round((impre + impred + imprev)/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round((completespentfider('all') + Math.round(spentOffline*1000)/1000 + Math.round(spentOfflined*1000)/1000 + Math.round(spentOfflinev*1000)/1000)*1)/1}</TableCell>
@@ -657,7 +823,6 @@ export default function BasicTableBundle({singlead,title}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total spent</TableCell>
@@ -685,7 +850,6 @@ export default function BasicTableBundle({singlead,title}) {
                     <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.audimpression}</TableCell>
                     <TableCell>{impre}</TableCell>
-                    {/* <TableCell>{uniquesumcamp}</TableCell> */}
                     <TableCell>{ids &&  Math.round(ids.audimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round(impre/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round((completespentfider('audio') + Math.round(spentOffline*1000)/1000)*1)/1}</TableCell>
@@ -709,7 +873,6 @@ export default function BasicTableBundle({singlead,title}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total spent</TableCell>
@@ -737,7 +900,6 @@ export default function BasicTableBundle({singlead,title}) {
                     <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.disimpression}</TableCell>
                     <TableCell>{impred}</TableCell>
-                    {/* <TableCell>{uniquesumcampd}</TableCell> */}
                     <TableCell>{ids && Math.round(ids.disimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round((completespentfider('display') + Math.round(spentOfflined*1000)/1000)*1)/1}</TableCell>
@@ -761,7 +923,6 @@ export default function BasicTableBundle({singlead,title}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total spent</TableCell>
@@ -789,7 +950,6 @@ export default function BasicTableBundle({singlead,title}) {
                     <TableCell>{timefinder(singlead.endDate,singlead.startDate)} days</TableCell>
                     <TableCell>{ids && ids.vidimpression}</TableCell>
                     <TableCell>{imprev}</TableCell>
-                    {/* <TableCell>{uniquesumcampv}</TableCell> */}
                     <TableCell>{ids && Math.round(ids.vidimpression/timefinder(singlead.endDate,singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round(impred/timefinder(Date.now(),singlead.startDate)*10)/10}</TableCell>
                     <TableCell>{Math.round((completespentfider('display') + Math.round(spentOfflinev*1000)/1000)*1)/1}</TableCell>
@@ -803,8 +963,6 @@ export default function BasicTableBundle({singlead,title}) {
             </TableBody>
         </Table>
         </TableContainer>
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Publisher Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
         <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
             <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
         <Table className={classes.table} aria-label="simple table">
@@ -816,7 +974,6 @@ export default function BasicTableBundle({singlead,title}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total spent</TableCell>
@@ -846,7 +1003,6 @@ export default function BasicTableBundle({singlead,title}) {
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && log.campaignId.TargetImpressions}</TableCell>
                         <TableCell>{log.impressions}</TableCell>
-                        {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.Publisher && Math.round(spentfinder(log.Publisher._id,log.campaignId._id,log.impressions)*1)/1}</TableCell>
@@ -872,7 +1028,6 @@ export default function BasicTableBundle({singlead,title}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total spent</TableCell>
@@ -902,7 +1057,6 @@ export default function BasicTableBundle({singlead,title}) {
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && log.campaignId.TargetImpressions}</TableCell>
                         <TableCell>{log.impressions}</TableCell>
-                        {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.Publisher && Math.round(spentfinder(log.Publisher._id,log.campaignId._id,log.impressions)*1)/1}</TableCell>
@@ -928,7 +1082,6 @@ export default function BasicTableBundle({singlead,title}) {
                 <TableCell>Total Days of Campaign</TableCell>
                 <TableCell>Total Impressions to be delivered</TableCell>
                 <TableCell>Total Impressions Delivered till date</TableCell>
-                {/* <TableCell>Unique Users</TableCell> */}
                 <TableCell>Avg required</TableCell>
                 <TableCell>Avg Achieved</TableCell>
                 <TableCell>Total spent</TableCell>
@@ -958,7 +1111,6 @@ export default function BasicTableBundle({singlead,title}) {
                         <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && log.campaignId.TargetImpressions}</TableCell>
                         <TableCell>{log.impressions}</TableCell>
-                        {/* <TableCell>{log.publishunique && uniquetopfinder(log.publishunique)}</TableCell> */}
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.campaignId.TargetImpressions/timefinder(log.campaignId.endDate,log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.campaignId.TargetImpressions && Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate) *10)/10}</TableCell>
                         <TableCell>{log.Publisher && Math.round(spentfinder(log.Publisher._id,log.campaignId._id,log.impressions)*1)/1}</TableCell>
@@ -973,97 +1125,5 @@ export default function BasicTableBundle({singlead,title}) {
             </TableBody>
         </Table>
         </TableContainer>
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Quartile Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
-        <TableContainer  style={{margin:'20px 0'}} elevation={3} component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell>First Quartile</TableCell>
-                        <TableCell>Second Quartile</TableCell>
-                        <TableCell>Third Quartile</TableCell>
-                        <TableCell>Complete</TableCell>
-                        <TableCell>Total Impresions</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    <TableRow>
-                        <TableCell>Impressions</TableCell>
-                        <TableCell>{fq}</TableCell>
-                        <TableCell>{sq > 0 && sq}</TableCell>
-                        <TableCell>{tq}</TableCell>
-                        <TableCell>{complete > 0 && complete}</TableCell>
-                        <TableCell>{impre}</TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
-        </TableContainer>
-        <TableContainer  style={{margin:'20px 0'}} elevation={3} component={Paper}>
-            <div style={{margin:'5px',fontWeight:'bolder'}}>Publisher Wise</div>
-            <div style={{margin:'5px',fontWeight:'bolder'}}>Audio Type</div>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Publisher</TableCell>
-                        <TableCell>First Quartile</TableCell>
-                        <TableCell>Second Quartile</TableCell>
-                        <TableCell>Third Quartile</TableCell>
-                        <TableCell>Complete</TableCell>
-                        <TableCell>Total Impresions</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {logs ? logs.map((log,i) => {
-                        if(!log.nameads){
-                            return <TableRow key = {i}>
-                                <TableCell>{log.Publisher ? log.Publisher.AppName : 'No name found'}</TableCell>
-                                <TableCell>{log.firstQuartile}</TableCell>
-                                <TableCell>{log.midpoint}</TableCell>
-                                <TableCell>{log.thirdQuartile}</TableCell>
-                                <TableCell>{log.complete}</TableCell>
-                                <TableCell>{log.impressions}</TableCell>
-                            </TableRow>
-                        }
-                    }): <TableRow><TableCell>Loading or no data found</TableCell></TableRow>}
-                </TableBody>
-            </Table>
-        </TableContainer>
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Region Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
-        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.audio} url='regionbycampids' />
-        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.display} url='regionbycampids' />
-        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.video} url='regionbycampids' />
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Language Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
-        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.audio} url='citylanguagebycampids' />
-        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.display} url='citylanguagebycampids' />
-        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.video} url='citylanguagebycampids' />
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Make Model Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
-        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.audio} url='phoneModelbycampids' />
-        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.display} url='phoneModelbycampids' />
-        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.video} url='phoneModelbycampids' />
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
-        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} url='platformTypebycampids' />
-        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} url='platformTypebycampids' />
-        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.video} url='platformTypebycampids' />
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
-        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} url='zipbycampids' />
-        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.display} url='zipbycampids' />
-        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.video} url='zipbycampids' />
-        {/* <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Model Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
-        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.audio} url='phonemakebycampids' />
-        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.display} url='phonemakebycampids' />
-        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.video} url='phonemakebycampids' /> */}
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
-        <div>last updated at - {datefinder()}</div>
-        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} url='pptypebycampids' />
-        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} url='pptypebycampids' />
-        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.video} url='pptypebycampids' />
-        </>
-    );
-}
+        
+ */
