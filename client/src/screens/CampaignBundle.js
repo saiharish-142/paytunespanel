@@ -2,7 +2,7 @@ import { Button, CircularProgress, Input, Paper, TableBody, TableCell, TableCont
 import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
+import { TextField } from '@material-ui/core';
 import { RemoveCircleOutline } from '@material-ui/icons';
 import M from 'materialize-css'
 

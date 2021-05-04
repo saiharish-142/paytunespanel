@@ -59,6 +59,27 @@ export default function TemporaryDrawer() {
                     </>}
                     {state && state.usertype === 'admin' && <>
                         <hr />
+                        <ListItem className='dashmenu__item' onClick={()=>history.push('/biddata')}>
+                            <ListItemIcon><i className='material-icons'>keyboard_arrow_right</i></ListItemIcon>
+                            <ListItemText>Bid Data</ListItemText>
+                        </ListItem>
+                    </>}
+                    {state && state.usertype === 'admin' && <>
+                        <hr />
+                        <ListItem className='dashmenu__item' onClick={()=>history.push('/phonedata')}>
+                            <ListItemIcon><i className='material-icons'>keyboard_arrow_right</i></ListItemIcon>
+                            <ListItemText>Phone Data</ListItemText>
+                        </ListItem>
+                    </>}
+                    {state && state.usertype === 'admin' && <>
+                        <hr />
+                        <ListItem className='dashmenu__item' onClick={()=>history.push('/zipdata')}>
+                            <ListItemIcon><i className='material-icons'>keyboard_arrow_right</i></ListItemIcon>
+                            <ListItemText>Zip Data</ListItemText>
+                        </ListItem>
+                    </>}
+                    {state && state.usertype === 'admin' && <>
+                        <hr />
                         <ListItem className='dashmenu__item' onClick={()=>history.push('/clientSideCamp')}>
                             <ListItemIcon><i className='material-icons'>keyboard_arrow_right</i></ListItemIcon>
                             <ListItemText>Manage Client Reports</ListItemText>

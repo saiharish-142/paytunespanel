@@ -18,6 +18,9 @@ import DashboardBundle from './screens/manageBundles';
 import ReportBundle from './screens/Reportbundle';
 import DetailedTableBundle from './screens/detailedReportBundle';
 import EditUser from './screens/EditUser';
+import Biddata from './screens/biddata';
+import Phonedata from './screens/phonedata';
+import Zipdata from './screens/zipdata';
 
 export const UserContext = createContext()
 export const IdContext = createContext()
@@ -91,12 +94,12 @@ function App() {
             <Route
               path='/manageusers'
               exact
-              render={()=>(state && (state.usertype === 'admin' ? <ManageUser /> : <Home />))}
+              render={()=>(state ? (state.usertype === 'admin' ? <ManageUser /> : <Home />) : <Redirect to='/login' />)}
               />
             <Route
               path='/EditUser/:id'
               exact
-              render={()=>(state && (state.usertype === 'admin' ? <EditUser /> : <Home />))}
+              render={()=>(state ? (state.usertype === 'admin' ? <EditUser /> : <Home />) : <Redirect to='/login' />)}
               />
             <Route
               path='/manageAds/:campname'
@@ -122,6 +125,9 @@ function App() {
               exact
               render={()=>(state ? (state.usertype === 'admin' ? <DetailedTableBundle /> : <ClientReport />) : <Redirect to='/login' />)}
               /> 
+            <Route path='/biddata' exact render={()=><Biddata />} />
+            <Route path='/phonedata' exact render={()=><Phonedata />} />
+            <Route path='/zipdata' exact render={()=><Zipdata />} />
           </>}
         </BrowserRouter>
       </div>
