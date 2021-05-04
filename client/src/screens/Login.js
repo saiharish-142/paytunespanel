@@ -10,7 +10,7 @@ function Login() {
     const [email, setemail] = useState('')
     const [password, setpassword] = useState('')
     const login = () =>{
-        fetch('/auth/signin',{
+        fetch('http://127.0.0.1:5000/auth/signin',{
             method:'post',
             headers:{
                 "Content-Type":"application/json"

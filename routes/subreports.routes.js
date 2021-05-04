@@ -10,6 +10,8 @@ const platformtypereports = mongoose.model('platformtypereports')
 const citylanguagereports = mongoose.model('citylanguagereports')
 const phonemodelreports = mongoose.model('phonemodelreports')
 const spentreports = mongoose.model('spentreports')
+const phonemodel2=require('../models/phonemodel2reports')
+const Zipreports2=require('../models/zipdata2reports')
 const adminauth  = require('../authenMiddleware/adminauth')
 
 router.get('/phonemake',adminauth,(req,res)=>{
@@ -75,12 +77,13 @@ router.get('/phonemodelwise',adminauth,(req,res)=>{
     }).catch(err=>res.status(422).json(err))
 })
 
-router.put('/phonemakebycampids',adminauth,(req,res)=>{
+router.put('/phonemakebycampids',adminauth,async(req,res)=>{
     const {campaignId} = req.body
     const dumd =[];
     var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     phonemakereports.aggregate([
         {$match:{campaignId:{$in:ids}}},
+        
         {$project:{phoneMake:{$toLower:'$phoneMake'},
             campaignId:"$campaignId",
             impression:"$impression", 
@@ -102,14 +105,98 @@ router.put('/phonemakebycampids',adminauth,(req,res)=>{
             thirdQuartile:{$sum:"$thirdQuartile"},
             complete:{$sum:"$complete"},
             createdOn:{$push:"$createdOn"}
-        }},{$project:{
+        }},
+        {$lookup:{
+            from:'phonemodel2reports',
+            localField:'_id.phoneMake',
+            foreignField:'make_model',
+            as:'extra'
+        }},
+         {$unwind:"$extra"},
+        {$project:{
             phoneMake:"$_id.phoneMake", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
-            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
+            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,lowersubcity:'$extra.lowersubcity',subcity:'$extra.subcity'
         }}
     ])
     .then(result=>res.json(result))
     .catch(err=>res.status(422).json(err))
 })
+
+//     let {audio,video,layout}=req.body
+//     audio=audio.map(aud=>mongoose.Types.ObjectId(aud))
+//     video=video.map(aud=>mongoose.Types.ObjectId(aud))
+//     layout=layout.map(aud=>mongoose.Types.ObjectId(aud))
+//     const result=await phonemakereports.aggregate([{
+//         $facet:{
+//             'audio':[
+//                 {$match:{campaignId:{$in:audio}}},
+//                 {$project:{phoneMake:{$toLower:'$phoneMake'},
+//             campaignId:"$campaignId",
+//             impression:"$impression", 
+//             CompanionClickTracking:"$CompanionClickTracking", 
+//             SovClickTracking:"$SovClickTracking", 
+//             start:"$start", 
+//             midpoint:"$midpoint",
+//             thirdQuartile:"$thirdQuartile",
+//             complete:"$complete",
+//             createdOn:"$createdOn"
+//         }},
+//         {$group:{_id:{phoneMake:"$phoneMake"}, 
+//             campaignId:{$push:"$campaignId"},
+//             impression:{$sum:"$impression"}, 
+//             CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+//             SovClickTracking:{$sum:"$SovClickTracking"}, 
+//             start:{$sum:"$start"}, 
+//             midpoint:{$sum:"$midpoint"},
+//             thirdQuartile:{$sum:"$thirdQuartile"},
+//             complete:{$sum:"$complete"},
+//             createdOn:{$push:"$createdOn"}
+//         }},{$project:{
+//             phoneMake:"$_id.phoneMake", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+//             start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
+//         }}
+//             ],
+//             'video':[
+//                 {$match:{campaignId:{$in:video}}},
+//                 {$project:{phoneMake:{$toLower:'$phoneMake'},
+//             campaignId:"$campaignId",
+//             impression:"$impression", 
+//             CompanionClickTracking:"$CompanionClickTracking", 
+//             SovClickTracking:"$SovClickTracking", 
+//             start:"$start", 
+//             midpoint:"$midpoint",
+//             thirdQuartile:"$thirdQuartile",
+//             complete:"$complete",
+//             createdOn:"$createdOn"
+//         }},
+//         {$group:{_id:{phoneMake:"$phoneMake"}, 
+//             campaignId:{$push:"$campaignId"},
+//             impression:{$sum:"$impression"}, 
+//             CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+//             SovClickTracking:{$sum:"$SovClickTracking"}, 
+//             start:{$sum:"$start"}, 
+//             midpoint:{$sum:"$midpoint"},
+//             thirdQuartile:{$sum:"$thirdQuartile"},
+//             complete:{$sum:"$complete"},
+//             createdOn:{$push:"$createdOn"}
+//         }},{$project:{
+//             phoneMake:"$_id.phoneMake", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+//             start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
+//         }}
+//             ],
+//             'layout':[
+//                 {$match:{campaignId:{$in:layout}}}
+//             ]
+//         }
+//     }
+// ])
+//     console.log(result)
+//     res.status(200).send(result)
+
+// })
+
+
+//////// editted api //////////////////////////  
 
 router.put('/zipbycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
@@ -127,9 +214,21 @@ router.put('/zipbycampids',adminauth,(req,res)=>{
             thirdQuartile:{$sum:"$thirdQuartile"},
             complete:{$sum:"$complete"},
             createdOn:{$push:"$createdOn"}
-        }},{$project:{
+        }},
+        {
+            $lookup:{
+                from:'zipreports2',
+                localField:'_id.zip',
+                foreignField:'pincode',
+                as:'extra'
+            }
+        },
+        {$unwind:'$extra'},
+        {$project:{
             zip:"$_id.zip", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
-            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
+            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,area:'$extra.area',lowersubcity:'$area.lowersubcity',
+            subcity:'$extra.subcity',city:'$extra.city',grandcity:'$extra.grandcity',district:'$extra.district',comparison:'$extra.comparison'
+            ,state:'$extra.state',grandstate:'$extra.grandstate',latitude:'$extra.latitude',longitude:'$extra.longitude'
         }}
     ])
     .then(result=>res.json(result))
@@ -283,7 +382,8 @@ router.put('/platformTypebycampidstest',adminauth,(req,res)=>{
 router.put('/citylanguagebycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
     const dumd =[];
-    var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
+    
+    var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd  
     citylanguagereports.aggregate([
         {$match:{campaignId:{$in:ids}}},
         {$project:{citylanguage:{$toLower:'$citylanguage'},
@@ -308,14 +408,14 @@ router.put('/citylanguagebycampids',adminauth,(req,res)=>{
             complete:{$sum:"$complete"},
             createdOn:{$push:"$createdOn"}
         }},{$project:{
-            citylanguage:"$_id.citylanguage", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+            citylanguage:"$_id.citylanguage", campaignId:"$campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
             start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
         }}
     ])
     .then(result=>res.json(result))
     .catch(err=>res.status(422).json(err))
 })
-
+////////////  editted api//////////////////////////
 router.put('/phoneModelbycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
     const dumd =[];
@@ -343,9 +443,17 @@ router.put('/phoneModelbycampids',adminauth,(req,res)=>{
             thirdQuartile:{$sum:"$thirdQuartile"},
             complete:{$sum:"$complete"},
             createdOn:{$push:"$createdOn"}
-        }},{$project:{
+        }},
+        {$lookup:{
+            from:'phonemodel2reports',
+            localField:'_id.phoneModel',
+            foreignField:'make_model',
+            as:'extra'
+        }},
+         {$unwind:"$extra"},
+        {$project:{
             phoneModel:"$_id.phoneModel", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
-            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
+            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,cost:'$extra.cost',type:'$extra.type'
         }}
     ])
     .then(result=>res.json(result))
@@ -397,5 +505,112 @@ router.put('/spentallrepobyid2',adminauth,(req,res)=>{
     .then(result=>res.json(result))
     .catch(err=>res.status(422).json(err))
 })
+  
+///////////////////  new apis //////////////////////////////
+
+router.put(
+    '/editphonedata',
+    adminauth,
+    async(req,res)=>{
+        try{
+            
+            //data.make_model=data.make_model.toLowerCase()
+            let {_id,make_model,cost,cumulative,release,company,model,total_percent,type}=req.body
+            let updates={make_model,cost,cumulative,release,company,model,total_percent,type}
+            const updated=await phonemodel2.findOneAndUpdate({_id:mongoose.Types.ObjectId(_id)},{$set:updates},{new:true})
+            if(!updated){
+                return res.status(400).json({error:"Couldn't Update !"})
+            }
+
+            res.status(200).json('Updated Successfuly!')
+        }catch(err){
+            res.status(400).json({error:err.message})
+        }
+    }
+)
+
+router.get(
+    '/phonedata',
+    adminauth,
+    async(req,res)=>{
+        try{
+            const phone=await phonemodel2.aggregate([
+                {$match:{ $or:[{cost:""},
+                {make_model:""},
+                {cumulative:""},
+                {release:""},
+                {company:""},
+                {type:""},
+                {total_percent:""},
+                {model:""}] 
+            }},
+                {$lookup:{
+                    from:'phonemodelreports',
+                    localField:'make_model',
+                    foreignField:'phoneModel',
+                    as:'extra_details'
+                }
+            },
+            {$unwind:{path:"$extra_details", preserveNullAndEmptyArrays: true}},
+            {$sort:{"extra_details.impression":-1}},
+            ]).allowDiskUse(true)
+            
+            res.status(200).json(phone)
+        }catch(err){
+            res.status(400).json({error:err})
+        }
+    }
+)
+
+router.get(
+    '/zipdata',
+    adminauth,
+    async(req,res)=>{
+        try{
+            const result=await Zipreports2.aggregate([
+                {$match:{ $or:[{area:""},
+                {pincode:""},
+                {lowersubcity:""},
+                {subcity:""},
+                {city:""},
+                {grandcity:""},
+                {district:""},
+                {comparison:""},
+                {state:""},
+                {grandstate:""},
+                {latitude:""},
+                {longitude:""},
+            ]}},
+            ])
+            res.status(200).json(result)
+        }catch(err){
+            console.log(err.message)
+            res.status(400).send({error:err.mesaage})
+        }
+    }
+)
+
+router.put(
+    '/editzipdata',
+    adminauth,
+    async(req,res)=>{
+        try{            
+            //data.make_model=data.make_model.toLowerCase()
+            
+            let {_id,area,pincode,lowersubcity,subcity,city,grandcity,district,comparison,state,grandstate,latitude,longitude}=req.body
+            let updates={area,pincode,lowersubcity,subcity,city,grandcity,district,comparison,state,grandstate,latitude,longitude}
+            
+            const updated=await Zipreports2.findOneAndUpdate({_id:mongoose.Types.ObjectId(_id)},{$set:updates},{new:true})
+            if(!updated){
+                return res.status(400).json({error:"Couldn't Update !"})
+            }
+
+            res.status(200).json('Updated Successfuly!')
+        }catch(err){
+            res.status(400).json({error:err.message})
+        }
+    }
+)
+
 
 module.exports = router

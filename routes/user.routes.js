@@ -43,8 +43,10 @@ router.post('/signin',(req,res)=>{
     admin.findOne({email:email})
     .then(saveduser => {
         if(!saveduser){
+            console.log(1)
             return res.status(422).json({error:"Invalid Email or Password"})
         }
+        console.log(saveduser)
         bcrypt.compare(password,saveduser.password)
         .then(doMatch =>{
             if(doMatch){

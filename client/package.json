@@ -4,11 +4,14 @@
   "proxy": "http://23.98.35.74:5000",
   "private": true,
   "dependencies": {
+    "@material-ui/lab": "^4.0.0-alpha.58",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "react": "^16.13.1",
+    "react-bootstrap": "^1.5.2",
     "react-dom": "^16.13.1",
+    "react-hook-form": "^7.3.6",
     "react-scripts": "3.4.3"
   },
   "scripts": {
