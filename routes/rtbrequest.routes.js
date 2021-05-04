@@ -140,14 +140,14 @@ router.get(
             const result=await Campaignwisereports.aggregate([
                 {$group:{_id:{Date:'$date',appId:'$appId'},impressions:{$sum:"$impression"}}},
                 {$match:{ '_id.Date':date}},
+                {$addFields:{"new_appid":{"$toObjectId":"$_id.appId"}}},
                 {$lookup:{
                     from:'publisherapps',
-                    localField:'_id.appId',
-                    foreignField:'AppId',
+                    localField:'new_appid',
+                    foreignField:'_id',
                     as:'app_details'
                 }},
                 {$unwind:{path:"$app_details",preserveNullAndEmptyArrays:true}},
-
                 {$project:{
                     appName:"$app_details.AppName",
                     impressions:1
