@@ -508,12 +508,8 @@ router.put('/spentallrepobyid2',adminauth,(req,res)=>{
   
 ///////////////////  new apis //////////////////////////////
 
-router.put(
-    '/editphonedata',
-    adminauth,
-    async(req,res)=>{
+router.put('/editphonedata',adminauth,async(req,res)=>{
         try{
-            
             //data.make_model=data.make_model.toLowerCase()
             let {_id,make_model,cost,cumulative,release,company,model,total_percent,type}=req.body
             let updates={make_model,cost,cumulative,release,company,model,total_percent,type}
@@ -529,10 +525,7 @@ router.put(
     }
 )
 
-router.get(
-    '/phonedata',
-    adminauth,
-    async(req,res)=>{
+router.get('/phonedata',adminauth,async(req,res)=>{
         try{
             const phone=await phonemodel2.aggregate([
                 {$match:{ $or:[{cost:""},
@@ -562,10 +555,7 @@ router.get(
     }
 )
 
-router.get(
-    '/zipdata',
-    adminauth,
-    async(req,res)=>{
+router.get('/zipdata',adminauth,async(req,res)=>{
         try{
             const result=await Zipreports2.aggregate([
                 {$match:{ $or:[{area:""},
@@ -590,10 +580,7 @@ router.get(
     }
 )
 
-router.put(
-    '/editzipdata',
-    adminauth,
-    async(req,res)=>{
+router.put('/editzipdata',adminauth,async(req,res)=>{
         try{            
             //data.make_model=data.make_model.toLowerCase()
             

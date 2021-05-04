@@ -18,7 +18,7 @@ const [longitude,setlongitude]=useState(props.longitude?props.longitude:"")
 const [city,setcity]=useState(props.city?props.city:"")
 
 function editZipdata(){
-    fetch('http://127.0.0.1:5000/subrepo/editzipdata',{
+    fetch('/subrepo/editzipdata',{
         method:"PUT",
         headers:{
             "Content-Type":"application/json",

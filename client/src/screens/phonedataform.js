@@ -17,7 +17,7 @@ const [cumulative,setcumulative]=useState(props.cumulative?props.cumulative:"")
 const [total_percent,settotal_percent]=useState(props.total_percent?props.total_percent:"")
 //load()
 function editPhonedata(){
-    fetch('http://127.0.0.1:5000/subrepo/editphonedata',{
+    fetch('/subrepo/editphonedata',{
         method:"PUT",
         headers:{
             "Content-Type":"application/json",

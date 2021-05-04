@@ -61,7 +61,7 @@ const handleChangeRowsPerPage2 = (event) => {
 
 
     useEffect(()=>{
-        fetch('http://127.0.0.1:5000/rtbreq/get_reqreports_via_ssp',{
+        fetch('/rtbreq/get_reqreports_via_ssp',{
             method:'POST',
             headers:{
                 "Content-Type":"application/json",
@@ -78,7 +78,7 @@ const handleChangeRowsPerPage2 = (event) => {
         })
     },[])
     useEffect(()=>{
-      fetch('http://127.0.0.1:5000/rtbreq/get_reqreports_via_ssp',{
+      fetch('/rtbreq/get_reqreports_via_ssp',{
           method:'POST',
           headers:{
               "Content-Type":"application/json",
@@ -97,7 +97,7 @@ const handleChangeRowsPerPage2 = (event) => {
   },[])
 
     useEffect(()=>{
-        fetch('http://127.0.0.1:5000/rtbreq/get_resreports_via_ssp',{
+        fetch('/rtbreq/get_resreports_via_ssp',{
             method:'POST',
             headers:{
                 "Content-Type":"application/json",
@@ -116,7 +116,7 @@ const handleChangeRowsPerPage2 = (event) => {
     },[])
 
     useEffect(()=>{
-      fetch('http://127.0.0.1:5000/rtbreq/get_resreports_via_ssp',{
+      fetch('/rtbreq/get_resreports_via_ssp',{
           method:'POST',
           headers:{
               "Content-Type":"application/json",
@@ -133,7 +133,7 @@ const handleChangeRowsPerPage2 = (event) => {
   },[])
 
   useEffect(()=>{
-    fetch('http://127.0.0.1:5000/rtbreq/get_bids_won',{
+    fetch('/rtbreq/get_bids_won',{
         method:'GET',
         headers:{
             "Content-Type":"application/json",
@@ -149,7 +149,7 @@ const handleChangeRowsPerPage2 = (event) => {
 },[])
 
 useEffect(()=>{
-  fetch('http://127.0.0.1:5000/rtbreq/spent_data_via_date',{
+  fetch('/rtbreq/spent_data_via_date',{
       method:'GET',
       headers:{
           "Content-Type":"application/json",
@@ -166,7 +166,7 @@ useEffect(()=>{
 
 
 useEffect(()=>{
-  fetch('http://127.0.0.1:5000/rtbreq/get_bids_won_publisher',{
+  fetch('/rtbreq/get_bids_won_publisher',{
       method:'GET',
       headers:{
           "Content-Type":"application/json",

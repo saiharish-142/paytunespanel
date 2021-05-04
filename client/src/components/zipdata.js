@@ -54,7 +54,7 @@ const [tempdata,settempdata]=useState({})
 //const [make_model,setmakemodel]=useState("")
 
 const data=()=>{
-  fetch('http://127.0.0.1:5000/subrepo/zipdata',{
+  fetch('/subrepo/zipdata',{
             method:'get',
             headers:{
                 "Content-Type":"application/json",
@@ -75,7 +75,7 @@ const data=()=>{
 }
 
 useEffect(()=>{
-    fetch('http://127.0.0.1:5000/subrepo/zipdata',{
+    fetch('/subrepo/zipdata',{
             method:'get',
             headers:{
                 "Content-Type":"application/json",
