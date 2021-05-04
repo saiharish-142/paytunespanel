@@ -63,7 +63,6 @@ app.use('/rtbreq',require('./routes/rtbrequest.routes'))
 app.use('/bundle',require('./routes/bundlenamereports.routes'))
 app.use('/subrepo',require('./routes/subreports.routes'))
 app.use('/bundles',require('./routes/bundling.routes'))
-app.use('/rtbreq',require('./routes/rtbrequest.routes'))
 
 if(process.env.NODE_ENV==="production"){
     app.use(express.static('client/build'))

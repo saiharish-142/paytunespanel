@@ -80,7 +80,7 @@ router.put('/detreportcambydat',adminauth,(req,res)=>{
     .catch(err=>console.log(err))
 })
 
-router.put('/sumreportofcam22',adminauth,(req,res)=>{  // check array of ids return -> publisher wise report 
+router.put('/sumreportofcam22',adminauth,(req,res)=>{
     const { campaignId } = req.body
     var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
     var resu = [];

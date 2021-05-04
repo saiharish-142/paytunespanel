@@ -17,9 +17,6 @@ import CampaignBundle from './screens/CampaignBundle';
 import DashboardBundle from './screens/manageBundles';
 import ReportBundle from './screens/Reportbundle';
 import DetailedTableBundle from './screens/detailedReportBundle';
-import Biddata from './components/biddata'
-import Phonedata from './components/phonedata'
-import Zipdata from './components/zipdata'
 import EditUser from './screens/EditUser';
 
 export const UserContext = createContext()
@@ -59,34 +56,18 @@ function App() {
           <Route
             path='/login' 
             render={()=>(state ? (state.usertype === 'admin' && <Redirect to='/' />) : <Login />)}
-          />
+            />
           <Route
             path='/'
             exact
             render={()=>(state ? <Home />: <Redirect to='/login' />)}
             />
-            <Route
-              path='/biddata'
-              exact
-              render={()=>(state ?  <Biddata />  : <Biddata/>)}
-              /> 
-              <Route
-              path='/phonedata'
-              exact
-              render={()=>(state ?  <Phonedata />  : <Phonedata/>)}
-              /> 
-              <Route
-              path='/zipdata'
-              exact
-              render={()=>(state?<Zipdata/>:<Zipdata/>)}
-              />
           {state && <> 
             <Route
               path='/manageAds'
               exact
               render={()=>(state ? (state.usertype === 'admin' ? <Dashboard /> : <ClientManage />) : <Redirect to='/login' />)}
               /> 
-              
             <Route
               path='/manageBundles'
               exact
