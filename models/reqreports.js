@@ -15,5 +15,5 @@ reqreportsSchema.statics.load = function(id, cb) {
         })
         .exec(cb);
 };
-var reqreportObj = mongoose.model('reqrep', reqreportsSchema);
-module.exports = reqreportObj;
+
+mongoose.model('reqreport', reqreportsSchema);

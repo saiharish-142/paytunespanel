@@ -49,6 +49,8 @@ require('./models/uniqueuserreports')
 require('./models/zipreports')
 require('./models/zipuniqueuserreports')
 require('./models/bindingcollections.model')
+require('./models/reqreports.js')
+require('./models/resreports.js')
 
 app.use('/auth',require('./routes/user.routes'))
 app.use('/streamingads',require('./routes/streamingads.routes'))

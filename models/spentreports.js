@@ -18,5 +18,4 @@ spentreportsSchema.statics.load = function(id, cb) {
         })
         .exec(cb);
 };
-var spentreportObj = mongoose.model('spentreports', spentreportsSchema);
-module.exports = spentreportObj;
+mongoose.model('spentreports', spentreportsSchema);
