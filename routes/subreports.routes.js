@@ -11,6 +11,7 @@ const citylanguagereports = mongoose.model('citylanguagereports')
 const phonemodelreports = mongoose.model('phonemodelreports')
 const spentreports = mongoose.model('spentreports')
 const phonemodel2=require('../models/phonemodel2reports')
+const Zipreports2=require('../models/zipdata2reports')
 const adminauth  = require('../authenMiddleware/adminauth')
 
 router.get('/phonemake',adminauth,(req,res)=>{
@@ -114,7 +115,7 @@ router.put('/phonemakebycampids',adminauth,async(req,res)=>{
          {$unwind:"$extra"},
         {$project:{
             phoneMake:"$_id.phoneMake", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
-            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,cost:'$extra.cost',type:'$extra.type'
+            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,lowersubcity:'$extra.lowersubcity',subcity:'$extra.subcity'
         }}
     ])
     .then(result=>res.json(result))
@@ -194,6 +195,9 @@ router.put('/phonemakebycampids',adminauth,async(req,res)=>{
 
 // })
 
+
+//////// editted api //////////////////////////  
+
 router.put('/zipbycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
     const dumd =[];
@@ -210,9 +214,21 @@ router.put('/zipbycampids',adminauth,(req,res)=>{
             thirdQuartile:{$sum:"$thirdQuartile"},
             complete:{$sum:"$complete"},
             createdOn:{$push:"$createdOn"}
-        }},{$project:{
+        }},
+        {
+            $lookup:{
+                from:'zipreports2',
+                localField:'_id.zip',
+                foreignField:'pincode',
+                as:'extra'
+            }
+        },
+        {$unwind:'$extra'},
+        {$project:{
             zip:"$_id.zip", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
-            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0
+            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,area:'$extra.area',lowersubcity:'$area.lowersubcity',
+            subcity:'$extra.subcity',city:'$extra.city',grandcity:'$extra.grandcity',district:'$extra.district',comparison:'$extra.comparison'
+            ,state:'$extra.state',grandstate:'$extra.grandstate',latitude:'$extra.latitude',longitude:'$extra.longitude'
         }}
     ])
     .then(result=>res.json(result))
@@ -399,7 +415,7 @@ router.put('/citylanguagebycampids',adminauth,(req,res)=>{
     .then(result=>res.json(result))
     .catch(err=>res.status(422).json(err))
 })
-
+////////////  editted api//////////////////////////
 router.put('/phoneModelbycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
     const dumd =[];
@@ -489,20 +505,107 @@ router.put('/spentallrepobyid2',adminauth,(req,res)=>{
     .then(result=>res.json(result))
     .catch(err=>res.status(422).json(err))
 })
+  
+///////////////////  new apis //////////////////////////////
 
-router.post(
-    '/addphonedata',
+router.put(
+    '/editphonedata',
     adminauth,
     async(req,res)=>{
         try{
-            const data=req.body
-            if(await phonemodel2.findOne({make_model:data.make_model.toLowerCase()})){
-                return res.status(200).json({error:"Already Added Document with same make_model!"})
+            
+            //data.make_model=data.make_model.toLowerCase()
+            let {_id,make_model,cost,cumulative,release,company,model,total_percent,type}=req.body
+            let updates={make_model,cost,cumulative,release,company,model,total_percent,type}
+            const updated=await phonemodel2.findOneAndUpdate({_id:mongoose.Types.ObjectId(_id)},{$set:updates},{new:true})
+            if(!updated){
+                return res.status(400).json({error:"Couldn't Update !"})
             }
-            data.make_model=data.make_model.toLowerCase()
-            const phonedata= new phonemodel2(data)
-            await phonedata.save()
-            res.status(200).json('Added Successfuly!')
+
+            res.status(200).json('Updated Successfuly!')
+        }catch(err){
+            res.status(400).json({error:err.message})
+        }
+    }
+)
+
+router.get(
+    '/phonedata',
+    adminauth,
+    async(req,res)=>{
+        try{
+            const phone=await phonemodel2.aggregate([
+                {$match:{ $or:[{cost:""},
+                {make_model:""},
+                {cumulative:""},
+                {release:""},
+                {company:""},
+                {type:""},
+                {total_percent:""},
+                {model:""}] 
+            }},
+                {$lookup:{
+                    from:'phonemodelreports',
+                    localField:'make_model',
+                    foreignField:'phoneModel',
+                    as:'extra_details'
+                }
+            },
+            {$unwind:{path:"$extra_details", preserveNullAndEmptyArrays: true}},
+            {$sort:{"extra_details.impression":-1}},
+            ]).allowDiskUse(true)
+            
+            res.status(200).json(phone)
+        }catch(err){
+            res.status(400).json({error:err})
+        }
+    }
+)
+
+router.get(
+    '/zipdata',
+    adminauth,
+    async(req,res)=>{
+        try{
+            const result=await Zipreports2.aggregate([
+                {$match:{ $or:[{area:""},
+                {pincode:""},
+                {lowersubcity:""},
+                {subcity:""},
+                {city:""},
+                {grandcity:""},
+                {district:""},
+                {comparison:""},
+                {state:""},
+                {grandstate:""},
+                {latitude:""},
+                {longitude:""},
+            ]}},
+            ])
+            res.status(200).json(result)
+        }catch(err){
+            console.log(err.message)
+            res.status(400).send({error:err.mesaage})
+        }
+    }
+)
+
+router.put(
+    '/editzipdata',
+    adminauth,
+    async(req,res)=>{
+        try{            
+            //data.make_model=data.make_model.toLowerCase()
+            
+            let {_id,area,pincode,lowersubcity,subcity,city,grandcity,district,comparison,state,grandstate,latitude,longitude}=req.body
+            let updates={area,pincode,lowersubcity,subcity,city,grandcity,district,comparison,state,grandstate,latitude,longitude}
+            
+            const updated=await Zipreports2.findOneAndUpdate({_id:mongoose.Types.ObjectId(_id)},{$set:updates},{new:true})
+            if(!updated){
+                return res.status(400).json({error:"Couldn't Update !"})
+            }
+
+            res.status(200).json('Updated Successfuly!')
         }catch(err){
             res.status(400).json({error:err.message})
         }

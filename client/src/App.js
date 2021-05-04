@@ -19,6 +19,7 @@ import ReportBundle from './screens/Reportbundle';
 import DetailedTableBundle from './screens/detailedReportBundle';
 import Biddata from './components/biddata'
 import Phonedata from './components/phonedata'
+import Zipdata from './components/zipdata'
 import EditUser from './screens/EditUser';
 
 export const UserContext = createContext()
@@ -74,6 +75,11 @@ function App() {
               exact
               render={()=>(state ?  <Phonedata />  : <Phonedata/>)}
               /> 
+              <Route
+              path='/zipdata'
+              exact
+              render={()=>(state?<Zipdata/>:<Zipdata/>)}
+              />
           {state && <> 
             <Route
               path='/manageAds'

@@ -5,7 +5,7 @@ import  {useForm} from 'react-hook-form'
 import {Alert} from '@material-ui/lab'
 import {Table,TableBody,TableCell,TableContainer,TableHead,TableRow,TablePagination,Paper,Modal} from '@material-ui/core'
 
-import Phonedataform from '../screens/phonedataform'
+import Zipdataform from '../screens/zipformdata'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   
 
 
-export default function Phonedata(){
+export default function Zipdata(){
 const classes=useStyles()
 
 
@@ -48,12 +48,13 @@ const [tempdata,settempdata]=useState({})
 
   const handleShow = (data) => {
       setShow(true)
+    console.log(data)
     settempdata(data)
 }
 //const [make_model,setmakemodel]=useState("")
 
 const data=()=>{
-  fetch('http://127.0.0.1:5000/subrepo/phonedata',{
+  fetch('http://127.0.0.1:5000/subrepo/zipdata',{
             method:'get',
             headers:{
                 "Content-Type":"application/json",
@@ -74,7 +75,7 @@ const data=()=>{
 }
 
 useEffect(()=>{
-    fetch('http://127.0.0.1:5000/subrepo/phonedata',{
+    fetch('http://127.0.0.1:5000/subrepo/zipdata',{
             method:'get',
             headers:{
                 "Content-Type":"application/json",
@@ -93,15 +94,11 @@ useEffect(()=>{
             }
         )
 },[])
-   
-const editPhonedata=()=>{
-    //console.log(model,impression)
-}
 
 
 return(
     <div>
-            <h4 style={{margin:"3%",fontWeight:'bolder'}}>Phone data </h4> 
+            <h4 style={{margin:"3%",fontWeight:'bolder'}}>Zip data </h4> 
             <div className={classes.root}>
             {success?<Alert onClose={() => {setsuccess("")}} style={{margin:"1%"}} severity="success">{success}</Alert>:<></>}
             {error?<Alert onClose={() => {seterror("")}} style={{margin:"1%"}} severity="error">{error}</Alert>:""}
@@ -113,33 +110,38 @@ return(
                 <TableHead>
                     <TableRow>  
                         {/* <TableCell>{title}</TableCell> */}
-                        {  <TableCell>Make_And_Model</TableCell>}
-                        {  <TableCell>Impressions</TableCell>}
-                        {  <TableCell>Release Month And Year</TableCell>}
-                        <TableCell>Release Cost or MRP</TableCell>
-                        <TableCell>Company Name</TableCell>
-                        <TableCell>Model</TableCell>
-                        {  <TableCell>Type of Device</TableCell>}
-                        {  <TableCell>% of Total</TableCell>}
-                        {<TableCell> Cumulative %</TableCell>}
+                        {  <TableCell>Pincode</TableCell>}
+                        {  <TableCell>Urban/Rural</TableCell>}
+                        {  <TableCell>Lower Sub City</TableCell>}
+                        <TableCell>Subcity</TableCell>
+                        <TableCell>City</TableCell>
+                        <TableCell>Grand City</TableCell>
+                        {  <TableCell>District</TableCell>}
+                        {  <TableCell>Comparison</TableCell>}
+                        {<TableCell> State</TableCell>}
+                        {<TableCell>Grand State</TableCell>}
+                        {<TableCell>Lat</TableCell>}
+                        {<TableCell>Long</TableCell>}
                         {<TableCell></TableCell>}
-                        
                     </TableRow>
                 </TableHead>
                 <TableBody>
                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
             <TableRow key={row.name}>
               <TableCell component="th" scope="row">
-                {row.make_model?row.make_model:""}
+                {row.pincode?row.pincode:""}
               </TableCell>
-              <TableCell >{row.extra_details?row.extra_details.impression:""}</TableCell>
-              <TableCell >{row.release?row.release:""}</TableCell>
-              <TableCell >{row.cost?row.cost:""}</TableCell>
-              <TableCell >{row.company?row.company:""}</TableCell>
-              <TableCell >{row.model?row.model:""}</TableCell>
-              <TableCell >{row.type?row.type:""}</TableCell>
-              <TableCell >{row.total_percent?row.total_percent:""}</TableCell>
-              <TableCell >{row.cumulative?row.cumulative:""}</TableCell>
+              <TableCell >{row.area?row.area:""}</TableCell>
+              <TableCell >{row.lowersubcity?row.lowersubcity:""}</TableCell>
+              <TableCell >{row.subcity?row.subcity:""}</TableCell>
+              <TableCell >{row.city?row.city:""}</TableCell>
+              <TableCell >{row.grandcity?row.grandcity:""}</TableCell>
+              <TableCell >{row.district?row.district:""}</TableCell>
+              <TableCell >{row.comparison?row.comparison:""}</TableCell>
+              <TableCell >{row.state?row.state:""}</TableCell>
+              <TableCell >{row.grandstate?row.grandstate:""}</TableCell>
+              <TableCell >{row.latitude?row.latitude:""}</TableCell>
+              <TableCell >{row.longitude?row.longitude:""}</TableCell>
               <TableCell ><button className="btn" onClick={()=>handleShow(row) }>Edit </button></TableCell>
             </TableRow>
           ))}
@@ -160,8 +162,8 @@ return(
         
             <div >
                 
-            <h4>Edit Phone Data</h4>
-        <Phonedataform props={tempdata} setShow={setShow} setsuccess={setsuccess} data1={data} seterror={seterror}/>
+            <h4>Edit Zip Data</h4>
+        <Zipdataform props={tempdata} setShow={setShow} setsuccess={setsuccess} data1={data} seterror={seterror}/>
                 
             
             </div>

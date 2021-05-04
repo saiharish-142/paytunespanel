@@ -7,6 +7,8 @@ var phonemodel2reportsSchema = new Schema({
     release:String,
     company:String,
     type:String,
+    total_percent:String,
+    model:String
     //createdOn: { type: Date, default: Date.now },
 });
 phonemodel2reportsSchema.index({ make_model: 1 });
