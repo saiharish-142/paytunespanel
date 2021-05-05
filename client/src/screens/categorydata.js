@@ -5,7 +5,7 @@ import  {useForm} from 'react-hook-form'
 import {Alert} from '@material-ui/lab'
 import {Table,TableBody,TableCell,TableContainer,TableHead,TableRow,TablePagination,Paper,Modal} from '@material-ui/core'
 
-import Zipdataform from '../screens/zipformdata'
+//import Phonedataform from '../screens/phonedataform'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   
 
 
-export default function Zipdata(){
+export default function Categorydata(){
 const classes=useStyles()
 
 
@@ -48,14 +48,13 @@ const [tempdata,settempdata]=useState({})
 
   const handleShow = (data) => {
       setShow(true)
-    console.log(data)
     settempdata(data)
 }
 //const [make_model,setmakemodel]=useState("")
 
 const data=()=>{
-  fetch('http://127.0.0.1:5000/subrepo/zipdata',{
-            method:'get',
+  fetch('http://127.0.0.1:5000/subrepo/categorywisereports',{
+            method:'POST',
             headers:{
                 "Content-Type":"application/json",
                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
@@ -75,8 +74,8 @@ const data=()=>{
 }
 
 useEffect(()=>{
-    fetch('http://127.0.0.1:5000/subrepo/zipdata',{
-            method:'get',
+    fetch('http://127.0.0.1:5000/subrepo/categorywisereports',{
+            method:'POST',
             headers:{
                 "Content-Type":"application/json",
                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
@@ -94,11 +93,15 @@ useEffect(()=>{
             }
         )
 },[])
+   
+const editPhonedata=()=>{
+    //console.log(model,impression)
+}
 
 
 return(
     <div>
-            <h4 style={{margin:"3%",fontWeight:'bolder'}}>Zip data </h4> 
+            <h4 style={{margin:"3%",fontWeight:'bolder'}}>Category Wise Data </h4> 
             <div className={classes.root}>
             {success?<Alert onClose={() => {setsuccess("")}} style={{margin:"1%"}} severity="success">{success}</Alert>:<></>}
             {error?<Alert onClose={() => {seterror("")}} style={{margin:"1%"}} severity="error">{error}</Alert>:""}
@@ -110,37 +113,34 @@ return(
                 <TableHead>
                     <TableRow>  
                         {/* <TableCell>{title}</TableCell> */}
-                        {  <TableCell>Pincode</TableCell>}
-                        {  <TableCell>Urban/Rural</TableCell>}
-                        {  <TableCell>Lower Sub City</TableCell>}
-                        <TableCell>Subcity</TableCell>
-                        <TableCell>City</TableCell>
-                        <TableCell>Grand City</TableCell>
-                        {  <TableCell>District</TableCell>}
-                        {<TableCell> State</TableCell>}
-                        {<TableCell>Grand State</TableCell>}
-                        {<TableCell>Lat</TableCell>}
-                        {<TableCell>Long</TableCell>}
-                        {<TableCell></TableCell>}
+                        {  <TableCell>Campaign Name</TableCell>}
+                        {  <TableCell>Category</TableCell>}
+                        {  <TableCell>Impressions</TableCell>}
+                        <TableCell>parent</TableCell>
+                        <TableCell>Tier1</TableCell>
+                        <TableCell>Tier2</TableCell>
+                        {  <TableCell>Tier3</TableCell>}
+                        {  <TableCell>Tier4</TableCell>}
+                        {<TableCell> Age Category</TableCell>}
+                        {<TableCell>Gender Category</TableCell>}
+                        
                     </TableRow>
                 </TableHead>
                 <TableBody>
                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
             <TableRow key={row.name}>
               <TableCell component="th" scope="row">
-                {row.pincode?row.pincode:""}
+                {row.campaign_details.AdTitle}
               </TableCell>
-              <TableCell >{row.area?row.area:""}</TableCell>
-              <TableCell >{row.lowersubcity?row.lowersubcity:""}</TableCell>
-              <TableCell >{row.subcity?row.subcity:""}</TableCell>
-              <TableCell >{row.city?row.city:""}</TableCell>
-              <TableCell >{row.grandcity?row.grandcity:""}</TableCell>
-              <TableCell >{row.district?row.district:""}</TableCell>
-              <TableCell >{row.state?row.state:""}</TableCell>
-              <TableCell >{row.grandstate?row.grandstate:""}</TableCell>
-              <TableCell >{row.latitude?row.latitude:""}</TableCell>
-              <TableCell >{row.longitude?row.longitude:""}</TableCell>
-              <TableCell ><button className="btn" onClick={()=>handleShow(row) }>Edit </button></TableCell>
+              <TableCell >{row._id.category}</TableCell>
+              <TableCell >{row.impressions}</TableCell>
+              <TableCell >{row.extra_details.parent}</TableCell>
+              <TableCell >{row.extra_details.tier1}</TableCell>
+              <TableCell >{row.extra_details.tier2}</TableCell>
+              <TableCell >{row.extra_details.tier3}</TableCell>
+              <TableCell >{row.extra_details.tier4}</TableCell>
+              <TableCell >{row.extra_details.AgeCategory}</TableCell>
+              <TableCell >{row.extra_details.genderCategory}</TableCell>
             </TableRow>
           ))}
                 </TableBody>
@@ -151,20 +151,21 @@ return(
                 component="div"
                 count={rows ? rows.length : 0}
                 rowsPerPage={rowsPerPage}
+                //style={{float:'left'}}
                 page={page}
                 onChangePage={handleChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
             />
-        {show?
+        {/* {show?
         
             <div >
                 
-            <h4>Edit Zip Data</h4>
-        <Zipdataform props={tempdata} setShow={setShow} setsuccess={setsuccess} data1={data} seterror={seterror}/>
+            <h4>Edit Phone Data</h4>
+        <Phonedataform props={tempdata} setShow={setShow} setsuccess={setsuccess} data1={data} seterror={seterror}/>
                 
             
             </div>
-               :<></> }
+               :<></> } */}
     
 
             </Paper>

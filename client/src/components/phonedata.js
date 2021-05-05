@@ -132,7 +132,7 @@ return(
               <TableCell component="th" scope="row">
                 {row.make_model?row.make_model:""}
               </TableCell>
-              <TableCell >{row.extra_details?row.extra_details.impression:""}</TableCell>
+              <TableCell >{row.impressions?row.impressions:""}</TableCell>
               <TableCell >{row.release?row.release:""}</TableCell>
               <TableCell >{row.cost?row.cost:""}</TableCell>
               <TableCell >{row.company?row.company:""}</TableCell>
