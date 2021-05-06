@@ -9,8 +9,6 @@ const Resreport = mongoose.model('resreport')
 const SpentReport = mongoose.model('spentreports')
 const Campaignwisereports = mongoose.model('campaignwisereports')
 
-
-
 router.get('/rtbrs',adminauth,(req,res)=>{
     Rtbrequest.find()
     .then((result) => {
@@ -148,6 +146,7 @@ router.get(
                     as:'app_details'
                 }},
                 {$unwind:{path:"$app_details",preserveNullAndEmptyArrays:true}},
+
                 {$project:{
                     appName:"$app_details.AppName",
                     impressions:1

@@ -336,6 +336,7 @@ router.put('/phoneModelbycampids',adminauth,(req,res)=>{
     var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     phonemodelreports.aggregate([
         {$match:{campaignId:{$in:ids}}},
+        {$addFields:{"temp_phone":"$phoneModel"}},
         {$project:{phoneModel:{$toLower:'$phoneModel'},
             campaignId:"$campaignId",
             impression:"$impression", 
@@ -345,7 +346,8 @@ router.put('/phoneModelbycampids',adminauth,(req,res)=>{
             midpoint:"$midpoint",
             thirdQuartile:"$thirdQuartile",
             complete:"$complete",
-            createdOn:"$createdOn"
+            createdOn:"$createdOn",
+            temp_phone:1
         }},
         {$group:{_id:{phoneModel:"$phoneModel"}, 
             campaignId:{$push:"$campaignId"},
@@ -356,18 +358,20 @@ router.put('/phoneModelbycampids',adminauth,(req,res)=>{
             midpoint:{$sum:"$midpoint"},
             thirdQuartile:{$sum:"$thirdQuartile"},
             complete:{$sum:"$complete"},
-            createdOn:{$push:"$createdOn"}
+            createdOn:{$push:"$createdOn"},
+            temp_phone1:{$first:"$temp_phone"}
         }},
         {$lookup:{
             from:'phonemodel2reports',
-            localField:'_id.phoneModel',
+            localField:'temp_phone1',
             foreignField:'make_model',
             as:'extra'
         }},
-        {$unwind:{path:'$extra',preserveNullAndEmptyArrays:true}},
+        {$unwind:{path:"$extra",preserveNullAndEmptyArrays:true}},
         {$project:{
             phoneModel:"$_id.phoneModel", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
-            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,cost:'$extra.cost',type:'$extra.type'
+            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,extra:"$extra"
+        
         }}
     ])
     .then(result=>res.json(result))
@@ -420,6 +424,45 @@ router.put('/spentallrepobyid2',adminauth,(req,res)=>{
     .catch(err=>res.status(422).json(err))
 })
 
+///////////////////  new apis //////////////////////////////
+
+router.post(
+    '/categorywisereports',
+    adminauth,
+    async(req,res)=>{
+        try{
+            // let {campaignId}=req.body
+            // var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : []
+            const result=await CategoryReports.aggregate([
+                // {$match:{campaignId:{$in:ids}}},
+                {$group:{_id:{campaignId:"$campaignId",category:"$category"},
+                impressions:{"$sum":"$impression"}
+            }},
+                {$lookup:{
+                    from:'categoryreports2',
+                    localField:'_id.category',
+                    foreignField:'category',
+                    as:'extra_details'
+                }},
+                {$unwind:"$extra_details"},
+                {$addFields:{"temp_id":{"$toObjectId":"$_id.campaignId"}}},
+                {$lookup:{
+                    from:'streamingads',
+                    localField:'temp_id',
+                    foreignField:'_id',
+                    as:'campaign_details'
+                }},
+                {$unwind:"$campaign_details"},
+                {$sort:{"impressions":-1}}
+            ]).allowDiskUse(true)
+            res.status(200).json(result)
+        }catch(err){
+            res.status(400).json({error:err.message})
+        }
+    }
+)
+
+
 router.put(
     '/editphonedata',
     adminauth,
@@ -463,10 +506,21 @@ router.get(
                     as:'extra_details'
                 }
             },
-            {$unwind:{path:"$extra_details", preserveNullAndEmptyArrays: true}},
-            {$sort:{"extra_details.impression":-1}},
-            ]).allowDiskUse(true)
+            {$project:{
+                cost:1,
+                make_model:1,
+                cumulative:1,
+                release:1,
+                company:1,
+                type:1,
+                total_percent:1,
+                model:1,
+                impressions:{$sum:"$extra_details.impression"}
+            }},
+            //{$unwind:{path:"$extra_details", preserveNullAndEmptyArrays: true}},
+            {$sort:{"impressions":-1}},
             
+            ]).allowDiskUse(true)
             res.status(200).json(phone)
         }catch(err){
             res.status(400).json({error:err})
@@ -523,5 +577,6 @@ router.put(
         }
     }
 )
+
 
 module.exports = router
