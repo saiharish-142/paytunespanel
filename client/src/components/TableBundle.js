@@ -11,6 +11,8 @@ import { useHistory } from 'react-router-dom';
 import { IdContext, USDINRratioContext } from '../App';
 import IconBreadcrumbs from './breadBreed';
 import AuditableBundle from './auditablebundle'
+import PhoneModelAdmin from './PhoneModelAdmin';
+import PincodeAdmin from './pincodeAdmin';
 
 const useStyles = makeStyles({
     table: {
@@ -31,7 +33,7 @@ export default function BasicTableBundle({singlead,title}) {
     const [audiologs, setaudiologs] = useState([])
     const [displaylogs, setdisplaylogs] = useState([])
     const [videologs, setvideologs] = useState([])
-    const [logs, setlogs] = useState([])
+    // const [logs, setlogs] = useState([])
     const [spentdata, setspentdata] = useState([])
     const [ids, setids] = useState({})
     const [impre, setimpre] = useState(0)
@@ -42,6 +44,8 @@ export default function BasicTableBundle({singlead,title}) {
     const [spentOffline, setspentOffline] = useState(0)
     const [spentOfflined, setspentOfflined] = useState(0)
     const [spentOfflinev, setspentOfflinev] = useState(0)
+    const [pincodereports, setpincodereports] = useState([])
+    const [phoneModelReports, setphoneModelReports] = useState([])
     // const [fqd, setfqd] = useState(0)
     // const [sqd, setsqd] = useState(0)
     // const [tqd, settqd] = useState(0)
@@ -71,6 +75,8 @@ export default function BasicTableBundle({singlead,title}) {
             setids(singlead.id_final)
             logsPuller(singlead.id_final)
             spentPuller(singlead.ids)
+            pincodeDataPuller(singlead.id_final)
+            PhoneModelDataPuller(singlead.id_final)
         }
     },[singlead])
     // spent reciver of all data
@@ -167,6 +173,46 @@ export default function BasicTableBundle({singlead,title}) {
             setspentOfflined(displayspentOffline/usinr)
             setspentOfflinev(videospentOffline/usinr)
         }).catch(err=>console.log(err))
+    }
+    // pincode data of all data
+    const pincodeDataPuller = (idsa) => {
+        // console.log(idsa)
+        if(idsa){
+            fetch('/subrepo/zipbycampidsallcombo',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:idsa
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                // console.log(result[0])
+                setpincodereports(result[0])
+            })
+            .catch(err=>console.log(err))
+        }
+    }
+    // phoneModel data of all data
+    const PhoneModelDataPuller = (idsa) => {
+        // console.log(idsa)
+        if(idsa){
+            fetch('/subrepo/phoneModelbycampidsallcombo',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:idsa
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                console.log(result[0])
+                setphoneModelReports(result[0])
+            })
+            .catch(err=>console.log(err))
+        }
     }
     const timefinder = (da1,da2) => {
         var d1 = new Date(da1)
@@ -327,14 +373,11 @@ export default function BasicTableBundle({singlead,title}) {
         return (
             <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
                 <div style={{margin:'5px',fontWeight:'bolder'}}>{title} Report</div>
-                {singlead._id && report.length && ids ?
+                {singlead._id && report && report.length && ids ?
                     <Table className={classes.table} aria-label="simple table">
                         <TableHead>
                             <TableRow>
                                 <TableCell>Publisher</TableCell>
-                                <TableCell>Campaign Start Date</TableCell>
-                                <TableCell>Campaign End Date</TableCell>
-                                <TableCell>Total Days of Campaign</TableCell>
                                 <TableCell>Total Impressions to be delivered</TableCell>
                                 <TableCell>Total Impressions Delivered till date</TableCell>
                                 <TableCell>Avg required</TableCell>
@@ -343,7 +386,6 @@ export default function BasicTableBundle({singlead,title}) {
                                 <TableCell>Total Clicks Delivered till date</TableCell>
                                 <TableCell>CTR</TableCell>
                                 <TableCell>Balance Impressions</TableCell>
-                                <TableCell>Balance Days</TableCell>
                                 <TableCell></TableCell>
                             </TableRow>
                         </TableHead>
@@ -358,9 +400,6 @@ export default function BasicTableBundle({singlead,title}) {
                                     )
                                 }}>
                                     <TableCell>{log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
-                                    <TableCell>{dateformatchanger(log.campaignId.startDate)}</TableCell>
-                                    <TableCell>{dateformatchanger(log.campaignId.endDate)}</TableCell>
-                                    <TableCell>{timefinder(log.campaignId.endDate,log.campaignId.startDate)} days</TableCell>
                                     <TableCell>{parseInt(log.campaignId.TargetImpressions)}</TableCell>
                                     <TableCell>{log.impressions}</TableCell>
                                     <TableCell>{Math.round(parseInt(log.campaignId.TargetImpressions)/timefinder(log.campaignId.endDate,log.campaignId.startDate)*10)/10}</TableCell>
@@ -373,7 +412,6 @@ export default function BasicTableBundle({singlead,title}) {
                                     <TableCell>{log.clicks}</TableCell>
                                     <TableCell>{Math.round((log.clicks*100/log.impressions)*100)/100}%</TableCell>
                                     <TableCell>{parseInt(log.campaignId.TargetImpressions) - log.impressions}</TableCell>
-                                    <TableCell>{timefinder(log.campaignId.endDate,Date.now())} days</TableCell>
                                     <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                                 </TableRow> 
                             })}
@@ -466,9 +504,9 @@ export default function BasicTableBundle({singlead,title}) {
         <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.video} url='citylanguagebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Make Model Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.audio} url='phoneModelbycampids' />
-        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.display} url='phoneModelbycampids' />
-        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.video} url='phoneModelbycampids' />
+        <PhoneModelAdmin title='Audio' state1={state1} report={phoneModelReports && phoneModelReports.audio} />
+        <PhoneModelAdmin title='Display' state1={state1} report={phoneModelReports && phoneModelReports.display} />
+        <PhoneModelAdmin title='Video' state1={state1} report={phoneModelReports && phoneModelReports.video} />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} url='platformTypebycampids' />
@@ -476,14 +514,12 @@ export default function BasicTableBundle({singlead,title}) {
         <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.video} url='platformTypebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        <PincodeAdmin title='Audio' state1={state1} report={pincodereports && pincodereports.audio} />
+        <PincodeAdmin title='Display' state1={state1} report={pincodereports && pincodereports.display} />
+        <PincodeAdmin title='Video' state1={state1} report={pincodereports && pincodereports.video} />
         <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} url='zipbycampids' />
         <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.display} url='zipbycampids' />
         <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.video} url='zipbycampids' />
-        {/* <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Model Wise Summary Report</div>
-        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.audio} url='phonemakebycampids' />
-        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.display} url='phonemakebycampids' />
-        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.video} url='phonemakebycampids' /> */}
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} url='pptypebycampids' />
