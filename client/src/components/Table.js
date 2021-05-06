@@ -12,6 +12,9 @@ import { IdContext } from '../App';
 import { USDINRratioContext } from '../App';
 import IconBreadcrumbs from './breadBreed';
 import Auditable from './auditable.js'
+import { TablePagination } from '@material-ui/core';
+import PincodeAdmin from './pincodeAdmin.js'
+import PhoneModelAdmin from './PhoneModelAdmin';
 
 const useStyles = makeStyles({
     table: {
@@ -32,6 +35,8 @@ export default function BasicTable({singlead}) {
     const [audiologs, setaudiologs] = useState([])
     const [displaylogs, setdisplaylogs] = useState([])
     const [videologs, setvideologs] = useState([])
+    const [pincodereports, setpincodereports] = useState([])
+    const [phoneModelReports, setphoneModelReports] = useState([])
     // const [logs, setlogs] = useState([])
     const [spentdata, setspentdata] = useState([])
     const [ids, setids] = useState({})
@@ -66,6 +71,8 @@ export default function BasicTable({singlead}) {
         if(singlead && singlead.ids && singlead.id){
             logsPuller(singlead.ids)
             spentPuller(singlead.id)
+            pincodeDataPuller(singlead.ids)
+            PhoneModelDataPuller(singlead.ids)
         }
     }, [singlead])
     useEffect(() => {
@@ -94,9 +101,49 @@ export default function BasicTable({singlead}) {
             .catch(err=>console.log(err))
         }
     }
+    // pincode data of all data
+    const pincodeDataPuller = (idsa) => {
+        // console.log(idsa)
+        if(idsa){
+            fetch('/subrepo/zipbycampidsallcombo',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:idsa
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                // console.log(result[0])
+                setpincodereports(result[0])
+            })
+            .catch(err=>console.log(err))
+        }
+    }
+    // phoneModel data of all data
+    const PhoneModelDataPuller = (idsa) => {
+        // console.log(idsa)
+        if(idsa){
+            fetch('/subrepo/phoneModelbycampidsallcombo',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:idsa
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                console.log(result[0])
+                setphoneModelReports(result[0])
+            })
+            .catch(err=>console.log(err))
+        }
+    }
     // logs puller
     const logsPuller = (idData) =>{
-        console.log(idData)
+        // console.log(idData)
         fetch('/offreport/sumreportofcamall',{
             method:'put',
             headers:{
@@ -468,9 +515,9 @@ export default function BasicTable({singlead}) {
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.video} url='citylanguagebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Make Model Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.audio} url='phoneModelbycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.display} url='phoneModelbycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Platform Type' regtitle='phoneModel' jsotitle='phoneModel' ids={ids && ids.video} url='phoneModelbycampids' />
+        <PhoneModelAdmin title='Audio' state1={state1} report={phoneModelReports && phoneModelReports.audio} />
+        <PhoneModelAdmin title='Display' state1={state1} report={phoneModelReports && phoneModelReports.display} />
+        <PhoneModelAdmin title='Video' state1={state1} report={phoneModelReports && phoneModelReports.video} />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} url='platformTypebycampids' />
@@ -478,9 +525,10 @@ export default function BasicTable({singlead}) {
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.video} url='platformTypebycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} url='zipbycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.display} url='zipbycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.video} url='zipbycampids' />
+        {/* {PincodeTable('audio', pincodereports && pincodereports.audio)} */}
+        <PincodeAdmin title='Audio' state1={state1} report={pincodereports && pincodereports.audio} />
+        <PincodeAdmin title='Display' state1={state1} report={pincodereports && pincodereports.display} />
+        <PincodeAdmin title='Video' state1={state1} report={pincodereports && pincodereports.video} />
         {/* <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Model Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.audio} url='phonemakebycampids' />
