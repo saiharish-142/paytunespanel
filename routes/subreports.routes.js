@@ -116,7 +116,7 @@ router.put('/phonemakebycampids',adminauth,(req,res)=>{
 router.put('/zipbycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
     const dumd =[];
-    var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
+    var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd 
     zipreports.aggregate([
         {$match:{campaignId:{$in:ids}}},
         {$group:{_id:{zip:"$zip"}, 
@@ -144,6 +144,107 @@ router.put('/zipbycampids',adminauth,(req,res)=>{
             start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,area:'$extra.area',lowersubcity:'$area.lowersubcity',
             subcity:'$extra.subcity',city:'$extra.city',grandcity:'$extra.grandcity',district:'$extra.district',comparison:'$extra.comparison'
             ,state:'$extra.state',grandstate:'$extra.grandstate',latitude:'$extra.latitude',longitude:'$extra.longitude'
+        }}
+    ])
+    .then(result=>res.json(result))
+    .catch(err=>res.status(422).json(err))
+})
+
+router.put('/zipbycampidsallcombo',adminauth,(req,res)=>{
+    const {campaignId} = req.body
+    // var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd 
+    var audio = campaignId.audio.map(id => mongoose.Types.ObjectId(id))
+    var display = campaignId.display.map(id => mongoose.Types.ObjectId(id))
+    var video = campaignId.video.map(id => mongoose.Types.ObjectId(id))
+    zipreports.aggregate([
+        {$facet:{
+            "audio":[
+                {$match:{campaignId:{$in:audio}}},
+                {$group:{_id:{zip:"$zip"}, 
+                    campaignId:{$push:"$campaignId"}, 
+                    impression:{$sum:"$impression"}, 
+                    CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+                    SovClickTracking:{$sum:"$SovClickTracking"}, 
+                    start:{$sum:"$start"}, 
+                    midpoint:{$sum:"$midpoint"},
+                    thirdQuartile:{$sum:"$thirdQuartile"},
+                    complete:{$sum:"$complete"},
+                    createdOn:{$push:"$createdOn"}
+                }},
+                {
+                    $lookup:{
+                        from:'zipreports2',
+                        localField:'_id.zip',
+                        foreignField:'pincode',
+                        as:'extra'
+                    }
+                },
+                {$unwind:{path:'$extra',preserveNullAndEmptyArrays:true}},
+                {$project:{
+                    zip:"$_id.zip", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+                    start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,area:'$extra.area',lowersubcity:'$area.lowersubcity',
+                    subcity:'$extra.subcity',city:'$extra.city',grandcity:'$extra.grandcity',district:'$extra.district',comparison:'$extra.comparison'
+                    ,state:'$extra.state',grandstate:'$extra.grandstate',latitude:'$extra.latitude',longitude:'$extra.longitude'
+                }}
+            ],
+            "display":[
+                {$match:{campaignId:{$in:display}}},
+                {$group:{_id:{zip:"$zip"}, 
+                    campaignId:{$push:"$campaignId"}, 
+                    impression:{$sum:"$impression"}, 
+                    CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+                    SovClickTracking:{$sum:"$SovClickTracking"}, 
+                    start:{$sum:"$start"}, 
+                    midpoint:{$sum:"$midpoint"},
+                    thirdQuartile:{$sum:"$thirdQuartile"},
+                    complete:{$sum:"$complete"},
+                    createdOn:{$push:"$createdOn"}
+                }},
+                {
+                    $lookup:{
+                        from:'zipreports2',
+                        localField:'_id.zip',
+                        foreignField:'pincode',
+                        as:'extra'
+                    }
+                },
+                {$unwind:{path:'$extra',preserveNullAndEmptyArrays:true}},
+                {$project:{
+                    zip:"$_id.zip", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+                    start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,area:'$extra.area',lowersubcity:'$area.lowersubcity',
+                    subcity:'$extra.subcity',city:'$extra.city',grandcity:'$extra.grandcity',district:'$extra.district',comparison:'$extra.comparison'
+                    ,state:'$extra.state',grandstate:'$extra.grandstate',latitude:'$extra.latitude',longitude:'$extra.longitude'
+                }}
+            ],
+            "video":[
+                {$match:{campaignId:{$in:video}}},
+                {$group:{_id:{zip:"$zip"}, 
+                    campaignId:{$push:"$campaignId"}, 
+                    impression:{$sum:"$impression"}, 
+                    CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+                    SovClickTracking:{$sum:"$SovClickTracking"}, 
+                    start:{$sum:"$start"}, 
+                    midpoint:{$sum:"$midpoint"},
+                    thirdQuartile:{$sum:"$thirdQuartile"},
+                    complete:{$sum:"$complete"},
+                    createdOn:{$push:"$createdOn"}
+                }},
+                {
+                    $lookup:{
+                        from:'zipreports2',
+                        localField:'_id.zip',
+                        foreignField:'pincode',
+                        as:'extra'
+                    }
+                },
+                {$unwind:{path:'$extra',preserveNullAndEmptyArrays:true}},
+                {$project:{
+                    zip:"$_id.zip", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+                    start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,area:'$extra.area',lowersubcity:'$area.lowersubcity',
+                    subcity:'$extra.subcity',city:'$extra.city',grandcity:'$extra.grandcity',district:'$extra.district',comparison:'$extra.comparison'
+                    ,state:'$extra.state',grandstate:'$extra.grandstate',latitude:'$extra.latitude',longitude:'$extra.longitude'
+                }}
+            ]
         }}
     ])
     .then(result=>res.json(result))
