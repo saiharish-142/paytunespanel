@@ -58,21 +58,6 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-    const timefinder = (da1,da2) => {
-        var d1 = new Date(da1)
-        var d2 = new Date(da2)
-        if(d1<d2){
-            return 'completed campaign'
-        }
-        var show = d1.getTime() - d2.getTime();
-        var resula = show/(1000 * 3600 * 24) ;
-        return Math.round(resula*1)/1 ;
-    }
-    const dateformatchanger = (date) => {
-        var dategot = date.toString();
-        var datechanged = dategot.slice(8,10) + '-' + dategot.slice(5,7) + '-' + dategot.slice(0,4)
-        return datechanged;
-    }
     return (
         <Paper>
             <div style={{margin:'5px',fontWeight:'bolder'}}>{adtype} Type</div>
@@ -81,14 +66,10 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                 <TableHead>
                     <TableRow>  
                         <TableCell>{title}</TableCell>
-                        {!client &&  <TableCell>Campaign Start Date</TableCell>}
-                        {!client &&  <TableCell>Campaign End Date</TableCell>}
-                        {!client &&  <TableCell>Total Days of Campaign</TableCell>}
                         <TableCell>Total Impressions Delivered till date</TableCell>
                         {/* {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>Unique Users</TableCell>} */}
                         <TableCell>Total Clicks Delivered till date</TableCell>
                         <TableCell>CTR</TableCell>
-                        {!client &&  <TableCell>Balance Days</TableCell>}
                         {!client &&  <TableCell></TableCell>}
                     </TableRow>
                 </TableHead>
@@ -103,13 +84,7 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                         return (
                         <TableRow key ={i} hover role="checkbox" tabIndex={-1} key={row._id}>
                             {jsotitle === 'region' ? <TableCell>{regiondata[row[jsotitle]] ? regiondata[row[jsotitle]] : row[jsotitle]}</TableCell> : (jsotitle==='zip' ? <TableCell>{row[jsotitle]}</TableCell> : <TableCell>{row[jsotitle] && row[jsotitle][0] != undefined && row[jsotitle][0].toUpperCase() + row[jsotitle].substring(1,)}</TableCell>)}
-                            {!client && <TableCell>{dateformatchanger(streamingads && streamingads.startDate && streamingads.startDate[0].slice(0,10))}</TableCell>}
-                            {!client && <TableCell>{dateformatchanger(streamingads && streamingads.endDate && streamingads.endDate[0].slice(0,10))}</TableCell>}
-                            {!client && <TableCell>{timefinder(streamingads && streamingads.startDate && streamingads.endDate[0],streamingads.startDate[0])} days</TableCell>}
                             {client? <TableCell>{Math.round(impression*row.impression/totalimpre)}</TableCell> : <TableCell>{row.impression}</TableCell>}
-                            {/* {(jsotitle==='region' || jsotitle==='zip' || jsotitle==='language') && <TableCell>{
-                                ratio ? (Math.round(ratio*row.impression) + 1) : row.unique
-                            }</TableCell>} */}
                             <TableCell>{
                                 click ?
                                 Math.round(click*(row.CompanionClickTracking ? parseInt(row.CompanionClickTracking) :0 + 
@@ -123,7 +98,6 @@ function Auditable({streamingads,title,jsotitle,ids,url,regtitle,adtype,state1,c
                                 row.SovClickTracking ? parseInt(row.SovClickTracking) :0)*click/totalclick)*100/(impression*parseInt(row.impression)/totalimpre) *100)/100 :
                                 Math.round((row.CompanionClickTracking ? parseInt(row.CompanionClickTracking) :0 + 
                                 row.SovClickTracking ? parseInt(row.SovClickTracking) :0)*100/parseInt(row.impression) *100)/100 }%</TableCell>
-                            {!client &&  <TableCell>{timefinder(streamingads && streamingads.endDate[0],Date.now())} days</TableCell>}
                             {!client &&  <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>}
                         </TableRow>
                         );}}else{

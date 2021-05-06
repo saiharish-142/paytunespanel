@@ -328,9 +328,9 @@ export default function BasicTable({singlead}) {
                     <Table className={classes.table} aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>Campaign Start Date</TableCell>
-                                <TableCell>Campaign End Date</TableCell>
-                                <TableCell>Total Days of Campaign</TableCell>
+                                {title==='Summary' && <TableCell>Campaign Start Date</TableCell>}
+                                {title==='Summary' && <TableCell>Campaign End Date</TableCell>}
+                                {title==='Summary' && <TableCell>Total Days of Campaign</TableCell>}
                                 <TableCell>Total Impressions to be delivered</TableCell>
                                 <TableCell>Total Impressions Delivered till date</TableCell>
                                 <TableCell>Avg required</TableCell>
@@ -339,7 +339,7 @@ export default function BasicTable({singlead}) {
                                 <TableCell>Total Clicks Delivered till date</TableCell>
                                 <TableCell>CTR</TableCell>
                                 <TableCell>Balance Impressions</TableCell>
-                                <TableCell>Balance Days</TableCell>
+                                {title==='Summary' && <TableCell>Balance Days</TableCell>}
                                 <TableCell></TableCell>
                             </TableRow>
                         </TableHead>
@@ -352,9 +352,9 @@ export default function BasicTable({singlead}) {
                                     report.impressions
                                 )
                             }}>
-                                <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
-                                <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
-                                <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
+                                {title==='Summary' && <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>}
+                                {title==='Summary' && <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>}
+                                {title==='Summary' && <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>}
                                 <TableCell>{target}</TableCell>
                                 <TableCell>{report.impressions}</TableCell>
                                 <TableCell>{Math.round(target/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
@@ -363,7 +363,7 @@ export default function BasicTable({singlead}) {
                                 <TableCell>{report.clicks}</TableCell>
                                 <TableCell>{Math.round((report.clicks*100/report.impressions)*100)/100}%</TableCell>
                                 <TableCell>{target - report.impressions}</TableCell>
-                                <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
+                                {title==='Summary' && <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>}
                                 <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                             </TableRow> 
                         </TableBody>
@@ -381,9 +381,6 @@ export default function BasicTable({singlead}) {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Publisher</TableCell>
-                                <TableCell>Campaign Start Date</TableCell>
-                                <TableCell>Campaign End Date</TableCell>
-                                <TableCell>Total Days of Campaign</TableCell>
                                 <TableCell>Total Impressions to be delivered</TableCell>
                                 <TableCell>Total Impressions Delivered till date</TableCell>
                                 <TableCell>Avg required</TableCell>
@@ -392,7 +389,6 @@ export default function BasicTable({singlead}) {
                                 <TableCell>Total Clicks Delivered till date</TableCell>
                                 <TableCell>CTR</TableCell>
                                 <TableCell>Balance Impressions</TableCell>
-                                <TableCell>Balance Days</TableCell>
                                 <TableCell></TableCell>
                             </TableRow>
                         </TableHead>
@@ -407,9 +403,6 @@ export default function BasicTable({singlead}) {
                                     )
                                 }}>
                                     <TableCell>{log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
-                                    <TableCell>{dateformatchanger(singlead.startDate[0])}</TableCell>
-                                    <TableCell>{dateformatchanger(singlead.endDate[0])}</TableCell>
-                                    <TableCell>{timefinder(singlead.endDate[0],singlead.startDate[0])} days</TableCell>
                                     <TableCell>{parseInt(log.campaignId.TargetImpressions)}</TableCell>
                                     <TableCell>{log.impressions}</TableCell>
                                     <TableCell>{Math.round(parseInt(log.campaignId.TargetImpressions)/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
@@ -422,7 +415,6 @@ export default function BasicTable({singlead}) {
                                     <TableCell>{log.clicks}</TableCell>
                                     <TableCell>{Math.round((log.clicks*100/log.impressions)*100)/100}%</TableCell>
                                     <TableCell>{parseInt(log.campaignId.TargetImpressions) - log.impressions}</TableCell>
-                                    <TableCell>{timefinder(singlead.endDate[0],Date.now())} days</TableCell>
                                     <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
                                 </TableRow> 
                             })}
@@ -438,7 +430,7 @@ export default function BasicTable({singlead}) {
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>{state1 && state1.toUpperCase()} Campaign</div>
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-        {SummaryTable('Complete',summaryReport,ids && ids.audimpression+ids.disimpression+ids.vidimpression,completespentfider('all')+spentOffline+spentOfflined+spentOfflinev)}
+        {SummaryTable('Summary',summaryReport,ids && ids.audimpression+ids.disimpression+ids.vidimpression,completespentfider('all')+spentOffline+spentOfflined+spentOfflinev)}
         {SummaryTable('Audio', audioReport,ids && ids.audimpression,completespentfider('audio')+spentOffline)}
         {SummaryTable('Display', displayReport,ids && ids.disimpression,completespentfider('display')+spentOfflined)}
         {SummaryTable('Video', videoReport,ids && ids.vidimpression,completespentfider('video')+spentOfflinev)}
