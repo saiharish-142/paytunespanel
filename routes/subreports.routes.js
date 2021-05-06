@@ -138,7 +138,7 @@ router.put('/zipbycampids',adminauth,(req,res)=>{
                 as:'extra'
             }
         },
-        {$unwind:'$extra'},
+        {$unwind:{path:'$extra',preserveNullAndEmptyArrays:true}},
         {$project:{
             zip:"$_id.zip", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
             start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,area:'$extra.area',lowersubcity:'$area.lowersubcity',
@@ -364,7 +364,7 @@ router.put('/phoneModelbycampids',adminauth,(req,res)=>{
             foreignField:'make_model',
             as:'extra'
         }},
-         {$unwind:"$extra"},
+        {$unwind:{path:'$extra',preserveNullAndEmptyArrays:true}},
         {$project:{
             phoneModel:"$_id.phoneModel", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
             start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,cost:'$extra.cost',type:'$extra.type'
