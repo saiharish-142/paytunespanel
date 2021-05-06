@@ -479,6 +479,139 @@ router.put('/phoneModelbycampids',adminauth,(req,res)=>{
     .catch(err=>res.status(422).json(err))
 })
 
+router.put('/phoneModelbycampidsallcombo',adminauth,(req,res)=>{
+    const {campaignId} = req.body
+    var audio = campaignId.audio.map(id => mongoose.Types.ObjectId(id))
+    var display = campaignId.display.map(id => mongoose.Types.ObjectId(id))
+    var video = campaignId.video.map(id => mongoose.Types.ObjectId(id))
+    phonemodelreports.aggregate([
+        {$facet:{
+            "audio":[
+                {$match:{campaignId:{$in:audio}}},
+                {$addFields:{"temp_phone":"$phoneModel"}},
+                {$project:{phoneModel:{$toLower:'$phoneModel'},
+                    campaignId:"$campaignId",
+                    impression:"$impression", 
+                    CompanionClickTracking:"$CompanionClickTracking", 
+                    SovClickTracking:"$SovClickTracking", 
+                    start:"$start", 
+                    midpoint:"$midpoint",
+                    thirdQuartile:"$thirdQuartile",
+                    complete:"$complete",
+                    createdOn:"$createdOn",
+                    temp_phone:1
+                }},
+                {$group:{_id:{phoneModel:"$phoneModel"}, 
+                    campaignId:{$push:"$campaignId"},
+                    impression:{$sum:"$impression"}, 
+                    CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+                    SovClickTracking:{$sum:"$SovClickTracking"}, 
+                    start:{$sum:"$start"}, 
+                    midpoint:{$sum:"$midpoint"},
+                    thirdQuartile:{$sum:"$thirdQuartile"},
+                    complete:{$sum:"$complete"},
+                    createdOn:{$push:"$createdOn"},
+                    temp_phone1:{$first:"$temp_phone"}
+                }},
+                {$lookup:{
+                    from:'phonemodel2reports',
+                    localField:'temp_phone1',
+                    foreignField:'make_model',
+                    as:'extra'
+                }},
+                {$unwind:{path:"$extra",preserveNullAndEmptyArrays:true}},
+                {$project:{
+                    phoneModel:"$_id.phoneModel", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+                    start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,extra:"$extra"
+                
+                }}
+            ],
+            "display":[
+                {$match:{campaignId:{$in:display}}},
+                {$addFields:{"temp_phone":"$phoneModel"}},
+                {$project:{phoneModel:{$toLower:'$phoneModel'},
+                    campaignId:"$campaignId",
+                    impression:"$impression", 
+                    CompanionClickTracking:"$CompanionClickTracking", 
+                    SovClickTracking:"$SovClickTracking", 
+                    start:"$start", 
+                    midpoint:"$midpoint",
+                    thirdQuartile:"$thirdQuartile",
+                    complete:"$complete",
+                    createdOn:"$createdOn",
+                    temp_phone:1
+                }},
+                {$group:{_id:{phoneModel:"$phoneModel"}, 
+                    campaignId:{$push:"$campaignId"},
+                    impression:{$sum:"$impression"}, 
+                    CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+                    SovClickTracking:{$sum:"$SovClickTracking"}, 
+                    start:{$sum:"$start"}, 
+                    midpoint:{$sum:"$midpoint"},
+                    thirdQuartile:{$sum:"$thirdQuartile"},
+                    complete:{$sum:"$complete"},
+                    createdOn:{$push:"$createdOn"},
+                    temp_phone1:{$first:"$temp_phone"}
+                }},
+                {$lookup:{
+                    from:'phonemodel2reports',
+                    localField:'temp_phone1',
+                    foreignField:'make_model',
+                    as:'extra'
+                }},
+                {$unwind:{path:"$extra",preserveNullAndEmptyArrays:true}},
+                {$project:{
+                    phoneModel:"$_id.phoneModel", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+                    start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,extra:"$extra"
+                
+                }}
+            ],
+            "video":[
+                {$match:{campaignId:{$in:video}}},
+                {$addFields:{"temp_phone":"$phoneModel"}},
+                {$project:{phoneModel:{$toLower:'$phoneModel'},
+                    campaignId:"$campaignId",
+                    impression:"$impression", 
+                    CompanionClickTracking:"$CompanionClickTracking", 
+                    SovClickTracking:"$SovClickTracking", 
+                    start:"$start", 
+                    midpoint:"$midpoint",
+                    thirdQuartile:"$thirdQuartile",
+                    complete:"$complete",
+                    createdOn:"$createdOn",
+                    temp_phone:1
+                }},
+                {$group:{_id:{phoneModel:"$phoneModel"}, 
+                    campaignId:{$push:"$campaignId"},
+                    impression:{$sum:"$impression"}, 
+                    CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+                    SovClickTracking:{$sum:"$SovClickTracking"}, 
+                    start:{$sum:"$start"}, 
+                    midpoint:{$sum:"$midpoint"},
+                    thirdQuartile:{$sum:"$thirdQuartile"},
+                    complete:{$sum:"$complete"},
+                    createdOn:{$push:"$createdOn"},
+                    temp_phone1:{$first:"$temp_phone"}
+                }},
+                {$lookup:{
+                    from:'phonemodel2reports',
+                    localField:'temp_phone1',
+                    foreignField:'make_model',
+                    as:'extra'
+                }},
+                {$unwind:{path:"$extra",preserveNullAndEmptyArrays:true}},
+                {$project:{
+                    phoneModel:"$_id.phoneModel", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+                    start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,extra:"$extra"
+                
+                }}
+            ]
+        }}
+    ])
+    .then(result=>res.json(result))
+    .catch(err=>res.status(422).json(err))
+})
+
 router.put('/uniqueusersbycampids',adminauth,(req,res)=>{
     const {campaignId} = req.body
     const dumd =[];
