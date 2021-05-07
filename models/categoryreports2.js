@@ -10,7 +10,8 @@ var categoryreportsSchema1 = new Schema({
     tier3:String,
     tier4:String,
     genderCategory:String,
-    AgeCategory:String
+    AgeCategory:String,
+    new_taxonamy:String
 });
 categoryreportsSchema1.index({ category: 1 });
 

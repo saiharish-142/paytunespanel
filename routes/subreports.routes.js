@@ -520,29 +520,23 @@ router.post(
     adminauth,
     async(req,res)=>{
         try{
-            // let {campaignId}=req.body
-            // var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : []
+            let {campaignId}=req.body
+            var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : []
             const result=await CategoryReports.aggregate([
-                // {$match:{campaignId:{$in:ids}}},
-                {$group:{_id:{campaignId:"$campaignId",category:"$category"},
-                impressions:{"$sum":"$impression"}
+                {$match:{campaignId:{$in:ids}}},
+                {$group:{_id:{category:"$category"},
+                impressions:{"$sum":"$impression"},
+                CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+                SovClickTracking:{$sum:"$SovClickTracking"}
             }},
-                {$lookup:{
-                    from:'categoryreports2',
-                    localField:'_id.category',
-                    foreignField:'category',
-                    as:'extra_details'
-                }},
-                {$unwind:"$extra_details"},
-                {$addFields:{"temp_id":{"$toObjectId":"$_id.campaignId"}}},
-                {$lookup:{
-                    from:'streamingads',
-                    localField:'temp_id',
-                    foreignField:'_id',
-                    as:'campaign_details'
-                }},
-                {$unwind:"$campaign_details"},
-                {$sort:{"impressions":-1}}
+            {$lookup:{
+                from:'categoryreports2',
+                localField:'_id.category',
+                foreignField:'category',
+                as:'extra_details'
+            }},
+            {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
+            {$sort:{"impressions":-1}}
             ]).allowDiskUse(true)
             res.status(200).json(result)
         }catch(err){

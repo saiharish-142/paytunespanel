@@ -165,7 +165,6 @@ router.get(
 
 
 
-
 router.get(
     '/spent_data_via_date',
     adminauth,
