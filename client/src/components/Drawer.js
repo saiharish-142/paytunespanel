@@ -75,7 +75,7 @@ export default function TemporaryDrawer() {
                         <hr />
                         <ListItem className='dashmenu__item' onClick={()=>history.push('/zipdata')}>
                             <ListItemIcon><i className='material-icons'>keyboard_arrow_right</i></ListItemIcon>
-                            <ListItemText>Zip Data</ListItemText>
+                            <ListItemText>Pincode Data</ListItemText>
                         </ListItem>
                     </>}
                     {state && state.usertype === 'admin' && <>

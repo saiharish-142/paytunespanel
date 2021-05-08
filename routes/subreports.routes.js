@@ -437,20 +437,27 @@ router.put('/phoneModelbycampids',adminauth,(req,res)=>{
     var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd    
     phonemodelreports.aggregate([
         {$match:{campaignId:{$in:ids}}},
-        {$addFields:{"temp_phone":"$phoneModel"}},
-        {$project:{phoneModel:{$toLower:'$phoneModel'},
-            campaignId:"$campaignId",
-            impression:"$impression", 
-            CompanionClickTracking:"$CompanionClickTracking", 
-            SovClickTracking:"$SovClickTracking", 
-            start:"$start", 
-            midpoint:"$midpoint",
-            thirdQuartile:"$thirdQuartile",
-            complete:"$complete",
-            createdOn:"$createdOn",
-            temp_phone:1
+        // {$addFields:{"temp_phone":"$phoneModel"}},
+        // {$project:{phoneModel:{$toLower:'$phoneModel'},
+        //     campaignId:"$campaignId",
+        //     impression:"$impression", 
+        //     CompanionClickTracking:"$CompanionClickTracking", 
+        //     SovClickTracking:"$SovClickTracking", 
+        //     start:"$start", 
+        //     midpoint:"$midpoint",
+        //     thirdQuartile:"$thirdQuartile",
+        //     complete:"$complete",
+        //     createdOn:"$createdOn",
+        //     temp_phone:1
+        // }},
+        {$lookup:{
+            from:'phonemodel2reports',
+            localField:'phoneModel',
+            foreignField:'make_model',
+            as:'extra'
         }},
-        {$group:{_id:{phoneModel:"$phoneModel"}, 
+        {$unwind:{path:"$extra",preserveNullAndEmptyArrays:true}},
+        {$group:{_id:{combined_make_and_model:"$extra.combined_make_model"}, 
             campaignId:{$push:"$campaignId"},
             impression:{$sum:"$impression"}, 
             CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
@@ -460,19 +467,15 @@ router.put('/phoneModelbycampids',adminauth,(req,res)=>{
             thirdQuartile:{$sum:"$thirdQuartile"},
             complete:{$sum:"$complete"},
             createdOn:{$push:"$createdOn"},
-            temp_phone1:{$first:"$temp_phone"}
+            extra:{$first:"$extra"}
+            // cost:{$first:"$extra.cost"},
+            // release:{$first:"$extra.release"},
+            // type:{$first:"$extra.type"}
         }},
-        {$lookup:{
-            from:'phonemodel2reports',
-            localField:'temp_phone1',
-            foreignField:'make_model',
-            as:'extra'
-        }},
-        {$unwind:{path:"$extra",preserveNullAndEmptyArrays:true}},
+        
         {$project:{
             phoneModel:"$_id.phoneModel", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
             start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,extra:"$extra"
-        
         }}
     ])
     .then(result=>res.json(result))
@@ -665,29 +668,23 @@ router.post(
     adminauth,
     async(req,res)=>{
         try{
-            // let {campaignId}=req.body
-            // var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : []
+            let {campaignId}=req.body
+            var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : []
             const result=await CategoryReports.aggregate([
-                // {$match:{campaignId:{$in:ids}}},
-                {$group:{_id:{campaignId:"$campaignId",category:"$category"},
-                impressions:{"$sum":"$impression"}
+                {$match:{campaignId:{$in:ids}}},
+                {$group:{_id:{category:"$category"},
+                impressions:{"$sum":"$impression"},
+                CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+                SovClickTracking:{$sum:"$SovClickTracking"}
             }},
-                {$lookup:{
-                    from:'categoryreports2',
-                    localField:'_id.category',
-                    foreignField:'category',
-                    as:'extra_details'
-                }},
-                {$unwind:"$extra_details"},
-                {$addFields:{"temp_id":{"$toObjectId":"$_id.campaignId"}}},
-                {$lookup:{
-                    from:'streamingads',
-                    localField:'temp_id',
-                    foreignField:'_id',
-                    as:'campaign_details'
-                }},
-                {$unwind:"$campaign_details"},
-                {$sort:{"impressions":-1}}
+            {$lookup:{
+                from:'categoryreports2',
+                localField:'_id.category',
+                foreignField:'category',
+                as:'extra_details'
+            }},
+            {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
+            {$sort:{"impressions":-1}}
             ]).allowDiskUse(true)
             res.status(200).json(result)
         }catch(err){
