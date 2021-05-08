@@ -19,8 +19,8 @@ export default function Biddata(){
     const [rows1,setrows1]=useState([])
     const [bids,setbid]=useState([])
     const [bids1,setbids1]=useState([])
-    const [bidwons,setbidwons]=useState([])
-    const [spentdata,setspentdata]=useState([])
+    const [bidwons,setbidwons]=useState({Triton_Data:[],Rubicon_Data:[]})
+    const [spentdata,setspentdata]=useState({Triton_Data:[],Rubicon_Data:[]})
     const [rowsPerPage, setRowsPerPage] = useState(7)
     const [rowsPerPage1, setRowsPerPage1] = useState(7)
     const [rowsPerPage2, setRowsPerPage2] = useState(10)
@@ -144,7 +144,7 @@ const handleChangeRowsPerPage2 = (event) => {
         if(data.error){
             return console.log(data.error)
         }
-        setbidwons(data)
+        setbidwons(data[0])
       })
 },[])
 
@@ -156,11 +156,11 @@ useEffect(()=>{
           "Authorization" :"Bearer "+localStorage.getItem("jwt")
       }
   }).then(res=>res.json()).then(data=>{
-    console.log(data)
+    console.log(data[0])
       if(data.error){
           return console.log(data.error)
       }
-      setspentdata(data)
+      setspentdata(data[0])
     })
 },[])
 
@@ -184,16 +184,19 @@ useEffect(()=>{
 
 
 
-  const findspentdata=(date)=>{
-    const result=spentdata.filter((spent)=>date===spent._id.Date)
+  const findspentdata=(date,key)=>{
+    const result=key==="Triton"? spentdata.Triton_Data.filter((spent)=>date===spent._id.Date):spentdata.Rubicon_Data.filter((spent)=>date===spent._id.Date)
+
     if(result.length!==0){
       return result[0].total_spent
     }
     return 0
   }
 
-  const findbidwons=(date)=>{
-    const result=bidwons.filter((bids)=>bids._id.Date===date)
+  const findbidwons=(date,key)=>{
+    
+    const result=key==="Triton"? bidwons.Triton_Data.filter((bid)=>date===bid._id.Date):bidwons.Rubicon_Data.filter((bid)=>date===bid._id.Date)
+    //const result=bidwons.filter((bids)=>bids._id.Date===date)
     if(result.length!==0){
       return result[0].impressions
     }
@@ -235,8 +238,8 @@ useEffect(()=>{
               <TableCell >Triton</TableCell>
               <TableCell >{row.requests}</TableCell>
               <TableCell >{findbids(row._id.Date,"tri")}</TableCell>
-              <TableCell >{findbidwons(row._id.Date)}</TableCell>
-              <TableCell >{findspentdata(row._id.Date)}</TableCell>
+              <TableCell >{findbidwons(row._id.Date,"Triton")}</TableCell>
+              <TableCell >{findspentdata(row._id.Date,"Triton")}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -276,8 +279,8 @@ useEffect(()=>{
         <TableCell >Rubicon</TableCell>
         <TableCell >{row.requests}</TableCell>
         <TableCell >{findbids(row._id.Date,"Rub")}</TableCell>
-        <TableCell >{findbidwons(row._id.Date)}</TableCell>
-        <TableCell >{findspentdata(row._id.Date)}</TableCell>
+        <TableCell >{findbidwons(row._id.Date,"Rubicon")}</TableCell>
+        <TableCell >{findspentdata(row._id.Date,"Rubicon")}</TableCell>
       </TableRow>
     ))}
   </TableBody>

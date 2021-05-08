@@ -116,10 +116,24 @@ router.get(
     adminauth,
     async(req,res)=>{
         try{
-            const result=await Campaignwisereports.aggregate([
-                {$group:{_id:{Date:"$date"},
-                impressions:{$sum:"$impression"}
-            }}
+            const result=await SpentReport.aggregate([
+                {$facet:{
+                    "Triton_Data":[
+                        {$match:{ssp:"Triton"}},
+                        {$group:{_id:{Date:"$date"},
+                        impressions:{$sum:"$impression"}
+                    }
+                }],
+                "Rubicon_Data":[
+                    {$match:{ssp:"Rubicon"}},
+                    {$group:{_id:{Date:"$date"},
+                        impressions:{$sum:"$impression"}
+                    }
+                }]
+            }} 
+            //     {$group:{_id:{Date:"$date"},
+            //     impressions:{$sum:"$impression"}
+            // }}
             ])
             res.status(200).json(result)
         }catch(err){
@@ -171,10 +185,22 @@ router.get(
     async(req,res)=>{
         try{
             const result=await SpentReport.aggregate([
-                {$group:{_id:{Date:"$date"},
-                total_spent:{$sum:"$totalSpent"}
-            } }
+                {$facet:{
+                    "Triton_Data":[
+                        {$match:{ssp:"Triton"}},
+                        {$group:{_id:{Date:"$date"},
+                        total_spent:{$sum:"$totalSpent"}
+                    }
+                }],
+                "Rubicon_Data":[
+                    {$match:{ssp:"Rubicon"}},
+                    {$group:{_id:{Date:"$date"},
+                        total_spent:{$sum:"$totalSpent"}
+                    }
+                }]
+            }} 
             ])
+            console.log(result[0].Triton_Data)
             res.status(200).json(result)
         }catch(err){
             res.status(400).json({error:err.message})

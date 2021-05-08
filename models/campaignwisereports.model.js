@@ -27,4 +27,4 @@ var campaignwisereportsSchema = new mongoose.Schema({
     createdOn: { type: Date, default: Date.now },
 });
 
-mongoose.model('campaignwisereports',campaignwisereportsSchema)
+module.exports=mongoose.model('campaignwisereports',campaignwisereportsSchema)

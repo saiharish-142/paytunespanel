@@ -2,14 +2,14 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var phonemodel2reportsSchema = new Schema({
     cost:Number,
-    make_model:String, // ref prop
+    make_model:String, 
     cumulative:String,
     release:String,
     company:String,
     type:String,
     total_percent:String,
-    model:String
-    //createdOn: { type: Date, default: Date.now },
+    model:String,
+    combined_make_model:String
 });
 phonemodel2reportsSchema.index({ make_model: 1 });
 
