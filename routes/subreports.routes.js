@@ -12,6 +12,8 @@ const phonemodelreports = mongoose.model('phonemodelreports')
 const spentreports = mongoose.model('spentreports')
 const phonemodel2 = mongoose.model('phonemodel2reports')
 const Zipreports2 = mongoose.model('zipreports2')
+const CategoryReports2=mongoose.model('categoryreports2')
+const CategoryReports=mongoose.model('categoryreports')
 const adminauth  = require('../authenMiddleware/adminauth')
 
 router.get('/phonemake',adminauth,(req,res)=>{
