@@ -6,6 +6,8 @@ var campaignwisereportsSchema = new mongoose.Schema({
     campaignId: { type: ObjectId, ref: 'streamingadObj' },
     appId: String,
     language: String,
+    apppubid: String,
+    ssp: String,
     requests: Number,
     ads: Number, ///AdServed
     servedAudioImpressions: Number,
