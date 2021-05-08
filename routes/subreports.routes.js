@@ -672,65 +672,118 @@ router.put('/spentallrepobyid2',adminauth,(req,res)=>{
     .catch(err=>res.status(422).json(err))
 })
 
-router.put('/categorywisereportsallcombo',adminauth,(req,res)=>{
+router.put('/categorywisereportsallcombo',adminauth,async (req,res)=>{
     const {campaignId} = req.body
     var audio = campaignId.audio.map(id => mongoose.Types.ObjectId(id))
     var display = campaignId.display.map(id => mongoose.Types.ObjectId(id))
     var video = campaignId.video.map(id => mongoose.Types.ObjectId(id))
-    CategoryReports.aggregate([
-        {$facet:{
-            "audio":[
-                {$match:{campaignId:{$in:audio}}},
-                {$group:{_id:{category:"$category"},
-                    impressions:{"$sum":"$impression"},
-                    CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
-                    SovClickTracking:{$sum:"$SovClickTracking"}
-                }},
-                {$lookup:{
-                    from:'categoryreports2',
-                    localField:'_id.category',
-                    foreignField:'category',
-                    as:'extra_details'
-                }},
-                {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
-                {$sort:{"impressions":-1}}
-            ],
-            "display":[
-                {$match:{campaignId:{$in:display}}},
-                {$group:{_id:{category:"$category"},
-                    impressions:{"$sum":"$impression"},
-                    CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
-                    SovClickTracking:{$sum:"$SovClickTracking"}
-                }},
-                {$lookup:{
-                    from:'categoryreports2',
-                    localField:'_id.category',
-                    foreignField:'category',
-                    as:'extra_details'
-                }},
-                {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
-                {$sort:{"impressions":-1}}
-            ],
-            "video":[
-                {$match:{campaignId:{$in:video}}},
-                {$group:{_id:{category:"$category"},
-                    impressions:{"$sum":"$impression"},
-                    CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
-                    SovClickTracking:{$sum:"$SovClickTracking"}
-                }},
-                {$lookup:{
-                    from:'categoryreports2',
-                    localField:'_id.category',
-                    foreignField:'category',
-                    as:'extra_details'
-                }},
-                {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
-                {$sort:{"impressions":-1}}
-            ]
-        }}
-    ])
-    .then(result=>res.json(result))
-    .catch(err=>console.log(err))
+    try{
+        const resultaudio = await CategoryReports.aggregate([
+            {$match:{campaignId:{$in:audio}}},
+            {$group:{_id:{category:"$category"},
+            impressions:{"$sum":"$impression"},
+            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+            SovClickTracking:{$sum:"$SovClickTracking"}
+        }},
+        {$lookup:{
+            from:'categoryreports2',
+            localField:'_id.category',
+            foreignField:'category',
+            as:'extra_details'
+        }},
+        {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
+        {$sort:{"impressions":-1}}
+        ]).allowDiskUse(true)
+        const resultdisplay = await CategoryReports.aggregate([
+            {$match:{campaignId:{$in:display}}},
+            {$group:{_id:{category:"$category"},
+            impressions:{"$sum":"$impression"},
+            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+            SovClickTracking:{$sum:"$SovClickTracking"}
+        }},
+        {$lookup:{
+            from:'categoryreports2',
+            localField:'_id.category',
+            foreignField:'category',
+            as:'extra_details'
+        }},
+        {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
+        {$sort:{"impressions":-1}}
+        ]).allowDiskUse(true)
+        const resultvideo = await CategoryReports.aggregate([
+            {$match:{campaignId:{$in:video}}},
+            {$group:{_id:{category:"$category"},
+            impressions:{"$sum":"$impression"},
+            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+            SovClickTracking:{$sum:"$SovClickTracking"}
+        }},
+        {$lookup:{
+            from:'categoryreports2',
+            localField:'_id.category',
+            foreignField:'category',
+            as:'extra_details'
+        }},
+        {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
+        {$sort:{"impressions":-1}}
+        ]).allowDiskUse(true)
+        res.status(200).json({audio:resultaudio,display:resultdisplay,video:resultvideo})
+    }catch(err){
+        res.status(400).json({error:err.message})
+    }
+    // CategoryReports.aggregate([
+    //     {$facet:{
+    //         "audio":[
+    //             {$match:{campaignId:{$in:audio}}},
+    //             {$group:{_id:{category:"$category"},
+    //                 impressions:{"$sum":"$impression"},
+    //                 CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+    //                 SovClickTracking:{$sum:"$SovClickTracking"}
+    //             }},
+    //             {$lookup:{
+    //                 from:'categoryreports2',
+    //                 localField:'_id.category',
+    //                 foreignField:'category',
+    //                 as:'extra_details'
+    //             }},
+    //             {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
+    //             {$sort:{"impressions":-1}}
+    //         ],
+    //         "display":[
+    //             {$match:{campaignId:{$in:display}}},
+    //             {$group:{_id:{category:"$category"},
+    //                 impressions:{"$sum":"$impression"},
+    //                 CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+    //                 SovClickTracking:{$sum:"$SovClickTracking"}
+    //             }},
+    //             {$lookup:{
+    //                 from:'categoryreports2',
+    //                 localField:'_id.category',
+    //                 foreignField:'category',
+    //                 as:'extra_details'
+    //             }},
+    //             {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
+    //             {$sort:{"impressions":-1}}
+    //         ],
+    //         "video":[
+    //             {$match:{campaignId:{$in:video}}},
+    //             {$group:{_id:{category:"$category"},
+    //                 impressions:{"$sum":"$impression"},
+    //                 CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+    //                 SovClickTracking:{$sum:"$SovClickTracking"}
+    //             }},
+    //             {$lookup:{
+    //                 from:'categoryreports2',
+    //                 localField:'_id.category',
+    //                 foreignField:'category',
+    //                 as:'extra_details'
+    //             }},
+    //             {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
+    //             {$sort:{"impressions":-1}}
+    //         ]
+    //     }}
+    // ])
+    // .then(result=>res.json(result))
+    // .catch(err=>console.log(err))
 })
 
 ///////////////////  new apis //////////////////////////////
