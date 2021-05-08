@@ -728,7 +728,7 @@ router.put('/categorywisereportsallcombo',adminauth,(req,res)=>{
                 {$sort:{"impressions":-1}}
             ]
         }}
-    ]).allowDiskUse(true)
+    ])
     .then(result=>res.json(result))
     .catch(err=>console.log(err))
 })
