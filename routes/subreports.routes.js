@@ -672,7 +672,7 @@ router.put('/spentallrepobyid2',adminauth,(req,res)=>{
     .catch(err=>res.status(422).json(err))
 })
 
-router.put('/cater',adminauth,(req,res)=>{
+router.put('/categorywisereportsallcombo',adminauth,(req,res)=>{
     const {campaignId} = req.body
     var audio = campaignId.audio.map(id => mongoose.Types.ObjectId(id))
     var display = campaignId.display.map(id => mongoose.Types.ObjectId(id))
@@ -680,7 +680,7 @@ router.put('/cater',adminauth,(req,res)=>{
     CategoryReports.aggregate([
         {$facet:{
             "audio":[
-                {$match:{campaignId:{$in:ids}}},
+                {$match:{campaignId:{$in:audio}}},
                 {$group:{_id:{category:"$category"},
                     impressions:{"$sum":"$impression"},
                     CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
@@ -696,7 +696,7 @@ router.put('/cater',adminauth,(req,res)=>{
                 {$sort:{"impressions":-1}}
             ],
             "display":[
-                {$match:{campaignId:{$in:ids}}},
+                {$match:{campaignId:{$in:display}}},
                 {$group:{_id:{category:"$category"},
                     impressions:{"$sum":"$impression"},
                     CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
@@ -712,7 +712,7 @@ router.put('/cater',adminauth,(req,res)=>{
                 {$sort:{"impressions":-1}}
             ],
             "video":[
-                {$match:{campaignId:{$in:ids}}},
+                {$match:{campaignId:{$in:video}}},
                 {$group:{_id:{category:"$category"},
                     impressions:{"$sum":"$impression"},
                     CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
