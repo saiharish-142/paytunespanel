@@ -10,7 +10,7 @@ const useStyles = makeStyles({
     },
 });
 
-function PhoneModelAdmin({title,report,state1}) {
+function IbaReportAdmin({title,report,state1}) {
     const history = useHistory();
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [page, setPage] = React.useState(0);
@@ -19,7 +19,7 @@ function PhoneModelAdmin({title,report,state1}) {
         if(report && report.length >0){
             var data = report
             data.sort(function(a,b){
-                return b.impression - a.impression
+                return b.impressions - a.impressions
             })
             setadss(data)
         }else{
@@ -43,12 +43,7 @@ function PhoneModelAdmin({title,report,state1}) {
                     <Table className={classes.table} aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                            <TableCell>Phone Model</TableCell>
-                            <TableCell>Release Month And Year</TableCell>
-                            <TableCell>Release Cost or MRP</TableCell>
-                            <TableCell>Company Name</TableCell>
-                            <TableCell>Model</TableCell>
-                            <TableCell>Type of Device</TableCell>
+                            <TableCell>Category</TableCell>
                             <TableCell>Impressions</TableCell>
                             <TableCell>Clicks</TableCell>
                             <TableCell>CTR</TableCell>
@@ -61,14 +56,9 @@ function PhoneModelAdmin({title,report,state1}) {
                                 .map((row,i)=>{
                                 return <TableRow key={i}>
                                     <TableCell component="th" scope="row">
-                                        {row.phoneModel?row.phoneModel:""}
+                                        {row._id.category?row._id.category:""}
                                     </TableCell>
-                                    <TableCell >{row.extra ?row.extra.release:""}</TableCell>
-                                    <TableCell >{row.extra ?row.extra.cost:""}</TableCell>
-                                    <TableCell >{row.extra ?row.extra.company:""}</TableCell>
-                                    <TableCell >{row.extra ?row.extra.model:""}</TableCell>
-                                    <TableCell >{row.extra ?row.extra.type:""}</TableCell>
-                                    <TableCell >{row.impression?row.impression:""}</TableCell>
+                                    <TableCell >{row.impressions?row.impressions:""}</TableCell>
                                     <TableCell >{parseInt(row.CompanionClickTracking)+parseInt(row.SovClickTracking)}</TableCell>
                                     <TableCell >{Math.round(((parseInt(row.CompanionClickTracking)+parseInt(row.SovClickTracking))/parseInt(row.impression))*100)/100 + '%'}</TableCell>
                                     <TableCell className='mangeads__report' onClick={()=>history.push(`/manageAds/${state1}/detailed`)}>Detailed Report</TableCell>
@@ -91,4 +81,4 @@ function PhoneModelAdmin({title,report,state1}) {
     )
 }
 
-export default PhoneModelAdmin
+export default IbaReportAdmin

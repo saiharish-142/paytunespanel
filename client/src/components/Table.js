@@ -15,6 +15,7 @@ import Auditable from './auditable.js'
 import { TablePagination } from '@material-ui/core';
 import PincodeAdmin from './pincodeAdmin.js'
 import PhoneModelAdmin from './PhoneModelAdmin';
+import IbaReportAdmin from './ibaReportAdmin';
 
 const useStyles = makeStyles({
     table: {
@@ -37,6 +38,7 @@ export default function BasicTable({singlead}) {
     const [videologs, setvideologs] = useState([])
     const [pincodereports, setpincodereports] = useState([])
     const [phoneModelReports, setphoneModelReports] = useState([])
+    const [ibaReports, setibaReports] = useState([])
     // const [logs, setlogs] = useState([])
     const [spentdata, setspentdata] = useState([])
     const [ids, setids] = useState({})
@@ -73,6 +75,7 @@ export default function BasicTable({singlead}) {
             spentPuller(singlead.id)
             pincodeDataPuller(singlead.ids)
             PhoneModelDataPuller(singlead.ids)
+            IbaDataPuller(singlead.ids)
         }
     }, [singlead])
     useEffect(() => {
@@ -137,6 +140,26 @@ export default function BasicTable({singlead}) {
             .then(result=>{
                 console.log(result[0])
                 setphoneModelReports(result[0])
+            })
+            .catch(err=>console.log(err))
+        }
+    }
+    // iba data of all data
+    const IbaDataPuller = (idsa) => {
+        // console.log(idsa)
+        if(idsa){
+            fetch('/subrepo/categorywisereportsallcombo',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:idsa
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                console.log(result)
+                setibaReports(result)
             })
             .catch(err=>console.log(err))
         }
@@ -515,6 +538,12 @@ export default function BasicTable({singlead}) {
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} url='platformTypebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} url='platformTypebycampids' />
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.video} url='platformTypebycampids' />
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Category Wise Summary Report</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        {/* {PincodeTable('audio', pincodereports && pincodereports.audio)} */}
+        <IbaReportAdmin title='Audio' state1={state1} report={ibaReports && ibaReports.audio} />
+        <IbaReportAdmin title='Display' state1={state1} report={ibaReports && ibaReports.display} />
+        <IbaReportAdmin title='Video' state1={state1} report={ibaReports && ibaReports.video} />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         {/* {PincodeTable('audio', pincodereports && pincodereports.audio)} */}

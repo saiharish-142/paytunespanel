@@ -13,6 +13,7 @@ import IconBreadcrumbs from './breadBreed';
 import AuditableBundle from './auditablebundle'
 import PhoneModelAdmin from './PhoneModelAdmin';
 import PincodeAdmin from './pincodeAdmin';
+import IbaReportAdmin from './ibaReportAdmin';
 
 const useStyles = makeStyles({
     table: {
@@ -33,7 +34,6 @@ export default function BasicTableBundle({singlead,title}) {
     const [audiologs, setaudiologs] = useState([])
     const [displaylogs, setdisplaylogs] = useState([])
     const [videologs, setvideologs] = useState([])
-    // const [logs, setlogs] = useState([])
     const [spentdata, setspentdata] = useState([])
     const [ids, setids] = useState({})
     const [impre, setimpre] = useState(0)
@@ -46,6 +46,7 @@ export default function BasicTableBundle({singlead,title}) {
     const [spentOfflinev, setspentOfflinev] = useState(0)
     const [pincodereports, setpincodereports] = useState([])
     const [phoneModelReports, setphoneModelReports] = useState([])
+    const [ibaReports, setibaReports] = useState([])
     // const [fqd, setfqd] = useState(0)
     // const [sqd, setsqd] = useState(0)
     // const [tqd, settqd] = useState(0)
@@ -77,6 +78,7 @@ export default function BasicTableBundle({singlead,title}) {
             spentPuller(singlead.ids)
             pincodeDataPuller(singlead.id_final)
             PhoneModelDataPuller(singlead.id_final)
+            IbaDataPuller(singlead.id_final)
         }
     },[singlead])
     // spent reciver of all data
@@ -210,6 +212,26 @@ export default function BasicTableBundle({singlead,title}) {
             .then(result=>{
                 console.log(result[0])
                 setphoneModelReports(result[0])
+            })
+            .catch(err=>console.log(err))
+        }
+    }
+    // iba data of all data
+    const IbaDataPuller = (idsa) => {
+        // console.log(idsa)
+        if(idsa){
+            fetch('/subrepo/categorywisereportsallcombo',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:idsa
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                console.log(result)
+                setibaReports(result)
             })
             .catch(err=>console.log(err))
         }
@@ -507,6 +529,11 @@ export default function BasicTableBundle({singlead,title}) {
         <PhoneModelAdmin title='Audio' state1={state1} report={phoneModelReports && phoneModelReports.audio} />
         <PhoneModelAdmin title='Display' state1={state1} report={phoneModelReports && phoneModelReports.display} />
         <PhoneModelAdmin title='Video' state1={state1} report={phoneModelReports && phoneModelReports.video} />
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Catergory Summary Report</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        <IbaReportAdmin title='Audio' state1={state1} report={ibaReports && ibaReports.audio} />
+        <IbaReportAdmin title='Display' state1={state1} report={ibaReports && ibaReports.display} />
+        <IbaReportAdmin title='Video' state1={state1} report={ibaReports && ibaReports.video} />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} url='platformTypebycampids' />
@@ -517,9 +544,6 @@ export default function BasicTableBundle({singlead,title}) {
         <PincodeAdmin title='Audio' state1={state1} report={pincodereports && pincodereports.audio} />
         <PincodeAdmin title='Display' state1={state1} report={pincodereports && pincodereports.display} />
         <PincodeAdmin title='Video' state1={state1} report={pincodereports && pincodereports.video} />
-        <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.audio} url='zipbycampids' />
-        <AuditableBundle adtype='Display' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.display} url='zipbycampids' />
-        <AuditableBundle adtype='Video' state1={state1} streamingads={singlead} title='Pincode' regtitle='pincode' jsotitle='zip' ids={ids && ids.video} url='zipbycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <AuditableBundle adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} url='pptypebycampids' />
