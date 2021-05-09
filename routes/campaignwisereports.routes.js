@@ -9,6 +9,7 @@ const publisherapps = mongoose.model('publisherapps')
 router.get('/reports',adminauth,(req,res)=>{
     campaignwisereports.find()
     .limit(300)
+    .sort('-createdOn')
     .then(result=>{
         res.json(result)
     })
