@@ -56,7 +56,7 @@ require('./models/resreports.js')
 require('./models/phonemodel2reports.js')
 require('./models/categoryreports')
 require('./models/categoryreports2')
-require('./models/apppublishers.model')
+// require('./models/apppublishers.model')
 
 app.use('/auth',require('./routes/user.routes'))
 app.use('/streamingads',require('./routes/streamingads.routes'))
