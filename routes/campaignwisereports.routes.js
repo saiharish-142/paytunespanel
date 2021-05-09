@@ -11,10 +11,9 @@ router.get('/reports',adminauth,(req,res)=>{
     campaignwisereports.find()
     .limit(300)
     .sort('-createdOn')
-    .populate()
+    .populate({path:'apppubid',model:apppublishers})
     .then(async (result)=>{
-        var response = await apppublishers.populate(result,{path:'apppubid',select:'publishername ssp'}).catch(err=>console.log(err))
-        res.json(response)
+        res.json(result)
     })
     .catch(er => res.status(400).json(er))
 })
