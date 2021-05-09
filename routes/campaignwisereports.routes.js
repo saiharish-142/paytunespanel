@@ -8,6 +8,26 @@ const publisherapps = mongoose.model('publisherapps')
 const apppublishers = mongoose.model('apppublishers')
 
 router.get('/reports',adminauth,(req,res)=>{
+    campaignwisereports.find()
+    .limit(300)
+    .sort('-createdOn')
+    .then(async (result)=>{
+        res.json(result)
+    })
+    .catch(er => res.status(400).json(er))
+})
+
+router.get('/reports1',adminauth,(req,res)=>{
+    campaignwisereports.find({})
+    .limit(300)
+    .populate('publishids')
+    .then(async (result)=>{
+        res.json(result)
+    })
+    .catch(er => res.status(400).json(er))
+})
+
+router.get('/reports2',adminauth,(req,res)=>{
     campaignwisereports.aggregate([
         {$lookup:{
             from:'apppublishers',

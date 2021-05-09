@@ -29,4 +29,13 @@ var campaignwisereportsSchema = new mongoose.Schema({
     createdOn: { type: Date, default: Date.now },
 });
 
+campaignwisereportsSchema.virtual(
+    "publishids", // can be any name for your virtual, used as key to populate
+    {
+      ref: "apppublishers",
+      localField: "apppubid", // name of field in author's schema
+      foreignField: "publisherid",    
+    }
+  )
+
 mongoose.model('campaignwisereports',campaignwisereportsSchema)
