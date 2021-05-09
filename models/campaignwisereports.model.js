@@ -6,7 +6,7 @@ var campaignwisereportsSchema = new mongoose.Schema({
     campaignId: { type: ObjectId, ref: 'streamingadObj' },
     appId: String,
     language: String,
-    apppubid: String,
+    apppubid: {type:String, ref:'apppublishers'},
     ssp: String,
     requests: Number,
     ads: Number, ///AdServed
@@ -29,21 +29,4 @@ var campaignwisereportsSchema = new mongoose.Schema({
     createdOn: { type: Date, default: Date.now },
 });
 
-var apppublishersSchema = mongoose.Schema({
-    publisherid: String,
-    publishername: String,
-    ssp: { type: String },
-});
-
-
-campaignwisereportsSchema.virtual(
-    "publishids", // can be any name for your virtual, used as key to populate
-    {
-        ref: "apppublishers",
-        localField: "apppubid", // name of field in author's schema
-        foreignField: "publisherid",    
-    }
-)
-    
-mongoose.model('apppublishers',apppublishersSchema)
 mongoose.model('campaignwisereports',campaignwisereportsSchema)
