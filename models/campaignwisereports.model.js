@@ -6,7 +6,7 @@ var campaignwisereportsSchema = new mongoose.Schema({
     campaignId: { type: ObjectId, ref: 'streamingadObj' },
     appId: String,
     language: String,
-    apppubid: {type:String, ref:'apppublishers'},
+    apppubid: String,
     ssp: String,
     requests: Number,
     ads: Number, ///AdServed
@@ -27,6 +27,12 @@ var campaignwisereportsSchema = new mongoose.Schema({
     SovcreativeView: Number,
     SovClickTracking: Number,
     createdOn: { type: Date, default: Date.now },
+});
+
+campaignwisereportsSchema.virtual('Apppubid', {
+    ref: 'apppublishers', // The model to use
+    localField: 'apppubid', // The field in playerListSchema
+    foreignField: 'publisherid', // The field on videoSchema. This can be whatever you want.
 });
 
 mongoose.model('campaignwisereports',campaignwisereportsSchema)

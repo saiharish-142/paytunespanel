@@ -21,7 +21,7 @@ router.get('/reports1',adminauth,(req,res)=>{
     campaignwisereports.find({})
     .limit(300)
     .sort('-createdOn')
-    .populate('apppubid')
+    .populate('Apppubid')
     .then(async (result)=>{
         res.json(result)
     })
