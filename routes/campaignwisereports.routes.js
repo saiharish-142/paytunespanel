@@ -30,6 +30,7 @@ router.get('/reports1',adminauth,(req,res)=>{
 
 router.get('/reports2',adminauth,(req,res)=>{
     campaignwisereports.aggregate([
+        { $sort : { createdOn : -1 } },
         {$lookup:{
             from:'apppublishers',
             localField:'apppubid',
