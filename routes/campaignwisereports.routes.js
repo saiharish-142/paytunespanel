@@ -9,13 +9,13 @@ const apppublishers = mongoose.model('apppublishers')
 
 router.get('/reports',adminauth,(req,res)=>{
     campaignwisereports.aggregate([
-        { $limit : 300 },
         {$lookup:{
             from:'apppublishers',
             localField:'apppubid',
             foreignField:'publisherid',
             as:'apppubidpo'
-        }}
+        }},
+        { $limit : 300 }
     ])
     .then(async (result)=>{
         res.json(result)
