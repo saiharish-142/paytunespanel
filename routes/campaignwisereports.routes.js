@@ -465,7 +465,7 @@ router.put('/sumreportofcamall2',adminauth,(req,res)=>{
                 {$match:{
                     "campaignId":{$in:audio}
                 }},{$group:{
-                    _id:"$apppubid", 
+                    _id:{app:"$appId",appubid:"$apppubid"}, 
                     updatedAt:{$push:"$createdOn"}, 
                     camp:{$push:"$campaignId"} , 
                     impressions:{$sum:"$impression"}, 
@@ -475,7 +475,8 @@ router.put('/sumreportofcamall2',adminauth,(req,res)=>{
                     firstQuartile:{$sum:"$firstQuartile"}, 
                     midpoint:{$sum:"$midpoint"}
                 }},{$project:{
-                    Publisher:"$_id", 
+                    Publisher:"$_id.app",
+                    PublisherSplit:"$_id.appubid", 
                     updatedAt:"$updatedAt", 
                     campaignId:"$camp", 
                     impressions:"$impressions", 
@@ -488,16 +489,16 @@ router.put('/sumreportofcamall2',adminauth,(req,res)=>{
                 }},
                 {$lookup:{
                     from:'apppublishers',
-                    localField:'Publisher',
+                    localField:'PublisherSplit',
                     foreignField:'publisherid',
                     as:'apppubidpo'
-                }},
+                }}
             ],
             "display":[
                 {$match:{
                     "campaignId":{$in:display}
                 }},{$group:{
-                    _id:"$appId", 
+                    _id:{app:"$appId",appubid:"$apppubid"}, 
                     updatedAt:{$push:"$createdOn"}, 
                     camp:{$push:"$campaignId"} , 
                     impressions:{$sum:"$impression"}, 
@@ -507,7 +508,8 @@ router.put('/sumreportofcamall2',adminauth,(req,res)=>{
                     firstQuartile:{$sum:"$firstQuartile"}, 
                     midpoint:{$sum:"$midpoint"}
                 }},{$project:{
-                    Publisher:"$_id", 
+                    Publisher:"$_id.app",
+                    PublisherSplit:"$_id.appubid", 
                     updatedAt:"$updatedAt", 
                     campaignId:"$camp", 
                     impressions:"$impressions", 
@@ -517,12 +519,19 @@ router.put('/sumreportofcamall2',adminauth,(req,res)=>{
                     firstQuartile:"$firstQuartile", 
                     thirdQuartile:"$thirdQuartile",
                     _id:0
-                }}],
+                }},
+                {$lookup:{
+                    from:'apppublishers',
+                    localField:'PublisherSplit',
+                    foreignField:'publisherid',
+                    as:'apppubidpo'
+                }}
+            ],
             "video":[
                 {$match:{
                     "campaignId":{$in:video}
                 }},{$group:{
-                    _id:"$appId", 
+                    _id:{app:"$appId",appubid:"$apppubid"}, 
                     updatedAt:{$push:"$createdOn"}, 
                     camp:{$push:"$campaignId"} , 
                     impressions:{$sum:"$impression"}, 
@@ -532,7 +541,8 @@ router.put('/sumreportofcamall2',adminauth,(req,res)=>{
                     firstQuartile:{$sum:"$firstQuartile"}, 
                     midpoint:{$sum:"$midpoint"}
                 }},{$project:{
-                    Publisher:"$_id", 
+                    Publisher:"$_id.app",
+                    PublisherSplit:"$_id.appubid", 
                     updatedAt:"$updatedAt", 
                     campaignId:"$camp", 
                     impressions:"$impressions", 
@@ -542,7 +552,14 @@ router.put('/sumreportofcamall2',adminauth,(req,res)=>{
                     firstQuartile:"$firstQuartile", 
                     thirdQuartile:"$thirdQuartile",
                     _id:0
-                }}],
+                }},
+                {$lookup:{
+                    from:'apppublishers',
+                    localField:'PublisherSplit',
+                    foreignField:'publisherid',
+                    as:'apppubidpo'
+                }}
+            ]
         }}
     ])
     .then(async (reports)=>{
@@ -551,6 +568,9 @@ router.put('/sumreportofcamall2',adminauth,(req,res)=>{
         var audioCompleteReport   = {impressions : 0,clicks : 0,complete : 0,firstQuartile : 0,midpoint : 0,thirdQuartile : 0}
         var displayCompleteReport = {impressions : 0,clicks : 0,complete : 0,firstQuartile : 0,midpoint : 0,thirdQuartile : 0}
         var videoCompleteReport   = {impressions : 0,clicks : 0,complete : 0,firstQuartile : 0,midpoint : 0,thirdQuartile : 0}
+        response.audio = await publisherapps.populate(response.audio,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
+        response.display = await publisherapps.populate(response.display,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
+        response.video = await publisherapps.populate(response.video,{path:'Publisher',select:'_id AppName'}).catch(err=>console.log(err))
         response.audio = await StreamingAds.populate(response.audio,{path:'campaignId',select:'_id TargetImpressions startDate endDate'}).catch(err=>console.log(err))
         response.display = await StreamingAds.populate(response.display,{path:'campaignId',select:'_id TargetImpressions startDate endDate'}).catch(err=>console.log(err))
         response.video = await StreamingAds.populate(response.video,{path:'campaignId',select:'_id TargetImpressions startDate endDate'}).catch(err=>console.log(err))

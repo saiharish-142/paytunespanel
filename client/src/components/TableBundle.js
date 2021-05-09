@@ -102,8 +102,8 @@ export default function BasicTableBundle({singlead,title}) {
     }
     // logs puller
     const logsPuller = (idData) =>{
-        console.log(idData)
-        fetch('/offreport/sumreportofcamall',{
+        // console.log(idData)
+        fetch('/offreport/sumreportofcamall2',{
             method:'put',
             headers:{
                 "Content-Type":"application/json",
@@ -129,41 +129,41 @@ export default function BasicTableBundle({singlead,title}) {
             var audiospentOffline = 0;
             var displayspentOffline = 0;
             var videospentOffline = 0;
+            result.audio = result.audio && result.audio.filter(x=>x.impressions > 0)
+            result.display = result.display && result.display.filter(x=>x.impressions > 0)
+            result.video = result.video && result.video.filter(x=>x.impressions > 0)
             result.audio && result.audio.map(re => {
-                if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
-                    re.nameads = 'Offline'
+                if(re.apppubidpo && re.apppubidpo[0] && re.apppubidpo[0].ssp === 'offline'){
                     // Humgama
-                    if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                    if(re.apppubidpo[0].publishername === "Hungama"){
                         audiospentOffline += parseInt(re.impressions)*4.25/100
                     }
                     // Wynk
-                    if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
+                    if(re.apppubidpo[0].publishername === "Wynk"){
                         audiospentOffline += parseInt(re.impressions)*10/100
                     }
                 }
             })
             result.display && result.display.map(re => {
-                if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
-                    re.nameads = 'Offline'
+                if(re.apppubidpo && re.apppubidpo[0] && re.apppubidpo[0].ssp === 'offline'){
                     // Humgama
-                    if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                    if(re.apppubidpo[0].publishername === "Hungama"){
                         displayspentOffline += parseInt(re.impressions)*4.25/100
                     }
                     // Wynk
-                    if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
+                    if(re.apppubidpo[0].publishername === "Wynk"){
                         displayspentOffline += parseInt(re.impressions)*10/100
                     }
                 }
             })
             result.video && result.video.map(re => {
-                if(re.Publisher._id.toString() ==='5b2210af504f3097e73e0d8b'|| re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
-                    re.nameads = 'Offline'
+                if(re.apppubidpo && re.apppubidpo[0] && re.apppubidpo[0].ssp === 'offline'){
                     // Humgama
-                    if(re.Publisher._id.toString() === '5d10c405844dd970bf41e2af'){
+                    if(re.apppubidpo[0].publishername === "Hungama"){
                         videospentOffline += parseInt(re.impressions)*4.25/100
                     }
                     // Wynk
-                    if(re.Publisher._id.toString() === '5b2210af504f3097e73e0d8b'){
+                    if(re.apppubidpo[0].publishername === "Wynk"){
                         videospentOffline += parseInt(re.impressions)*10/100
                     }
                 }
@@ -395,11 +395,12 @@ export default function BasicTableBundle({singlead,title}) {
         return (
             <TableContainer style={{margin:'20px 0'}} elevation={3} component={Paper}>
                 <div style={{margin:'5px',fontWeight:'bolder'}}>{title} Report</div>
-                {singlead._id && report && report.length && ids ?
+                {singlead._id && report.length && ids ?
                     <Table className={classes.table} aria-label="simple table">
                         <TableHead>
                             <TableRow>
                                 <TableCell>Publisher</TableCell>
+                                <TableCell>SSP</TableCell>
                                 <TableCell>Total Impressions to be delivered</TableCell>
                                 <TableCell>Total Impressions Delivered till date</TableCell>
                                 <TableCell>Avg required</TableCell>
@@ -415,17 +416,18 @@ export default function BasicTableBundle({singlead,title}) {
                             {report.map((log,i)=>{
                                 return <TableRow key={i} style={{
                                     background: colorfinder(
-                                        timefinder(log.campaignId.endDate,log.campaignId.startDate) ,
-                                        timefinder(Date.now(),log.campaignId.startDate) ,
+                                        timefinder(singlead.endDate[0],singlead.startDate[0]) ,
+                                        timefinder(Date.now(),singlead.startDate[0]) ,
                                         parseInt(log.campaignId.TargetImpressions),
                                         log.impressions
                                     )
                                 }}>
-                                    <TableCell>{log.Publisher.AppName} {log.nameads && log.nameads}</TableCell>
+                                    <TableCell>{log.apppubidpo ? (log.apppubidpo.length ? (log.apppubidpo[0].publishername ? log.apppubidpo[0].publishername : log.Publisher.AppName) : log.Publisher.AppName) : log.Publisher.AppName}</TableCell>
+                                    <TableCell>{log.apppubidpo && log.apppubidpo[0] && log.apppubidpo[0].ssp}</TableCell>
                                     <TableCell>{parseInt(log.campaignId.TargetImpressions)}</TableCell>
                                     <TableCell>{log.impressions}</TableCell>
-                                    <TableCell>{Math.round(parseInt(log.campaignId.TargetImpressions)/timefinder(log.campaignId.endDate,log.campaignId.startDate)*10)/10}</TableCell>
-                                    <TableCell>{Math.round(log.impressions/timefinder(Date.now(),log.campaignId.startDate)*10)/10}</TableCell>
+                                    <TableCell>{Math.round(parseInt(log.campaignId.TargetImpressions)/timefinder(singlead.endDate[0],singlead.startDate[0])*10)/10}</TableCell>
+                                    <TableCell>{Math.round(log.impressions/timefinder(Date.now(),singlead.startDate[0])*10)/10}</TableCell>
                                     <TableCell>{Math.round((spentfinder(log.Publisher._id,log.campaignId._id,log.impressions) + 
                                         parseInt(title === 'audio' ? spentOffline : 0) +
                                         parseInt(title === 'display' ? spentOfflined : 0) +
