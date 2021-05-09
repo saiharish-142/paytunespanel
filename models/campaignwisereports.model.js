@@ -29,13 +29,6 @@ var campaignwisereportsSchema = new mongoose.Schema({
     createdOn: { type: Date, default: Date.now },
 });
 
-var apppublishersSchema = mongoose.Schema({
-    publisherid: String,
-    publishername: String,
-    ssp: { type: String },
-});
-
-
 campaignwisereportsSchema.virtual(
     "publishids", // can be any name for your virtual, used as key to populate
     {
@@ -45,5 +38,4 @@ campaignwisereportsSchema.virtual(
     }
 )
     
-mongoose.model('apppublishers',apppublishersSchema)
 mongoose.model('campaignwisereports',campaignwisereportsSchema)
