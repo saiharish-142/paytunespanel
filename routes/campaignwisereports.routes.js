@@ -14,7 +14,7 @@ router.get('/reports',adminauth,(req,res)=>{
             from:'apppublishers',
             localField:'apppubid',
             foreignField:'publisherid',
-            as:'apppubid'
+            as:'apppubidpo'
         }}
     ])
     .then(async (result)=>{
