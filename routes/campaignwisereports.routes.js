@@ -5,14 +5,16 @@ const adminauth  = require('../authenMiddleware/adminauth')
 const campaignwisereports = mongoose.model('campaignwisereports')
 const StreamingAds = mongoose.model('streamingads')
 const publisherapps = mongoose.model('publisherapps')
+const apppublishers = mongoose.model('apppublishers')
 
 router.get('/reports',adminauth,(req,res)=>{
     campaignwisereports.find()
     .limit(300)
     .sort('-createdOn')
-    .populate({path:'apppubid',model:'apppublishers'})
-    .then(result=>{
-        res.json(result)
+    .populate()
+    .then(async (result)=>{
+        var response = await apppublishers.populate(result,{path:'apppubid',select:'publishername ssp'}).catch(err=>console.log(err))
+        res.json(response)
     })
     .catch(er => res.status(400).json(er))
 })
