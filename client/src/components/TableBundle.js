@@ -14,6 +14,7 @@ import AuditableBundle from './auditablebundle'
 import PhoneModelAdmin from './PhoneModelAdmin';
 import PincodeAdmin from './pincodeAdmin';
 import IbaReportAdmin from './ibaReportAdmin';
+import FrequencyAdmin from './frequencyAdmin';
 
 const useStyles = makeStyles({
     table: {
@@ -47,6 +48,7 @@ export default function BasicTableBundle({singlead,title}) {
     const [pincodereports, setpincodereports] = useState([])
     const [phoneModelReports, setphoneModelReports] = useState([])
     const [ibaReports, setibaReports] = useState([])
+    const [frequencyReport, setfrequencyReport] = useState([])
     // const [fqd, setfqd] = useState(0)
     // const [sqd, setsqd] = useState(0)
     // const [tqd, settqd] = useState(0)
@@ -79,6 +81,7 @@ export default function BasicTableBundle({singlead,title}) {
             pincodeDataPuller(singlead.id_final)
             PhoneModelDataPuller(singlead.id_final)
             IbaDataPuller(singlead.id_final)
+            FrequencyPuller(singlead.id_final)
         }
     },[singlead])
     // spent reciver of all data
@@ -212,6 +215,26 @@ export default function BasicTableBundle({singlead,title}) {
             .then(result=>{
                 console.log(result[0])
                 setphoneModelReports(result[0])
+            })
+            .catch(err=>console.log(err))
+        }
+    }
+    // iba data of all data
+    const FrequencyPuller = (idsa) => {
+        console.log(idsa)
+        if(idsa){
+            fetch('/ifas/frequency',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:idsa
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                console.log(result)
+                setfrequencyReport(result)
             })
             .catch(err=>console.log(err))
         }
@@ -531,6 +554,11 @@ export default function BasicTableBundle({singlead,title}) {
         <PhoneModelAdmin title='Audio' state1={state1} report={phoneModelReports && phoneModelReports.audio} />
         <PhoneModelAdmin title='Display' state1={state1} report={phoneModelReports && phoneModelReports.display} />
         <PhoneModelAdmin title='Video' state1={state1} report={phoneModelReports && phoneModelReports.video} />
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Frequency Report</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        <FrequencyAdmin title='Audio' state1={state1} report={frequencyReport && frequencyReport.audio} />
+        <FrequencyAdmin title='Display' state1={state1} report={frequencyReport && frequencyReport.display} />
+        <FrequencyAdmin title='Video' state1={state1} report={frequencyReport && frequencyReport.video} />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Catergory Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <IbaReportAdmin title='Audio' state1={state1} report={ibaReports && ibaReports.audio} />

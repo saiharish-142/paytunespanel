@@ -15,6 +15,7 @@ import Auditable from './auditable.js'
 import PincodeAdmin from './pincodeAdmin.js'
 import PhoneModelAdmin from './PhoneModelAdmin';
 import IbaReportAdmin from './ibaReportAdmin';
+import FrequencyAdmin from './frequencyAdmin';
 
 const useStyles = makeStyles({
     table: {
@@ -38,6 +39,7 @@ export default function BasicTable({singlead}) {
     const [pincodereports, setpincodereports] = useState([])
     const [phoneModelReports, setphoneModelReports] = useState([])
     const [ibaReports, setibaReports] = useState([])
+    const [frequencyReport, setfrequencyReport] = useState([])
     // const [logs, setlogs] = useState([])
     const [spentdata, setspentdata] = useState([])
     const [ids, setids] = useState({})
@@ -75,6 +77,7 @@ export default function BasicTable({singlead}) {
             pincodeDataPuller(singlead.ids)
             PhoneModelDataPuller(singlead.ids)
             IbaDataPuller(singlead.ids)
+            FrequencyPuller(singlead.ids)
         }
     }, [singlead])
     useEffect(() => {
@@ -127,7 +130,7 @@ export default function BasicTable({singlead}) {
     const PhoneModelDataPuller = (idsa) => {
         // console.log(idsa)
         if(idsa){
-            fetch('/subrepo/sumreportofcamall2',{
+            fetch('/subrepo/phoneModelbycampidsallcombo',{
                 method:'put',
                 headers:{
                     "Content-Type":"application/json",
@@ -159,6 +162,26 @@ export default function BasicTable({singlead}) {
             .then(result=>{
                 console.log(result)
                 setibaReports(result)
+            })
+            .catch(err=>console.log(err))
+        }
+    }
+    // iba data of all data
+    const FrequencyPuller = (idsa) => {
+        console.log(idsa)
+        if(idsa){
+            fetch('/ifas/frequency',{
+                method:'put',
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization" :"Bearer "+localStorage.getItem("jwt")
+                },body:JSON.stringify({
+                    campaignId:idsa
+                })
+            }).then(res=>res.json())
+            .then(result=>{
+                console.log(result)
+                setfrequencyReport(result)
             })
             .catch(err=>console.log(err))
         }
@@ -534,6 +557,11 @@ export default function BasicTable({singlead}) {
         <PhoneModelAdmin title='Audio' state1={state1} report={phoneModelReports && phoneModelReports.audio} />
         <PhoneModelAdmin title='Display' state1={state1} report={phoneModelReports && phoneModelReports.display} />
         <PhoneModelAdmin title='Video' state1={state1} report={phoneModelReports && phoneModelReports.video} />
+        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Frequency Report</div>
+        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+        <FrequencyAdmin title='Audio' state1={state1} report={frequencyReport && frequencyReport.audio} />
+        <FrequencyAdmin title='Display' state1={state1} report={frequencyReport && frequencyReport.display} />
+        <FrequencyAdmin title='Video' state1={state1} report={frequencyReport && frequencyReport.video} />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} url='platformTypebycampids' />

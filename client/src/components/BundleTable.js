@@ -56,117 +56,16 @@ export default function StickyHeadTablebundle({streamingads,settingcamp,clientvi
     }, [sa])
     const campaignssorter = (cmd) => {
         var datareq = streamingads;
-        if(cmd === 'start'){
-            datareq = datareq.sort(function(a,b){
-                var d1 = new Date(a.startDate)
-                var d2 = new Date(b.startDate)
-                return d2 - d1;
-            })
-            // console.log(datareq)
-            setsa('start')
-            setadss(datareq)
-            settingcamp(datareq)
-        }
-        if(cmd === 'end'){
-            datareq = datareq.sort(function(a,b){
-                var d1 = new Date(a.endDate)
-                var d2 = new Date(b.endDate)
-                return d2 - d1;
-            })
-            setsa('end')
-            setadss(datareq)
-            settingcamp(datareq)
-        }
-        if(cmd === 'create'){
-            datareq = datareq.sort(function(a,b){
-                var d1 = new Date(a.createdOn)
-                var d2 = new Date(b.createdOn)
-                return d2 - d1;
-            })
-            setsa('create')
-            setadss(datareq)
-            settingcamp(datareq)
-        }
-        if(cmd=== 'cat'){
-            datareq = datareq.sort(function(a,b){
-                var aa = a.Adtitle === "" ? null : a.Adtitle;
-                var ba = b.Adtitle === "" ? null : b.Adtitle;
-                if(aa < ba) { return -1; }
-                if(aa > ba) { return 1; }
-                return 0;
-            })
-            setsa('cat')
-            setadss(datareq)
-            settingcamp(datareq)
-        }
-        if(cmd=== 'adv'){
-            datareq = datareq.sort(function(a,b){
-                var aa = a.Advertiser ?a.Advertiser : null;
-                var ba = b.Advertiser ?b.Advertiser : null;
-                if(aa < ba) { return -1; }
-                if(aa > ba) { return 1; }
-                return 0;
-            })
-            setsa('adv')
-            setadss(datareq)
-            settingcamp(datareq)
-        }
-        if(cmd=== 'pri'){
-            datareq = datareq.sort(function(a,b){
-                var aa = a.Pricing;
-                var ba = b.Pricing;
-                if(aa < ba) { return -1; }
-                if(aa > ba) { return 1; }
-                return 0;
-            })
-            setsa('pri')
-            setadss(datareq)
-            settingcamp(datareq)
-        }
-        if(cmd=== 'RO'){
-            datareq = datareq.sort(function(a,b){
-                if(a.ro < b.ro) { return -1; }
-                if(a.ro > b.ro) { return 1; }
-                return 0;
-            })
-            setsa('RO')
-            setadss(datareq)
-            settingcamp(datareq)
-        }
-        if(cmd=== 'pm'){
-            datareq = datareq.sort(function(b,a){
-                var aa = a.PricingModel === "" ? null : a.PricingModel;
-                var ba = b.PricingModel === "" ? null : b.PricingModel;
-                if(aa < ba) { return -1; }
-                if(aa > ba) { return 1; }
-                return 0;
-            })
-            setsa('pm')
-            setadss(datareq)
-            settingcamp(datareq)
-        }
-        if(cmd=== 'cag'){
-            datareq = datareq.sort(function(a,b){
-                var aa = a.Category === "" ? null : a.Category;
-                var ba = b.Category === "" ? null : b.Category;
-                if(ba < aa) { return -1; }
-                if(ba > aa) { return 1; }
-                return 0;
-            })
-            setsa('cag')
-            setadss(datareq)
-            settingcamp(datareq)
-        }
         if(cmd=== 'remain'){
             datareq = datareq.sort(function(a,b){
-                var d1 = new Date(a.endDate)
+                var d1 = new Date(a.endDate[0])
                 var d2 = new Date(Date.now())
                 // console.log(d1,d2)
                 var aa = d1.getTime() - d2.getTime();
                 if(d1<d2){
                     aa = null;
                 }
-                var db1 = new Date(b.endDate)
+                var db1 = new Date(b.endDate[0])
                 var db2 = new Date(Date.now())
                 // console.log(d1,d2)
                 var ba = db1.getTime() - db2.getTime();
@@ -183,14 +82,14 @@ export default function StickyHeadTablebundle({streamingads,settingcamp,clientvi
         }
         if(cmd=== 'revremain'){
             datareq = datareq.sort(function(a,b){
-                var d1 = new Date(a.endDate)
+                var d1 = new Date(a.endDate[0])
                 var d2 = new Date(Date.now())
                 // console.log(d1,d2)
                 var aa = d1.getTime() - d2.getTime();
                 if(d1<d2){
                     aa = null;
                 }
-                var db1 = new Date(b.endDate)
+                var db1 = new Date(b.endDate[0])
                 var db2 = new Date(Date.now())
                 // console.log(d1,d2)
                 var ba = db1.getTime() - db2.getTime();
@@ -206,6 +105,53 @@ export default function StickyHeadTablebundle({streamingads,settingcamp,clientvi
             settingcamp(datareq)
         }
     }
+    const tablesorter = (title,order,type,coloumn,isZero) =>{
+        var datareq = streamingads;
+        console.log(order)
+        if(order===1){
+            datareq = datareq.sort(function(a,b){
+                if(type==='date'){
+                    if(isZero){
+                        var d1 = new Date(a[coloumn][0])
+                        var d2 = new Date(b[coloumn][0])
+                    }else{
+                        var d1 = new Date(a[coloumn])
+                        var d2 = new Date(b[coloumn])
+                    }
+                    return d2 - d1;
+                }else{
+                    var aa = a[coloumn] ?a[coloumn] : null;
+                    var ba = b[coloumn] ?b[coloumn] : null;
+                    if(aa < ba) { return -1; }
+                    if(aa > ba) { return 1; }
+                    return 0;
+                }
+            })
+        }else{
+            datareq = datareq.sort(function(a,b){
+                if(type==='date'){
+                    if(isZero){
+                        var d1 = new Date(a[coloumn][0])
+                        var d2 = new Date(b[coloumn][0])
+                    }else{
+                        var d1 = new Date(a[coloumn])
+                        var d2 = new Date(b[coloumn])
+                    }
+                    return d1 - d2;
+                }else{
+                    var aa = a[coloumn] ? a[coloumn] : null;
+                    var ba = b[coloumn] ? b[coloumn] : null;
+                    if(aa < ba) { return 1; }
+                    if(aa > ba) { return -1; }
+                    return 0;
+                }
+            })
+        }
+        // console.log(datareq)
+        setsa(title)
+        setadss(datareq)
+        settingcamp(datareq)
+    }
     const timefinder = (da1) => {
         var d1 = new Date(da1)
         var d2 = new Date(Date.now())
@@ -217,6 +163,15 @@ export default function StickyHeadTablebundle({streamingads,settingcamp,clientvi
         var resula = show/(1000 * 3600 * 24) ;
         return Math.round(resula*1)/1 ;
     }
+    const arrowRetuner = (mode) =>{
+        if(mode==='1'){
+            return <ArrowUpwardRoundedIcon fontSize="small" />
+        }else if(mode==='2'){
+            return <ArrowDownwardRoundedIcon fontSize="small" />
+        }else{
+            return <ArrowUpwardRoundedIcon fontSize="small" style={{color:'lightgrey'}} />
+        }
+    }
     return (
         <>
             <Paper className={classes.root}>
@@ -224,18 +179,17 @@ export default function StickyHeadTablebundle({streamingads,settingcamp,clientvi
                 <Table stickyHeader aria-label="sticky table">
                 <TableHead>
                     <TableRow>
-                        <TableCell align='left' onClick={()=>campaignssorter('cat')} style={{cursor:'pointer'}}>Name {sa==='cat' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                        <TableCell align='left' onClick={()=>campaignssorter('adv')} style={{cursor:'pointer'}}>Advertiser {sa==='adv' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                        <TableCell align='center' onClick={()=>campaignssorter('pri')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Pricing {sa==='pri' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                        <TableCell align='center' onClick={()=>campaignssorter('RO')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>RO from Advertiser {sa==='RO' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                        <TableCell align='center' onClick={()=>campaignssorter('pm')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Pricing Model {sa==='pm' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                        <TableCell align='center' onClick={()=>campaignssorter('cag')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Category {sa==='cag' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                        <TableCell align='center' onClick={()=>campaignssorter('create')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Created On {sa==='create' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                        <TableCell align='center' onClick={()=>campaignssorter('start')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Start Date {sa==='start' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                        <TableCell align='center' onClick={()=>campaignssorter('end')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>End Date {sa==='end' &&  <ArrowUpwardRoundedIcon fontSize="small" />}</TableCell>
-                        <TableCell align='center' onDoubleClick={()=>campaignssorter('revremain')} onClick={()=>campaignssorter('remain')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Remaining Days {sa==='remain' &&  <ArrowUpwardRoundedIcon fontSize="small" />}{sa==='revremain' &&  <ArrowDownwardRoundedIcon fontSize="small" />}</TableCell>
+                    <TableCell align='left' onClick={()=>tablesorter('cat',1,'notdate','Adtitle',false)} onDoubleClick={()=>tablesorter('revcat',-1,'notdate','Adtitle',false)} style={{cursor:'pointer'}}>Name {arrowRetuner(sa==='cat' ? '1' : (sa ==='revcat' ? '2' : '3' ))}</TableCell>
+                    <TableCell align='left' onClick={()=>tablesorter('adv',1,'notdate','Advertiser',false)} onDoubleClick={()=>tablesorter('revadv',-1,'notdate','Advertiser',false)} style={{cursor:'pointer'}}>Advertiser {arrowRetuner(sa==='adv' ? '1' : (sa ==='revadv' ? '2' : '3' ))}</TableCell>
+                    <TableCell align='center' onClick={()=>tablesorter('pri',1,'notdate','Pricing',false)} onDoubleClick={()=>tablesorter('revpri',-1,'notdate','Pricing',false)} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Pricing {arrowRetuner(sa==='pri' ? '1' : (sa ==='revpri' ? '2' : '3' ))}</TableCell>
+                    <TableCell align='center' onClick={()=>tablesorter('RO',1,'notdate','ro',false)} onDoubleClick={()=>tablesorter('revRO',-1,'notdate','ro',false)} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>RO from Advertiser {arrowRetuner(sa==='RO' ? '1' : (sa ==='revRO' ? '2' : '3' ))}</TableCell>
+                    <TableCell align='center' onClick={()=>tablesorter('pm',1,'notdate','PricingModel',false)} onDoubleClick={()=>tablesorter('revpm',-1,'notdate','PricingModel',false)} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Pricing Model {arrowRetuner(sa==='pm' ? '1' : (sa ==='revpm' ? '2' : '3' ))}</TableCell>
+                    <TableCell align='center' onClick={()=>tablesorter('cag',1,'notdate','Category',false)} onDoubleClick={()=>tablesorter('revcag',-1,'notdate','Category',false)} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Category {arrowRetuner(sa==='cag' ? '1' : (sa ==='recag' ? '2' : '3' ))}</TableCell>
+                    <TableCell align='center' onClick={()=>tablesorter('create',1,'date','createdOn',false)} onDoubleClick={()=>tablesorter('revcreate',-1,'date','createdOn',false)} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Created On {arrowRetuner(sa==='create' ? '1' : (sa ==='revcreate' ? '2' : '3' ))}</TableCell>
+                    <TableCell align='center' onClick={()=>tablesorter('start',1,'date','startDate',false)} onDoubleClick={()=>tablesorter('revstart',-1,'date','startDate',false)} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Start Date {arrowRetuner(sa==='start' ? '1' : (sa ==='revstart' ? '2' : '3' ))}</TableCell>
+                    <TableCell align='center' onClick={()=>tablesorter('end',1,'date','endDate',false)} onDoubleClick={()=>tablesorter('revend',-1,'date','endDate',false)} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>End Date {arrowRetuner(sa==='end' ? '1' : (sa ==='revend' ? '2' : '3' ))}</TableCell>
+                    <TableCell align='center' onDoubleClick={()=>campaignssorter('revremain')} onClick={()=>campaignssorter('remain')} style={{textAlign:'center',alignItems:'center',cursor:'pointer'}}>Remaining Days {arrowRetuner(sa==='remain' ? '1' : (sa ==='revremain' ? '2' : '3' ))}</TableCell>
                         {!clientview && <TableCell></TableCell>}
-                        <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

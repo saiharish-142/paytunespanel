@@ -489,7 +489,7 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     data.TargetImpressions.map(tar=>{
                         // console.log(tar.id,x.campaignId,tar.id===x.campaignId,tar.id==x.campaignId,x.campaignId.equals(tar.id))
                         if(x.campaignId.equals(tar.id)){
-                            console.log(tar)
+                            // console.log(tar)
                             data.ids.audimpression += parseInt(tar.TR)
                         }
                     })
@@ -501,7 +501,7 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     selectedids.push(x.campaignId.toString())
                     data.TargetImpressions.map(tar=>{
                         if(x.campaignId.equals(tar.id)){
-                            console.log(tar)
+                            // console.log(tar)
                             data.ids.disimpression += parseInt(tar.TR)
                         }
                     })
@@ -512,27 +512,35 @@ router.put('/groupedsingle',adminauth,(req,res)=>{
                     selectedids.push(x.campaignId.toString())
                     data.TargetImpressions.map(tar=>{
                         if(x.campaignId.equals(tar.id)){
-                            console.log(tar)
+                            // console.log(tar)
                             data.ids.vidimpression += parseInt(tar.TR)
                         }
                     })
                 })
                 data.ids.video = [...new Set(data.ids.video)];
-                var leftids = arr_diff(selectedids,data.id)
+                var leftids = [];
+                leftids = arr_diff(selectedids,data.id)
                 // var leftids = ids.filter(x=> !selectedids.includes(x))
                 data.leftids = leftids
-                if(leftids){
+                if(leftids && leftids.length){
                     await leftids.map(id=>data.ids.audio.push(id))
                     data.ids.audio = [...new Set(data.ids.audio)];
                     data.ids.audio = removeDuplicates(data.ids.audio)
+                    var tagr = data.TargetImpressions.filter(x=>leftids.includes(x.id))
+                    // console.log(tagr)
+                    // console.log(data.ids.audimpression,leftids,data.TargetImpressions)
                     leftids.map(x=>{
                         data.TargetImpressions.map(tar=>{
-                            if(x.equals(tar.id)){
-                                console.log(tar)
+                            // console.log(x,tar.id)
+                            // console.log(x===tar.id)
+                            // console.log(tar.id.equals(x))
+                            if(tar.id.equals(x)){
+                                // console.log(tar,x,data.ids.audimpression)
                                 data.ids.audimpression += parseInt(tar.TR)
                             }
                         })
                     })
+                    console.log(data.ids.audimpression)
                     data.ids.audio = [...new Set(data.ids.audio)];
                 }
             }else{

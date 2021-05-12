@@ -17,6 +17,7 @@ function Report() {
             dispatch1({type:"ID",payload:campname})
         }
     }, [campname])
+    console.log(campname)
     useEffect(()=>{
         if(campname){
             fetch(`/streamingads/groupedsingle`,{

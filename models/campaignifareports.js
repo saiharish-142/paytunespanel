@@ -5,15 +5,16 @@ var campaignifareportsSchema = new Schema({
     ccampaignId: String,
     ifa: String,
     zip: String,
+    impression: Number,
     createdOn: { type: Date, default: Date.now },
 });
 campaignifareportsSchema.index({ ifa: 1 });
 
 campaignifareportsSchema.statics.load = function(id, cb) {
     this.findOne({
-            _id: id
-        })
-        .exec(cb);
+        _id: id
+    })
+    .exec(cb);
 };
-var campaignifareportObj = mongoose.model('campaignifareports', campaignifareportsSchema);
-module.exports = campaignifareportObj;
+
+mongoose.model('campaignifareports', campaignifareportsSchema);
