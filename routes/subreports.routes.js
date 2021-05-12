@@ -528,9 +528,8 @@ router.put('/phoneModelbycampidsallcombo',adminauth,(req,res)=>{
                     // release:{$first:"$extra.release"},
                     // type:{$first:"$extra.type"}
                 }},
-                
                 {$project:{
-                    phoneModel:"$_id.phoneModel", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+                    phoneModel:"$_id.combined_make_and_model", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
                     start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,extra:"$extra"
                 }}
             ],
@@ -573,7 +572,7 @@ router.put('/phoneModelbycampidsallcombo',adminauth,(req,res)=>{
                 }},
                 
                 {$project:{
-                    phoneModel:"$_id.phoneModel", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+                    phoneModel:"$_id.combined_make_and_model", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
                     start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,extra:"$extra"
                 }}
             ],
@@ -616,7 +615,7 @@ router.put('/phoneModelbycampidsallcombo',adminauth,(req,res)=>{
                 }},
                 
                 {$project:{
-                    phoneModel:"$_id.phoneModel", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+                    phoneModel:"$_id.combined_make_and_model", campaignId:"$_id.campaignId",impression:1,CompanionClickTracking:1,SovClickTracking:1,
                     start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,extra:"$extra"
                 }}
             ]
