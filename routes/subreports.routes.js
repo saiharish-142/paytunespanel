@@ -454,10 +454,7 @@ router.put('/phoneModelbycampids',adminauth,(req,res)=>{
             thirdQuartile:{$sum:"$thirdQuartile"},
             complete:{$sum:"$complete"},
             createdOn:{$push:"$createdOn"},
-            extra:{$first:"$extra"}
-            // cost:{$first:"$extra.cost"},
-            // release:{$first:"$extra.release"},
-            // type:{$first:"$extra.type"}
+            extra:{$first:"$extra"} 
         }},
         
         {$project:{
@@ -621,14 +618,9 @@ router.get(
             const result=await Zipreports2.aggregate([
                 {$match:{ $or:[{area:""},
                 {pincode:""},
-                {lowersubcity:""},
-                {subcity:""},
                 {city:""},
-                {grandcity:""},
                 {district:""},
-                {comparison:""},
                 {state:""},
-                {grandstate:""},
                 {latitude:""},
                 {longitude:""},
             ]}},

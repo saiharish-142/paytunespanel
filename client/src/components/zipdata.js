@@ -94,11 +94,9 @@ useEffect(()=>{
             }
         )
 },[])
-
-
 return(
     <div>
-            <h4 style={{margin:"3%",fontWeight:'bolder'}}>Zip data </h4> 
+            <h4 style={{margin:"3%",fontWeight:'bolder'}}>Pincode data </h4> 
             <div className={classes.root}>
             {success?<Alert onClose={() => {setsuccess("")}} style={{margin:"1%"}} severity="success">{success}</Alert>:<></>}
             {error?<Alert onClose={() => {seterror("")}} style={{margin:"1%"}} severity="error">{error}</Alert>:""}
