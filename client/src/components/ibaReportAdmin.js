@@ -44,6 +44,13 @@ function IbaReportAdmin({title,report,state1}) {
                         <TableHead>
                             <TableRow>
                             <TableCell>Category</TableCell>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Tier 1</TableCell>
+                            <TableCell>Tier 2</TableCell>
+                            <TableCell>Tier 3</TableCell>
+                            <TableCell>Tier 4</TableCell>
+                            <TableCell>Gender Category</TableCell>
+                            <TableCell>Age Category</TableCell>
                             <TableCell>Impressions</TableCell>
                             <TableCell>Clicks</TableCell>
                             <TableCell>CTR</TableCell>
@@ -58,6 +65,13 @@ function IbaReportAdmin({title,report,state1}) {
                                     <TableCell component="th" scope="row">
                                         {row._id.category?row._id.category:""}
                                     </TableCell>
+                                    <TableCell >{row.extra_details?row.extra_details.Name:""}</TableCell>
+                                    <TableCell >{row.extra_details?row.extra_details.tier1:""}</TableCell>
+                                    <TableCell >{row.extra_details?row.extra_details.tier2:""}</TableCell>
+                                    <TableCell >{row.extra_details?row.extra_details.tier3:""}</TableCell>
+                                    <TableCell >{row.extra_details?row.extra_details.tier4:""}</TableCell>
+                                    <TableCell >{row.extra_details?row.extra_details.genderCategory:""}</TableCell>
+                                    <TableCell >{row.extra_details?row.extra_details.AgeCategory:""}</TableCell>
                                     <TableCell >{row.impressions?row.impressions:""}</TableCell>
                                     <TableCell >{parseInt(row.CompanionClickTracking)+parseInt(row.SovClickTracking)}</TableCell>
                                     <TableCell >{Math.round(((parseInt(row.CompanionClickTracking)+parseInt(row.SovClickTracking))/parseInt(row.impression))*100)/100 + '%'}</TableCell>

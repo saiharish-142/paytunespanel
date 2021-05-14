@@ -22,19 +22,16 @@ router.put('/frequency',adminauth,(req,res)=>{
     campaignifareports.aggregate([
         {$facet:{
             "audio":[
-                {$match:{"impression":1,"campaignId":{$in:audio}}},
-                {$group:{_id:"$ifa",count:{$sum:1}}},
-                {$group:{_id:"$count",freq:{$sum:1}}}
+                {$match:{"campaignId":{$in:audio}}},
+                {$group:{_id:"$impression",count:{$sum:1}}}
             ],
             "display":[
-                {$match:{"impression":1,"campaignId":{$in:display}}},
-                {$group:{_id:"$ifa",count:{$sum:1}}},
-                {$group:{_id:"$count",freq:{$sum:1}}}
+                {$match:{"campaignId":{$in:display}}},
+                {$group:{_id:"$impression",count:{$sum:1}}}
             ],
             "video":[
-                {$match:{"impression":1,"campaignId":{$in:video}}},
-                {$group:{_id:"$ifa",count:{$sum:1}}},
-                {$group:{_id:"$count",freq:{$sum:1}}}
+                {$match:{"campaignId":{$in:video}}},
+                {$group:{_id:"$impression",count:{$sum:1}}}
             ]
         }}
     ]).then(respo=>{

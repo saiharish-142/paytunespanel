@@ -16,6 +16,9 @@ import PincodeAdmin from './pincodeAdmin.js'
 import PhoneModelAdmin from './PhoneModelAdmin';
 import IbaReportAdmin from './ibaReportAdmin';
 import FrequencyAdmin from './frequencyAdmin';
+import PublisherAdmin from './PublisherAdmin';
+import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
+import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 
 const useStyles = makeStyles({
     table: {
@@ -471,6 +474,149 @@ export default function BasicTable({singlead}) {
             </TableContainer>
         )
     }
+    const tablesorter = (title,order,type,coloumn,doublecoloumn,isZero,setsa,setsorted,streamingads) =>{
+        var datareq = streamingads;
+        // console.log(order,datareq)
+        if(order===1){
+            datareq = datareq.sort(function(a,b){
+                if(type==='date'){
+                    if(isZero){
+                        var d1 = new Date(a[coloumn][0])
+                        var d2 = new Date(b[coloumn][0])
+                    }else{
+                        var d1 = new Date(a[coloumn])
+                        var d2 = new Date(b[coloumn])
+                    }
+                    return d2 - d1;
+                }else if(type === 'num'){
+                    if(isZero){
+                        if(doublecoloumn){
+                            var d1 = a[coloumn] ? parseInt(a[coloumn][doublecoloumn][0]) : 0;
+                            var d2 = b[coloumn] ? parseInt(b[coloumn][doublecoloumn][0]) : 0;
+                        }else{
+                            var d1 = parseInt(a[coloumn][0])
+                            var d2 = parseInt(b[coloumn][0])
+                        }
+                    }else{
+                        if(doublecoloumn){
+                            var d1 = a[coloumn] ? parseInt(a[coloumn][doublecoloumn]) : 0;
+                            var d2 = b[coloumn] ? parseInt(b[coloumn][doublecoloumn]) : 0;
+                        }else{
+                            var d1 = parseInt(a[coloumn])
+                            var d2 = parseInt(b[coloumn])
+                            // console.log(d1,d2)
+                        }
+                    }
+                    return d2 - d1;
+                }else{
+                    if(isZero){
+                        if(doublecoloumn){
+                            var aa = (a[coloumn] && a[coloumn][0] && a[coloumn][0][doublecoloumn])? a[coloumn][0][doublecoloumn] : null;
+                            var ba = (b[coloumn] && b[coloumn][0] && b[coloumn][0][doublecoloumn])? b[coloumn][0][doublecoloumn] : null;
+                            if(aa < ba) { return -1; }
+                            if(aa > ba) { return 1; }
+                            return 0;
+                        }else{
+                            var aa = a[coloumn][0] ?a[coloumn][0] : null;
+                            var ba = b[coloumn][0] ?b[coloumn][0] : null;
+                            if(aa < ba) { return -1; }
+                            if(aa > ba) { return 1; }
+                            return 0;
+                        }
+                    }else{
+                        if(doublecoloumn){
+                            var aa = (a[coloumn] && a[coloumn][doublecoloumn]) ? a[coloumn][doublecoloumn] : null;
+                            var ba = (b[coloumn] && b[coloumn][doublecoloumn]) ? b[coloumn][doublecoloumn] : null;
+                            if(aa < ba) { return -1; }
+                            if(aa > ba) { return 1; }
+                            return 0;
+                        }else{
+                            var aa = a[coloumn] ?a[coloumn] : null;
+                            var ba = b[coloumn] ?b[coloumn] : null;
+                            if(aa < ba) { return -1; }
+                            if(aa > ba) { return 1; }
+                            return 0;
+                        }
+                    }
+                }
+            })
+        }else{
+            datareq = datareq.sort(function(a,b){
+                if(type==='date'){
+                    if(isZero){
+                        var d1 = new Date(a[coloumn][0])
+                        var d2 = new Date(b[coloumn][0])
+                    }else{
+                        var d1 = new Date(a[coloumn])
+                        var d2 = new Date(b[coloumn])
+                    }
+                    return d1 - d2;
+                }else if(type === 'num'){
+                    if(isZero){
+                        if(doublecoloumn){
+                            var d1 = a[coloumn] ? parseInt(a[coloumn][doublecoloumn][0]) : 0;
+                            var d2 = b[coloumn] ? parseInt(b[coloumn][doublecoloumn][0]) : 0;
+                        }else{
+                            var d1 = parseInt(a[coloumn][0])
+                            var d2 = parseInt(b[coloumn][0])
+                        }
+                    }else{
+                        if(doublecoloumn){
+                            var d1 = a[coloumn] ? parseInt(a[coloumn][doublecoloumn]) : 0;
+                            var d2 = b[coloumn] ? parseInt(b[coloumn][doublecoloumn]) : 0;
+                        }else{
+                            var d1 = parseInt(a[coloumn])
+                            var d2 = parseInt(b[coloumn])
+                            // console.log(d1,d2)
+                        }
+                    }
+                    return d1 - d2;
+                }else{
+                    if(isZero){
+                        if(doublecoloumn){
+                            var aa = (a[coloumn] && a[coloumn][0] && a[coloumn][0][doublecoloumn])? a[coloumn][0][doublecoloumn] : null;
+                            var ba = (b[coloumn] && b[coloumn][0] && b[coloumn][0][doublecoloumn])? b[coloumn][0][doublecoloumn] : null;
+                            if(aa < ba) { return 1; }
+                            if(aa > ba) { return -1; }
+                            return 0;
+                        }else{
+                            var aa = a[coloumn][0] ?a[coloumn][0] : null;
+                            var ba = b[coloumn][0] ?b[coloumn][0] : null;
+                            if(aa < ba) { return 1; }
+                            if(aa > ba) { return -1; }
+                            return 0;
+                        }
+                    }else{
+                        if(doublecoloumn){
+                            var aa = (a[coloumn] && a[coloumn][doublecoloumn]) ? a[coloumn][doublecoloumn] : null;
+                            var ba = (b[coloumn] && b[coloumn][doublecoloumn]) ? b[coloumn][doublecoloumn] : null;
+                            if(aa < ba) { return 1; }
+                            if(aa > ba) { return -1; }
+                            return 0;
+                        }else{
+                            var aa = a[coloumn] ?a[coloumn] : null;
+                            var ba = b[coloumn] ?b[coloumn] : null;
+                            if(aa < ba) { return 1; }
+                            if(aa > ba) { return -1; }
+                            return 0;
+                        }
+                    }
+                }
+            })
+        }
+        // console.log(datareq)
+        setsa(title)
+        setsorted(datareq)
+    }
+    const arrowRetuner = (mode) =>{
+        if(mode==='1'){
+            return <ArrowUpwardRoundedIcon fontSize="small" />
+        }else if(mode==='2'){
+            return <ArrowDownwardRoundedIcon fontSize="small" />
+        }else{
+            return <ArrowUpwardRoundedIcon fontSize="small" style={{color:'lightgrey'}} />
+        }
+    }
     return (
         <>
         <IconBreadcrumbs />
@@ -478,14 +624,17 @@ export default function BasicTable({singlead}) {
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         {SummaryTable('Summary',summaryReport,ids && ids.audimpression+ids.disimpression+ids.vidimpression,completespentfider('all')+spentOffline+spentOfflined+spentOfflinev)}
-        {SummaryTable('Audio', audioReport,ids && ids.audimpression,completespentfider('audio')+spentOffline)}
-        {SummaryTable('Display', displayReport,ids && ids.disimpression,completespentfider('display')+spentOfflined)}
-        {SummaryTable('Video', videoReport,ids && ids.vidimpression,completespentfider('video')+spentOfflinev)}
+        {audioReport && SummaryTable('Audio', audioReport,ids && ids.audimpression,completespentfider('audio')+spentOffline)}
+        {displayReport && SummaryTable('Display', displayReport,ids && ids.disimpression,completespentfider('display')+spentOfflined)}
+        {videoReport && SummaryTable('Video', videoReport,ids && ids.vidimpression,completespentfider('video')+spentOfflinev)}
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Publisher Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-        {PublisherTable('Audio',audiologs)}
+        {/* {PublisherTable('Audio',audiologs)}
         {PublisherTable('Display',displaylogs)}
-        {PublisherTable('video',videologs)}
+        {PublisherTable('video',videologs)} */}
+        {audiologs && <PublisherAdmin singlead={singlead} tablesorter={tablesorter} arrowRetuner={arrowRetuner} colorfinder={colorfinder} timefinder={timefinder} ids={ids} spentfinder={spentfinder} spentOffline={spentOffline} spentOfflined={spentOfflined} spentOfflinev={spentOfflinev} title='Audio' state1={state1} report={audiologs && audiologs} />}
+        {displaylogs && <PublisherAdmin singlead={singlead} tablesorter={tablesorter} arrowRetuner={arrowRetuner} colorfinder={colorfinder} timefinder={timefinder} ids={ids} spentfinder={spentfinder} spentOffline={spentOffline} spentOfflined={spentOfflined} spentOfflinev={spentOfflinev} title='Display' state1={state1} report={displaylogs && displaylogs} />}
+        {videologs && <PublisherAdmin singlead={singlead} tablesorter={tablesorter} arrowRetuner={arrowRetuner} colorfinder={colorfinder} timefinder={timefinder} ids={ids} spentfinder={spentfinder} spentOffline={spentOffline} spentOfflined={spentOfflined} spentOfflinev={spentOfflinev} title='Video' state1={state1} report={videologs && videologs} />}
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Quartile Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <TableContainer  style={{margin:'20px 0'}} elevation={3} component={Paper}>
@@ -542,53 +691,38 @@ export default function BasicTable({singlead}) {
                 </TableBody>
             </Table>
         </TableContainer>
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Region Wise Summary Report</div>
-        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.audio} url='regionbycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.display} url='regionbycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Region' regtitle='region' jsotitle='region' ids={ids && ids.video} url='regionbycampids' />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Language Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.audio} url='citylanguagebycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.display} url='citylanguagebycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.video} url='citylanguagebycampids' />
+        {ids && ids.audio && <Auditable adtype='Audio' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.audio} url='citylanguagebycampids' />}
+        {ids && ids.display && <Auditable adtype='Display' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.display} url='citylanguagebycampids' />}
+        {ids && ids.video && <Auditable adtype='Video' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} streamingads={singlead} title='Language' regtitle='language' jsotitle='citylanguage' ids={ids && ids.video} url='citylanguagebycampids' />}
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Make Model Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-        <PhoneModelAdmin title='Audio' state1={state1} report={phoneModelReports && phoneModelReports.audio} />
-        <PhoneModelAdmin title='Display' state1={state1} report={phoneModelReports && phoneModelReports.display} />
-        <PhoneModelAdmin title='Video' state1={state1} report={phoneModelReports && phoneModelReports.video} />
+        {phoneModelReports && phoneModelReports.audio && <PhoneModelAdmin title='Audio' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} report={phoneModelReports && phoneModelReports.audio} />}
+        {phoneModelReports && phoneModelReports.display && <PhoneModelAdmin title='Display' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} report={phoneModelReports && phoneModelReports.display} />}
+        {phoneModelReports && phoneModelReports.video && <PhoneModelAdmin title='Video' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} report={phoneModelReports && phoneModelReports.video} />}
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Frequency Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-        <FrequencyAdmin title='Audio' state1={state1} report={frequencyReport && frequencyReport.audio} />
-        <FrequencyAdmin title='Display' state1={state1} report={frequencyReport && frequencyReport.display} />
-        <FrequencyAdmin title='Video' state1={state1} report={frequencyReport && frequencyReport.video} />
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Platform Wise Summary Report</div>
-        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.audio} url='platformTypebycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.display} url='platformTypebycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Platform' regtitle='phonePlatform' jsotitle='platformType' ids={ids && ids.video} url='platformTypebycampids' />
+        <FrequencyAdmin title='Audio' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} report={frequencyReport && frequencyReport.audio} />
+        <FrequencyAdmin title='Display' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} report={frequencyReport && frequencyReport.display} />
+        <FrequencyAdmin title='Video' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} report={frequencyReport && frequencyReport.video} />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Category Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         {/* {PincodeTable('audio', pincodereports && pincodereports.audio)} */}
-        <IbaReportAdmin title='Audio' state1={state1} report={ibaReports && ibaReports.audio} />
-        <IbaReportAdmin title='Display' state1={state1} report={ibaReports && ibaReports.display} />
-        <IbaReportAdmin title='Video' state1={state1} report={ibaReports && ibaReports.video} />
+        <IbaReportAdmin title='Audio' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} report={ibaReports && ibaReports.audio} />
+        <IbaReportAdmin title='Display' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} report={ibaReports && ibaReports.display} />
+        <IbaReportAdmin title='Video' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} report={ibaReports && ibaReports.video} />
         <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Pincode Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         {/* {PincodeTable('audio', pincodereports && pincodereports.audio)} */}
-        <PincodeAdmin title='Audio' state1={state1} report={pincodereports && pincodereports.audio} />
-        <PincodeAdmin title='Display' state1={state1} report={pincodereports && pincodereports.display} />
-        <PincodeAdmin title='Video' state1={state1} report={pincodereports && pincodereports.video} />
+        <PincodeAdmin title='Audio' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} report={pincodereports && pincodereports.audio} />
+        <PincodeAdmin title='Display' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} report={pincodereports && pincodereports.display} />
+        <PincodeAdmin title='Video' state1={state1} tablesorter={tablesorter} arrowRetuner={arrowRetuner} report={pincodereports && pincodereports.video} />
         {/* <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Model Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.audio} url='phonemakebycampids' />
         <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.display} url='phonemakebycampids' />
         <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.video} url='phonemakebycampids' /> */}
-        <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Device Wise Summary Report</div>
-        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.audio} url='pptypebycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.display} url='pptypebycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Device' regtitle='deviceModel' jsotitle='pptype' ids={ids && ids.video} url='pptypebycampids' />
         </>
     );
 }
