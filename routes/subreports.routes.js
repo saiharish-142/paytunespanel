@@ -552,9 +552,19 @@ router.put(
         try{
             
             //data.make_model=data.make_model.toLowerCase()
-            let {_id,make_model,cost,cumulative,release,company,model,total_percent,type}=req.body
+            let {make_model,cost,cumulative,release,company,model,total_percent,type}=req.body
             let updates={make_model,cost,cumulative,release,company,model,total_percent,type}
-            const updated=await phonemodel2.findOneAndUpdate({_id:mongoose.Types.ObjectId(_id)},{$set:updates},{new:true})
+
+            const ismatch=await phonemodel2.findOne({make_model})
+            if(!ismatch){
+                const phone=new phonemodel2({
+                    ...updates
+                })
+                await phone.save()
+                return res.status(200).json('Updated Successfuly!')
+            }
+
+            const updated=await phonemodel2.findOneAndUpdate({make_model},{$set:updates},{new:true})
             if(!updated){
                 return res.status(400).json({error:"Couldn't Update !"})
             }
@@ -571,40 +581,62 @@ router.get(
     adminauth,
     async(req,res)=>{
         try{
-            const phone=await phonemodel2.aggregate([
-                {$match:{ $or:[{cost:""},
-                {make_model:""},
-                {cumulative:""},
-                {release:""},
-                {company:""},
-                {type:""},
-                {total_percent:""},
-                {model:""}] 
-            }},
+            const phone=await phonemodelreports.aggregate([
                 {$lookup:{
-                    from:'phonemodelreports',
-                    localField:'make_model',
-                    foreignField:'phoneModel',
+                    from:'phonemodel2reports',
+                    localField:'phoneModel',
+                    foreignField:'make_model',
                     as:'extra_details'
-                }
-            },
-            {$project:{
-                cost:1,
-                make_model:1,
-                cumulative:1,
-                release:1,
-                company:1,
-                type:1,
-                total_percent:1,
-                model:1,
-                impressions:{$sum:"$extra_details.impression"}
-            }},
-            //{$unwind:{path:"$extra_details", preserveNullAndEmptyArrays: true}},
-            {$sort:{"impressions":-1}},
+                }},
+                {$unwind:{path:'$extra_details',preserveNullAndEmptyArrays:true}},
+                {$project:{
+                    phoneModel:1,
+                    impression:1,
+                    extra_details:{
+                        $ifNull: ['$extra_details',{
+                        make_model:"",
+                        cost:"", 
+                        cumulative:"",
+                        release:"",
+                        company:"",
+                        type:"",
+                        total_percent:"",
+                        model:"",
+                        combined_make_model:""
+                    }]}
+                }},
+                {$match:{ $or:[{'extra_details.make_model':""},
+                {'extra_details.cumulative':""},
+                {'extra_details.release':""},
+                {'extra_details.company':""},
+                {'extra_details.type':""},
+                {'extra_details.total_percent':""},
+                {'extra_details.model':""},
+                {'extra_details.cost':""}
+                ]
+        }},
+            {$group:{_id:{make_model:'$phoneModel'},
+            impressions:{$sum:'$impression'},
+            extra:{$first:'$extra_details'}
+        }},
+        {$project:{
+            impressions:1,
+            make_model:'$_id.make_model',
+            cost:"$extra.cost",
+            cumulative:"$extra.cumulative",
+            release:"$extra.release",
+            company:"$extra.company",
+            type:"$extra.type",
+            model:"$extra.model",
+            total_percent:"$extra.total_percent",
+            combined_make_and_model:"$extra.combined_make_model"
+        }},
+        {$sort:{'impressions':-1}}
+            ])
             
-            ]).allowDiskUse(true)
             res.status(200).json(phone)
         }catch(err){
+            console.log(err.message)
             res.status(400).json({error:err})
         }
     }
@@ -615,17 +647,75 @@ router.get(
     adminauth,
     async(req,res)=>{
         try{
-            const result=await Zipreports2.aggregate([
-                {$match:{ $or:[{area:""},
-                {pincode:""},
-                {city:""},
-                {district:""},
-                {state:""},
-                {latitude:""},
-                {longitude:""},
-            ]}},
-            ])
-            res.status(200).json(result)
+            // const result=await Zipreports2.aggregate([
+            //     {$match:{ $or:[{area:""},
+            //     {pincode:""},
+            //     {city:""},
+            //     {district:""},
+            //     {state:""},
+            //     {latitude:""},
+            //     {longitude:""},
+            // ]}},
+            // ])
+
+            const result=await zipreports.aggregate([
+                {$lookup:{
+                    from:'zipreports2',
+                    localField:'zip',
+                    foreignField:'pincode',
+                    as:'extra_details'
+                }},
+                {$unwind:{path:'$extra_details',preserveNullAndEmptyArrays:true}},
+                {$project:{
+                    zip:1,
+                    impression:1,
+                    extra_details:{
+                        $ifNull: ['$extra_details',
+                        {
+                            area:"", 
+                            pincode: "",
+                            lowersubcity:"",
+                            subcity:"",
+                            city:"",
+                            grandcity:"",
+                            district:"",
+                            comparison:"",
+                            state:"",
+                            grandstate:"",
+                            latitude:"",
+                            longitude:""
+                    }]}
+                }},
+                {$match:{ $or:[{'extra_details.area':""},
+                    {'extra_details.pincode':""},
+                    {'extra_details.city':""},
+                    {'extra_details.district':""},
+                    {'extra_details.state':""},
+                    {'extra_details.latitude':""},
+                    {'extra_details.longitude':""},
+                ]}},
+            {$group:{_id:{pincode:'$zip'},
+            impressions:{$sum:'$impression'},
+            extra:{$first:'$extra_details'},
+            //_id:{$first:"$_id"}
+        }},
+        {$project:{
+            impressions:1,
+            pincode:'$_id.pincode',
+            area:"$extra.area",
+            subcity:"$extra.subcity",
+            city:"$extra.city",
+            grandcity:"$extra.grandcity",
+            district:"$extra.district",
+            state:"$extra.state",
+            grandstate:"$extra.grandstate",
+            latitude:"$extra.latitude",
+            longitude:"$extra.longitude"
+        }},
+        {$sort:{'impressions':-1}}
+        ])
+
+        res.status(200).json(result)
         }catch(err){
             console.log(err.message)
             res.status(400).send({error:err.mesaage})
@@ -640,10 +730,20 @@ router.put(
         try{            
             //data.make_model=data.make_model.toLowerCase()
             
-            let {_id,area,pincode,lowersubcity,subcity,city,grandcity,district,comparison,state,grandstate,latitude,longitude}=req.body
-            let updates={area,pincode,lowersubcity,subcity,city,grandcity,district,comparison,state,grandstate,latitude,longitude}
-            
-            const updated=await Zipreports2.findOneAndUpdate({_id:mongoose.Types.ObjectId(_id)},{$set:updates},{new:true})
+            let {area,pincode,lowersubcity,subcity,city,grandcity,district,comparison,state,grandstate,latitude,longitude}=req.body
+            let updates={area,pincode,lowersubcity,subcity,city,grandcity,district,state,grandstate,latitude,longitude}
+            console.log(pincode)
+
+            const ismatch=await Zipreports2.findOne({pincode})
+            if(!ismatch){
+                const zip=new Zipreports2({
+                    ...updates
+                })
+                await zip.save()
+                return res.status(200).json('Updated Successfuly!')
+            }
+
+            const updated=await Zipreports2.findOneAndUpdate({pincode},{$set:updates},{new:true})
             if(!updated){
                 return res.status(400).json({error:"Couldn't Update !"})
             }
