@@ -24,7 +24,6 @@ import Zipdata from './screens/zipdata';
 import { loadUser, networkError } from './redux/actions/authAction';
 import { useDispatch, useSelector } from 'react-redux';
 import MLoader from './components/loaders/MLoader';
-import NetworkFail from './components/networkFail/NetworkFail';
 import Categorydata from './screens/Categorydata';
 
 export const UserContext = createContext();
@@ -70,14 +69,6 @@ function App() {
 				console.log(err);
 			});
 	}, []);
-	if (user && user.networkError) {
-		return (
-			<React.Fragment>
-				<Navbar />
-				<NetworkFail />
-			</React.Fragment>
-		);
-	}
 	if (user && user.isLoading) {
 		return (
 			<React.Fragment>

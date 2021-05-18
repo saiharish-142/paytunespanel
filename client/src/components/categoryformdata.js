@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import TextField from '@material-ui/core/Textfield';
+import { TextField } from '@material-ui/core';
 // import { set } from 'react-hook-form';
 
 export default function Categorydataform({ props, setShow, setsuccess, data1, seterror }) {
