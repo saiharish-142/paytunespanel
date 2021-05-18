@@ -5,7 +5,7 @@ import  {useForm} from 'react-hook-form'
 import {Alert} from '@material-ui/lab'
 import {Table,TableBody,TableCell,TableContainer,TableHead,TableRow,TablePagination,Paper,Modal} from '@material-ui/core'
 
-//import Phonedataform from '../screens/phonedataform'
+import Categorydataform from '../screens/categoryformdata'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -53,8 +53,8 @@ const [tempdata,settempdata]=useState({})
 //const [make_model,setmakemodel]=useState("")
 
 const data=()=>{
-  fetch('http://127.0.0.1:5000/subrepo/categorywisereports',{
-            method:'POST',
+  fetch('http://127.0.0.1:5000/subrepo/categorydata',{
+            method:'get',
             headers:{
                 "Content-Type":"application/json",
                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
@@ -74,8 +74,8 @@ const data=()=>{
 }
 
 useEffect(()=>{
-    fetch('http://127.0.0.1:5000/subrepo/categorywisereports',{
-            method:'POST',
+    fetch('http://127.0.0.1:5000/subrepo/categorydata',{
+            method:'get',
             headers:{
                 "Content-Type":"application/json",
                 "Authorization" :"Bearer "+localStorage.getItem("jwt")
@@ -101,7 +101,7 @@ const editPhonedata=()=>{
 
 return(
     <div>
-            <h4 style={{margin:"3%",fontWeight:'bolder'}}>Category Wise Data </h4> 
+            <h4 style={{margin:"3%",fontWeight:'bolder'}}>Category data </h4> 
             <div className={classes.root}>
             {success?<Alert onClose={() => {setsuccess("")}} style={{margin:"1%"}} severity="success">{success}</Alert>:<></>}
             {error?<Alert onClose={() => {seterror("")}} style={{margin:"1%"}} severity="error">{error}</Alert>:""}
@@ -113,16 +113,17 @@ return(
                 <TableHead>
                     <TableRow>  
                         {/* <TableCell>{title}</TableCell> */}
-                        {  <TableCell>Campaign Name</TableCell>}
                         {  <TableCell>Category</TableCell>}
                         {  <TableCell>Impressions</TableCell>}
-                        <TableCell>parent</TableCell>
+                        {  <TableCell>Name</TableCell>}
                         <TableCell>Tier1</TableCell>
                         <TableCell>Tier2</TableCell>
-                        {  <TableCell>Tier3</TableCell>}
+                        <TableCell>Tier3</TableCell>
                         {  <TableCell>Tier4</TableCell>}
-                        {<TableCell> Age Category</TableCell>}
-                        {<TableCell>Gender Category</TableCell>}
+                        {  <TableCell>Gender Category</TableCell>}
+                        {<TableCell>Age category</TableCell>}
+                        {<TableCell>New Taxonamy</TableCell>}
+                        {<TableCell></TableCell>}
                         
                     </TableRow>
                 </TableHead>
@@ -130,17 +131,18 @@ return(
                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
             <TableRow key={row.name}>
               <TableCell component="th" scope="row">
-                {row.campaign_details.AdTitle}
+                {row.category?row.category:""}
               </TableCell>
-              <TableCell >{row._id.category}</TableCell>
-              <TableCell >{row.impressions}</TableCell>
-              <TableCell >{row.extra_details.parent}</TableCell>
-              <TableCell >{row.extra_details.tier1}</TableCell>
-              <TableCell >{row.extra_details.tier2}</TableCell>
-              <TableCell >{row.extra_details.tier3}</TableCell>
-              <TableCell >{row.extra_details.tier4}</TableCell>
-              <TableCell >{row.extra_details.AgeCategory}</TableCell>
-              <TableCell >{row.extra_details.genderCategory}</TableCell>
+              <TableCell >{row.impressions?row.impressions:""}</TableCell>
+              <TableCell >{row.name?row.name:""}</TableCell>
+              <TableCell >{row.tier1?row.tier1:""}</TableCell>
+              <TableCell >{row.tier2?row.tier2:""}</TableCell>
+              <TableCell >{row.tier3?row.tier3:""}</TableCell>
+              <TableCell >{row.tier4?row.tier4:""}</TableCell>
+              <TableCell >{row.gender_category?row.gender_category:""}</TableCell>
+              <TableCell >{row.age_category?row.age_category:""}</TableCell>
+              <TableCell >{row.taxonamy?row.taxonamy:""}</TableCell>
+              <TableCell ><button className="btn" onClick={()=>handleShow(row) }>Edit </button></TableCell>
             </TableRow>
           ))}
                 </TableBody>
@@ -156,16 +158,16 @@ return(
                 onChangePage={handleChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
             />
-        {/* {show?
+        {show?
         
             <div >
                 
-            <h4>Edit Phone Data</h4>
-        <Phonedataform props={tempdata} setShow={setShow} setsuccess={setsuccess} data1={data} seterror={seterror}/>
+            <h4>Edit Category Data</h4>
+        <Categorydataform props={tempdata} setShow={setShow} setsuccess={setsuccess} data1={data} seterror={seterror}/>
                 
             
             </div>
-               :<></> } */}
+               :<></> }
     
 
             </Paper>

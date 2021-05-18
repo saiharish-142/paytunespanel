@@ -20,7 +20,7 @@ import DetailedTableBundle from './screens/detailedReportBundle';
 import Biddata from './components/biddata'
 import Phonedata from './components/phonedata'
 import Zipdata from './components/zipdata'
-import Categorydata from './screens/categorydata'
+import Categorydata from './components/categorydata'
 import EditUser from './screens/EditUser';
 
 export const UserContext = createContext()

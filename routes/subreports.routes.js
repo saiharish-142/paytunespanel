@@ -647,16 +647,6 @@ router.get(
     adminauth,
     async(req,res)=>{
         try{
-            // const result=await Zipreports2.aggregate([
-            //     {$match:{ $or:[{area:""},
-            //     {pincode:""},
-            //     {city:""},
-            //     {district:""},
-            //     {state:""},
-            //     {latitude:""},
-            //     {longitude:""},
-            // ]}},
-            // ])
 
             const result=await zipreports.aggregate([
                 {$lookup:{
@@ -744,6 +734,107 @@ router.put(
             }
 
             const updated=await Zipreports2.findOneAndUpdate({pincode},{$set:updates},{new:true})
+            if(!updated){
+                return res.status(400).json({error:"Couldn't Update !"})
+            }
+
+            res.status(200).json('Updated Successfuly!')
+        }catch(err){
+            res.status(400).json({error:err.message})
+        }
+    }
+)
+
+router.get(
+    '/categorydata',
+    adminauth,
+    async(req,res)=>{
+        try{
+
+            const result=await CategoryReports.aggregate([
+                {$lookup:{
+                    from:'categoryreports2',
+                    localField:'category',
+                    foreignField:'category',
+                    as:'extra_details'
+                }},
+                {$unwind:{path:'$extra_details',preserveNullAndEmptyArrays:true}},
+                {$project:{
+                    category:1,
+                    impression:1,
+                    extra_details:{
+                        $ifNull: ['$extra_details',
+                        {
+                            parent:"",
+                            category: "",
+                            Name:"",
+                            tier1:"",
+                            tier2:"",
+                            tier3:"",
+                            tier4:"",
+                            genderCategory:"",
+                            AgeCategory:"",
+                            new_taxonamy:""
+                    }]}
+                }},
+                {$match:{ $or:[{'extra_details.Name':""},
+                    {'extra_details.tier1':""},
+                    {'extra_details.tier2':""},
+                    {'extra_details.tier3':""},
+                    {'extra_details.tier4':""},
+                    {'extra_details.genderCategory':""},
+                    {'extra_details.AgeCategory':""},
+                    {'extra_details.new_taxonamy':""}
+                ]}},
+            {$group:{_id:{category:'$category'},
+            impressions:{$sum:'$impression'},
+            extra:{$first:'$extra_details'},
+            //_id:{$first:"$_id"}
+        }},
+        {$project:{
+            impressions:1,
+            category:'$_id.category',
+            name:"$extra.Name",
+            tier1:"$extra.tier1",
+            tier2:"$extra.tier2",
+            tier3:"$extra.tier3",
+            tier4:"$extra.tier4",
+            gender_category:"$extra.genderCategory",
+            age_category:"$extra.AgeCategory",
+            taxonamy:"$extra.new_taxonamy",
+            parent:"$extra.parent"
+        }},
+        {$sort:{'impressions':-1}}
+        ])
+
+        res.status(200).json(result)
+        }catch(err){
+            console.log(err.message)
+            res.status(400).send({error:err.mesaage})
+        }
+    }
+)
+
+router.put(
+    '/editcategorydata',
+    adminauth,
+    async(req,res)=>{
+        try{            
+            //data.make_model=data.make_model.toLowerCase()
+            
+            let { category,name,tier1,tier2,tier3,tier4,gendercategory,agecategory,taxonamy}=req.body
+            let updates={category,Name:name,tier1,tier2,tier3,tier4,genderCategory:gendercategory,AgeCategory:agecategory,new_taxonamy:taxonamy}
+
+            const ismatch=await CategoryReports2.findOne({category})
+            if(!ismatch){
+                const category=new CategoryReports2({
+                    ...updates
+                })
+                await category.save()
+                return res.status(200).json('Updated Successfuly!')
+            }
+
+            const updated=await CategoryReports2.findOneAndUpdate({category},{$set:updates},{new:true})
             if(!updated){
                 return res.status(400).json({error:"Couldn't Update !"})
             }
