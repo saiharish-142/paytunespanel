@@ -535,7 +535,26 @@ router.post(
                 as:'extra_details'
             }},
             {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
-            {$sort:{"impressions":-1}}
+            {$lookup:{
+                from:'categoryreports2',
+                localField:'_id.category',
+                foreignField:'new_taxonamy',
+                as:'extra_details1'
+            }},
+            {$unwind:{path:"$extra_details1",preserveNullAndEmptyArrays:true}},
+            {$sort:{"impressions":-1}},
+            {$project:{
+                impressions:1,
+                CompanionClickTracking: 1,
+                SovClickTracking: 1,
+                extra_details:{$ifNull:['$extra_details','$extra_details1']}
+            }},
+            {$project:{
+                impressions:1,
+                CompanionClickTracking: 1,
+                SovClickTracking: 1,
+                extra_details:{$ifNull:['$extra_details',{}]}
+            }}
             ]).allowDiskUse(true)
             res.status(200).json(result)
         }catch(err){
@@ -759,6 +778,18 @@ router.get(
                     as:'extra_details'
                 }},
                 {$unwind:{path:'$extra_details',preserveNullAndEmptyArrays:true}},
+                {$lookup:{
+                    from:'categoryreports2',
+                    localField:'_id.category',
+                    foreignField:'new_taxonamy',
+                    as:'extra_details1'
+                }},
+                {$unwind:{path:"$extra_details1",preserveNullAndEmptyArrays:true}},
+                {$project:{
+                    category:1,
+                    impression:1,
+                    extra_details:{$ifNull:['$extra_details','$extra_details1']}
+                }},
                 {$project:{
                     category:1,
                     impression:1,
