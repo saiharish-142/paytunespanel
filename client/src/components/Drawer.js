@@ -5,7 +5,7 @@ import Drawer from '@material-ui/core/Drawer';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import {UserContext} from '../App'
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles({
 list: {
@@ -20,7 +20,7 @@ export default function TemporaryDrawer() {
     const history = useHistory()
     const classes = useStyles();
     const [open, setopen] = React.useState(false);
-    const {state} = React.useContext(UserContext)
+    const state = useSelector(state=>state.auth.user)
     return (
         <div>
             <div onClick={()=>setopen(true)}><i className='material-icons' style={{fontSize:'30px',cursor:'pointer',color:"white"}}>menu</i></div>

@@ -1,35 +1,17 @@
-import React,{ useState, useContext } from 'react'
-import M from 'materialize-css'
-import {UserContext} from '../App'
-import { useHistory } from 'react-router-dom'
+import React,{ useState } from 'react'
+// import M from 'materialize-css'
 import { Paper } from '@material-ui/core'
+import { useDispatch } from 'react-redux'
+import { loadinguser, loginUser } from '../redux/actions/authAction'
 
 function Login() {
-    const history = useHistory()
-    const {dispatch} = useContext(UserContext)
     const [email, setemail] = useState('')
     const [password, setpassword] = useState('')
+    const dispatchRedux = useDispatch();
     const login = () =>{
-        fetch('/auth/signin',{
-            method:'post',
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                email,password
-            })
-        }).then(res=>res.json())
-        .then(data=>{
-            if(data.error){
-                M.toast({html:data.error, classes:'#ff5252 red accent-2'}) 
-            }else{
-                localStorage.setItem("jwt",data.token)
-                localStorage.setItem("user",JSON.stringify(data.user))
-                dispatch({type:"USER",payload:data.user})
-                M.toast({html:"Signedin Successfully", classes:'#69f0ae green accent-2'})
-                history.push('/')
-            }
-        })
+        const dataa = {email:email,password:password}
+        dispatchRedux(loadinguser())
+        dispatchRedux(loginUser(dataa))
     }
     return (
         <div className='login'>

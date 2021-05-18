@@ -53,7 +53,7 @@ function EditUser() {
     },[])
     // updating User
     useEffect(() => {
-        fetch(`/auth/:id`,{
+        fetch(`/auth/id/:id`,{
             method:'get',
             headers:{
                 "Content-Type":"application/json",
