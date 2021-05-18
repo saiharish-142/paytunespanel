@@ -3,6 +3,6 @@ import authReducer from './authReducer';
 import manageadsReducer from './manageadsReducer';
 
 export default combineReducers({
-    auth:authReducer,
-    manads:manageadsReducer
-})
+	auth: authReducer,
+	manads: manageadsReducer
+});

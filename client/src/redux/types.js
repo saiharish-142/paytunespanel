@@ -1,22 +1,22 @@
 // auth
-export const LOAD_USER = "LOAD_USER";
-export const LOAD_USER_FAIL = "LOAD_USER_FAIL";
-export const USER_LOADING = "USER_LOADING";
-export const USER_LOADED = "USER_LOADED";
-export const AUTH_ERROR = "AUTH_ERROR";
-export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
-export const LOGIN_FAIL = "LOGIN_FAIL";
-export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
-export const NETWORK_ERROR = "NETWORK_ERROR";
+export const LOAD_USER = 'LOAD_USER';
+export const LOAD_USER_FAIL = 'LOAD_USER_FAIL';
+export const USER_LOADING = 'USER_LOADING';
+export const USER_LOADED = 'USER_LOADED';
+export const AUTH_ERROR = 'AUTH_ERROR';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGIN_FAIL = 'LOGIN_FAIL';
+export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+export const NETWORK_ERROR = 'NETWORK_ERROR';
 
 // ManageAds
-export const MANAGEADS_LOADING = "MANAGEADS_LOADING";
-export const MANAGEADS_LOADDED = "MANAGEADS_LOADDED";
-export const MANAGE_LOAD_ERROR = "MANAGE_LOAD_ERROR";
-export const REPORT_LOADING = "REPORT_LOADING";
-export const REPORT_LOADED = "REPORT_LOADED";
-export const REPORT_ERROR = "REPORT_ERROR";
+export const MANAGEADS_LOADING = 'MANAGEADS_LOADING';
+export const MANAGEADS_LOADDED = 'MANAGEADS_LOADDED';
+export const MANAGE_LOAD_ERROR = 'MANAGE_LOAD_ERROR';
+export const REPORT_LOADING = 'REPORT_LOADING';
+export const REPORT_LOADED = 'REPORT_LOADED';
+export const REPORT_ERROR = 'REPORT_ERROR';
 
 // SORTING DATA IN TABLES
-export const DATA_SORTED = "DATA_SORTED";
-export const DATA_SORT_ERROR = "DATA_SORT_ERROR";
+export const DATA_SORTED = 'DATA_SORTED';
+export const DATA_SORT_ERROR = 'DATA_SORT_ERROR';
