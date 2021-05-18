@@ -1,5 +1,5 @@
 import React from 'react';
-// import styles from './MLoader.modules.css';
+import styles from './MLoader.modules.css';
 
 function MLoader() {
 	return (
