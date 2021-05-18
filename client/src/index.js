@@ -1,17 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import store from './redux';
 import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
+import Apindex from './apindex';
 
 ReactDOM.render(
 	<BrowserRouter>
 		<React.StrictMode>
-			<Provider store={store}>
-				<App />
-			</Provider>
+			<Apindex />
 		</React.StrictMode>
 	</BrowserRouter>,
 	document.getElementById('root')
