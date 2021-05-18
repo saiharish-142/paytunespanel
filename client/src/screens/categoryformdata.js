@@ -18,7 +18,7 @@ const [agecategory,setage]=useState(props.age_category)
 const [taxonamy,settaxonamy]=useState(props.taxonamy)
 //load()
 function editCategorydata(){
-    fetch('http://127.0.0.1:5000/subrepo/editcategorydata',{
+    fetch('/subrepo/editcategorydata',{
         method:"PUT",
         headers:{
             "Content-Type":"application/json",
