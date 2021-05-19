@@ -1400,6 +1400,22 @@ router.get('/categorydata', adminauth, async (req, res) => {
 			},
 			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
 			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'new_taxonamy',
+					as: 'extra_details1'
+				}
+			},
+			{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+			{
+				$project: {
+					category: 1,
+					impression: 1,
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+				}
+			},
+			{
 				$project: {
 					category: 1,
 					impression: 1,
