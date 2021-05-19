@@ -1,10 +1,13 @@
-const mongoose = require('mongoose')
-const {ObjectId} = mongoose.Schema.Types
+var mongoose = require('mongoose');
 
-var campaignwisereportsSchema = new mongoose.Schema({
+var Schema = mongoose.Schema;
+var campaignwisereportsSchema = new Schema({
     date: { type: String },
-    campaignId: { type: ObjectId, ref: 'streamingadObj' },
+    campaignId: { type: Schema.Types.ObjectId, ref: 'streamingadObj' },
     appId: String,
+    apppubid: String,
+    ssp: String,
+    creativesetId: String,
     language: String,
     requests: Number,
     ads: Number, ///AdServed
@@ -26,5 +29,13 @@ var campaignwisereportsSchema = new mongoose.Schema({
     SovClickTracking: Number,
     createdOn: { type: Date, default: Date.now },
 });
+campaignwisereportsSchema.index({ date: 1 });
 
-module.exports=mongoose.model('campaignwisereports',campaignwisereportsSchema)
+campaignwisereportsSchema.statics.load = function(id, cb) {
+    this.findOne({
+            _id: id
+        })
+        .exec(cb);
+};
+var campaignwisereportObj = mongoose.model('campaignwisereports', campaignwisereportsSchema);
+module.exports = campaignwisereportObj;

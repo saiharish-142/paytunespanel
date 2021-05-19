@@ -10,6 +10,7 @@ const platformtypereports = mongoose.model('platformtypereports')
 const citylanguagereports = mongoose.model('citylanguagereports')
 const phonemodelreports = mongoose.model('phonemodelreports')
 const spentreports = mongoose.model('spentreports')
+const CampaignModel=require('../models/campaignwisereports.model')
 const phonemodel2=require('../models/phonemodel2reports')
 const Zipreports2=require('../models/zipdata2reports')
 const CategoryReports2=require('../models/categoryreports2')
@@ -876,6 +877,42 @@ router.put(
         }
     }
 )
+
+router.put('/creativewisebycampids',adminauth,(req,res)=>{
+    const {campaignId} = req.body
+    const dumd =[];
+    
+    var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd  
+    CampaignModel.aggregate([
+        {$match:{campaignId:{$in:ids}}},
+        {$addFields:{"setid":{"$toObjectId":"$creativesetid"}}},
+        {$lookup:{
+            from:'creativesets',
+            localField:'setid',
+            foreignField:'_id',
+            as:'creative_data'
+        }},
+        {$unwind:"$creative_data"},
+        {$group:{_id:{creativeset:"$creative_data.name"}, 
+            impression:{$sum:"$impression"}, 
+            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+            SovClickTracking:{$sum:"$SovClickTracking"}, 
+            start:{$sum:"$start"}, 
+            midpoint:{$sum:"$midpoint"},
+            thirdQuartile:{$sum:"$thirdQuartile"},
+            complete:{$sum:"$complete"},
+            createdOn:{$push:"$createdOn"},
+            creative_data:{$first:'$creative_data'}
+        }},{$project:{
+            creative_set:"$_id.creativeset",impression:1,CompanionClickTracking:1,SovClickTracking:1,
+            start:1,midpoint:1,thirdQuartile:1,complete:1,createdOn:1,_id:0,creative_data:1
+        }}
+    ])
+    .then(result=>res.json(result))
+    .catch(err=>{
+        console.log(err.message)
+        res.status(422).json(err)})
+})
 
 
 module.exports = router
