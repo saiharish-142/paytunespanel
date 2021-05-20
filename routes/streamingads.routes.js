@@ -327,11 +327,11 @@ router.get('/groupedMod1', adminauth, (req, res) => {
 				var d1 = new Date(ad.endDate);
 				var d2 = new Date(Date.now());
 				// console.log(d1,d2)
-				if (d1 < d2) {
-					remainingdays = 'completed campaign';
-				}
 				var show = d1.getTime() - d2.getTime();
 				remainingdays = show / (1000 * 3600 * 24);
+				if (remainingdays < 0) {
+					remainingdays = 'completed campaign';
+				}
 				ad.remainingDays = remainingdays;
 				return ad;
 			});
