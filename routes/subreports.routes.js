@@ -13,7 +13,7 @@ const spentreports = mongoose.model('spentreports');
 const phonemodel2 = mongoose.model('phonemodel2reports');
 const Zipreports2 = mongoose.model('zipreports2');
 const CategoryReports2 = mongoose.model('categoryreports2');
-const CampaignModel = mongoose.model('campaignwisereports');
+const Campaignwisereports = mongoose.model('campaignwisereports');
 const CategoryReports = mongoose.model('categoryreports');
 const adminauth = require('../authenMiddleware/adminauth');
 
@@ -1604,7 +1604,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 		const { campaignId } = req.body;
 
 		var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : [];
-		const result = await CampaignModel.aggregate([
+		const result = await Campaignwisereports.aggregate([
 			{ $match: { campaignId: { $in: ids } } },
 			{
 				$group: {
