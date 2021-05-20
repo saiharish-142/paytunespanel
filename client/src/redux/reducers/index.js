@@ -4,5 +4,5 @@ import manageadsReducer from './manageadsReducer';
 
 export default combineReducers({
 	auth: authReducer,
-	manads: manageadsReducer
+	manageads: manageadsReducer
 });

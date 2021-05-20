@@ -998,7 +998,32 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 				}
 			},
 			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-			{ $sort: { impressions: -1 } }
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'new_taxonamy',
+					as: 'extra_details1'
+				}
+			},
+			{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+			{ $sort: { impressions: -1 } },
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+				}
+			},
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', {} ] }
+				}
+			}
 		]).allowDiskUse(true);
 		const resultdisplay = await CategoryReports.aggregate([
 			{ $match: { campaignId: { $in: display } } },
@@ -1019,7 +1044,32 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 				}
 			},
 			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-			{ $sort: { impressions: -1 } }
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'new_taxonamy',
+					as: 'extra_details1'
+				}
+			},
+			{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+			{ $sort: { impressions: -1 } },
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+				}
+			},
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', {} ] }
+				}
+			}
 		]).allowDiskUse(true);
 		const resultvideo = await CategoryReports.aggregate([
 			{ $match: { campaignId: { $in: video } } },
@@ -1040,7 +1090,32 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 				}
 			},
 			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-			{ $sort: { impressions: -1 } }
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'new_taxonamy',
+					as: 'extra_details1'
+				}
+			},
+			{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+			{ $sort: { impressions: -1 } },
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+				}
+			},
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', {} ] }
+				}
+			}
 		]).allowDiskUse(true);
 		res.status(200).json({ audio: resultaudio, display: resultdisplay, video: resultvideo });
 	} catch (err) {
@@ -1519,6 +1594,47 @@ router.put('/editcategorydata', adminauth, async (req, res) => {
 		res.status(200).json('Updated Successfuly!');
 	} catch (err) {
 		res.status(400).json({ error: err.message });
+	}
+});
+
+router.put('/creativewisereports', adminauth, async (req, res) => {
+	try {
+		// console.log(11);
+		const { campaignId } = req.body;
+
+		var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : [];
+		const result = await CampaignModel.aggregate([
+			{ $match: { campaignId: { $in: ids } } },
+			{
+				$group: {
+					_id: { creativeset: '$creativesetId' },
+					campaignId: { $push: '$campaignId' },
+					impression: { $sum: '$impression' },
+					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+					SovClickTracking: { $sum: '$SovClickTracking' },
+					start: { $sum: '$start' },
+					midpoint: { $sum: '$midpoint' },
+					thirdQuartile: { $sum: '$thirdQuartile' },
+					complete: { $sum: '$complete' },
+					createdOn: { $push: '$createdOn' }
+				}
+			},
+			{ $addFields: { creative_id: { $toObjectId: '$_id.creativeset' } } },
+			{
+				$lookup: {
+					from: 'creativesets',
+					localField: 'creative_id',
+					foreignField: '_id',
+					as: 'extra_details'
+				}
+			},
+			{ $unwind: '$extra_details' },
+			{ $sort: { impression: -1 } }
+		]).allowDiskUse(true);
+		res.status(200).json(result);
+	} catch (err) {
+		console.log(err.message);
+		res.status(400).json({ error: err });
 	}
 });
 

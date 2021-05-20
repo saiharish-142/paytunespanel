@@ -46,7 +46,7 @@ export default function(state = initialState, action) {
 		case LOAD_USER_FAIL:
 			return {
 				...state,
-				isAuthenticated: true,
+				isAuthenticated: false,
 				isLoading: false,
 				error: 'Failed to load Try again'
 			};

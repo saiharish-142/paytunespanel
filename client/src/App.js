@@ -23,8 +23,8 @@ import Phonedata from './screens/phonedata';
 import Zipdata from './screens/zipdata';
 import { loadUser, networkError } from './redux/actions/authAction';
 import { useDispatch, useSelector } from 'react-redux';
-import MLoader from './components/loaders/MLoader';
 import Categorydata from './screens/Categorydata';
+import PreLoader from './components/loaders/PreLoader';
 
 export const UserContext = createContext();
 export const IdContext = createContext();
@@ -49,7 +49,9 @@ function App() {
 	useEffect(
 		() => {
 			if (user) {
-				dispatch({ type: 'USER', payload: user.user });
+				if (user.user) {
+					dispatch({ type: 'USER', payload: user.user });
+				}
 			} else {
 				return <Redirect to="/login" />;
 			}
@@ -73,8 +75,19 @@ function App() {
 		return (
 			<React.Fragment>
 				<Navbar />
-				<MLoader />
+				{/* <MLoader /> */}
+				<PreLoader />
 			</React.Fragment>
+		);
+	}
+	if (user && !user.isAuthenticated) {
+		return (
+			<div className="App">
+				<Navbar />
+				<BrowserRouter>
+					<Route path="/login" render={() => <Login />} />
+				</BrowserRouter>
+			</div>
 		);
 	}
 	return (
