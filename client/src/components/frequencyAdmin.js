@@ -45,7 +45,7 @@ function FrequencyAdmin({ title, report, state1 }) {
 								<TableCell>Frequency</TableCell>
 								{adss &&
 									adss.map((x, i) => {
-										return <TableCell key={i}>{x.frequency}</TableCell>;
+										return <TableCell key={i}>{x._id}</TableCell>;
 									})}
 								<TableCell />
 							</TableRow>
