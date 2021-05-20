@@ -16,9 +16,13 @@ var categoryreportsSchema1 = new Schema({
 categoryreportsSchema1.index({ category: 1 });
 
 categoryreportsSchema1.statics.load = function(id, cb) {
-	this.findOne({
-		_id: id
-	}).exec(cb);
+    this.findOne({
+            _id: id
+        })
+        .exec(cb);
 };
+var categoryreportObj1 = mongoose.model('categoryreports2', categoryreportsSchema1);
+module.exports = categoryreportObj1;
+	
 
-mongoose.model('categoryreports2', categoryreportsSchema1);
+

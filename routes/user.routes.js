@@ -40,6 +40,7 @@ router.post('/signin',(req,res)=>{
     if(!email || !password){
         return res.status(422).json({error:"please enter all fields"})
     }
+    console.log(1)
     admin.findOne({email:email})
     .then(saveduser => {
         if(!saveduser){

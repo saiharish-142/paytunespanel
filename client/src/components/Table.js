@@ -15,6 +15,7 @@ import Auditable from './auditable.js';
 import PincodeAdmin from './pincodeAdmin.js';
 import PhoneModelAdmin from './PhoneModelAdmin';
 import IbaReportAdmin from './ibaReportAdmin';
+import CreativeReport from './creative_report';
 import FrequencyAdmin from './frequencyAdmin';
 import PublisherAdmin from './PublisherAdmin';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
@@ -42,6 +43,7 @@ export default function BasicTable({ singlead }) {
 	const [ pincodereports, setpincodereports ] = useState([]);
 	const [ phoneModelReports, setphoneModelReports ] = useState([]);
 	const [ ibaReports, setibaReports ] = useState([]);
+	const [creativereports,setcreative]=useState([]);
 	const [ frequencyReport, setfrequencyReport ] = useState([]);
 	// const [logs, setlogs] = useState([])
 	const [ spentdata, setspentdata ] = useState([]);
@@ -81,6 +83,7 @@ export default function BasicTable({ singlead }) {
 				pincodeDataPuller(singlead.ids);
 				PhoneModelDataPuller(singlead.ids);
 				IbaDataPuller(singlead.ids);
+				Creativedata(singlead.ids);
 				FrequencyPuller(singlead.ids);
 			}
 		},
@@ -183,6 +186,29 @@ export default function BasicTable({ singlead }) {
 				.catch((err) => console.log(err));
 		}
 	};
+
+	const Creativedata=(idsa)=>{
+
+		if (idsa) {
+			fetch('/subrepo/creativewisereports', {
+				method: 'put',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: 'Bearer ' + localStorage.getItem('jwt')
+				},
+				body: JSON.stringify({
+					campaignId: idsa
+				})
+			})
+				.then((res) => res.json())
+				.then((result) => {
+					console.log(result);
+					setcreative(result);
+				})
+				.catch((err) => console.log(err));
+		}
+	}
+
 	// iba data of all data
 	const FrequencyPuller = (idsa) => {
 		console.log(idsa);
@@ -1149,6 +1175,40 @@ export default function BasicTable({ singlead }) {
 				arrowRetuner={arrowRetuner}
 				report={pincodereports && pincodereports.video}
 			/>
+			<div
+				style={{
+					margin: '10px auto',
+					fontSize: 'larger',
+					width: 'fit-content',
+					fontWeight: '500',
+					borderBottom: '1px solid black'
+				}}
+			>
+				Creative Wise Summary Report
+			</div>
+			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+			{/* {PincodeTable('audio', pincodereports && pincodereports.audio)} */}
+			<CreativeReport
+				// title="Audio"
+				state1={state1}
+				tablesorter={tablesorter}
+				arrowRetuner={arrowRetuner}
+				report={creativereports  }
+			/>
+			{/* <IbaReportAdmin
+				title="Display"
+				state1={state1}
+				tablesorter={tablesorter}
+				arrowRetuner={arrowRetuner}
+				report={ibaReports && ibaReports.display}
+			/>
+			<IbaReportAdmin
+				title="Video"
+				state1={state1}
+				tablesorter={tablesorter}
+				arrowRetuner={arrowRetuner}
+				report={ibaReports && ibaReports.video}
+			/> */}
 			{/* <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Model Wise Summary Report</div>
         <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
         <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.audio} url='phonemakebycampids' />

@@ -1,20 +1,25 @@
-const express = require('express');
-const router = express.Router();
-const mongoose = require('mongoose');
-const phonemakereports = mongoose.model('phonemakereports');
-const zipreports = mongoose.model('zipreports');
-const uniqueuserreports = mongoose.model('uniqueuserreports');
-const regionreports = mongoose.model('regionreports');
-const pptypereports = mongoose.model('pptypereports');
-const platformtypereports = mongoose.model('platformtypereports');
-const citylanguagereports = mongoose.model('citylanguagereports');
-const phonemodelreports = mongoose.model('phonemodelreports');
-const spentreports = mongoose.model('spentreports');
-const phonemodel2 = mongoose.model('phonemodel2reports');
-const Zipreports2 = mongoose.model('zipreports2');
-const CategoryReports2 = mongoose.model('categoryreports2');
-const CategoryReports = mongoose.model('categoryreports');
-const adminauth = require('../authenMiddleware/adminauth');
+const express = require('express')
+const router = express.Router()
+const mongoose = require('mongoose')
+const phonemakereports = mongoose.model('phonemakereports')
+const zipreports = mongoose.model('zipreports')
+const uniqueuserreports = mongoose.model('uniqueuserreports')
+const regionreports = mongoose.model('regionreports')
+const pptypereports = mongoose.model('pptypereports')
+const platformtypereports = mongoose.model('platformtypereports')
+const citylanguagereports = mongoose.model('citylanguagereports')
+const phonemodelreports = mongoose.model('phonemodelreports')
+const spentreports = mongoose.model('spentreports')
+const CampaignModel=require('../models/campaignwisereports.model')
+const phonemodel2=require('../models/phonemodel2reports')
+const Zipreports2=require('../models/zipdata2reports')
+const CategoryReports2=require('../models/categoryreports2')
+const CategoryReports=require('../models/categoryreports')
+const adminauth  = require('../authenMiddleware/adminauth')
+
+
+
+
 
 router.get('/phonemake', adminauth, (req, res) => {
 	phonemakereports
@@ -980,67 +985,109 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 	var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
 	try {
 		const resultaudio = await CategoryReports.aggregate([
-			{ $match: { campaignId: { $in: audio } } },
-			{
-				$group: {
-					_id: { category: '$category' },
-					impressions: { $sum: '$impression' },
-					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
-					SovClickTracking: { $sum: '$SovClickTracking' }
-				}
-			},
-			{
-				$lookup: {
-					from: 'categoryreports2',
-					localField: '_id.category',
-					foreignField: 'category',
-					as: 'extra_details'
-				}
-			},
-			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-			{ $sort: { impressions: -1 } }
+			{$match:{campaignId:{$in:audio}}},
+            {$group:{_id:{category:"$category"},
+            impressions:{"$sum":"$impression"},
+            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+            SovClickTracking:{$sum:"$SovClickTracking"}
+        }},
+        {$lookup:{
+            from:'categoryreports2',
+            localField:'_id.category',
+            foreignField:'category',
+            as:'extra_details'
+        }},
+        {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
+        {$lookup:{
+            from:'categoryreports2',
+            localField:'_id.category',
+            foreignField:'new_taxonamy',
+            as:'extra_details1'
+        }},
+        {$unwind:{path:"$extra_details1",preserveNullAndEmptyArrays:true}},
+        {$sort:{"impressions":-1}},
+        {$project:{
+            impressions:1,
+            CompanionClickTracking: 1,
+            SovClickTracking: 1,
+            extra_details:{$ifNull:['$extra_details','$extra_details1']}
+        }},
+        {$project:{
+            impressions:1,
+            CompanionClickTracking: 1,
+            SovClickTracking: 1,
+            extra_details:{$ifNull:['$extra_details',{}]}
+        }}
 		]).allowDiskUse(true);
 		const resultdisplay = await CategoryReports.aggregate([
-			{ $match: { campaignId: { $in: display } } },
-			{
-				$group: {
-					_id: { category: '$category' },
-					impressions: { $sum: '$impression' },
-					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
-					SovClickTracking: { $sum: '$SovClickTracking' }
-				}
-			},
-			{
-				$lookup: {
-					from: 'categoryreports2',
-					localField: '_id.category',
-					foreignField: 'category',
-					as: 'extra_details'
-				}
-			},
-			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-			{ $sort: { impressions: -1 } }
+			{$match:{campaignId:{$in:display}}},
+            {$group:{_id:{category:"$category"},
+            impressions:{"$sum":"$impression"},
+            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+            SovClickTracking:{$sum:"$SovClickTracking"}
+        }},
+        {$lookup:{
+            from:'categoryreports2',
+            localField:'_id.category',
+            foreignField:'category',
+            as:'extra_details'
+        }},
+        {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
+        {$lookup:{
+            from:'categoryreports2',
+            localField:'_id.category',
+            foreignField:'new_taxonamy',
+            as:'extra_details1'
+        }},
+        {$unwind:{path:"$extra_details1",preserveNullAndEmptyArrays:true}},
+        {$sort:{"impressions":-1}},
+        {$project:{
+            impressions:1,
+            CompanionClickTracking: 1,
+            SovClickTracking: 1,
+            extra_details:{$ifNull:['$extra_details','$extra_details1']}
+        }},
+        {$project:{
+            impressions:1,
+            CompanionClickTracking: 1,
+            SovClickTracking: 1,
+            extra_details:{$ifNull:['$extra_details',{}]}
+        }}
 		]).allowDiskUse(true);
 		const resultvideo = await CategoryReports.aggregate([
-			{ $match: { campaignId: { $in: video } } },
-			{
-				$group: {
-					_id: { category: '$category' },
-					impressions: { $sum: '$impression' },
-					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
-					SovClickTracking: { $sum: '$SovClickTracking' }
-				}
-			},
-			{
-				$lookup: {
-					from: 'categoryreports2',
-					localField: '_id.category',
-					foreignField: 'category',
-					as: 'extra_details'
-				}
-			},
-			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-			{ $sort: { impressions: -1 } }
+			{$match:{campaignId:{$in:video}}},
+            {$group:{_id:{category:"$category"},
+            impressions:{"$sum":"$impression"},
+            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
+            SovClickTracking:{$sum:"$SovClickTracking"}
+        }},
+        {$lookup:{
+            from:'categoryreports2',
+            localField:'_id.category',
+            foreignField:'category',
+            as:'extra_details'
+        }},
+        {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
+        {$lookup:{
+            from:'categoryreports2',
+            localField:'_id.category',
+            foreignField:'new_taxonamy',
+            as:'extra_details1'
+        }},
+        {$unwind:{path:"$extra_details1",preserveNullAndEmptyArrays:true}},
+        {$sort:{"impressions":-1}},
+        {$project:{
+            impressions:1,
+            CompanionClickTracking: 1,
+            SovClickTracking: 1,
+            extra_details:{$ifNull:['$extra_details','$extra_details1']}
+        }},
+        {$project:{
+            impressions:1,
+            CompanionClickTracking: 1,
+            SovClickTracking: 1,
+            extra_details:{$ifNull:['$extra_details',{}]}
+        }}
 		]).allowDiskUse(true);
 		res.status(200).json({ audio: resultaudio, display: resultdisplay, video: resultvideo });
 	} catch (err) {
@@ -1103,37 +1150,6 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 });
 
 ///////////////////  new apis //////////////////////////////
-
-router.post('/categorywisereports', adminauth, async (req, res) => {
-	try {
-		let { campaignId } = req.body;
-		var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : [];
-		const result = await CategoryReports.aggregate([
-			{ $match: { campaignId: { $in: ids } } },
-			{
-				$group: {
-					_id: { category: '$category' },
-					impressions: { $sum: '$impression' },
-					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
-					SovClickTracking: { $sum: '$SovClickTracking' }
-				}
-			},
-			{
-				$lookup: {
-					from: 'categoryreports2',
-					localField: '_id.category',
-					foreignField: 'category',
-					as: 'extra_details'
-				}
-			},
-			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-			{ $sort: { impressions: -1 } }
-		]).allowDiskUse(true);
-		res.status(200).json(result);
-	} catch (err) {
-		res.status(400).json({ error: err.message });
-	}
-});
 
 router.put('/editphonedata', adminauth, async (req, res) => {
 	try {
@@ -1521,5 +1537,46 @@ router.put('/editcategorydata', adminauth, async (req, res) => {
 		res.status(400).json({ error: err.message });
 	}
 });
+
+router.put(
+	'/creativewisereports',
+	adminauth,
+	async(req,res)=>{
+		try{
+			console.log(11)
+			const { campaignId } = req.body;
+			
+		var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : [];
+		const result=await CampaignModel.aggregate([
+			
+			{$match:{campaignId:{$in:ids}}},
+					{$group:{_id:{creativeset:'$creativesetId'},
+					campaignId: { $push: '$campaignId' },
+					impression: { $sum: '$impression' },
+					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+					SovClickTracking: { $sum: '$SovClickTracking' },
+					start: { $sum: '$start' },
+					midpoint: { $sum: '$midpoint' },
+					thirdQuartile: { $sum: '$thirdQuartile' },
+					complete: { $sum: '$complete' },
+					createdOn: { $push: '$createdOn' }
+				}},
+				{$addFields:{"creative_id":{"$toObjectId":"$_id.creativeset"}}},
+				{$lookup:{
+					from: 'creativesets',
+					localField: 'creative_id',
+					foreignField: '_id',
+					as: 'extra_details'
+				}},
+				{$unwind:"$extra_details"},
+				{$sort:{impression:-1}}
+		]).allowDiskUse(true)
+		res.status(200).json(result)
+		}catch(err){
+			console.log(err.message)
+			res.status(400).json({error:err})
+		}
+	}
+)
 
 module.exports = router;
