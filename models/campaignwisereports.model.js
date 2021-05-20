@@ -9,6 +9,8 @@ var campaignwisereportsSchema = new Schema({
     ssp: String,
     creativesetId: String,
     language: String,
+    apppubid: String,
+    ssp: String,
     requests: Number,
     ads: Number, ///AdServed
     servedAudioImpressions: Number,
@@ -31,11 +33,10 @@ var campaignwisereportsSchema = new Schema({
 });
 campaignwisereportsSchema.index({ date: 1 });
 
-campaignwisereportsSchema.statics.load = function(id, cb) {
-    this.findOne({
-            _id: id
-        })
-        .exec(cb);
-};
-var campaignwisereportObj = mongoose.model('campaignwisereports', campaignwisereportsSchema);
-module.exports = campaignwisereportObj;
+campaignwisereportsSchema.virtual('Apppubid', {
+    ref: 'apppublishers', // The model to use
+    localField: 'apppubid', // The field in playerListSchema
+    foreignField: 'publisherid', // The field on videoSchema. This can be whatever you want.
+});
+
+mongoose.model('campaignwisereports',campaignwisereportsSchema)

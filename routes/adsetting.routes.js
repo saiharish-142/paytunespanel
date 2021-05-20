@@ -26,7 +26,7 @@ router.put('/addetail',adminauth,(req,res)=>{
     .catch(err => res.status(400).json(err))
 })
 
-router.put('/addetailt',adminauth,(req,res)=>{  //check campaignids for the searched titlename 
+router.put('/addetailt',adminauth,(req,res)=>{
     const { campaignId } = req.body
     var ids = (typeof campaignId !== 'undefined' && 
                 typeof campaignId !== 'string' && 
@@ -80,7 +80,7 @@ router.put('/addetailt',adminauth,(req,res)=>{  //check campaignids for the sear
             audio = [...new Set(audio)];
             display = [...new Set(display)];
             video = [...new Set(video)];
-            spear = [...new Set(spear)];  // any id which isnt in above three
+            spear = [...new Set(spear)];
             res.json({reu,audio,display,video,spear,vidimpression,audimpression,disimpression})
         }
     })

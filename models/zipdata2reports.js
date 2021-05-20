@@ -22,5 +22,5 @@ zipreports2Schema.statics.load = function(id, cb) {
         })
         .exec(cb);
 };
-var zipreportObj2 = mongoose.model('zipreports2', zipreports2Schema);
-module.exports = zipreportObj2;
+
+mongoose.model('zipreports2', zipreports2Schema);

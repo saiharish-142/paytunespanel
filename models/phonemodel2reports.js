@@ -19,5 +19,5 @@ phonemodel2reportsSchema.statics.load = function(id, cb) {
         })
         .exec(cb);
 };
-var phonemodel2reportObj = mongoose.model('phonemodel2reports', phonemodel2reportsSchema);
-module.exports = phonemodel2reportObj;
+
+mongoose.model('phonemodel2reports', phonemodel2reportsSchema);

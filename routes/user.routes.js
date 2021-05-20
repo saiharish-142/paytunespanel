@@ -43,10 +43,8 @@ router.post('/signin',(req,res)=>{
     admin.findOne({email:email})
     .then(saveduser => {
         if(!saveduser){
-            console.log(1)
             return res.status(422).json({error:"Invalid Email or Password"})
         }
-        console.log(saveduser)
         bcrypt.compare(password,saveduser.password)
         .then(doMatch =>{
             if(doMatch){
@@ -101,7 +99,7 @@ router.get('/users',adminauth,(req,res)=>{
     .catch(err=>res.status(422).json(err))
 })
 
-router.get('/:id',adminauth,(req,res)=>{
+router.get('/id/:id',adminauth,(req,res)=>{
     // if(req.user.usertype !== 'admin'){
     //     return res.json({message:'You Should be an admin'})
     // }
@@ -111,6 +109,12 @@ router.get('/:id',adminauth,(req,res)=>{
         res.json(erre)
     })
     .catch(err=>res.status(422).json(err))
+})
+
+router.get('/loggedUser',adminauth,(req,res,next)=>{
+    var data = res.locals.user;
+    // console.log(data)
+    res.json(data)
 })
 
 router.put('/addbundleOrcampaigns',adminauth,(req,res)=>{

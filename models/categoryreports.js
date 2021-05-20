@@ -32,5 +32,5 @@ categoryreportsSchema.statics.load = function(id, cb) {
         })
         .exec(cb);
 };
-var categoryreportObj = mongoose.model('categoryreports', categoryreportsSchema);
-module.exports = categoryreportObj;
+
+mongoose.model('categoryreports', categoryreportsSchema);

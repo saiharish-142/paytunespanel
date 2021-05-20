@@ -17,8 +17,8 @@ resreportsSchema.statics.load = function(id, cb) {
         })
         .exec(cb);
 };
-var resreportObj = mongoose.model('resreport', resreportsSchema);
-module.exports = resreportObj;
+
+mongoose.model('resreport', resreportsSchema);
 //req
 //date, ssp, rtbtype 
 //res

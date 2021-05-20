@@ -3,13 +3,11 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const Rtbrequest = mongoose.model('rtbrequests')
 const adminauth  = require('../authenMiddleware/adminauth')
-const Reqreport=require('../models/reqreports')
-const Resreport=require('../models/resreports')
-const Campaignwisereports=require('../models/campaignwisereports.model')
-const SpentReport=require('../models/spentreports')
-const campaignwisereportsModel = require('../models/campaignwisereports.model')
-
-
+const Reqreport = mongoose.model('reqreport')
+const Resreport = mongoose.model('resreport')
+// const Campaignwisereports=require('../models/campaignwisereports.model')
+const SpentReport = mongoose.model('spentreports')
+const Campaignwisereports = mongoose.model('campaignwisereports')
 
 router.get('/rtbrs',adminauth,(req,res)=>{
     Rtbrequest.find()
@@ -167,7 +165,7 @@ router.get(
                     appName:"$app_details.AppName",
                     impressions:1
                 }},
-                 {$sort:{impressions:-1}}
+                {$sort:{impressions:-1}}
             ])
             res.status(200).json(result)
 
