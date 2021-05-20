@@ -742,62 +742,73 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 				$facet: {
 					audio: [
 						{ $match: { campaignId: { $in: audio } } },
-						// {$addFields:{"temp_phone":"$phoneModel"}},
-						// {$project:{phoneModel:{$toLower:'$phoneModel'},
-						//     campaignId:"$campaignId",
-						//     impression:"$impression",
-						//     CompanionClickTracking:"$CompanionClickTracking",
-						//     SovClickTracking:"$SovClickTracking",
-						//     start:"$start",
-						//     midpoint:"$midpoint",
-						//     thirdQuartile:"$thirdQuartile",
-						//     complete:"$complete",
-						//     createdOn:"$createdOn",
-						//     temp_phone:1
-						// }},
 						{
 							$lookup: {
 								from: 'phonemodel2reports',
 								localField: 'phoneModel',
 								foreignField: 'make_model',
-								as: 'extra'
+								as: 'extra_details'
 							}
 						},
-						{ $unwind: { path: '$extra', preserveNullAndEmptyArrays: true } },
+						{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+						{
+							$project: {
+								phoneModel: 1,
+								impression: 1,
+								extra_details: {
+									$ifNull: [
+										'$extra_details',
+										{
+											make_model: '',
+											cost: '',
+											cumulative: '',
+											release: '',
+											company: '',
+											type: '',
+											total_percent: '',
+											model: '',
+											combined_make_model: ''
+										}
+									]
+								}
+							}
+						},
+						{
+							$match: {
+								$or: [
+									{ 'extra_details.make_model': '' },
+									{ 'extra_details.cumulative': '' },
+									{ 'extra_details.release': '' },
+									{ 'extra_details.company': '' },
+									{ 'extra_details.type': '' },
+									{ 'extra_details.total_percent': '' },
+									{ 'extra_details.model': '' },
+									{ 'extra_details.cost': '' }
+								]
+							}
+						},
 						{
 							$group: {
-								_id: { combined_make_and_model: '$extra.combined_make_model' },
-								campaignId: { $push: '$campaignId' },
-								impression: { $sum: '$impression' },
-								CompanionClickTracking: { $sum: '$CompanionClickTracking' },
-								SovClickTracking: { $sum: '$SovClickTracking' },
-								start: { $sum: '$start' },
-								midpoint: { $sum: '$midpoint' },
-								thirdQuartile: { $sum: '$thirdQuartile' },
-								complete: { $sum: '$complete' },
-								createdOn: { $push: '$createdOn' },
-								extra: { $first: '$extra' }
-								// cost:{$first:"$extra.cost"},
-								// release:{$first:"$extra.release"},
-								// type:{$first:"$extra.type"}
+								_id: { combined_make_model: '$extra_details.combined_make_model' },
+								impressions: { $sum: '$impression' },
+								extra: { $first: '$extra_details' }
 							}
 						},
 						{
 							$project: {
-								phoneModel: '$_id.combined_make_and_model',
-								campaignId: '$_id.campaignId',
-								impression: 1,
-								CompanionClickTracking: 1,
-								SovClickTracking: 1,
-								start: 1,
-								midpoint: 1,
-								thirdQuartile: 1,
-								complete: 1,
-								createdOn: 1,
-								_id: 0,
-								extra: '$extra'
+								impressions: 1,
+								make_model: '$_id.make_model',
+								cost: '$extra.cost',
+								cumulative: '$extra.cumulative',
+								release: '$extra.release',
+								company: '$extra.company',
+								type: '$extra.type',
+								model: '$extra.model',
+								total_percent: '$extra.total_percent',
+								combined_make_and_model: '$extra.combined_make_model'
 							}
-						}
+						},
+						{ $sort: { impressions: -1 } }
 					],
 					display: [
 						{ $match: { campaignId: { $in: display } } },
@@ -819,45 +830,68 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 								from: 'phonemodel2reports',
 								localField: 'phoneModel',
 								foreignField: 'make_model',
-								as: 'extra'
+								as: 'extra_details'
 							}
 						},
-						{ $unwind: { path: '$extra', preserveNullAndEmptyArrays: true } },
-						{
-							$group: {
-								_id: { combined_make_and_model: '$extra.combined_make_model' },
-								campaignId: { $push: '$campaignId' },
-								impression: { $sum: '$impression' },
-								CompanionClickTracking: { $sum: '$CompanionClickTracking' },
-								SovClickTracking: { $sum: '$SovClickTracking' },
-								start: { $sum: '$start' },
-								midpoint: { $sum: '$midpoint' },
-								thirdQuartile: { $sum: '$thirdQuartile' },
-								complete: { $sum: '$complete' },
-								createdOn: { $push: '$createdOn' },
-								extra: { $first: '$extra' }
-								// cost:{$first:"$extra.cost"},
-								// release:{$first:"$extra.release"},
-								// type:{$first:"$extra.type"}
-							}
-						},
-
+						{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
 						{
 							$project: {
-								phoneModel: '$_id.combined_make_and_model',
-								campaignId: '$_id.campaignId',
+								phoneModel: 1,
 								impression: 1,
-								CompanionClickTracking: 1,
-								SovClickTracking: 1,
-								start: 1,
-								midpoint: 1,
-								thirdQuartile: 1,
-								complete: 1,
-								createdOn: 1,
-								_id: 0,
-								extra: '$extra'
+								extra_details: {
+									$ifNull: [
+										'$extra_details',
+										{
+											make_model: '',
+											cost: '',
+											cumulative: '',
+											release: '',
+											company: '',
+											type: '',
+											total_percent: '',
+											model: '',
+											combined_make_model: ''
+										}
+									]
+								}
 							}
-						}
+						},
+						{
+							$match: {
+								$or: [
+									{ 'extra_details.make_model': '' },
+									{ 'extra_details.cumulative': '' },
+									{ 'extra_details.release': '' },
+									{ 'extra_details.company': '' },
+									{ 'extra_details.type': '' },
+									{ 'extra_details.total_percent': '' },
+									{ 'extra_details.model': '' },
+									{ 'extra_details.cost': '' }
+								]
+							}
+						},
+						{
+							$group: {
+								_id: { combined_make_model: '$extra_details.combined_make_model' },
+								impressions: { $sum: '$impression' },
+								extra: { $first: '$extra_details' }
+							}
+						},
+						{
+							$project: {
+								impressions: 1,
+								make_model: '$_id.make_model',
+								cost: '$extra.cost',
+								cumulative: '$extra.cumulative',
+								release: '$extra.release',
+								company: '$extra.company',
+								type: '$extra.type',
+								model: '$extra.model',
+								total_percent: '$extra.total_percent',
+								combined_make_and_model: '$extra.combined_make_model'
+							}
+						},
+						{ $sort: { impressions: -1 } }
 					],
 					video: [
 						{ $match: { campaignId: { $in: video } } },
@@ -879,45 +913,68 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 								from: 'phonemodel2reports',
 								localField: 'phoneModel',
 								foreignField: 'make_model',
-								as: 'extra'
+								as: 'extra_details'
 							}
 						},
-						{ $unwind: { path: '$extra', preserveNullAndEmptyArrays: true } },
-						{
-							$group: {
-								_id: { combined_make_and_model: '$extra.combined_make_model' },
-								campaignId: { $push: '$campaignId' },
-								impression: { $sum: '$impression' },
-								CompanionClickTracking: { $sum: '$CompanionClickTracking' },
-								SovClickTracking: { $sum: '$SovClickTracking' },
-								start: { $sum: '$start' },
-								midpoint: { $sum: '$midpoint' },
-								thirdQuartile: { $sum: '$thirdQuartile' },
-								complete: { $sum: '$complete' },
-								createdOn: { $push: '$createdOn' },
-								extra: { $first: '$extra' }
-								// cost:{$first:"$extra.cost"},
-								// release:{$first:"$extra.release"},
-								// type:{$first:"$extra.type"}
-							}
-						},
-
+						{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
 						{
 							$project: {
-								phoneModel: '$_id.combined_make_and_model',
-								campaignId: '$_id.campaignId',
+								phoneModel: 1,
 								impression: 1,
-								CompanionClickTracking: 1,
-								SovClickTracking: 1,
-								start: 1,
-								midpoint: 1,
-								thirdQuartile: 1,
-								complete: 1,
-								createdOn: 1,
-								_id: 0,
-								extra: '$extra'
+								extra_details: {
+									$ifNull: [
+										'$extra_details',
+										{
+											make_model: '',
+											cost: '',
+											cumulative: '',
+											release: '',
+											company: '',
+											type: '',
+											total_percent: '',
+											model: '',
+											combined_make_model: ''
+										}
+									]
+								}
 							}
-						}
+						},
+						{
+							$match: {
+								$or: [
+									{ 'extra_details.make_model': '' },
+									{ 'extra_details.cumulative': '' },
+									{ 'extra_details.release': '' },
+									{ 'extra_details.company': '' },
+									{ 'extra_details.type': '' },
+									{ 'extra_details.total_percent': '' },
+									{ 'extra_details.model': '' },
+									{ 'extra_details.cost': '' }
+								]
+							}
+						},
+						{
+							$group: {
+								_id: { combined_make_model: '$extra_details.combined_make_model' },
+								impressions: { $sum: '$impression' },
+								extra: { $first: '$extra_details' }
+							}
+						},
+						{
+							$project: {
+								impressions: 1,
+								make_model: '$_id.make_model',
+								cost: '$extra.cost',
+								cumulative: '$extra.cumulative',
+								release: '$extra.release',
+								company: '$extra.company',
+								type: '$extra.type',
+								model: '$extra.model',
+								total_percent: '$extra.total_percent',
+								combined_make_and_model: '$extra.combined_make_model'
+							}
+						},
+						{ $sort: { impressions: -1 } }
 					]
 				}
 			}
@@ -1600,15 +1657,39 @@ router.put('/editcategorydata', adminauth, async (req, res) => {
 
 router.put('/creativewisereports', adminauth, async (req, res) => {
 	try {
-		// console.log(11);
+		console.log(11);
 		const { campaignId } = req.body;
 
 		var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : [];
-		const result = await Campaignwisereports.aggregate([
+		const result = await CampaignModel.aggregate([
 			{ $match: { campaignId: { $in: ids } } },
 			{
+				$project: {
+					creativeid: { $ifNull: [ '$creativesetId', null ] },
+					campaignId: 1,
+					impression: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					start: 1,
+					midpoint: 1,
+					thirdQuartile: 1,
+					complete: 1,
+					createdOn: 1
+				}
+			},
+			{ $addFields: { creative_id: { $toObjectId: '$creativeid' } } },
+			{
+				$lookup: {
+					from: 'creativesets',
+					localField: 'creative_id',
+					foreignField: '_id',
+					as: 'extra_details'
+				}
+			},
+			{ $unwind: '$extra_details' },
+			{
 				$group: {
-					_id: { creativeset: '$creativesetId' },
+					_id: { creativeset: '$extra_details.name' },
 					campaignId: { $push: '$campaignId' },
 					impression: { $sum: '$impression' },
 					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
@@ -1620,16 +1701,6 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 					createdOn: { $push: '$createdOn' }
 				}
 			},
-			{ $addFields: { creative_id: { $toObjectId: '$_id.creativeset' } } },
-			{
-				$lookup: {
-					from: 'creativesets',
-					localField: 'creative_id',
-					foreignField: '_id',
-					as: 'extra_details'
-				}
-			},
-			{ $unwind: '$extra_details' },
 			{ $sort: { impression: -1 } }
 		]).allowDiskUse(true);
 		res.status(200).json(result);
