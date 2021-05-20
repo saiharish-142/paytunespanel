@@ -41,7 +41,7 @@ function Creative_Report({ title, report, state1 }) {
 	return (
 		<Paper>
 			<TableContainer style={{ margin: '20px 0' }}>
-				<div style={{ margin: '5px', fontWeight: 'bolder' }}>{title} Report</div>
+				{/* <div style={{ margin: '5px', fontWeight: 'bolder' }}>{title} Report</div> */}
 				{adss && adss.length > 0 ? (
 					<Table className={classes.table} aria-label="simple table">
 						<TableHead>
@@ -49,7 +49,6 @@ function Creative_Report({ title, report, state1 }) {
 								<TableCell>Creative Set</TableCell>
 								<TableCell>Status</TableCell>
 								<TableCell>Impressions</TableCell>
-								<TableCell>Served Audio Impressions</TableCell>
 								<TableCell>Clicks</TableCell>
 								<TableCell>CTR</TableCell>
 								<TableCell />
@@ -60,18 +59,10 @@ function Creative_Report({ title, report, state1 }) {
 								return (
 									<TableRow key={i}>
 										<TableCell component="th" scope="row">
-											{row._id.creativeset ? row._id.creativeset : ''}
+											{row.extra_details ? row.extra_details.name : ''}
 										</TableCell>
-										<TableCell>{row.extra_details ? row.extra_details.Name : ''}</TableCell>
-										<TableCell>{row.extra_details ? row.extra_details.tier1 : ''}</TableCell>
-										<TableCell>{row.extra_details ? row.extra_details.tier2 : ''}</TableCell>
-										<TableCell>{row.extra_details ? row.extra_details.tier3 : ''}</TableCell>
-										<TableCell>{row.extra_details ? row.extra_details.tier4 : ''}</TableCell>
-										<TableCell>
-											{row.extra_details ? row.extra_details.genderCategory : ''}
-										</TableCell>
-										<TableCell>{row.extra_details ? row.extra_details.AgeCategory : ''}</TableCell>
-										<TableCell>{row.impressions ? row.impressions : ''}</TableCell>
+										<TableCell>{row.extra_details ? row.extra_details.status : ''}</TableCell>
+										<TableCell>{row ? row.impression : ''}</TableCell>
 										<TableCell>
 											{parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)}
 										</TableCell>
@@ -85,12 +76,12 @@ function Creative_Report({ title, report, state1 }) {
 												100 +
 												'%'}
 										</TableCell>
-										<TableCell
+										{/* <TableCell
 											className="mangeads__report"
 											onClick={() => history.push(`/manageAds/${state1}/detailed`)}
 										>
 											Detailed Report
-										</TableCell>
+										</TableCell> */}
 									</TableRow>
 								);
 							})}

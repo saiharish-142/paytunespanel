@@ -39,4 +39,4 @@ campaignwisereportsSchema.virtual('Apppubid', {
     foreignField: 'publisherid', // The field on videoSchema. This can be whatever you want.
 });
 
-mongoose.model('campaignwisereports',campaignwisereportsSchema)
+module.exports=mongoose.model('campaignwisereports',campaignwisereportsSchema)
