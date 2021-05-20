@@ -55,9 +55,18 @@ router.put('/sumfrequency', adminauth, (req, res) => {
 		.aggregate([
 			{
 				$facet: {
-					audio: [ { $match: { campaignId: { $in: audio } } } ],
-					display: [ { $match: { campaignId: { $in: display } } } ],
-					video: [ { $match: { campaignId: { $in: video } } } ]
+					audio: [
+						{ $match: { campaignId: { $in: audio } } },
+						{ $group: { _id: '$frequency', users: { $sum: '$users' } } }
+					],
+					display: [
+						{ $match: { campaignId: { $in: display } } },
+						{ $group: { _id: '$frequency', users: { $sum: '$users' } } }
+					],
+					video: [
+						{ $match: { campaignId: { $in: video } } },
+						{ $group: { _id: '$frequency', users: { $sum: '$users' } } }
+					]
 				}
 			}
 		])
