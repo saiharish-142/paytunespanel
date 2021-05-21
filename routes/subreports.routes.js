@@ -804,7 +804,7 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 					},
 					{
 						$project: {
-							impression: 1,
+							impression: "$impressions",
 							phoneModel: '$_id.combined_make_model',
 							extra:"$extra",
 							CompanionClickTracking:1,
@@ -819,7 +819,7 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 							//combined_make_and_model: '$extra.make_model'
 						}
 					},
-					{ $sort: { impressions: -1 } }
+					{ $sort: { impression: -1 } }
 					],
 					display: [
 						{ $match: { campaignId: { $in: display } } },
@@ -893,7 +893,7 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 					},
 					{
 						$project: {
-							impression: 1,
+							impression: "$impressions",
 							phoneModel: '$_id.combined_make_model',
 							extra:"$extra",
 							CompanionClickTracking:1,
@@ -908,7 +908,7 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 							//combined_make_and_model: '$extra.make_model'
 						}
 					},
-					{ $sort: { impressions: -1 } }
+					{ $sort: { impression: -1 } }
 					],
 					video: [
 						{ $match: { campaignId: { $in: video } } },
@@ -982,7 +982,7 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 					},
 					{
 						$project: {
-							impression: 1,
+							impression: "$impressions",
 							phoneModel: '$_id.combined_make_model',
 							extra:"$extra",
 							CompanionClickTracking:1,
@@ -997,7 +997,7 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 							//combined_make_and_model: '$extra.make_model'
 						}
 					},
-					{ $sort: { impressions: -1 } }
+					{ $sort: { impression: -1 } }
 						
 					]
 				}
