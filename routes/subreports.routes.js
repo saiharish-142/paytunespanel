@@ -779,20 +779,20 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 							}
 						}
 					},
-					{
-						$match: {
-							$or: [
-								{ 'extra_details.make_model': '' },
-								{ 'extra_details.cumulative': '' },
-								{ 'extra_details.release': '' },
-								{ 'extra_details.company': '' },
-								{ 'extra_details.type': '' },
-								{ 'extra_details.total_percent': '' },
-								{ 'extra_details.model': '' },
-								{ 'extra_details.cost': '' }
-							]
-						}
-					},
+					// {
+					// 	$match: {
+					// 		$or: [
+					// 			{ 'extra_details.make_model': '' },
+					// 			{ 'extra_details.cumulative': '' },
+					// 			{ 'extra_details.release': '' },
+					// 			{ 'extra_details.company': '' },
+					// 			{ 'extra_details.type': '' },
+					// 			{ 'extra_details.total_percent': '' },
+					// 			{ 'extra_details.model': '' },
+					// 			{ 'extra_details.cost': '' }
+					// 		]
+					// 	}
+					// },
 					{
 						$group: {
 							_id: { combined_make_model: '$extra_details.combined_make_model' },
