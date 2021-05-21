@@ -1686,7 +1686,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 		const { campaignId } = req.body;
 
 		var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : [];
-		const result = await CampaignModel.aggregate([
+		const result = await Campaignwisereports.aggregate([
 			{ $match: { campaignId: { $in: ids } } },
 			{
 				$project: {
