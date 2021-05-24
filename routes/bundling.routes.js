@@ -14,7 +14,7 @@ router.get('/', adminauth, (req, res) => {
 			var reodat = result;
 			reodat.map((x) => {
 				var remainingdays = 0;
-				var d1 = new Date(ad.endDate);
+				var d1 = new Date(x.endDate);
 				var d2 = new Date(Date.now());
 				// console.log(d1,d2)
 				var show = d1.getTime() - d2.getTime();
