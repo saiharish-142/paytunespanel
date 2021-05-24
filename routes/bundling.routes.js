@@ -23,6 +23,7 @@ router.get('/', adminauth, (req, res) => {
 					remainingdays = 'completed campaign';
 				}
 				x.remainingDays = remainingdays;
+				return x;
 			});
 			res.json(result);
 		})
