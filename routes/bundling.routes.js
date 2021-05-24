@@ -26,7 +26,10 @@ router.get('/', adminauth, (req, res) => {
 			});
 			res.json(result);
 		})
-		.catch((err) => res.status(422).json({ error: 'Error occured....!', err }));
+		.catch((err) => {
+			console.log(err);
+			res.status(422).json({ error: 'Error occured....!', err });
+		});
 });
 
 router.get('/names', adminauth, (req, res) => {
