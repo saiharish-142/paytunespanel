@@ -25,7 +25,7 @@ router.get('/', adminauth, (req, res) => {
 				x.remainingDays = remainingdays;
 				return x;
 			});
-			res.json(result);
+			res.json(reodat);
 		})
 		.catch((err) => {
 			console.log(err);
