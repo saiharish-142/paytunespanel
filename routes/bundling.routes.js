@@ -10,22 +10,8 @@ router.get('/', adminauth, (req, res) => {
 	bindstreamingads
 		.find()
 		.populate('ids', '_id AdTitle Category Advertiser Pricing PricingModel startDate endDate')
-		.then((result) => {
-			var reodat = result;
-			reodat.map((x) => {
-				var remainingdays = 0;
-				var d1 = new Date(x.endDate);
-				var d2 = new Date(Date.now());
-				// console.log(d1,d2)
-				var show = d1.getTime() - d2.getTime();
-				remainingdays = show / (1000 * 3600 * 24);
-				if (remainingdays < 0) {
-					remainingdays = 'completed campaign';
-				}
-				x.remainingDays = remainingdays;
-				return x;
-			});
-			res.json(reodat);
+		.then(async (result) => {
+			res.json(result);
 		})
 		.catch((err) => {
 			console.log(err);
