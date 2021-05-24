@@ -742,80 +742,79 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 				$facet: {
 					audio: [
 						{ $match: { campaignId: { $in: audio } } },
-						{
-							$lookup: {
-								from: 'phonemodel2reports',
-								localField: 'phoneModel',
-								foreignField: 'make_model',
-								as: 'extra_details'
-							}
-						},
-						{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-						{
-							$project: {
-								phoneModel: 1,
-								impression: 1,
-								CompanionClickTracking: 1,
-								SovClickTracking: 1,
-								extra_details: {
-									$ifNull: [
-										'$extra_details',
-										{
-											make_model: '',
-											cost: '',
-											cumulative: '',
-											release: '',
-											company: '',
-											type: '',
-											total_percent: '',
-											model: '',
-											combined_make_model: ''
-										}
-									]
-								}
-							}
-						},
-						{
-							$match: {
-								$or: [
-									{ 'extra_details.make_model': '' },
-									{ 'extra_details.cumulative': '' },
-									{ 'extra_details.release': '' },
-									{ 'extra_details.company': '' },
-									{ 'extra_details.type': '' },
-									{ 'extra_details.total_percent': '' },
-									{ 'extra_details.model': '' },
-									{ 'extra_details.cost': '' }
+						{$lookup: {
+							from: 'phonemodel2reports',
+							localField: 'phoneModel',
+							foreignField: 'make_model',
+							as: 'extra_details'
+						}
+					},
+					{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+					{
+						$project: {
+							phoneModel: 1,
+							impression: 1,
+							CompanionClickTracking:1,
+							SovClickTracking:1,
+							extra_details: {
+								$ifNull: [
+									'$extra_details',
+									{
+										make_model: '',
+										cost: '',
+										cumulative: '',
+										release: '',
+										company: '',
+										type: '',
+										total_percent: '',
+										model: '',
+										combined_make_model: ''
+									}
 								]
 							}
-						},
-						{
-							$group: {
-								_id: { combined_make_model: '$extra_details.combined_make_model' },
-								impressions: { $sum: '$impression' },
-								CompanionClickTracking: { $sum: '$CompanionClickTracking' },
-								SovClickTracking: { $sum: '$SovClickTracking' },
-								extra: { $first: '$extra_details' }
-							}
-						},
-						{
-							$project: {
-								impression: 1,
-								phoneModel: '$_id.combined_make_model',
-								extra: '$extra',
-								CompanionClickTracking: 1,
-								SovClickTracking: 1
-								// cost: '$extra.cost',
-								// cumulative: '$extra.cumulative',
-								// release: '$extra.release',
-								// company: '$extra.company',
-								// type: '$extra.type',
-								// model: '$extra.model',
-								// total_percent: '$extra.total_percent',
-								//combined_make_and_model: '$extra.make_model'
-							}
-						},
-						{ $sort: { impressions: -1 } }
+						}
+					},
+					// {
+					// 	$match: {
+					// 		$or: [
+					// 			{ 'extra_details.make_model': '' },
+					// 			{ 'extra_details.cumulative': '' },
+					// 			{ 'extra_details.release': '' },
+					// 			{ 'extra_details.company': '' },
+					// 			{ 'extra_details.type': '' },
+					// 			{ 'extra_details.total_percent': '' },
+					// 			{ 'extra_details.model': '' },
+					// 			{ 'extra_details.cost': '' }
+					// 		]
+					// 	}
+					// },
+					{
+						$group: {
+							_id: { combined_make_model: '$extra_details.combined_make_model' },
+							impressions: { $sum: '$impression' },
+							CompanionClickTracking:{$sum:"$CompanionClickTracking"},
+							SovClickTracking:{$sum:"$SovClickTracking"},
+							extra: { $first: '$extra_details' }
+						}
+					},
+					{
+						$project: {
+							impression: "$impressions",
+							phoneModel: '$_id.combined_make_model',
+							extra:"$extra",
+							CompanionClickTracking:1,
+							SovClickTracking:1
+							// cost: '$extra.cost',
+							// cumulative: '$extra.cumulative',
+							// release: '$extra.release',
+							// company: '$extra.company',
+							// type: '$extra.type',
+							// model: '$extra.model',
+							// total_percent: '$extra.total_percent',
+							//combined_make_and_model: '$extra.make_model'
+						}
+					},
+					{ $sort: { impression: -1 } }
 					],
 					display: [
 						{ $match: { campaignId: { $in: display } } },
@@ -832,80 +831,79 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 						//     createdOn:"$createdOn",
 						//     temp_phone:1
 						// }},
-						{
-							$lookup: {
-								from: 'phonemodel2reports',
-								localField: 'phoneModel',
-								foreignField: 'make_model',
-								as: 'extra_details'
-							}
-						},
-						{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-						{
-							$project: {
-								phoneModel: 1,
-								impression: 1,
-								CompanionClickTracking: 1,
-								SovClickTracking: 1,
-								extra_details: {
-									$ifNull: [
-										'$extra_details',
-										{
-											make_model: '',
-											cost: '',
-											cumulative: '',
-											release: '',
-											company: '',
-											type: '',
-											total_percent: '',
-											model: '',
-											combined_make_model: ''
-										}
-									]
-								}
-							}
-						},
-						{
-							$match: {
-								$or: [
-									{ 'extra_details.make_model': '' },
-									{ 'extra_details.cumulative': '' },
-									{ 'extra_details.release': '' },
-									{ 'extra_details.company': '' },
-									{ 'extra_details.type': '' },
-									{ 'extra_details.total_percent': '' },
-									{ 'extra_details.model': '' },
-									{ 'extra_details.cost': '' }
+						{$lookup: {
+							from: 'phonemodel2reports',
+							localField: 'phoneModel',
+							foreignField: 'make_model',
+							as: 'extra_details'
+						}
+					},
+					{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+					{
+						$project: {
+							phoneModel: 1,
+							impression: 1,
+							CompanionClickTracking:1,
+							SovClickTracking:1,
+							extra_details: {
+								$ifNull: [
+									'$extra_details',
+									{
+										make_model: '',
+										cost: '',
+										cumulative: '',
+										release: '',
+										company: '',
+										type: '',
+										total_percent: '',
+										model: '',
+										combined_make_model: ''
+									}
 								]
 							}
-						},
-						{
-							$group: {
-								_id: { combined_make_model: '$extra_details.combined_make_model' },
-								impressions: { $sum: '$impression' },
-								CompanionClickTracking: { $sum: '$CompanionClickTracking' },
-								SovClickTracking: { $sum: '$SovClickTracking' },
-								extra: { $first: '$extra_details' }
-							}
-						},
-						{
-							$project: {
-								impression: 1,
-								phoneModel: '$_id.combined_make_model',
-								extra: '$extra',
-								CompanionClickTracking: 1,
-								SovClickTracking: 1
-								// cost: '$extra.cost',
-								// cumulative: '$extra.cumulative',
-								// release: '$extra.release',
-								// company: '$extra.company',
-								// type: '$extra.type',
-								// model: '$extra.model',
-								// total_percent: '$extra.total_percent',
-								//combined_make_and_model: '$extra.make_model'
-							}
-						},
-						{ $sort: { impressions: -1 } }
+						}
+					},
+					// {
+					// 	$match: {
+					// 		$or: [
+					// 			{ 'extra_details.make_model': '' },
+					// 			{ 'extra_details.cumulative': '' },
+					// 			{ 'extra_details.release': '' },
+					// 			{ 'extra_details.company': '' },
+					// 			{ 'extra_details.type': '' },
+					// 			{ 'extra_details.total_percent': '' },
+					// 			{ 'extra_details.model': '' },
+					// 			{ 'extra_details.cost': '' }
+					// 		]
+					// 	}
+					// },
+					{
+						$group: {
+							_id: { combined_make_model: '$extra_details.combined_make_model' },
+							impressions: { $sum: '$impression' },
+							CompanionClickTracking:{$sum:"$CompanionClickTracking"},
+							SovClickTracking:{$sum:"$SovClickTracking"},
+							extra: { $first: '$extra_details' }
+						}
+					},
+					{
+						$project: {
+							impression: "$impressions",
+							phoneModel: '$_id.combined_make_model',
+							extra:"$extra",
+							CompanionClickTracking:1,
+							SovClickTracking:1
+							// cost: '$extra.cost',
+							// cumulative: '$extra.cumulative',
+							// release: '$extra.release',
+							// company: '$extra.company',
+							// type: '$extra.type',
+							// model: '$extra.model',
+							// total_percent: '$extra.total_percent',
+							//combined_make_and_model: '$extra.make_model'
+						}
+					},
+					{ $sort: { impression: -1 } }
 					],
 					video: [
 						{ $match: { campaignId: { $in: video } } },
@@ -922,80 +920,80 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 						//     createdOn:"$createdOn",
 						//     temp_phone:1
 						// }},
-						{
-							$lookup: {
-								from: 'phonemodel2reports',
-								localField: 'phoneModel',
-								foreignField: 'make_model',
-								as: 'extra_details'
-							}
-						},
-						{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-						{
-							$project: {
-								phoneModel: 1,
-								impression: 1,
-								CompanionClickTracking: 1,
-								SovClickTracking: 1,
-								extra_details: {
-									$ifNull: [
-										'$extra_details',
-										{
-											make_model: '',
-											cost: '',
-											cumulative: '',
-											release: '',
-											company: '',
-											type: '',
-											total_percent: '',
-											model: '',
-											combined_make_model: ''
-										}
-									]
-								}
-							}
-						},
-						{
-							$match: {
-								$or: [
-									{ 'extra_details.make_model': '' },
-									{ 'extra_details.cumulative': '' },
-									{ 'extra_details.release': '' },
-									{ 'extra_details.company': '' },
-									{ 'extra_details.type': '' },
-									{ 'extra_details.total_percent': '' },
-									{ 'extra_details.model': '' },
-									{ 'extra_details.cost': '' }
+						{$lookup: {
+							from: 'phonemodel2reports',
+							localField: 'phoneModel',
+							foreignField: 'make_model',
+							as: 'extra_details'
+						}
+					},
+					{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+					{
+						$project: {
+							phoneModel: 1,
+							impression: 1,
+							CompanionClickTracking:1,
+							SovClickTracking:1,
+							extra_details: {
+								$ifNull: [
+									'$extra_details',
+									{
+										make_model: '',
+										cost: '',
+										cumulative: '',
+										release: '',
+										company: '',
+										type: '',
+										total_percent: '',
+										model: '',
+										combined_make_model: ''
+									}
 								]
 							}
-						},
-						{
-							$group: {
-								_id: { combined_make_model: '$extra_details.combined_make_model' },
-								impressions: { $sum: '$impression' },
-								CompanionClickTracking: { $sum: '$CompanionClickTracking' },
-								SovClickTracking: { $sum: '$SovClickTracking' },
-								extra: { $first: '$extra_details' }
-							}
-						},
-						{
-							$project: {
-								impression: 1,
-								phoneModel: '$_id.combined_make_model',
-								extra: '$extra',
-								CompanionClickTracking: 1,
-								SovClickTracking: 1
-								// cost: '$extra.cost',
-								// cumulative: '$extra.cumulative',
-								// release: '$extra.release',
-								// company: '$extra.company',
-								// type: '$extra.type',
-								// model: '$extra.model',
-								// total_percent: '$extra.total_percent',
-								//combined_make_and_model: '$extra.make_model'
-							}
-						},
-						{ $sort: { impressions: -1 } }
+						}
+					},
+					// {
+					// 	$match: {
+					// 		$or: [
+					// 			{ 'extra_details.make_model': '' },
+					// 			{ 'extra_details.cumulative': '' },
+					// 			{ 'extra_details.release': '' },
+					// 			{ 'extra_details.company': '' },
+					// 			{ 'extra_details.type': '' },
+					// 			{ 'extra_details.total_percent': '' },
+					// 			{ 'extra_details.model': '' },
+					// 			{ 'extra_details.cost': '' }
+					// 		]
+					// 	}
+					// },
+					{
+						$group: {
+							_id: { combined_make_model: '$extra_details.combined_make_model' },
+							impressions: { $sum: '$impression' },
+							CompanionClickTracking:{$sum:"$CompanionClickTracking"},
+							SovClickTracking:{$sum:"$SovClickTracking"},
+							extra: { $first: '$extra_details' }
+						}
+					},
+					{
+						$project: {
+							impression: "$impressions",
+							phoneModel: '$_id.combined_make_model',
+							extra:"$extra",
+							CompanionClickTracking:1,
+							SovClickTracking:1
+							// cost: '$extra.cost',
+							// cumulative: '$extra.cumulative',
+							// release: '$extra.release',
+							// company: '$extra.company',
+							// type: '$extra.type',
+							// model: '$extra.model',
+							// total_percent: '$extra.total_percent',
+							//combined_make_and_model: '$extra.make_model'
+						}
+					},
+					{ $sort: { impression: -1 } }
+						
 					]
 				}
 			}
