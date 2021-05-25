@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const StreamingAds = mongoose.model('streamingads')
 const Report = mongoose.model('Report')
 const phonemakereports = mongoose.model('phonemakereports')
+const PhoneModelreports=require('../models/phonemodelreports')
 const publisherapps = mongoose.model('publisherapps')
 const adminauth  = require('../authenMiddleware/adminauth')
 
