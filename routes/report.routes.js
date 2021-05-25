@@ -699,10 +699,17 @@ adminauth,
 async(req,res)=>{
     try{
         const { campaignId } = req.body;
-	    const dumd = [];
-	    let ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+        let audio=campaignId.audio?campaignId.audio.map((audio)=>mongoose.Types.ObjectId(audio)):[]
+	    let video=campaignId.video?campaignId.video.map((audio)=>mongoose.Types.ObjectId(audio)):[]
+        let display=campaignId.display?campaignId.audio.map((audio)=>mongoose.Types.ObjectId(audio)):[]
+        let arr=[]
+        arr=arr.concat(audio)
+        arr=arr.concat(video)
+        arr=arr.concat(display)
+	    // const dumd = [];
+	    // let ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
         const phone = await PhoneModelreports.aggregate([
-			{$match:{campaignId:{$in:ids}}},
+			{$match:{campaignId:{$in:arr}}},
             {
 				$lookup: {
 					from: 'phonemodel2reports',
