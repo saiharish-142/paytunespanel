@@ -694,4 +694,91 @@ router.delete('/singedelte',adminauth,(req,res)=>{
 //     })
 // })
 
+router.put('/detailedphonemodelreports',
+adminauth,
+async(req,res)=>{
+    try{
+        const { campaignId } = req.body;
+	    const dumd = [];
+	    let ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+        const phone = await PhoneModelreports.aggregate([
+			{$match:{campaignId:{$in:ids}}},
+            {
+				$lookup: {
+					from: 'phonemodel2reports',
+					localField: 'phoneModel',
+					foreignField: 'make_model',
+					as: 'extra_details'
+				}
+			},
+			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+			{
+				$project: {
+					phoneModel: 1,
+					impression: 1,
+                    
+					extra_details: {
+						$ifNull: [
+							'$extra_details',
+							{
+								make_model: '',
+								cost: '',
+								cumulative: '',
+								release: '',
+								company: '',
+								type: '',
+								total_percent: '',
+								model: '',
+								combined_make_model: ''
+							}
+						]
+					}
+				}
+			},
+			{
+				$match: {
+					$or: [
+						{ 'extra_details.make_model': '' },
+						{ 'extra_details.release': '' },
+						{ 'extra_details.company': '' },
+						{ 'extra_details.type': '' },
+						{ 'extra_details.total_percent': '' },
+						{ 'extra_details.model': '' },
+						{ 'extra_details.cost': '' }
+					]
+				}
+			},
+			{
+				$group: {
+					_id: { make_model: '$phoneModel' },
+					impressions: { $sum: '$impression' },
+					extra: { $first: '$extra_details' }
+				}
+			},
+			{
+				$project: {
+					impressions: 1,
+					make_model: '$_id.make_model',
+					cost: '$extra.cost',
+					cumulative: '$extra.cumulative',
+					release: '$extra.release',
+					company: '$extra.company',
+					type: '$extra.type',
+					model: '$extra.model',
+					total_percent: '$extra.total_percent',
+					combined_make_and_model: '$extra.combined_make_model'
+				}
+			},
+			{ $sort: { impressions: -1 } }
+		]);
+
+		res.status(200).json(phone);
+    }catch(err){
+        console.log(err.message)
+        res.status(400).json({err:err.message})
+    }   
+}
+)
+
+
 module.exports = router
