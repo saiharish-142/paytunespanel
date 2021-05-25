@@ -386,19 +386,19 @@ export default function DetailedTable() {
 	useEffect(
 		() => {
 			if (ids ) {
-				let arr=[]
-				ids.audio.forEach((audio)=>
-				{
-					arr.push(audio)
-				})
-				ids.video.forEach((audio)=>
-				{
-					arr.push(audio)
-				})
-				ids.display.forEach((audio)=>
-				{
-					arr.push(audio)
-				})
+				// let arr=[]
+				// ids.audio.forEach((audio)=>
+				// {
+				// 	arr.push(audio)
+				// })
+				// ids.video.forEach((audio)=>
+				// {
+				// 	arr.push(audio)
+				// })
+				// ids.display.forEach((audio)=>
+				// {
+				// 	arr.push(audio)
+				// })
 				fetch('/report/detailedphonemodelreports', {
 					method: 'put',
 					headers: {
@@ -406,7 +406,7 @@ export default function DetailedTable() {
 						Authorization: 'Bearer ' + localStorage.getItem('jwt')
 					},
 					body: JSON.stringify({
-						campaignId: arr
+						campaignId: ids
 					})
 				})
 					.then((res) => res.json())
