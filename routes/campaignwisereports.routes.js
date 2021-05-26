@@ -768,15 +768,15 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				.catch((err) => console.log(err));
 			response.audio = await StreamingAds.populate(response.audio, {
 				path: 'campaignId',
-				select: '_id startDate endDate'
+				select: '_id TargetImpressions startDate endDate'
 			}).catch((err) => console.log(err));
 			response.display = await StreamingAds.populate(response.display, {
 				path: 'campaignId',
-				select: '_id startDate endDate'
+				select: '_id TargetImpressions startDate endDate'
 			}).catch((err) => console.log(err));
 			response.video = await StreamingAds.populate(response.video, {
 				path: 'campaignId',
-				select: '_id startDate endDate'
+				select: '_id TargetImpressions startDate endDate'
 			}).catch((err) => console.log(err));
 			response.audio &&
 				response.audio.map((x) => {
