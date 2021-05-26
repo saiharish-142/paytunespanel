@@ -461,6 +461,77 @@ cron.schedule('10 00 * * *', function() {
 	uniqueMaker(date);
 });
 
+//Pincode 
+
+cron.schedule('00 1 * * *', function(){
+    var d = new Date()
+    d.setDate(d.getDate());
+    if(d.getDate() < 10){
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+    }else{
+        if(d.getMonth()+1 > 10){
+        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
+        else{
+        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
+    }
+    var currentTime = new Date();
+    var currentOffset = currentTime.getTimezoneOffset();
+    var ISTOffset = 330;   // IST offset UTC +5:30 
+    var ISTTime = new Date(currentTime.getTime() + (ISTOffset*2 + currentOffset -5)*60000);
+    console.log(ISTTime,date)
+    PincodeRefresher(date,ISTTime)
+})
+
+async function PincodeRefresher(date,ist){
+    const date1=date.toString()
+	const ZipModelReports=require('./models/zipreports')
+	const Zipreports2=require('./models/zipdata2reports')
+    const pincodes=await ZipModelReports.aggregate([
+        {$project:{
+            test:{ $dateToString:{format: "%Y-%m-%d", date: "$createdOn"} },
+            zip:"$zip",
+            impression:"$impression",
+            CompanionClickTracking:1,
+            SovClickTracking:1
+        }},
+        {$match:{test:date1}},
+        {$group:{_id:{zip:"$zip"},
+        CompanionClickTracking:{$sum:"$CompanionClickTracking"},
+        SovClickTracking:{$sum:"$SovClickTracking"},
+        impressions:{$sum:"$impression"}
+    }}
+    ])
+    pincodes.forEach(async(pincode)=>{
+        console.log(pincode.zip)
+        const match=await Zipreports2.findOne({pincode:pincode._id.zip})
+       if(!match){
+            const newzip=new Zipreports2({
+                area:"", 
+                pincode:pincode._id.zip,
+                lowersubcity:"",
+                subcity:"",
+                city:"",
+                grandcity:"",
+                district:"",
+                comparison:"",
+                state:"",
+                grandstate:"",
+                latitude:"",
+                longitude:"",
+                impression:pincode.impressions,
+                click:pincode.CompanionClickTracking+pincode.SovClickTracking
+            })
+            await newzip.save()
+       }else{
+        const updateddoc= await Zipreports2.findOneAndUpdate({pincode:pincode._id.zip},{$inc:{impression:pincode.impressions,click:pincode.CompanionClickTracking+pincode.SovClickTracking}},{new:true})
+        console.log('updated',updateddoc)
+    }
+    })
+}
+
 async function uniqueMaker({ date }) {
 	let uniqueids = await trackinglogs
 		.distinct('campaignId', { date: date, type: 'impression' })

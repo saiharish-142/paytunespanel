@@ -1394,90 +1394,91 @@ router.get('/phonedata', adminauth, async (req, res) => {
 
 router.get('/zipdata', adminauth, async (req, res) => {
 	try {
-		// const result=await Zipreports2.aggregate([
-		//     {$match:{ $or:[{area:""},
-		//     {pincode:""},
-		//     {city:""},
-		//     {district:""},
-		//     {state:""},
-		//     {latitude:""},
-		//     {longitude:""},
-		// ]}},
-		// ])
+		const result=await Zipreports2.aggregate([
+		    {$match:{ $or:[{area:""},
+		    // {pincode:""},
+		    {city:""},
+		    {district:""},
+		    {state:""},
+		    {latitude:""},
+		    {longitude:""},
+		]}},
+		{$sort:{impression:-1}}
+		])
 
-		const result = await zipreports.aggregate([
-			{
-				$lookup: {
-					from: 'zipreports2',
-					localField: 'zip',
-					foreignField: 'pincode',
-					as: 'extra_details'
-				}
-			},
-			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-			{
-				$project: {
-					zip: 1,
-					impression: 1,
-					extra_details: {
-						$ifNull: [
-							'$extra_details',
-							{
-								area: '',
-								pincode: '',
-								lowersubcity: '',
-								subcity: '',
-								city: '',
-								grandcity: '',
-								district: '',
-								comparison: '',
-								state: '',
-								grandstate: '',
-								latitude: '',
-								longitude: ''
-							}
-						]
-					}
-				}
-			},
-			{
-				$match: {
-					$or: [
-						{ 'extra_details.area': '' },
-						{ 'extra_details.pincode': '' },
-						{ 'extra_details.city': '' },
-						{ 'extra_details.district': '' },
-						{ 'extra_details.state': '' },
-						{ 'extra_details.latitude': '' },
-						{ 'extra_details.longitude': '' }
-					]
-				}
-			},
-			{
-				$group: {
-					_id: { pincode: '$zip' },
-					impressions: { $sum: '$impression' },
-					extra: { $first: '$extra_details' }
-					//_id:{$first:"$_id"}
-				}
-			},
-			{
-				$project: {
-					impressions: 1,
-					pincode: '$_id.pincode',
-					area: '$extra.area',
-					subcity: '$extra.subcity',
-					city: '$extra.city',
-					grandcity: '$extra.grandcity',
-					district: '$extra.district',
-					state: '$extra.state',
-					grandstate: '$extra.grandstate',
-					latitude: '$extra.latitude',
-					longitude: '$extra.longitude'
-				}
-			},
-			{ $sort: { impressions: -1 } }
-		]);
+		// const result = await zipreports.aggregate([
+		// 	{
+		// 		$lookup: {
+		// 			from: 'zipreports2',
+		// 			localField: 'zip',
+		// 			foreignField: 'pincode',
+		// 			as: 'extra_details'
+		// 		}
+		// 	},
+		// 	{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+		// 	{
+		// 		$project: {
+		// 			zip: 1,
+		// 			impression: 1,
+		// 			extra_details: {
+		// 				$ifNull: [
+		// 					'$extra_details',
+		// 					{
+		// 						area: '',
+		// 						pincode: '',
+		// 						lowersubcity: '',
+		// 						subcity: '',
+		// 						city: '',
+		// 						grandcity: '',
+		// 						district: '',
+		// 						comparison: '',
+		// 						state: '',
+		// 						grandstate: '',
+		// 						latitude: '',
+		// 						longitude: ''
+		// 					}
+		// 				]
+		// 			}
+		// 		}
+		// 	},
+		// 	{
+		// 		$match: {
+		// 			$or: [
+		// 				{ 'extra_details.area': '' },
+		// 				{ 'extra_details.pincode': '' },
+		// 				{ 'extra_details.city': '' },
+		// 				{ 'extra_details.district': '' },
+		// 				{ 'extra_details.state': '' },
+		// 				{ 'extra_details.latitude': '' },
+		// 				{ 'extra_details.longitude': '' }
+		// 			]
+		// 		}
+		// 	},
+		// 	{
+		// 		$group: {
+		// 			_id: { pincode: '$zip' },
+		// 			impressions: { $sum: '$impression' },
+		// 			extra: { $first: '$extra_details' }
+		// 			//_id:{$first:"$_id"}
+		// 		}
+		// 	},
+		// 	{
+		// 		$project: {
+		// 			impressions: 1,
+		// 			pincode: '$_id.pincode',
+		// 			area: '$extra.area',
+		// 			subcity: '$extra.subcity',
+		// 			city: '$extra.city',
+		// 			grandcity: '$extra.grandcity',
+		// 			district: '$extra.district',
+		// 			state: '$extra.state',
+		// 			grandstate: '$extra.grandstate',
+		// 			latitude: '$extra.latitude',
+		// 			longitude: '$extra.longitude'
+		// 		}
+		// 	},
+		// 	{ $sort: { impressions: -1 } }
+		// ]);
 
 		res.status(200).json(result);
 	} catch (err) {

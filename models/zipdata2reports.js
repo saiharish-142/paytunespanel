@@ -12,7 +12,9 @@ var zipreports2Schema = new Schema({
     state:String,
     grandstate:String,
     latitude:String,
-    longitude:String
+    longitude:String,
+    impression:Number,
+    click:Number
 });
 zipreports2Schema.index({ zip: 1 });
 
@@ -23,4 +25,4 @@ zipreports2Schema.statics.load = function(id, cb) {
         .exec(cb);
 };
 
-mongoose.model('zipreports2', zipreports2Schema);
+module.exports=mongoose.model('zipreports2', zipreports2Schema);
