@@ -149,7 +149,7 @@ export default function Phonedata() {
 								{<TableCell />}
 							</TableRow>
 						</TableHead>
-						<TableBody style={{overflow:"auto",display:"block"}}>
+						<TableBody style={{overflow:"auto"}}>
 							{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
 								<TableRow key={row.name}>
 									<TableCell component="th" scope="row">
