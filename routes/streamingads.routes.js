@@ -693,7 +693,7 @@ router.put('/groupedsingle', adminauth, (req, res) => {
 						? data.id.map((id) => mongoose.Types.ObjectId(id))
 						: data.id;
 				let id_spliter = await adsetting
-					.find({ campaignId: { $in: ids } }, { campaignId: 1, type: 1 })
+					.find({ campaignId: { $in: ids } }, { campaignId: 1, type: 1, targetImpression: 1 })
 					.catch((err) => console.log(err));
 				data.ids = { audio: [], audimpression: 0, display: [], disimpression: 0, video: [], vidimpression: 0 };
 				data.TargetImpressions = [ ...new Set(data.TargetImpressions) ];
@@ -706,36 +706,39 @@ router.put('/groupedsingle', adminauth, (req, res) => {
 					audioids.map((x) => {
 						data.ids.audio.push(x.campaignId.toString());
 						selectedids.push(x.campaignId.toString());
-						data.TargetImpressions.map((tar) => {
-							// console.log(tar.id,x.campaignId,tar.id===x.campaignId,tar.id==x.campaignId,x.campaignId.equals(tar.id))
-							if (x.campaignId.equals(tar.id)) {
-								// console.log(tar)
-								data.ids.audimpression += parseInt(tar.TR);
-							}
-						});
+						data.ids.audimpression += parseInt(x.targetImpression);
+						// data.TargetImpressions.map((tar) => {
+						// 	// console.log(tar.id,x.campaignId,tar.id===x.campaignId,tar.id==x.campaignId,x.campaignId.equals(tar.id))
+						// 	if (x.campaignId.equals(tar.id)) {
+						// 		// console.log(tar)
+						// 		data.ids.audimpression += parseInt(tar.TR);
+						// 	}
+						// });
 					});
 					data.ids.audio = [ ...new Set(data.ids.audio) ];
 					// data.ids.audimpression = audioimpre;
 					displayids.map((x) => {
 						data.ids.display.push(x.campaignId.toString());
 						selectedids.push(x.campaignId.toString());
-						data.TargetImpressions.map((tar) => {
-							if (x.campaignId.equals(tar.id)) {
-								// console.log(tar)
-								data.ids.disimpression += parseInt(tar.TR);
-							}
-						});
+						data.ids.disimpression += parseInt(x.targetImpression);
+						// data.TargetImpressions.map((tar) => {
+						// 	if (x.campaignId.equals(tar.id)) {
+						// 		// console.log(tar)
+						// 		data.ids.disimpression += parseInt(tar.TR);
+						// 	}
+						// });
 					});
 					data.ids.display = [ ...new Set(data.ids.display) ];
 					videoids.map((x) => {
 						data.ids.video.push(x.campaignId.toString());
 						selectedids.push(x.campaignId.toString());
-						data.TargetImpressions.map((tar) => {
-							if (x.campaignId.equals(tar.id)) {
-								// console.log(tar)
-								data.ids.vidimpression += parseInt(tar.TR);
-							}
-						});
+						data.ids.vidimpression += parseInt(x.targetImpression);
+						// data.TargetImpressions.map((tar) => {
+						// 	if (x.campaignId.equals(tar.id)) {
+						// 		// console.log(tar)
+						// 		data.ids.vidimpression += parseInt(tar.TR);
+						// 	}
+						// });
 					});
 					data.ids.video = [ ...new Set(data.ids.video) ];
 					var leftids = [];
@@ -746,7 +749,7 @@ router.put('/groupedsingle', adminauth, (req, res) => {
 						await leftids.map((id) => data.ids.audio.push(id));
 						data.ids.audio = [ ...new Set(data.ids.audio) ];
 						data.ids.audio = removeDuplicates(data.ids.audio);
-						var tagr = data.TargetImpressions.filter((x) => leftids.includes(x.id));
+						// var tagr = data.TargetImpressions.filter((x) => leftids.includes(x.id));
 						// console.log(tagr)
 						// console.log(data.ids.audimpression,leftids,data.TargetImpressions)
 						leftids.map((x) => {
