@@ -23,8 +23,8 @@ import Phonedata from './screens/phonedata';
 import Zipdata from './screens/zipdata';
 import { loadUser, networkError } from './redux/actions/authAction';
 import { useDispatch, useSelector } from 'react-redux';
-import MLoader from './components/loaders/MLoader';
 import Categorydata from './screens/Categorydata';
+import PreLoader from './components/loaders/PreLoader';
 
 export const UserContext = createContext();
 export const IdContext = createContext();
@@ -49,7 +49,9 @@ function App() {
 	useEffect(
 		() => {
 			if (user) {
-				dispatch({ type: 'USER', payload: user.user });
+				if (user.user) {
+					dispatch({ type: 'USER', payload: user.user });
+				}
 			} else {
 				return <Redirect to="/login" />;
 			}
@@ -73,8 +75,19 @@ function App() {
 		return (
 			<React.Fragment>
 				<Navbar />
-				<MLoader />
+				{/* <MLoader /> */}
+				<PreLoader />
 			</React.Fragment>
+		);
+	}
+	if (user && !user.isAuthenticated) {
+		return (
+			<div className="App">
+				<Navbar />
+				<BrowserRouter>
+					<Route path="/login" render={() => <Login />} />
+				</BrowserRouter>
+			</div>
 		);
 	}
 	return (
@@ -89,165 +102,164 @@ function App() {
 								render={() => (state ? state.usertype === 'admin' && <Redirect to="/" /> : <Login />)}
 							/>
 							<Route path="/" exact render={() => (state ? <Home /> : <Redirect to="/login" />)} />
-							
 							{state && (
 								<React.Fragment>
-								<Route
-									path="/manageAds"
-									exact
-									render={() =>
-										state ? state.usertype === 'admin' ? (
-											<Dashboard />
-										) : (
-											<ClientManage />
-										) : (
-											<Redirect to="/login" />
-									)}
-								/>
-								<Route
-									path="/manageBundles"
-									exact
-									render={() =>
-										state ? state.usertype === 'admin' ? (
-											<DashboardBundle />
-										) : (
-											<ClientManage />
-										) : (
-											<Redirect to="/login" />
-										)}
-								/>
-								<Route
-									path="/bundleManage/createbundle"
-									exact
-									render={() =>
-										state ? state.usertype === 'admin' ? (
-											<CampaignBundle />
-										) : (
-											<Redirect to="/manageAds" />
-										) : (
-											<Redirect to="/login" />
-										)}
-								/>
-								<Route
-									path="/bundleManage/:bundlename/edit"
-									exact
-									render={() =>
-										state ? state.usertype === 'admin' ? (
-											<CampaignBundle />
-										) : (
-											<Redirect to="/manageAds" />
-										) : (
-											<Redirect to="/login" />
-										)}
-								/>
-								<Route
-									path="/clientSideCamp"
-									exact
-									render={() =>
-										state ? state.usertype === 'admin' ? (
-											<DashboardBundle clientview={true} />
-										) : (
-											<Redirect to="/manageAds" />
-										) : (
-											<Redirect to="/login" />
-										)}
-								/>
-								<Route
-									path="/manageusers"
-									exact
-									render={() =>
-										state ? state.usertype === 'admin' ? (
-											<ManageUser />
-										) : (
-											<Home />
-										) : (
-											<Redirect to="/login" />
-										)}
-								/>
-								<Route
-									path="/EditUser/:id"
-									exact
-									render={() =>
-										state ? state.usertype === 'admin' ? (
-											<EditUser />
-										) : (
-											<Home />
-										) : (
-											<Redirect to="/login" />
-										)}
-								/>
-								<Route
-									path="/manageAds/:campname"
-									exact
-									render={() =>
-										state ? state.usertype === 'admin' ? (
-											<Report />
-										) : (
-											<ClientReport />
-										) : (
-											<Redirect to="/login" />
-										)}
-								/>
-								<Route
-									path="/manageBundles/:campname"
-									exact
-									render={() =>
-										state ? state.usertype === 'admin' ? (
-											<ReportBundle />
-										) : (
-											<ClientReport />
-										) : (
-											<Redirect to="/login" />
-										)}
-								/>
-								<Route
-									path="/clientSideCamp/:campname"
-									exact
-									render={() =>
-										state ? state.usertype === 'admin' ? (
-											<ClientReport />
-										) : (
-											<Redirect to="/manageAds" />
-										) : (
-											<Redirect to="/login" />
-										)}
-								/>
-								<Route
-									path="/manageAds/:campname/detailed"
-									render={() =>
-										state ? state.usertype === 'admin' ? (
-											<DetailedTable />
-										) : (
-											<Redirect to={`/manageAds`} />
-										) : (
-											<Redirect to="/login" />
-										)}
-								/>
-								<Route
-									path="/manageBundles/:campname/detailed"
-									exact
-									render={() =>
-										state ? state.usertype === 'admin' ? (
-											<DetailedTableBundle />
-										) : (
-											<ClientReport />
-										) : (
-											<Redirect to="/login" />
-										)}
-								/>
-								<Route path="/biddata" exact render={() => (state ? <Biddata /> : <Biddata />)} />
-								<Route
-									path="/phonedata"
-									exact
-									render={() => (state ? <Phonedata /> : <Phonedata />)}
-								/>
-								<Route path="/zipdata" exact render={() => (state ? <Zipdata /> : <Zipdata />)} />
-								<Route
-									path="/categorydata"
-									exact
-									render={() => (state ? <Categorydata /> : <Categorydata />)}
-								/>
-							</React.Fragment>
+									<Route
+										path="/manageAds"
+										exact
+										render={() =>
+											state ? state.usertype === 'admin' ? (
+												<Dashboard />
+											) : (
+												<ClientManage />
+											) : (
+												<Redirect to="/login" />
+											)}
+									/>
+									<Route
+										path="/manageBundles"
+										exact
+										render={() =>
+											state ? state.usertype === 'admin' ? (
+												<DashboardBundle />
+											) : (
+												<ClientManage />
+											) : (
+												<Redirect to="/login" />
+											)}
+									/>
+									<Route
+										path="/bundleManage/createbundle"
+										exact
+										render={() =>
+											state ? state.usertype === 'admin' ? (
+												<CampaignBundle />
+											) : (
+												<Redirect to="/manageAds" />
+											) : (
+												<Redirect to="/login" />
+											)}
+									/>
+									<Route
+										path="/bundleManage/:bundlename/edit"
+										exact
+										render={() =>
+											state ? state.usertype === 'admin' ? (
+												<CampaignBundle />
+											) : (
+												<Redirect to="/manageAds" />
+											) : (
+												<Redirect to="/login" />
+											)}
+									/>
+									<Route
+										path="/clientSideCamp"
+										exact
+										render={() =>
+											state ? state.usertype === 'admin' ? (
+												<DashboardBundle clientview={true} />
+											) : (
+												<Redirect to="/manageAds" />
+											) : (
+												<Redirect to="/login" />
+											)}
+									/>
+									<Route
+										path="/manageusers"
+										exact
+										render={() =>
+											state ? state.usertype === 'admin' ? (
+												<ManageUser />
+											) : (
+												<Home />
+											) : (
+												<Redirect to="/login" />
+											)}
+									/>
+									<Route
+										path="/EditUser/:id"
+										exact
+										render={() =>
+											state ? state.usertype === 'admin' ? (
+												<EditUser />
+											) : (
+												<Home />
+											) : (
+												<Redirect to="/login" />
+											)}
+									/>
+									<Route
+										path="/manageAds/:campname"
+										exact
+										render={() =>
+											state ? state.usertype === 'admin' ? (
+												<Report />
+											) : (
+												<ClientReport />
+											) : (
+												<Redirect to="/login" />
+											)}
+									/>
+									<Route
+										path="/manageBundles/:campname"
+										exact
+										render={() =>
+											state ? state.usertype === 'admin' ? (
+												<ReportBundle />
+											) : (
+												<ClientReport />
+											) : (
+												<Redirect to="/login" />
+											)}
+									/>
+									<Route
+										path="/clientSideCamp/:campname"
+										exact
+										render={() =>
+											state ? state.usertype === 'admin' ? (
+												<ClientReport />
+											) : (
+												<Redirect to="/manageAds" />
+											) : (
+												<Redirect to="/login" />
+											)}
+									/>
+									<Route
+										path="/manageAds/:campname/detailed"
+										render={() =>
+											state ? state.usertype === 'admin' ? (
+												<DetailedTable />
+											) : (
+												<Redirect to={`/manageAds`} />
+											) : (
+												<Redirect to="/login" />
+											)}
+									/>
+									<Route
+										path="/manageBundles/:campname/detailed"
+										exact
+										render={() =>
+											state ? state.usertype === 'admin' ? (
+												<DetailedTableBundle />
+											) : (
+												<ClientReport />
+											) : (
+												<Redirect to="/login" />
+											)}
+									/>
+									<Route path="/biddata" exact render={() => (state ? <Biddata /> : <Biddata />)} />
+									<Route
+										path="/phonedata"
+										exact
+										render={() => (state ? <Phonedata /> : <Phonedata />)}
+									/>
+									<Route path="/zipdata" exact render={() => (state ? <Zipdata /> : <Zipdata />)} />
+									<Route
+										path="/categorydata"
+										exact
+										render={() => (state ? <Categorydata /> : <Categorydata />)}
+									/>
+								</React.Fragment>
 							)}
 						</BrowserRouter>
 					</div>

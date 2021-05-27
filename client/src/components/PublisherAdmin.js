@@ -90,6 +90,9 @@ function PublisherAdmin({
 									Publisher {arrowRetuner(sa === 'pub' ? '1' : sa === 'revpub' ? '2' : '3')}
 								</TableCell>
 								<TableCell>
+									Feed {arrowRetuner(sa === 'cat' ? '1' : sa === 'revcat' ? '2' : '3')}
+								</TableCell>
+								<TableCell>
 									SSP {arrowRetuner(sa === 'cat' ? '1' : sa === 'revcat' ? '2' : '3')}
 								</TableCell>
 								<TableCell>
@@ -144,6 +147,7 @@ function PublisherAdmin({
 								<TableCell>
 									Balance Impressions {arrowRetuner(sa === 'cat' ? '1' : sa === 'revcat' ? '2' : '3')}
 								</TableCell>
+								
 								<TableCell />
 							</TableRow>
 						</TableHead>
@@ -172,6 +176,9 @@ function PublisherAdmin({
 											) : (
 												log.Publisher.AppName
 											)}
+										</TableCell>
+										<TableCell>
+											{log.feed||log.feed==""?log.feed:"null"}
 										</TableCell>
 										<TableCell>
 											{log.apppubidpo && log.apppubidpo[0] && log.apppubidpo[0].ssp}
@@ -206,6 +213,7 @@ function PublisherAdmin({
 										<TableCell>
 											{parseInt(log.campaignId.TargetImpressions) - log.impressions}
 										</TableCell>
+										
 										<TableCell
 											className="mangeads__report"
 											onClick={() => history.push(`/manageAds/${state1}/detailed`)}

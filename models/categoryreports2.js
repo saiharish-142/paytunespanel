@@ -11,18 +11,14 @@ var categoryreportsSchema1 = new Schema({
 	tier4: String,
 	genderCategory: String,
 	AgeCategory: String,
-	new_taxonamy: String
+	new_taxonamy: Number
 });
 categoryreportsSchema1.index({ category: 1 });
 
 categoryreportsSchema1.statics.load = function(id, cb) {
-    this.findOne({
-            _id: id
-        })
-        .exec(cb);
+	this.findOne({
+		_id: id
+	}).exec(cb);
 };
-var categoryreportObj1 = mongoose.model('categoryreports2', categoryreportsSchema1);
-module.exports = categoryreportObj1;
-	
 
-
+mongoose.model('categoryreports2', categoryreportsSchema1);

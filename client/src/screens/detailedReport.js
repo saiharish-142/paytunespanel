@@ -23,6 +23,7 @@ export default function DetailedTable() {
 	const [ publishlogsd, setpublishlogsd ] = useState([]);
 	const [ datelogsv, setdatelogsv ] = useState([]);
 	const [ publishlogsv, setpublishlogsv ] = useState([]);
+	const [ phonedata, setphonedata]=useState([]);
 	const [ currentad, setcurrentad ] = useState('');
 	// id pusher to redux
 	useEffect(
@@ -373,6 +374,46 @@ export default function DetailedTable() {
 					.then((result) => {
 						// setdatelogsd(result)
 						offlinereportsdated(result);
+						// console.log(result)
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+			}
+		},
+		[ ids ]
+	);
+	useEffect(
+		() => {
+			if (ids ) {
+				// let arr=[]
+				// ids.audio.forEach((audio)=>
+				// {
+				// 	arr.push(audio)
+				// })
+				// ids.video.forEach((audio)=>
+				// {
+				// 	arr.push(audio)
+				// })
+				// ids.display.forEach((audio)=>
+				// {
+				// 	arr.push(audio)
+				// })
+				fetch('/report/detailedphonemodelreports', {
+					method: 'put',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + localStorage.getItem('jwt')
+					},
+					body: JSON.stringify({
+						campaignId: ids
+					})
+				})
+					.then((res) => res.json())
+					.then((result) => {
+						setphonedata(result)
+						// setpublishlogsv(result)
+						// offlinereportspublisherv(result);
 						// console.log(result)
 					})
 					.catch((err) => {
@@ -948,6 +989,69 @@ export default function DetailedTable() {
 					</TableBody>
 				</Table>
 			</TableContainer>
+			<TableContainer style={{ margin: '50px auto 0 auto', width: 'fit-content' }} component={Paper}>
+				<Typography variant="h6" id="tableTitle" component="div">
+					Phone Model wise Report
+				</Typography>
+				<div>last updated at - {datefinderpublisher()}</div>
+				<div style={{ margin: '5px', fontWeight: 'bolder' }}></div>
+				<Table
+					style={{ margin: '20px', width: 'fit-content', border: '1px lightgray solid' }}
+					aria-label="simple table"
+				>
+					<TableHead>
+						<TableRow>
+							<TableCell>Make_And_Model</TableCell>
+							<TableCell>Impressions</TableCell>
+							<TableCell>Release Month And Year</TableCell>
+							<TableCell>Release Cost</TableCell>
+							<TableCell>Company Name</TableCell>
+							<TableCell>Model</TableCell>
+							<TableCell>Type Of Device</TableCell>
+							<TableCell>% of Total</TableCell>
+							{/* <TableCell>Clicks</TableCell> */}
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{phonedata.length ? (
+							phonedata.map(
+								(row, i) =>
+									row && (
+										<TableRow key={i}>
+											<TableCell component="th" scope="row">
+												{row._id.make_model}
+											</TableCell>
+											<TableCell>
+												{row.impressions}
+											</TableCell>
+											<TableCell >{row.release}</TableCell>
+											<TableCell >{row.cost}</TableCell>
+											<TableCell>
+												{row.company}
+											</TableCell>
+											<TableCell>
+												{row.model}
+											</TableCell>
+											<TableCell>
+												{row.type}
+											</TableCell>
+											<TableCell>{row.total_percent}</TableCell>
+											{/* <TableCell >{row.clicks >= 0 ? (
+													Math.round(row.clicks * 100 / row.impressions * 100) / 100
+												) : (
+													Math.round(
+														row.CompanionClickTracking * 100 / row.impression * 100
+													) / 100
+												)}%</TableCell> */}
+										</TableRow>
+									)
+							)
+						) : (
+							'loading or No Data Found'
+						)}
+					</TableBody>
+				</Table>
+				</TableContainer>
 		</div>
 	);
 }

@@ -1,17 +1,15 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose')
+const {ObjectId} = mongoose.Schema.Types
 
-var Schema = mongoose.Schema;
-var campaignwisereportsSchema = new Schema({
+var campaignwisereportsSchema = new mongoose.Schema({
     date: { type: String },
-    campaignId: { type: Schema.Types.ObjectId, ref: 'streamingadObj' },
+    campaignId: { type: ObjectId, ref: 'streamingadObj' },
     appId: String,
-    apppubid: String,
-    ssp: String,
-    creativesetId: String,
     language: String,
     apppubid: String,
     ssp: String,
     requests: Number,
+    feed:String,
     ads: Number, ///AdServed
     servedAudioImpressions: Number,
     servedCompanionAds: Number,
@@ -31,7 +29,6 @@ var campaignwisereportsSchema = new Schema({
     SovClickTracking: Number,
     createdOn: { type: Date, default: Date.now },
 });
-campaignwisereportsSchema.index({ date: 1 });
 
 campaignwisereportsSchema.virtual('Apppubid', {
     ref: 'apppublishers', // The model to use
@@ -39,4 +36,4 @@ campaignwisereportsSchema.virtual('Apppubid', {
     foreignField: 'publisherid', // The field on videoSchema. This can be whatever you want.
 });
 
-module.exports=mongoose.model('campaignwisereports',campaignwisereportsSchema)
+mongoose.model('campaignwisereports',campaignwisereportsSchema)

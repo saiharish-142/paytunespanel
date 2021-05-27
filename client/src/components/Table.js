@@ -15,11 +15,11 @@ import Auditable from './auditable.js';
 import PincodeAdmin from './pincodeAdmin.js';
 import PhoneModelAdmin from './PhoneModelAdmin';
 import IbaReportAdmin from './ibaReportAdmin';
-import CreativeReport from './creative_report';
 import FrequencyAdmin from './frequencyAdmin';
 import PublisherAdmin from './PublisherAdmin';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
+import CreativeReport from './creative_report';
 
 const useStyles = makeStyles({
 	table: {
@@ -43,8 +43,8 @@ export default function BasicTable({ singlead }) {
 	const [ pincodereports, setpincodereports ] = useState([]);
 	const [ phoneModelReports, setphoneModelReports ] = useState([]);
 	const [ ibaReports, setibaReports ] = useState([]);
-	const [creativereports,setcreative]=useState([]);
 	const [ frequencyReport, setfrequencyReport ] = useState([]);
+	const [ creativereports, setcreative ] = useState([]);
 	// const [logs, setlogs] = useState([])
 	const [ spentdata, setspentdata ] = useState([]);
 	const [ ids, setids ] = useState({});
@@ -83,8 +83,8 @@ export default function BasicTable({ singlead }) {
 				pincodeDataPuller(singlead.ids);
 				PhoneModelDataPuller(singlead.ids);
 				IbaDataPuller(singlead.ids);
-				Creativedata(singlead.ids);
 				FrequencyPuller(singlead.ids);
+				Creativedata(singlead.id);
 			}
 		},
 		[ singlead ]
@@ -186,9 +186,8 @@ export default function BasicTable({ singlead }) {
 				.catch((err) => console.log(err));
 		}
 	};
-
-	const Creativedata=(idsa)=>{
-
+	const Creativedata = (idsa) => {
+		console.log(idsa);
 		if (idsa) {
 			fetch('/subrepo/creativewisereports', {
 				method: 'put',
@@ -207,13 +206,12 @@ export default function BasicTable({ singlead }) {
 				})
 				.catch((err) => console.log(err));
 		}
-	}
-
+	};
 	// iba data of all data
 	const FrequencyPuller = (idsa) => {
 		console.log(idsa);
 		if (idsa) {
-			fetch('/ifas/frequency', {
+			fetch('/ifas/sumfrequency', {
 				method: 'put',
 				headers: {
 					'Content-Type': 'application/json',
@@ -808,27 +806,34 @@ export default function BasicTable({ singlead }) {
 				ids && ids.audimpression + ids.disimpression + ids.vidimpression,
 				completespentfider('all') + spentOffline + spentOfflined + spentOfflinev
 			)}
-			{audioReport &&
-				SummaryTable(
-					'Audio',
-					audioReport,
-					ids && ids.audimpression,
-					completespentfider('audio') + spentOffline
-				)}
-			{displayReport &&
+			{ids && ids.audio && ids.audio.length ? (
+				audioReport &&
+				SummaryTable('Audio', audioReport, ids && ids.audimpression, completespentfider('audio') + spentOffline)
+			) : (
+				''
+			)}
+			{ids && ids.display && ids.display.length ? (
+				displayReport &&
 				SummaryTable(
 					'Display',
 					displayReport,
 					ids && ids.disimpression,
 					completespentfider('display') + spentOfflined
-				)}
-			{videoReport &&
+				)
+			) : (
+				''
+			)}
+			{ids && ids.video && ids.video.length ? (
+				videoReport &&
 				SummaryTable(
 					'Video',
 					videoReport,
 					ids && ids.vidimpression,
 					completespentfider('video') + spentOfflinev
-				)}
+				)
+			) : (
+				''
+			)}
 			<div
 				style={{
 					margin: '10px auto',
@@ -939,41 +944,106 @@ export default function BasicTable({ singlead }) {
 			</TableContainer>
 			<TableContainer style={{ margin: '20px 0' }} elevation={3} component={Paper}>
 				<div style={{ margin: '5px', fontWeight: 'bolder' }}>Publisher Wise</div>
-				<div style={{ margin: '5px', fontWeight: 'bolder' }}>Audio Type</div>
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableCell>Publisher</TableCell>
-							<TableCell>First Quartile</TableCell>
-							<TableCell>Second Quartile</TableCell>
-							<TableCell>Third Quartile</TableCell>
-							<TableCell>Complete</TableCell>
-							<TableCell>Total Impresions</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{audiologs ? (
-							audiologs.map((log, i) => {
-								if (!log.nameads) {
-									return (
-										<TableRow key={i}>
-											<TableCell>{log.Publisher.AppName}</TableCell>
-											<TableCell>{log.firstQuartile}</TableCell>
-											<TableCell>{log.midpoint}</TableCell>
-											<TableCell>{log.thirdQuartile}</TableCell>
-											<TableCell>{log.complete}</TableCell>
-											<TableCell>{log.impressions}</TableCell>
-										</TableRow>
-									);
-								}
-							})
-						) : (
-							<TableRow>
-								<TableCell>Loading or no data found</TableCell>
-							</TableRow>
-						)}
-					</TableBody>
-				</Table>
+				{ids && ids.audio && ids.audio.length ? (
+					<React.Fragment>
+						<div style={{ margin: '5px', fontWeight: 'bolder' }}>Audio Type</div>
+						<Table>
+							<TableHead>
+								<TableRow>
+									<TableCell>Publisher</TableCell>
+									<TableCell>First Quartile</TableCell>
+									<TableCell>Second Quartile</TableCell>
+									<TableCell>Third Quartile</TableCell>
+									<TableCell>Complete</TableCell>
+									<TableCell>Total Impresions</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{audiologs ? (
+									audiologs.map((log, i) => {
+										if (!log.nameads) {
+											return (
+												<TableRow key={i}>
+													{log.apppubidpo ? log.apppubidpo.length ? log.apppubidpo[0]
+														.publishername ? (
+														log.apppubidpo[0].publishername
+													) : (
+														log.Publisher.AppName
+													) : (
+														log.Publisher.AppName
+													) : (
+														log.Publisher.AppName
+													)}
+													<TableCell>{log.firstQuartile}</TableCell>
+													<TableCell>{log.midpoint}</TableCell>
+													<TableCell>{log.thirdQuartile}</TableCell>
+													<TableCell>{log.complete}</TableCell>
+													<TableCell>{log.impressions}</TableCell>
+												</TableRow>
+											);
+										}
+									})
+								) : (
+									<TableRow>
+										<TableCell>Loading or no data found</TableCell>
+									</TableRow>
+								)}
+							</TableBody>
+						</Table>
+					</React.Fragment>
+				) : (
+					''
+				)}
+				{ids && ids.video && ids.video.length ? (
+					<React.Fragment>
+						<div style={{ margin: '5px', fontWeight: 'bolder' }}>Video Type</div>
+						<Table>
+							<TableHead>
+								<TableRow>
+									<TableCell>Publisher</TableCell>
+									<TableCell>First Quartile</TableCell>
+									<TableCell>Second Quartile</TableCell>
+									<TableCell>Third Quartile</TableCell>
+									<TableCell>Complete</TableCell>
+									<TableCell>Total Impresions</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{videologs ? (
+									videologs.map((log, i) => {
+										if (!log.nameads) {
+											return (
+												<TableRow key={i}>
+													{log.apppubidpo ? log.apppubidpo.length ? log.apppubidpo[0]
+														.publishername ? (
+														log.apppubidpo[0].publishername
+													) : (
+														log.Publisher.AppName
+													) : (
+														log.Publisher.AppName
+													) : (
+														log.Publisher.AppName
+													)}
+													<TableCell>{log.firstQuartile}</TableCell>
+													<TableCell>{log.midpoint}</TableCell>
+													<TableCell>{log.thirdQuartile}</TableCell>
+													<TableCell>{log.complete}</TableCell>
+													<TableCell>{log.impressions}</TableCell>
+												</TableRow>
+											);
+										}
+									})
+								) : (
+									<TableRow>
+										<TableCell>Loading or no data found</TableCell>
+									</TableRow>
+								)}
+							</TableBody>
+						</Table>
+					</React.Fragment>
+				) : (
+					''
+				)}
 			</TableContainer>
 			<div
 				style={{
@@ -987,8 +1057,7 @@ export default function BasicTable({ singlead }) {
 				Language Wise Summary Report
 			</div>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-			{ids &&
-			ids.audio && (
+			{ids && ids.audio && ids.audio.length ? (
 				<Auditable
 					adtype="Audio"
 					state1={state1}
@@ -1001,9 +1070,10 @@ export default function BasicTable({ singlead }) {
 					ids={ids && ids.audio}
 					url="citylanguagebycampids"
 				/>
+			) : (
+				''
 			)}
-			{ids &&
-			ids.display && (
+			{ids && ids.display && ids.display.length ? (
 				<Auditable
 					adtype="Display"
 					state1={state1}
@@ -1016,9 +1086,10 @@ export default function BasicTable({ singlead }) {
 					ids={ids && ids.display}
 					url="citylanguagebycampids"
 				/>
+			) : (
+				''
 			)}
-			{ids &&
-			ids.video && (
+			{ids && ids.video && ids.video.length ? (
 				<Auditable
 					adtype="Video"
 					state1={state1}
@@ -1031,6 +1102,8 @@ export default function BasicTable({ singlead }) {
 					ids={ids && ids.video}
 					url="citylanguagebycampids"
 				/>
+			) : (
+				''
 			)}
 			<div
 				style={{
@@ -1044,35 +1117,47 @@ export default function BasicTable({ singlead }) {
 				Phone Make Model Wise Summary Report
 			</div>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-			{phoneModelReports &&
-			phoneModelReports.audio && (
-				<PhoneModelAdmin
-					title="Audio"
-					state1={state1}
-					tablesorter={tablesorter}
-					arrowRetuner={arrowRetuner}
-					report={phoneModelReports && phoneModelReports.audio}
-				/>
+			{ids && ids.audio && ids.audio.length ? (
+				phoneModelReports &&
+				phoneModelReports.audio && (
+					<PhoneModelAdmin
+						title="Audio"
+						state1={state1}
+						tablesorter={tablesorter}
+						arrowRetuner={arrowRetuner}
+						report={phoneModelReports && phoneModelReports.audio}
+					/>
+				)
+			) : (
+				''
 			)}
-			{phoneModelReports &&
-			phoneModelReports.display && (
-				<PhoneModelAdmin
-					title="Display"
-					state1={state1}
-					tablesorter={tablesorter}
-					arrowRetuner={arrowRetuner}
-					report={phoneModelReports && phoneModelReports.display}
-				/>
+			{ids && ids.display && ids.display.length ? (
+				phoneModelReports &&
+				phoneModelReports.display && (
+					<PhoneModelAdmin
+						title="Display"
+						state1={state1}
+						tablesorter={tablesorter}
+						arrowRetuner={arrowRetuner}
+						report={phoneModelReports && phoneModelReports.display}
+					/>
+				)
+			) : (
+				''
 			)}
-			{phoneModelReports &&
-			phoneModelReports.video && (
-				<PhoneModelAdmin
-					title="Video"
-					state1={state1}
-					tablesorter={tablesorter}
-					arrowRetuner={arrowRetuner}
-					report={phoneModelReports && phoneModelReports.video}
-				/>
+			{ids && ids.video && ids.video.length ? (
+				phoneModelReports &&
+				phoneModelReports.video && (
+					<PhoneModelAdmin
+						title="Video"
+						state1={state1}
+						tablesorter={tablesorter}
+						arrowRetuner={arrowRetuner}
+						report={phoneModelReports && phoneModelReports.video}
+					/>
+				)
+			) : (
+				''
 			)}
 			<div
 				style={{
@@ -1086,27 +1171,39 @@ export default function BasicTable({ singlead }) {
 				Frequency Report
 			</div>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-			<FrequencyAdmin
-				title="Audio"
-				state1={state1}
-				tablesorter={tablesorter}
-				arrowRetuner={arrowRetuner}
-				report={frequencyReport && frequencyReport.audio}
-			/>
-			<FrequencyAdmin
-				title="Display"
-				state1={state1}
-				tablesorter={tablesorter}
-				arrowRetuner={arrowRetuner}
-				report={frequencyReport && frequencyReport.display}
-			/>
-			<FrequencyAdmin
-				title="Video"
-				state1={state1}
-				tablesorter={tablesorter}
-				arrowRetuner={arrowRetuner}
-				report={frequencyReport && frequencyReport.video}
-			/>
+			{ids && ids.audio && ids.audio.length ? (
+				<FrequencyAdmin
+					title="Audio"
+					state1={state1}
+					tablesorter={tablesorter}
+					arrowRetuner={arrowRetuner}
+					report={frequencyReport && frequencyReport.audio}
+				/>
+			) : (
+				''
+			)}
+			{ids && ids.display && ids.display.length ? (
+				<FrequencyAdmin
+					title="Display"
+					state1={state1}
+					tablesorter={tablesorter}
+					arrowRetuner={arrowRetuner}
+					report={frequencyReport && frequencyReport.display}
+				/>
+			) : (
+				''
+			)}
+			{ids && ids.video && ids.video.length ? (
+				<FrequencyAdmin
+					title="Video"
+					state1={state1}
+					tablesorter={tablesorter}
+					arrowRetuner={arrowRetuner}
+					report={frequencyReport && frequencyReport.video}
+				/>
+			) : (
+				''
+			)}
 			<div
 				style={{
 					margin: '10px auto',
@@ -1120,27 +1217,39 @@ export default function BasicTable({ singlead }) {
 			</div>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
 			{/* {PincodeTable('audio', pincodereports && pincodereports.audio)} */}
-			<IbaReportAdmin
-				title="Audio"
-				state1={state1}
-				tablesorter={tablesorter}
-				arrowRetuner={arrowRetuner}
-				report={ibaReports && ibaReports.audio}
-			/>
-			<IbaReportAdmin
-				title="Display"
-				state1={state1}
-				tablesorter={tablesorter}
-				arrowRetuner={arrowRetuner}
-				report={ibaReports && ibaReports.display}
-			/>
-			<IbaReportAdmin
-				title="Video"
-				state1={state1}
-				tablesorter={tablesorter}
-				arrowRetuner={arrowRetuner}
-				report={ibaReports && ibaReports.video}
-			/>
+			{ids && ids.audio && ids.audio.length ? (
+				<IbaReportAdmin
+					title="Audio"
+					state1={state1}
+					tablesorter={tablesorter}
+					arrowRetuner={arrowRetuner}
+					report={ibaReports && ibaReports.audio}
+				/>
+			) : (
+				''
+			)}
+			{ids && ids.display && ids.display.length ? (
+				<IbaReportAdmin
+					title="Display"
+					state1={state1}
+					tablesorter={tablesorter}
+					arrowRetuner={arrowRetuner}
+					report={ibaReports && ibaReports.display}
+				/>
+			) : (
+				''
+			)}
+			{ids && ids.video && ids.video.length ? (
+				<IbaReportAdmin
+					title="Video"
+					state1={state1}
+					tablesorter={tablesorter}
+					arrowRetuner={arrowRetuner}
+					report={ibaReports && ibaReports.video}
+				/>
+			) : (
+				''
+			)}
 			<div
 				style={{
 					margin: '10px auto',
@@ -1154,27 +1263,39 @@ export default function BasicTable({ singlead }) {
 			</div>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
 			{/* {PincodeTable('audio', pincodereports && pincodereports.audio)} */}
-			<PincodeAdmin
-				title="Audio"
-				state1={state1}
-				tablesorter={tablesorter}
-				arrowRetuner={arrowRetuner}
-				report={pincodereports && pincodereports.audio}
-			/>
-			<PincodeAdmin
-				title="Display"
-				state1={state1}
-				tablesorter={tablesorter}
-				arrowRetuner={arrowRetuner}
-				report={pincodereports && pincodereports.display}
-			/>
-			<PincodeAdmin
-				title="Video"
-				state1={state1}
-				tablesorter={tablesorter}
-				arrowRetuner={arrowRetuner}
-				report={pincodereports && pincodereports.video}
-			/>
+			{ids && ids.audio && ids.audio.length ? (
+				<PincodeAdmin
+					title="Audio"
+					state1={state1}
+					tablesorter={tablesorter}
+					arrowRetuner={arrowRetuner}
+					report={pincodereports && pincodereports.audio}
+				/>
+			) : (
+				''
+			)}
+			{ids && ids.display && ids.display.length ? (
+				<PincodeAdmin
+					title="Display"
+					state1={state1}
+					tablesorter={tablesorter}
+					arrowRetuner={arrowRetuner}
+					report={pincodereports && pincodereports.display}
+				/>
+			) : (
+				''
+			)}
+			{ids && ids.video && ids.video.length ? (
+				<PincodeAdmin
+					title="Video"
+					state1={state1}
+					tablesorter={tablesorter}
+					arrowRetuner={arrowRetuner}
+					report={pincodereports && pincodereports.video}
+				/>
+			) : (
+				''
+			)}
 			<div
 				style={{
 					margin: '10px auto',
@@ -1193,27 +1314,8 @@ export default function BasicTable({ singlead }) {
 				state1={state1}
 				tablesorter={tablesorter}
 				arrowRetuner={arrowRetuner}
-				report={creativereports  }
+				report={creativereports}
 			/>
-			{/* <IbaReportAdmin
-				title="Display"
-				state1={state1}
-				tablesorter={tablesorter}
-				arrowRetuner={arrowRetuner}
-				report={ibaReports && ibaReports.display}
-			/>
-			<IbaReportAdmin
-				title="Video"
-				state1={state1}
-				tablesorter={tablesorter}
-				arrowRetuner={arrowRetuner}
-				report={ibaReports && ibaReports.video}
-			/> */}
-			{/* <div style={{margin:'10px auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Phone Model Wise Summary Report</div>
-        <div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-        <Auditable adtype='Audio' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.audio} url='phonemakebycampids' />
-        <Auditable adtype='Display' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.display} url='phonemakebycampids' />
-        <Auditable adtype='Video' state1={state1} streamingads={singlead} title='Phone Model' regtitle='phoneMake' jsotitle='phoneMake' ids={ids && ids.video} url='phonemakebycampids' /> */}
 		</React.Fragment>
 	);
 }

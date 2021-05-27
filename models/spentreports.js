@@ -2,17 +2,8 @@ var mongoose = require('mongoose');
 // var streamingadObj = require('./../streamingads/streamingads.js');
 var Schema = mongoose.Schema;
 var spentreportsSchema = new Schema({
-    // campaignId: { type: Schema.Types.ObjectId, ref: 'streamingadObj' },
-    // appId: String,
-    // date: { type: String },
-    // rtbType: String,
-    // totalSpent: Number,
-    // impression: Number,
-    // createdOn: { type: Date, default: Date.now },
     campaignId: { type: Schema.Types.ObjectId, ref: 'streamingadObj' },
     appId: String,
-    ssp: String,
-    apppubid: String,
     date: { type: String },
     rtbType: String,
     totalSpent: Number,

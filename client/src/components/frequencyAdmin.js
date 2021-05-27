@@ -52,10 +52,10 @@ function FrequencyAdmin({ title, report, state1 }) {
 						</TableHead>
 						<TableBody>
 							<TableRow>
-								<TableCell>Impression Count</TableCell>
+								<TableCell>User Count</TableCell>
 								{adss &&
 									adss.map((x, i) => {
-										return <TableCell key={i}>{x.freq}</TableCell>;
+										return <TableCell key={i}>{x.users}</TableCell>;
 									})}
 								<TableCell
 									className="mangeads__report"

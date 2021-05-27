@@ -33,4 +33,4 @@ categoryreportsSchema.statics.load = function(id, cb) {
         .exec(cb);
 };
 
-module.exports=mongoose.model('categoryreports', categoryreportsSchema);
+mongoose.model('categoryreports', categoryreportsSchema);

@@ -1,25 +1,21 @@
-const express = require('express')
-const router = express.Router()
-const mongoose = require('mongoose')
-const phonemakereports = mongoose.model('phonemakereports')
-const zipreports = mongoose.model('zipreports')
-const uniqueuserreports = mongoose.model('uniqueuserreports')
-const regionreports = mongoose.model('regionreports')
-const pptypereports = mongoose.model('pptypereports')
-const platformtypereports = mongoose.model('platformtypereports')
-const citylanguagereports = mongoose.model('citylanguagereports')
-const phonemodelreports = mongoose.model('phonemodelreports')
-const spentreports = mongoose.model('spentreports')
-const CampaignModel=require('../models/campaignwisereports.model')
-const phonemodel2=require('../models/phonemodel2reports')
-const Zipreports2=require('../models/zipdata2reports')
-const CategoryReports2=require('../models/categoryreports2')
-const CategoryReports=require('../models/categoryreports')
-const adminauth  = require('../authenMiddleware/adminauth')
-
-
-
-
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+const phonemakereports = mongoose.model('phonemakereports');
+const zipreports = mongoose.model('zipreports');
+const uniqueuserreports = mongoose.model('uniqueuserreports');
+const regionreports = mongoose.model('regionreports');
+const pptypereports = mongoose.model('pptypereports');
+const platformtypereports = mongoose.model('platformtypereports');
+const citylanguagereports = mongoose.model('citylanguagereports');
+const phonemodelreports = mongoose.model('phonemodelreports');
+const spentreports = mongoose.model('spentreports');
+const phonemodel2 = mongoose.model('phonemodel2reports');
+const Zipreports2 = mongoose.model('zipreports2');
+const CategoryReports2 = mongoose.model('categoryreports2');
+const Campaignwisereports = mongoose.model('campaignwisereports');
+const CategoryReports = mongoose.model('categoryreports');
+const adminauth = require('../authenMiddleware/adminauth');
 
 router.get('/phonemake', adminauth, (req, res) => {
 	phonemakereports
@@ -695,7 +691,6 @@ router.put('/phoneModelbycampids', adminauth, (req, res) => {
 				}
 			},
 			{ $unwind: { path: '$extra', preserveNullAndEmptyArrays: true } },
-
 			{
 				$group: {
 					_id: { combined_make_and_model: '$extra.combined_make_model' },
@@ -717,7 +712,7 @@ router.put('/phoneModelbycampids', adminauth, (req, res) => {
 
 			{
 				$project: {
-					phoneModel: '$_id.combined_make_model',
+					phoneModel: '$_id.phoneModel',
 					campaignId: '$_id.campaignId',
 					impression: 1,
 					CompanionClickTracking: 1,
@@ -868,20 +863,20 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 							}
 						}
 					},
-					{
-						$match: {
-							$or: [
-								{ 'extra_details.make_model': '' },
-								{ 'extra_details.cumulative': '' },
-								{ 'extra_details.release': '' },
-								{ 'extra_details.company': '' },
-								{ 'extra_details.type': '' },
-								{ 'extra_details.total_percent': '' },
-								{ 'extra_details.model': '' },
-								{ 'extra_details.cost': '' }
-							]
-						}
-					},
+					// {
+					// 	$match: {
+					// 		$or: [
+					// 			{ 'extra_details.make_model': '' },
+					// 			{ 'extra_details.cumulative': '' },
+					// 			{ 'extra_details.release': '' },
+					// 			{ 'extra_details.company': '' },
+					// 			{ 'extra_details.type': '' },
+					// 			{ 'extra_details.total_percent': '' },
+					// 			{ 'extra_details.model': '' },
+					// 			{ 'extra_details.cost': '' }
+					// 		]
+					// 	}
+					// },
 					{
 						$group: {
 							_id: { combined_make_model: '$extra_details.combined_make_model' },
@@ -957,20 +952,20 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 							}
 						}
 					},
-					{
-						$match: {
-							$or: [
-								{ 'extra_details.make_model': '' },
-								{ 'extra_details.cumulative': '' },
-								{ 'extra_details.release': '' },
-								{ 'extra_details.company': '' },
-								{ 'extra_details.type': '' },
-								{ 'extra_details.total_percent': '' },
-								{ 'extra_details.model': '' },
-								{ 'extra_details.cost': '' }
-							]
-						}
-					},
+					// {
+					// 	$match: {
+					// 		$or: [
+					// 			{ 'extra_details.make_model': '' },
+					// 			{ 'extra_details.cumulative': '' },
+					// 			{ 'extra_details.release': '' },
+					// 			{ 'extra_details.company': '' },
+					// 			{ 'extra_details.type': '' },
+					// 			{ 'extra_details.total_percent': '' },
+					// 			{ 'extra_details.model': '' },
+					// 			{ 'extra_details.cost': '' }
+					// 		]
+					// 	}
+					// },
 					{
 						$group: {
 							_id: { combined_make_model: '$extra_details.combined_make_model' },
@@ -1062,112 +1057,142 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 	var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
 	try {
 		const resultaudio = await CategoryReports.aggregate([
-			{$match:{campaignId:{$in:audio}}},
-            {$group:{_id:{category:"$category"},
-            impressions:{"$sum":"$impression"},
-            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
-            SovClickTracking:{$sum:"$SovClickTracking"}
-        }},
-        {$lookup:{
-            from:'categoryreports2',
-            localField:'_id.category',
-            foreignField:'category',
-            as:'extra_details'
-        }},
-        {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
-		//{$addFields:{"temp_category":{$toInt:"$_id.category"}}},
-        {$lookup:{
-            from:'categoryreports2',
-            localField:'_id.category',
-            foreignField:'new_taxonamy',
-            as:'extra_details1'
-        }},
-        {$unwind:{path:"$extra_details1",preserveNullAndEmptyArrays:true}},
-        {$sort:{"impressions":-1}},
-        {$project:{
-            impressions:1,
-            CompanionClickTracking: 1,
-            SovClickTracking: 1,
-            extra_details:{$ifNull:['$extra_details','$extra_details1']}
-        }},
-        {$project:{
-            impressions:1,
-            CompanionClickTracking: 1,
-            SovClickTracking: 1,
-            extra_details:{$ifNull:['$extra_details',{}]}
-        }}
+			{ $match: { campaignId: { $in: audio } } },
+			{
+				$group: {
+					_id: { category: '$category' },
+					impressions: { $sum: '$impression' },
+					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+					SovClickTracking: { $sum: '$SovClickTracking' }
+				}
+			},
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'category',
+					as: 'extra_details'
+				}
+			},
+			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'new_taxonamy',
+					as: 'extra_details1'
+				}
+			},
+			{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+			{ $sort: { impressions: -1 } },
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+				}
+			},
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', {} ] }
+				}
+			}
 		]).allowDiskUse(true);
 		const resultdisplay = await CategoryReports.aggregate([
-			{$match:{campaignId:{$in:display}}},
-            {$group:{_id:{category:"$category"},
-            impressions:{"$sum":"$impression"},
-            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
-            SovClickTracking:{$sum:"$SovClickTracking"}
-        }},
-        {$lookup:{
-            from:'categoryreports2',
-            localField:'_id.category',
-            foreignField:'category',
-            as:'extra_details'
-        }},
-        {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
-        //{$addFields:{"temp_category":{$toInt:"$_id.category"}}},
-		{$lookup:{
-            from:'categoryreports2',
-            localField:'_id.category',
-            foreignField:'new_taxonamy',
-            as:'extra_details1'
-        }},
-        {$unwind:{path:"$extra_details1",preserveNullAndEmptyArrays:true}},
-        {$sort:{"impressions":-1}},
-        {$project:{
-            impressions:1,
-            CompanionClickTracking: 1,
-            SovClickTracking: 1,
-            extra_details:{$ifNull:['$extra_details','$extra_details1']}
-        }},
-        {$project:{
-            impressions:1,
-            CompanionClickTracking: 1,
-            SovClickTracking: 1,
-            extra_details:{$ifNull:['$extra_details',{}]}
-        }}
+			{ $match: { campaignId: { $in: display } } },
+			{
+				$group: {
+					_id: { category: '$category' },
+					impressions: { $sum: '$impression' },
+					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+					SovClickTracking: { $sum: '$SovClickTracking' }
+				}
+			},
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'category',
+					as: 'extra_details'
+				}
+			},
+			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'new_taxonamy',
+					as: 'extra_details1'
+				}
+			},
+			{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+			{ $sort: { impressions: -1 } },
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+				}
+			},
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', {} ] }
+				}
+			}
 		]).allowDiskUse(true);
 		const resultvideo = await CategoryReports.aggregate([
-			{$match:{campaignId:{$in:video}}},
-            {$group:{_id:{category:"$category"},
-            impressions:{"$sum":"$impression"},
-            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
-            SovClickTracking:{$sum:"$SovClickTracking"}
-        }},
-        {$lookup:{
-            from:'categoryreports2',
-            localField:'_id.category',
-            foreignField:'category',
-            as:'extra_details'
-        }},
-        {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
-        //{$addFields:{"temp_category":{$toInt:"$_id.category"}}},
-		{$lookup:{
-            from:'categoryreports2',
-            localField:'_id.category',
-            foreignField:'new_taxonamy',
-            as:'extra_details1'
-        }},
-        {$unwind:{path:"$extra_details1",preserveNullAndEmptyArrays:true}},
-        {$sort:{"impressions":-1}},
-        {$project:{
-            impressions:1,
-            CompanionClickTracking: 1,
-            SovClickTracking: 1,
-            extra_details:{$ifNull:['$extra_details','$extra_details1']}
-        }},
-        {$project:{
-            impressions:1,
-            CompanionClickTracking: 1,
-            SovClickTracking: 1,
-            extra_details:{$ifNull:['$extra_details',{}]}
-        }}
+			{ $match: { campaignId: { $in: video } } },
+			{
+				$group: {
+					_id: { category: '$category' },
+					impressions: { $sum: '$impression' },
+					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+					SovClickTracking: { $sum: '$SovClickTracking' }
+				}
+			},
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'category',
+					as: 'extra_details'
+				}
+			},
+			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'new_taxonamy',
+					as: 'extra_details1'
+				}
+			},
+			{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+			{ $sort: { impressions: -1 } },
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+				}
+			},
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', {} ] }
+				}
+			}
 		]).allowDiskUse(true);
 		res.status(200).json({ audio: resultaudio, display: resultdisplay, video: resultvideo });
 	} catch (err) {
@@ -1230,6 +1255,37 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 });
 
 ///////////////////  new apis //////////////////////////////
+
+router.post('/categorywisereports', adminauth, async (req, res) => {
+	try {
+		let { campaignId } = req.body;
+		var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : [];
+		const result = await CategoryReports.aggregate([
+			{ $match: { campaignId: { $in: ids } } },
+			{
+				$group: {
+					_id: { category: '$category' },
+					impressions: { $sum: '$impression' },
+					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+					SovClickTracking: { $sum: '$SovClickTracking' }
+				}
+			},
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'category',
+					as: 'extra_details'
+				}
+			},
+			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+			{ $sort: { impressions: -1 } }
+		]).allowDiskUse(true);
+		res.status(200).json(result);
+	} catch (err) {
+		res.status(400).json({ error: err.message });
+	}
+});
 
 router.put('/editphonedata', adminauth, async (req, res) => {
 	try {
@@ -1338,90 +1394,91 @@ router.get('/phonedata', adminauth, async (req, res) => {
 
 router.get('/zipdata', adminauth, async (req, res) => {
 	try {
-		// const result=await Zipreports2.aggregate([
-		//     {$match:{ $or:[{area:""},
-		//     {pincode:""},
-		//     {city:""},
-		//     {district:""},
-		//     {state:""},
-		//     {latitude:""},
-		//     {longitude:""},
-		// ]}},
-		// ])
+		const result=await Zipreports2.aggregate([
+		    {$match:{ $or:[{area:""},
+		    // {pincode:""},
+		    {city:""},
+		    {district:""},
+		    {state:""},
+		    {latitude:""},
+		    {longitude:""},
+		]}},
+		{$sort:{impression:-1}}
+		])
 
-		const result = await zipreports.aggregate([
-			{
-				$lookup: {
-					from: 'zipreports2',
-					localField: 'zip',
-					foreignField: 'pincode',
-					as: 'extra_details'
-				}
-			},
-			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-			{
-				$project: {
-					zip: 1,
-					impression: 1,
-					extra_details: {
-						$ifNull: [
-							'$extra_details',
-							{
-								area: '',
-								pincode: '',
-								lowersubcity: '',
-								subcity: '',
-								city: '',
-								grandcity: '',
-								district: '',
-								comparison: '',
-								state: '',
-								grandstate: '',
-								latitude: '',
-								longitude: ''
-							}
-						]
-					}
-				}
-			},
-			{
-				$match: {
-					$or: [
-						{ 'extra_details.area': '' },
-						{ 'extra_details.pincode': '' },
-						{ 'extra_details.city': '' },
-						{ 'extra_details.district': '' },
-						{ 'extra_details.state': '' },
-						{ 'extra_details.latitude': '' },
-						{ 'extra_details.longitude': '' }
-					]
-				}
-			},
-			{
-				$group: {
-					_id: { pincode: '$zip' },
-					impressions: { $sum: '$impression' },
-					extra: { $first: '$extra_details' }
-					//_id:{$first:"$_id"}
-				}
-			},
-			{
-				$project: {
-					impressions: 1,
-					pincode: '$_id.pincode',
-					area: '$extra.area',
-					subcity: '$extra.subcity',
-					city: '$extra.city',
-					grandcity: '$extra.grandcity',
-					district: '$extra.district',
-					state: '$extra.state',
-					grandstate: '$extra.grandstate',
-					latitude: '$extra.latitude',
-					longitude: '$extra.longitude'
-				}
-			},
-			{ $sort: { impressions: -1 } }
-		]);
+		// const result = await zipreports.aggregate([
+		// 	{
+		// 		$lookup: {
+		// 			from: 'zipreports2',
+		// 			localField: 'zip',
+		// 			foreignField: 'pincode',
+		// 			as: 'extra_details'
+		// 		}
+		// 	},
+		// 	{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+		// 	{
+		// 		$project: {
+		// 			zip: 1,
+		// 			impression: 1,
+		// 			extra_details: {
+		// 				$ifNull: [
+		// 					'$extra_details',
+		// 					{
+		// 						area: '',
+		// 						pincode: '',
+		// 						lowersubcity: '',
+		// 						subcity: '',
+		// 						city: '',
+		// 						grandcity: '',
+		// 						district: '',
+		// 						comparison: '',
+		// 						state: '',
+		// 						grandstate: '',
+		// 						latitude: '',
+		// 						longitude: ''
+		// 					}
+		// 				]
+		// 			}
+		// 		}
+		// 	},
+		// 	{
+		// 		$match: {
+		// 			$or: [
+		// 				{ 'extra_details.area': '' },
+		// 				{ 'extra_details.pincode': '' },
+		// 				{ 'extra_details.city': '' },
+		// 				{ 'extra_details.district': '' },
+		// 				{ 'extra_details.state': '' },
+		// 				{ 'extra_details.latitude': '' },
+		// 				{ 'extra_details.longitude': '' }
+		// 			]
+		// 		}
+		// 	},
+		// 	{
+		// 		$group: {
+		// 			_id: { pincode: '$zip' },
+		// 			impressions: { $sum: '$impression' },
+		// 			extra: { $first: '$extra_details' }
+		// 			//_id:{$first:"$_id"}
+		// 		}
+		// 	},
+		// 	{
+		// 		$project: {
+		// 			impressions: 1,
+		// 			pincode: '$_id.pincode',
+		// 			area: '$extra.area',
+		// 			subcity: '$extra.subcity',
+		// 			city: '$extra.city',
+		// 			grandcity: '$extra.grandcity',
+		// 			district: '$extra.district',
+		// 			state: '$extra.state',
+		// 			grandstate: '$extra.grandstate',
+		// 			latitude: '$extra.latitude',
+		// 			longitude: '$extra.longitude'
+		// 		}
+		// 	},
+		// 	{ $sort: { impressions: -1 } }
+		// ]);
 
 		res.status(200).json(result);
 	} catch (err) {
@@ -1486,66 +1543,82 @@ router.put('/editzipdata', adminauth, async (req, res) => {
 router.get('/categorydata', adminauth, async (req, res) => {
 	try {
 		const result = await CategoryReports.aggregate([
-			{$group:{_id:{category:"$category"},
-            impressions:{"$sum":"$impression"},
-            CompanionClickTracking:{$sum:"$CompanionClickTracking"}, 
-            SovClickTracking:{$sum:"$SovClickTracking"}
-        }},
-        {$lookup:{
-            from:'categoryreports2',
-            localField:'_id.category',
-            foreignField:'category',
-            as:'extra_details'
-        }},
-        {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
-		//{$addFields:{"temp_category":{$toInt:"$_id.category"}}},
-        {$lookup:{
-            from:'categoryreports2',
-            localField:'_id.category',
-            foreignField:'new_taxonamy',
-            as:'extra_details1'
-        }},
-        {$unwind:{path:"$extra_details1",preserveNullAndEmptyArrays:true}},
-        {$sort:{"impressions":-1}},
-        {$project:{
-            impressions:1,
-            CompanionClickTracking: 1,
-            SovClickTracking: 1,
-            extra_details:{$ifNull:['$extra_details','$extra_details1']}
-        }},
-        {$project:{
-            impressions:1,
-            CompanionClickTracking: 1,
-            SovClickTracking: 1,
-            extra:{$ifNull:['$extra_details',{
-			parent: '',
-			category: '',
-			Name: '',
-			tier1: '',
-			tier2: '',
-			tier3: '',
-			tier4: '',
-			genderCategory: '',
-			AgeCategory: '',
-			new_taxonamy: ''
-			}
-		]}
-        }},
-		{
+			{
+				$group: {
+					_id: { category: '$category' },
+					impressions: { $sum: '$impression' },
+					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+					SovClickTracking: { $sum: '$SovClickTracking' }
+				}
+			},
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'category',
+					as: 'extra_details'
+				}
+			},
+			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+			//{$addFields:{"temp_category":{$toInt:"$_id.category"}}},
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'new_taxonamy',
+					as: 'extra_details1'
+				}
+			},
+			{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+			{ $sort: { impressions: -1 } },
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+				}
+			},
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra: {
+						$ifNull: [
+							'$extra_details',
+							{
+								parent: '',
+								category: '',
+								Name: '',
+								tier1: '',
+								tier2: '',
+								tier3: '',
+								tier4: '',
+								genderCategory: '',
+								AgeCategory: '',
+								new_taxonamy: ''
+							}
+						]
+					}
+				}
+			},
+			{
 				$match: {
 					$or: [
-						{ 'extra.Name': "" },
-						{ 'extra.tier1': "" },
-						{ 'extra.tier2': "" },
-						{ 'extra.tier3': "" },
-						{ 'extra.tier4': "" },
-						{ 'extra.genderCategory': "" },
-						{ 'extra.AgeCategory': "" },
-						{ 'extra.new_taxonamy': "" }
+						{ 'extra.Name': '' },
+						{ 'extra.tier1': '' },
+						{ 'extra.tier2': '' },
+						{ 'extra.tier3': '' },
+						{ 'extra.tier4': '' },
+						{ 'extra.genderCategory': '' },
+						{ 'extra.AgeCategory': '' },
+						{ 'extra.new_taxonamy': '' }
 					]
 				}
 			},
-		{$project:{
+			{
+				$project: {
 					impressions: 1,
 					category: '$_id.category',
 					name: '$extra.Name',
@@ -1557,9 +1630,10 @@ router.get('/categorydata', adminauth, async (req, res) => {
 					age_category: '$extra.AgeCategory',
 					taxonamy: '$extra.new_taxonamy',
 					parent: '$extra.parent'
-		}},
-		{$sort:{"impressions":-1}}
-		 ]);
+				}
+			},
+			{ $sort: { impressions: -1 } }
+		]);
 
 		res.status(200).json(result);
 	} catch (err) {
@@ -1605,51 +1679,56 @@ router.put('/editcategorydata', adminauth, async (req, res) => {
 	}
 });
 
-router.put(
-	'/creativewisereports',
-	adminauth,
-	async(req,res)=>{
-		try{
-			console.log(11)
-			const { campaignId } = req.body;
-			
-		var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : [];
-		const result=await CampaignModel.aggregate([
-			
-			{$match:{campaignId:{$in:ids}}},
-			{$project:{creativeid:{$ifNull:["$creativesetId",null]},
-			"campaignId": 1,
-			"impression": 1,
-			CompanionClickTracking: 1,
-			SovClickTracking:1,
-			start: 1,
-			midpoint: 1,
-			thirdQuartile: 1,
-			complete: 1,
-			createdOn: 1
-		}},
-		{$project:{
-			creative_id:{$cond:[{$eq:['$creativeid',""]},null,'$creativeid'] },
-			"campaignId": 1,
-			"impression": 1,
-			CompanionClickTracking: 1,
-			SovClickTracking:1,
-			start: 1,
-			midpoint: 1,
-			thirdQuartile: 1,
-			complete: 1,
-			createdOn: 1
-		}},
+router.put('/creativewisereports', adminauth, async (req, res) => {
+	try {
+		console.log(11);
+		const { campaignId } = req.body;
 
-			{$addFields:{"creative_id":{"$toObjectId":"$creative_id"}}},
-			{$lookup:{
+		var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : [];
+		const result = await Campaignwisereports.aggregate([
+			{ $match: { campaignId: { $in: ids } } },
+			{
+				$project: {
+					creativeid: { $ifNull: [ '$creativesetId', null ] },
+					campaignId: 1,
+					impression: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					start: 1,
+					midpoint: 1,
+					thirdQuartile: 1,
+					complete: 1,
+					createdOn: 1
+				}
+			},
+			{
+				$project: {
+					creative_id: { $cond: [ { $eq: [ '$creativeid', '' ] }, null, '$creativeid' ] },
+					campaignId: 1,
+					impression: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					start: 1,
+					midpoint: 1,
+					thirdQuartile: 1,
+					complete: 1,
+					createdOn: 1
+				}
+			},
+
+			{ $addFields: { creative_id: { $toObjectId: '$creative_id' } } },
+			{
+				$lookup: {
 					from: 'creativesets',
 					localField: 'creative_id',
 					foreignField: '_id',
 					as: 'extra_details'
-				}},
-				{$unwind:"$extra_details"},
-					{$group:{_id:{creativeset:'$extra_details.name'},
+				}
+			},
+			{ $unwind: '$extra_details' },
+			{
+				$group: {
+					_id: { creativeset: '$extra_details.name' },
 					campaignId: { $push: '$campaignId' },
 					impression: { $sum: '$impression' },
 					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
@@ -1659,15 +1738,15 @@ router.put(
 					thirdQuartile: { $sum: '$thirdQuartile' },
 					complete: { $sum: '$complete' },
 					createdOn: { $push: '$createdOn' }
-				}},
-				 {$sort:{impression:-1}}
-		]).allowDiskUse(true)
-		res.status(200).json(result)
-		}catch(err){
-			console.log(err.message)
-			res.status(400).json({error:err})
-		}
+				}
+			},
+			{ $sort: { impression: -1 } }
+		]).allowDiskUse(true);
+		res.status(200).json(result);
+	} catch (err) {
+		console.log(err.message);
+		res.status(400).json({ error: err });
 	}
-)
+});
 
 module.exports = router;
