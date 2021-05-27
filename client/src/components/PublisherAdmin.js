@@ -144,6 +144,9 @@ function PublisherAdmin({
 								<TableCell>
 									Balance Impressions {arrowRetuner(sa === 'cat' ? '1' : sa === 'revcat' ? '2' : '3')}
 								</TableCell>
+								<TableCell>
+									Feed
+								</TableCell>
 								<TableCell />
 							</TableRow>
 						</TableHead>
@@ -205,6 +208,9 @@ function PublisherAdmin({
 										</TableCell>
 										<TableCell>
 											{parseInt(log.campaignId.TargetImpressions) - log.impressions}
+										</TableCell>
+										<TableCell>
+											{log.feed}
 										</TableCell>
 										<TableCell
 											className="mangeads__report"

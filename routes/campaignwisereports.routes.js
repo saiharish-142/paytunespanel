@@ -594,7 +594,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						},
 						{
 							$group: {
-								_id: { app: '$appId', appubid: '$apppubid' },
+								_id: { app: '$appId', appubid: '$apppubid' ,feed:"$feed" },
 								ssp: { $push: '$ssp' },
 								updatedAt: { $push: '$createdOn' },
 								camp: { $push: '$campaignId' },
@@ -611,6 +611,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							$project: {
 								Publisher: '$_id.app',
 								PublisherSplit: '$_id.appubid',
+								feed:"$_id.feed",
 								updatedAt: '$updatedAt',
 								ssp: '$ssp',
 								campaignId: '$camp',
@@ -641,7 +642,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						},
 						{
 							$group: {
-								_id: { app: '$appId', appubid: '$apppubid' },
+								_id: { app: '$appId', appubid: '$apppubid', feed:"$feed" },
 								ssp: { $push: '$ssp' },
 								updatedAt: { $push: '$createdOn' },
 								camp: { $push: '$campaignId' },
@@ -658,6 +659,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							$project: {
 								Publisher: '$_id.app',
 								PublisherSplit: '$_id.appubid',
+								feed:"$_id.feed",
 								updatedAt: '$updatedAt',
 								ssp: '$ssp',
 								campaignId: '$camp',
@@ -688,7 +690,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						},
 						{
 							$group: {
-								_id: { app: '$appId', appubid: '$apppubid' },
+								_id: { app: '$appId', appubid: '$apppubid',feed:"$feed" },
 								ssp: { $push: '$ssp' },
 								updatedAt: { $push: '$createdOn' },
 								camp: { $push: '$campaignId' },
@@ -705,6 +707,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							$project: {
 								Publisher: '$_id.app',
 								PublisherSplit: '$_id.appubid',
+								feed:"$_id.feed",
 								updatedAt: '$updatedAt',
 								ssp: '$ssp',
 								campaignId: '$camp',

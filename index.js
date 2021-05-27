@@ -180,7 +180,7 @@ app.listen(port, () => console.log(`app listening on port ${port}!`));
 //     .catch(err => console.log(err))
 // });
 
-cron.schedule('00 02 * * *', function() {
+cron.schedule('00 02 * * *', function () {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -204,7 +204,7 @@ cron.schedule('00 02 * * *', function() {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 04 * * *', function() {
+cron.schedule('00 04 * * *', function () {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -228,7 +228,7 @@ cron.schedule('00 04 * * *', function() {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 06 * * *', function() {
+cron.schedule('00 06 * * *', function () {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -252,7 +252,7 @@ cron.schedule('00 06 * * *', function() {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 08 * * *', function() {
+cron.schedule('00 08 * * *', function () {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -276,7 +276,7 @@ cron.schedule('00 08 * * *', function() {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 10 * * *', function() {
+cron.schedule('00 10 * * *', function () {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -300,7 +300,7 @@ cron.schedule('00 10 * * *', function() {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 12 * * *', function() {
+cron.schedule('00 12 * * *', function () {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -324,7 +324,7 @@ cron.schedule('00 12 * * *', function() {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 14 * * *', function() {
+cron.schedule('00 14 * * *', function () {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -348,7 +348,7 @@ cron.schedule('00 14 * * *', function() {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 16 * * *', function() {
+cron.schedule('00 16 * * *', function () {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -372,7 +372,7 @@ cron.schedule('00 16 * * *', function() {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 18 * * *', function() {
+cron.schedule('00 18 * * *', function () {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -396,7 +396,7 @@ cron.schedule('00 18 * * *', function() {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 20 * * *', function() {
+cron.schedule('00 20 * * *', function () {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -420,7 +420,7 @@ cron.schedule('00 20 * * *', function() {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 22 * * *', function() {
+cron.schedule('00 22 * * *', function () {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -444,7 +444,7 @@ cron.schedule('00 22 * * *', function() {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('10 00 * * *', function() {
+cron.schedule('10 00 * * *', function () {
 	var d = new Date();
 	d.setDate(d.getDate() - 1);
 	if (d.getDate() < 10) {
@@ -463,81 +463,86 @@ cron.schedule('10 00 * * *', function() {
 
 //Pincode 
 
-cron.schedule('00 1 * * *', function(){
-    // var d = new Date()
-    // d.setDate(d.getDate());
-    // if(d.getDate() < 10){
-    //     if(d.getMonth()+1 > 10){
-    //     var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
-    //     else{
-    //     var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
-    // }else{
-    //     if(d.getMonth()+1 > 10){
-    //     var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
-    //     else{
-    //     var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
-    // }
-    // var currentTime = new Date();
-    // var currentOffset = currentTime.getTimezoneOffset();
-    // var ISTOffset = 330;   // IST offset UTC +5:30 
-    // var ISTTime = new Date(currentTime.getTime() + (ISTOffset*2 + currentOffset -5)*60000);
-    // console.log(ISTTime,date)
-    PincodeRefresher()
+cron.schedule('00 1 * * *', function () {
+	// var d = new Date()
+	// d.setDate(d.getDate());
+	// if(d.getDate() < 10){
+	//     if(d.getMonth()+1 > 10){
+	//     var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+	//     else{
+	//     var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+	// }else{
+	//     if(d.getMonth()+1 > 10){
+	//     var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
+	//     else{
+	//     var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
+	// }
+	// var currentTime = new Date();
+	// var currentOffset = currentTime.getTimezoneOffset();
+	// var ISTOffset = 330;   // IST offset UTC +5:30 
+	// var ISTTime = new Date(currentTime.getTime() + (ISTOffset*2 + currentOffset -5)*60000);
+	// console.log(ISTTime,date)
+	PincodeRefresher()
 })
 
-async function PincodeRefresher(){
-	let date=new Date(new Date())
-	date.setDate(date.getDate()-1)
-	date=new Date(date)
-	const year=date.getFullYear()
-	const month=`0${date.getMonth()+1}`
-	const date1=date.getDate()
-	let yesterday=`${year}-${month}-${date1}`
-	console.log('yesterday',yesterday)
+async function PincodeRefresher() {
+	let date = new Date(new Date())
+	date.setDate(date.getDate() - 1)
+	date = new Date(date)
+	const year = date.getFullYear()
+	const month = `0${date.getMonth() + 1}`
+	const date1 = date.getDate()
+	let yesterday = `${year}-${month}-${date1}`
+	console.log('yesterday', yesterday)
 
-	const ZipModelReports=require('./models/zipreports')
-	const Zipreports2=require('./models/zipdata2reports')
-    const pincodes=await ZipModelReports.aggregate([
-        {$project:{
-            test:{ $dateToString:{format: "%Y-%m-%d", date: "$createdOn"} },
-            zip:"$zip",
-            impression:"$impression",
-            CompanionClickTracking:1,
-            SovClickTracking:1
-        }},
-        {$match:{test:yesterday}},
-        {$group:{_id:{zip:"$zip"},
-        CompanionClickTracking:{$sum:"$CompanionClickTracking"},
-        SovClickTracking:{$sum:"$SovClickTracking"},
-        impressions:{$sum:"$impression"}
-    }}
-    ])
-    pincodes.forEach(async(pincode)=>{
-        console.log(pincode.zip)
-        const match=await Zipreports2.findOne({pincode:pincode._id.zip})
-       if(!match){
-            const newzip=new Zipreports2({
-                area:"", 
-                pincode:pincode._id.zip,
-                lowersubcity:"",
-                subcity:"",
-                city:"",
-                grandcity:"",
-                district:"",
-                comparison:"",
-                state:"",
-                grandstate:"",
-                latitude:"",
-                longitude:"",
-                impression:pincode.impressions,
-                click:pincode.CompanionClickTracking+pincode.SovClickTracking
-            })
-            await newzip.save()
-       }else{
-        const updateddoc= await Zipreports2.findOneAndUpdate({pincode:pincode._id.zip},{$inc:{impression:pincode.impressions,click:pincode.CompanionClickTracking+pincode.SovClickTracking}},{new:true})
-        console.log('updated',updateddoc)
-    }
-    })
+	const ZipModelReports = require('./models/zipreports')
+	const Zipreports2 = require('./models/zipdata2reports')
+	const pincodes = await ZipModelReports.aggregate([
+		{
+			$project: {
+				test: { $dateToString: { format: "%Y-%m-%d", date: "$createdOn" } },
+				zip: "$zip",
+				impression: "$impression",
+				CompanionClickTracking: 1,
+				SovClickTracking: 1
+			}
+		},
+		{ $match: { test: yesterday } },
+		{
+			$group: {
+				_id: { zip: "$zip" },
+				CompanionClickTracking: { $sum: "$CompanionClickTracking" },
+				SovClickTracking: { $sum: "$SovClickTracking" },
+				impressions: { $sum: "$impression" }
+			}
+		}
+	])
+	pincodes.forEach(async (pincode) => {
+		console.log(pincode.zip)
+		const match = await Zipreports2.findOne({ pincode: pincode._id.zip })
+		if (!match) {
+			const newzip = new Zipreports2({
+				area: "",
+				pincode: pincode._id.zip,
+				lowersubcity: "",
+				subcity: "",
+				city: "",
+				grandcity: "",
+				district: "",
+				comparison: "",
+				state: "",
+				grandstate: "",
+				latitude: "",
+				longitude: "",
+				impression: pincode.impressions,
+				click: pincode.CompanionClickTracking + pincode.SovClickTracking
+			})
+			await newzip.save()
+		} else {
+			const updateddoc = await Zipreports2.findOneAndUpdate({ pincode: pincode._id.zip }, { $inc: { impression: pincode.impressions, click: pincode.CompanionClickTracking + pincode.SovClickTracking } }, { new: true })
+			console.log('updated', updateddoc)
+		}
+	})
 }
 
 async function uniqueMaker({ date }) {
@@ -548,8 +553,8 @@ async function uniqueMaker({ date }) {
 	let response = await StreamingAds.aggregate([
 		{ $match: { _id: { $in: uniqueids } } },
 		{ $project: { AdTitle: { $toLower: '$AdTitle' } } },
-		{ $project: { AdTitle: { $split: [ '$AdTitle', '_' ] } } },
-		{ $project: { AdTitle: { $slice: [ '$AdTitle', 2 ] } } },
+		{ $project: { AdTitle: { $split: ['$AdTitle', '_'] } } },
+		{ $project: { AdTitle: { $slice: ['$AdTitle', 2] } } },
 		{
 			$project: {
 				AdTitle: {
@@ -557,7 +562,7 @@ async function uniqueMaker({ date }) {
 						input: '$AdTitle',
 						initialValue: '',
 						in: {
-							$concat: [ '$$value', { $cond: [ { $eq: [ '$$value', '' ] }, '', '_' ] }, '$$this' ]
+							$concat: ['$$value', { $cond: [{ $eq: ['$$value', ''] }, '', '_'] }, '$$this']
 						}
 					}
 				},
@@ -666,7 +671,7 @@ async function ReportsRefresher(date, credate) {
 				{
 					$facet: {
 						uniquesumdatawise: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId' },
@@ -686,7 +691,7 @@ async function ReportsRefresher(date, credate) {
 										$reduce: {
 											input: '$unique',
 											initialValue: [],
-											in: { $concatArrays: [ '$$value', '$$this' ] }
+											in: { $concatArrays: ['$$value', '$$this'] }
 										}
 									}
 								}
@@ -694,7 +699,7 @@ async function ReportsRefresher(date, credate) {
 							{ $project: { _id: 0, campaignId: '$_id', unique: { $size: '$unique' }, publishdata: 1 } }
 						],
 						regionwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId', region: '$region' },
@@ -716,7 +721,7 @@ async function ReportsRefresher(date, credate) {
 							{ $project: { _id: 0, campaignId: '$_id', results: 1 } }
 						],
 						pinwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId', zip: '$zip' },
@@ -738,7 +743,7 @@ async function ReportsRefresher(date, credate) {
 							{ $project: { _id: 0, campaignId: '$_id', results: 1 } }
 						],
 						lanwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId', language: '$language' },
@@ -915,7 +920,7 @@ async function ReportsRefresher(date, credate) {
 										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
 										result: {
 											$push: {
-												phoneModel: { $concat: [ '$_id.phoneMake', ' - ', '$_id.phoneModel' ] },
+												phoneModel: { $concat: ['$_id.phoneMake', ' - ', '$_id.phoneModel'] },
 												result: { $arrayToObject: '$result' }
 											}
 										}
@@ -960,7 +965,7 @@ async function ReportsRefresher(date, credate) {
 										result: {
 											$push: {
 												platformType: {
-													$concat: [ '$_id.platformType', ' - ', '$_id.osVersion' ]
+													$concat: ['$_id.platformType', ' - ', '$_id.osVersion']
 												},
 												result: { $arrayToObject: '$result' }
 											}
