@@ -464,29 +464,37 @@ cron.schedule('10 00 * * *', function() {
 //Pincode 
 
 cron.schedule('00 1 * * *', function(){
-    var d = new Date()
-    d.setDate(d.getDate());
-    if(d.getDate() < 10){
-        if(d.getMonth()+1 > 10){
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
-        else{
-        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
-    }else{
-        if(d.getMonth()+1 > 10){
-        var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
-        else{
-        var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
-    }
-    var currentTime = new Date();
-    var currentOffset = currentTime.getTimezoneOffset();
-    var ISTOffset = 330;   // IST offset UTC +5:30 
-    var ISTTime = new Date(currentTime.getTime() + (ISTOffset*2 + currentOffset -5)*60000);
-    console.log(ISTTime,date)
-    PincodeRefresher(date,ISTTime)
+    // var d = new Date()
+    // d.setDate(d.getDate());
+    // if(d.getDate() < 10){
+    //     if(d.getMonth()+1 > 10){
+    //     var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+    //     else{
+    //     var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
+    // }else{
+    //     if(d.getMonth()+1 > 10){
+    //     var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
+    //     else{
+    //     var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
+    // }
+    // var currentTime = new Date();
+    // var currentOffset = currentTime.getTimezoneOffset();
+    // var ISTOffset = 330;   // IST offset UTC +5:30 
+    // var ISTTime = new Date(currentTime.getTime() + (ISTOffset*2 + currentOffset -5)*60000);
+    // console.log(ISTTime,date)
+    PincodeRefresher()
 })
 
-async function PincodeRefresher(date,ist){
-    const date1=date.toString()
+async function PincodeRefresher(){
+	let date=new Date(new Date())
+	date.setDate(date.getDate()-1)
+	date=new Date(date)
+	const year=date.getFullYear()
+	const month=`0${date.getMonth()+1}`
+	const date1=date.getDate()
+	let yesterday=`${year}-${month}-${date1}`
+	console.log('yesterday',yesterday)
+
 	const ZipModelReports=require('./models/zipreports')
 	const Zipreports2=require('./models/zipdata2reports')
     const pincodes=await ZipModelReports.aggregate([
@@ -497,7 +505,7 @@ async function PincodeRefresher(date,ist){
             CompanionClickTracking:1,
             SovClickTracking:1
         }},
-        {$match:{test:date1}},
+        {$match:{test:yesterday}},
         {$group:{_id:{zip:"$zip"},
         CompanionClickTracking:{$sum:"$CompanionClickTracking"},
         SovClickTracking:{$sum:"$SovClickTracking"},
