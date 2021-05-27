@@ -9,6 +9,7 @@ var campaignwisereportsSchema = new mongoose.Schema({
     apppubid: String,
     ssp: String,
     requests: Number,
+    feed:String,
     ads: Number, ///AdServed
     servedAudioImpressions: Number,
     servedCompanionAds: Number,
