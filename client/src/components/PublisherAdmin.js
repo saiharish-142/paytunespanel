@@ -210,7 +210,7 @@ function PublisherAdmin({
 											{parseInt(log.campaignId.TargetImpressions) - log.impressions}
 										</TableCell>
 										<TableCell>
-											{log.feed}
+											{log.feed?log.feed:null}
 										</TableCell>
 										<TableCell
 											className="mangeads__report"
