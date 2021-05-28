@@ -133,7 +133,7 @@ export default function Phonedata() {
 
 			<Paper>
 				<TableContainer>
-					<Table stickyHeader aria-label="sticky table" >
+					<Table  aria-label="sticky table" >
 						<TableHead  style={{position:"sticky",top:0}}>
 							<TableRow >
 								{/* <TableCell>{title}</TableCell> */}
