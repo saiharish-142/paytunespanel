@@ -57,15 +57,36 @@ router.put('/sumfrequency', adminauth, (req, res) => {
 				$facet: {
 					audio: [
 						{ $match: { campaignId: { $in: audio } } },
-						{ $group: { _id: '$frequency', users: { $sum: '$users' } } }
+						{
+							$group: {
+								_id: '$frequency',
+								users: { $sum: '$users' },
+								impression: { $sum: '$impression' },
+								click: { $sum: '$click' }
+							}
+						}
 					],
 					display: [
 						{ $match: { campaignId: { $in: display } } },
-						{ $group: { _id: '$frequency', users: { $sum: '$users' } } }
+						{
+							$group: {
+								_id: '$frequency',
+								users: { $sum: '$users' },
+								impression: { $sum: '$impression' },
+								click: { $sum: '$click' }
+							}
+						}
 					],
 					video: [
 						{ $match: { campaignId: { $in: video } } },
-						{ $group: { _id: '$frequency', users: { $sum: '$users' } } }
+						{
+							$group: {
+								_id: '$frequency',
+								users: { $sum: '$users' },
+								impression: { $sum: '$impression' },
+								click: { $sum: '$click' }
+							}
+						}
 					]
 				}
 			}
