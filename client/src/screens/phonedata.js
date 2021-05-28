@@ -133,9 +133,9 @@ export default function Phonedata() {
 
 			<Paper>
 				<TableContainer>
-					<Table stickyHeader aria-label="sticky table">
-						<TableHead>
-							<TableRow style={{position:"sticky"}}>
+					<Table stickyHeader aria-label="sticky table" style={{position:"relative"}}>
+						<TableHead  style={{position:"sticky",top:0}}>
+							<TableRow >
 								{/* <TableCell>{title}</TableCell> */}
 								{<TableCell>Make_And_Model</TableCell>}
 								{<TableCell>Impressions</TableCell>}
