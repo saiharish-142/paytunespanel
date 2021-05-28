@@ -1,26 +1,30 @@
+import { Breadcrumbs } from '@material-ui/core';
 import React, { useEffect, useContext } from 'react';
 import { useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { IdContext } from '../App';
+import PreLoader from '../components/loaders/PreLoader';
 import BasicTableBundle from '../components/TableBundle';
+import TablePro from '../components/tablePro';
+import { idStorer, loadReportBaseBundle, ReportLoading } from '../redux/actions/reportActions';
 
 function ReportBundle() {
 	const { campname } = useParams();
 	const history = useHistory();
+	const dispatchRedux = useDispatch();
 	const { dispatch1 } = useContext(IdContext);
+	const report = useSelector((state) => state.report);
 	const [ singlead, setsinglead ] = useState({});
 	const [ title, settitle ] = useState('');
+	console.log(report);
 	useEffect(
 		() => {
 			if (campname) {
+				dispatchRedux(ReportLoading());
+				dispatchRedux(idStorer(campname));
 				dispatch1({ type: 'ID', payload: campname });
-			}
-		},
-		[ campname ]
-	);
-	useEffect(
-		() => {
-			if (campname) {
+				dispatchRedux(loadReportBaseBundle());
 				fetch(`/bundles/grp/${campname}`, {
 					method: 'get',
 					headers: {
@@ -66,20 +70,43 @@ function ReportBundle() {
 	//     }
 	// }
 	// console.log(id)
+	if (report && report.isLoading) {
+		return (
+			<div className="dashboard">
+				<PreLoader />
+			</div>
+		);
+	}
 	return (
 		<div style={{ padding: '20px' }}>
-			<div style={{ width: '10vw' }}>
+			<div style={{ minWidth: '60vw', display: 'flex', alignItems: 'center' }}>
 				<button
-					onClick={() => history.push(`/manageBundles`)}
+					onClick={() => history.push(`/manageAds`)}
 					className="btn #424242 grey darken-3"
 					style={{ margin: '20px', textAlign: 'left' }}
 				>
 					Back
 				</button>
+				<Breadcrumbs
+					style={{
+						width: 'fit-content',
+						height: 'fit-content',
+						padding: '10px',
+						background: 'white',
+						color: 'black'
+					}}
+					aria-label="breadcrumb"
+				>
+					<Link style={{ color: 'black' }} to="/manageBundles">
+						Manage Bundles
+					</Link>
+					<Link style={{ color: 'black' }} href={`/manageBundles/${report.req_id}`}>
+						{report.title}
+					</Link>
+				</Breadcrumbs>
 			</div>
-			{/* <TitlRname title={title} settitle={settitle} submit={submitTitle} setloading={setloading} loading={loading} /> */}
-			{/* <div style={{margin:'0 auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div> */}
-			<BasicTableBundle title={title} singlead={singlead} />
+			<TablePro />
+			{/* <EnhancedTable singlead={singlead} /> */}
 		</div>
 	);
 }

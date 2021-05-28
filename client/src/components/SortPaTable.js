@@ -12,6 +12,7 @@ import {
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
+import EditIcon from '@material-ui/icons/Edit';
 
 function SortPaTable(props) {
 	const history = useHistory();
@@ -48,7 +49,7 @@ function SortPaTable(props) {
 														? props.direc === 'asc' ? 'desc' : 'asc'
 														: 'asc';
 												// console.log(direction, ad.id);
-												dispatchRedux(props.orderManager(direction, ad.id));
+												dispatchRedux(props.orderManager(direction, ad.id, ad.type));
 											}}
 										>
 											<TableSortLabel active={props.order === ad.id} direction={props.direc}>
@@ -57,6 +58,7 @@ function SortPaTable(props) {
 										</TableCell>
 									);
 								})}
+								{props.tabletype !== 'campagins' && !props.clientview && <TableCell />}
 								<TableCell />
 							</TableRow>
 						</TableHead>
@@ -64,7 +66,11 @@ function SortPaTable(props) {
 							{props.adss.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
 								return (
 									<TableRow key={row._id}>
-										<TableCell>{row.Adtitle}</TableCell>
+										{props.tabletype === 'campagins' ? (
+											<TableCell>{row.Adtitle}</TableCell>
+										) : (
+											<TableCell>{row.bundleadtitle}</TableCell>
+										)}
 										<TableCell>{row.Advertiser}</TableCell>
 										<TableCell>{row.Pricing}</TableCell>
 										<TableCell>{row.ro}</TableCell>
@@ -80,13 +86,31 @@ function SortPaTable(props) {
 												row.remainingDays
 											)}
 										</TableCell>
+										{props.tabletype !== 'campagins' &&
+										!props.clientview && (
+											<TableCell
+												align="center"
+												className="mangeads__report"
+												onClick={() => history.push(`/bundleManage/${row._id}/edit`)}
+											>
+												<EditIcon />
+											</TableCell>
+										)}
 										<TableCell
 											className="mangeads__report"
 											onClick={() => {
-												if (props.clientview) {
-													history.push(`/clientSideCamp/${row._id}`);
+												if (props.tabletype === 'campagins') {
+													if (props.clientview) {
+														history.push(`/clientSideCamp/${row._id}`);
+													} else {
+														history.push(`/manageAds/${row._id}`);
+													}
 												} else {
-													history.push(`/manageAds/${row._id}`);
+													if (props.clientview) {
+														history.push(`/clientSideCamp/${row._id}`);
+													} else {
+														history.push(`/manageBundles/${row._id}`);
+													}
 												}
 											}}
 										>

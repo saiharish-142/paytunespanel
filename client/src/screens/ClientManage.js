@@ -10,10 +10,10 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import { useHistory, useParams } from 'react-router-dom';
 import { IdContext } from '../App';
-import { UserContext } from '../App';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import SearchCampagin from '../components/SearchCampagin';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles({
 	root: {
@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 
 function ClientManage() {
 	const { clientName } = useParams();
-	const { state } = useContext(UserContext);
+	const state = useSelector((state) => state.auth.user);
 	const { dispatch1 } = useContext(IdContext);
 	// console.log(state1,state)
 	const classes = useStyles();

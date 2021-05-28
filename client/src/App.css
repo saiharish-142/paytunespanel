@@ -157,6 +157,14 @@
   border-radius: 3px;
 }
 
+.titleReport{
+  margin: 10px auto;
+  font-size: larger;
+  width: fit-content;
+  font-weight: 500;
+  border-bottom: 1px solid black;
+}
+
 @media screen and (max-width: 700px){
   .navbar{
     height: 10vh;

@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import TablePagination from '@material-ui/core/TablePagination';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import { orderSetter } from '../redux/actions/manageadsAction';
 
 const useStyles = makeStyles({
 	table: {
@@ -10,17 +11,32 @@ const useStyles = makeStyles({
 	}
 });
 
-function PincodeAdmin({ title, report, state1 }) {
+function PincodeAdmin({ title, report, state1, arrowRetuner }) {
 	const history = useHistory();
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
 	const [ adss, setadss ] = React.useState(report);
+	const [ sa, setsa ] = React.useState('impression');
+	const [ order, setorder ] = React.useState('desc');
+	const tablesorter = (column, type) => {
+		var orde = sa === column ? (order === 'asc' ? 'desc' : 'asc') : 'asc';
+		setorder(orde);
+		setsa(column);
+		var setData = orderSetter(orde, column, adss, type);
+		setadss(setData);
+	};
 	useEffect(
 		() => {
 			if (report && report.length > 0) {
 				var data = report;
 				data.sort(function(a, b) {
 					return b.impression - a.impression;
+				});
+				data.map((row) => {
+					row.clicks = parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
+					row.ctr =
+						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) /
+						parseInt(row.impression);
 				});
 				setadss(data);
 			} else {
@@ -46,19 +62,71 @@ function PincodeAdmin({ title, report, state1 }) {
 					<Table className={classes.table} aria-label="simple table">
 						<TableHead>
 							<TableRow>
-								<TableCell>Pincode</TableCell>
-								<TableCell>Urban/Rural</TableCell>
-								<TableCell>Lower Sub City</TableCell>
-								<TableCell>Subcity</TableCell>
-								<TableCell>City</TableCell>
-								<TableCell>Grand City</TableCell>
-								<TableCell>District</TableCell>
-								<TableCell>Comparison</TableCell>
-								<TableCell>State</TableCell>
-								<TableCell>Grand State</TableCell>
-								<TableCell>Impressions</TableCell>
-								<TableCell>Clicks</TableCell>
-								<TableCell>CTR</TableCell>
+								<TableCell onClick={() => tablesorter('zip', 'number')} style={{ cursor: 'pointer' }}>
+									Pincode{arrowRetuner(sa === 'zip' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell onClick={() => tablesorter('area', 'string')} style={{ cursor: 'pointer' }}>
+									Urban/Rural{arrowRetuner(sa === 'area' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('lowersubcity', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									Lower Sub City{arrowRetuner(
+										sa === 'lowersubcity' ? (order === 'asc' ? '1' : '2') : '3'
+									)}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('subcity', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									Subsubcity{arrowRetuner(sa === 'subcity' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell onClick={() => tablesorter('city', 'string')} style={{ cursor: 'pointer' }}>
+									City{arrowRetuner(sa === 'city' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('grandcity', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									Grand City{arrowRetuner(sa === 'grandcity' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('district', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									District{arrowRetuner(sa === 'district' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('comparison', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									Comparison{arrowRetuner(sa === 'comparison' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell onClick={() => tablesorter('state', 'string')} style={{ cursor: 'pointer' }}>
+									State{arrowRetuner(sa === 'state' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('grandstate', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									Grand State{arrowRetuner(sa === 'grandstate' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('impression', 'number')}
+									style={{ cursor: 'pointer' }}
+								>
+									Impressions{arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('clicks', 'number')}
+									style={{ cursor: 'pointer' }}
+								>
+									Clicks{arrowRetuner(sa === 'clicks' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell onClick={() => tablesorter('ctr', 'number')} style={{ cursor: 'pointer' }}>
+									CTR{arrowRetuner(sa === 'ctr' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
 								<TableCell />
 							</TableRow>
 						</TableHead>
@@ -79,19 +147,8 @@ function PincodeAdmin({ title, report, state1 }) {
 										<TableCell>{row.state ? row.state : ''}</TableCell>
 										<TableCell>{row.grandstate ? row.grandstate : ''}</TableCell>
 										<TableCell>{row.impression ? row.impression : ''}</TableCell>
-										<TableCell>
-											{parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)}
-										</TableCell>
-										<TableCell>
-											{Math.round(
-												(parseInt(row.CompanionClickTracking) +
-													parseInt(row.SovClickTracking)) /
-													parseInt(row.impression) *
-													100
-											) /
-												100 +
-												'%'}
-										</TableCell>
+										<TableCell>{row.clicks}</TableCell>
+										<TableCell>{Math.round(row.ctr * 100 / 100)}%</TableCell>
 										<TableCell
 											className="mangeads__report"
 											onClick={() => history.push(`/manageAds/${state1}/detailed`)}
