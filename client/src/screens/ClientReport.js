@@ -1,13 +1,14 @@
 import React, { useEffect, useContext } from 'react';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { IdContext, UserContext } from '../App';
+import { IdContext } from '../App';
 import EnhancedTable from '../components/ClientTable';
 
 function ClientReport() {
 	const { campname } = useParams();
 	const history = useHistory();
-	const { state } = useContext(UserContext);
+	const state = useSelector((state) => state.auth.user);
 	const { dispatch1 } = useContext(IdContext);
 	const [ singlead, setsinglead ] = useState({});
 	const [ title, settitle ] = useState('');

@@ -3,7 +3,9 @@ var Schema = mongoose.Schema;
 var frequencyreportsSchema = new Schema({
 	campaignId: { type: Schema.Types.ObjectId, ref: 'streamingadObj' },
 	frequency: Number,
-	users: Number
+	users: Number,
+	impression: Number,
+	click: Number
 });
 frequencyreportsSchema.index({ campaignId: 1 });
 

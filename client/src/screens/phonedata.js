@@ -132,10 +132,10 @@ export default function Phonedata() {
 			</div>
 
 			<Paper>
-				<TableContainer>
-					<Table stickyHeader aria-label="sticky table">
-						<TableHead>
-							<TableRow>
+				<TableContainer style={{maxHeight:440}}>
+					<Table stickyHeader aria-label="sticky table" >
+						<TableHead  style={{position:"sticky",top:0}}>
+							<TableRow >
 								{/* <TableCell>{title}</TableCell> */}
 								{<TableCell>Make_And_Model</TableCell>}
 								{<TableCell>Impressions</TableCell>}
@@ -149,7 +149,7 @@ export default function Phonedata() {
 								{<TableCell />}
 							</TableRow>
 						</TableHead>
-						<TableBody style={{overflow:"auto"}}>
+						<TableBody >
 							{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
 								<TableRow key={row.name}>
 									<TableCell component="th" scope="row">

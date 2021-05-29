@@ -1395,8 +1395,8 @@ router.get('/phonedata', adminauth, async (req, res) => {
 router.get('/zipdata', adminauth, async (req, res) => {
 	try {
 		const result=await Zipreports2.aggregate([
-		    {$match:{ $or:[{area:""},
-		    // {pincode:""},
+		    {$match:{ $or:[
+			{area:""},
 		    {city:""},
 		    {district:""},
 		    {state:""},
@@ -1737,7 +1737,8 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 					midpoint: { $sum: '$midpoint' },
 					thirdQuartile: { $sum: '$thirdQuartile' },
 					complete: { $sum: '$complete' },
-					createdOn: { $push: '$createdOn' }
+					createdOn: { $push: '$createdOn' },
+					status:{$first:'$extra_details.status'}
 				}
 			},
 			{ $sort: { impression: -1 } }

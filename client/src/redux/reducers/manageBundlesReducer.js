@@ -1,14 +1,14 @@
 import {
-	MANAGEADS_LOADING,
-	MANAGEADS_LOADDED,
-	MANAGEADS_LOAD_ERROR,
-	MANAGEADS_SEARCH,
-	MANAGEADS_SORT_NAME
+	MANAGEBUNDLES_LOADING,
+	MANAGEBUNDLES_LOADDED,
+	MANAGEBUNDLES_LOAD_ERROR,
+	MANAGEBUNDLES_SEARCH,
+	MANAGEBUNDLES_SORT_NAME
 } from '../types.js';
 
 const initialState = {
-	manageads: null,
-	searchedmanageads: null,
+	managebundles: null,
+	searchedmanagebundles: null,
 	ordername: 'remainingDays',
 	orderdir: 'asc',
 	message: null,
@@ -20,37 +20,37 @@ const initialState = {
 
 export default function(state = initialState, action) {
 	switch (action.type) {
-		case MANAGEADS_LOADING:
+		case MANAGEBUNDLES_LOADING:
 			return {
 				...state,
 				loadfail: false,
 				isLoading: true
 			};
-		case MANAGEADS_LOADDED:
+		case MANAGEBUNDLES_LOADDED:
 			return {
 				...state,
 				isLoading: false,
-				manageads: action.payload,
-				searchedmanageads: action.payload
+				managebundles: action.payload,
+				searchedmanagebundles: action.payload
 			};
-		case MANAGEADS_LOAD_ERROR:
+		case MANAGEBUNDLES_LOAD_ERROR:
 			return {
 				...state,
 				isLoading: false,
 				loadfail: true
 			};
-		case MANAGEADS_SORT_NAME:
+		case MANAGEBUNDLES_SORT_NAME:
 			return {
 				...state,
 				ordername: action.payload.name,
 				orderdir: action.payload.direction,
-				manageads: action.payload.adss,
-				searchedmanageads: action.payload.searchadss
+				managebundles: action.payload.adss,
+				searchedmanagebundles: action.payload.searchadss
 			};
-		case MANAGEADS_SEARCH:
+		case MANAGEBUNDLES_SEARCH:
 			return {
 				...state,
-				searchedmanageads: action.payload.ads,
+				searchedmanagebundles: action.payload.ads,
 				value: action.payload.value
 			};
 		default:
