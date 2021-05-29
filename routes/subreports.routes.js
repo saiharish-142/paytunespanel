@@ -1738,7 +1738,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 					thirdQuartile: { $sum: '$thirdQuartile' },
 					complete: { $sum: '$complete' },
 					createdOn: { $push: '$createdOn' },
-					status:{$first:'$extra_details.status'}
+					status:{$first: '$extra_details.status'} 
 				}
 			},
 			{ $sort: { impression: -1 } }
