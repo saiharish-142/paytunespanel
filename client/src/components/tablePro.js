@@ -357,6 +357,7 @@ function TablePro() {
 	};
 	const PublisherProps = {
 		singlead: report,
+		titleData: report.title && report.title,
 		arrowRetuner: arrowRetuner,
 		colorfinder: colorfinder,
 		timefinder: timefinder,

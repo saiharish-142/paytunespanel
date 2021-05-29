@@ -4,6 +4,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { orderSetter } from '../redux/actions/manageadsAction';
+import { CSVLink } from 'react-csv';
 
 const useStyles = makeStyles({
 	table: {
@@ -23,7 +24,8 @@ function PublisherAdmin({
 	spentOfflinev,
 	colorfinder,
 	ids,
-	arrowRetuner
+	arrowRetuner,
+	titleData
 }) {
 	const history = useHistory();
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
@@ -31,6 +33,24 @@ function PublisherAdmin({
 	const [ sa, setsa ] = React.useState('impressions');
 	const [ order, setorder ] = React.useState('desc');
 	const [ adss, setadss ] = React.useState(report);
+	const headers = [
+		{ key: 'publishername', label: 'Publisher' },
+		{ key: 'ssp', label: 'SSP' },
+		{ key: 'target', label: 'Total Impressions to be delivered' },
+		{ key: 'impressions', label: 'Total Impressions Delivered till date' },
+		{ key: 'avgreq', label: 'Avg required' },
+		{ key: 'avgach', label: 'Avg Achieved' },
+		{ key: 'spent', label: 'Total spent' },
+		{ key: 'clicks', label: 'Total Clicks Delivered till date' },
+		{ key: 'ctr', label: 'CTR' },
+		{ key: 'balance', label: 'Balance Impressions' },
+		{ key: 'feed', label: 'Feed' }
+	];
+	var csvReport = {
+		filename: `${titleData}_${title}_PublisherData.csv`,
+		headers: headers,
+		data: adss
+	};
 	useEffect(
 		() => {
 			if (report && report.length > 0) {
@@ -47,6 +67,7 @@ function PublisherAdmin({
 					ad.balance = parseInt(ad.target) - ad.impressions;
 					return ad;
 				});
+				csvReport.data = data;
 				setadss(data);
 			} else {
 				setadss(report);
@@ -137,7 +158,9 @@ function PublisherAdmin({
 								<TableCell onClick={() => tablesorter('feed', 'string')} style={{ cursor: 'pointer' }}>
 									Feed {arrowRetuner(sa === 'feed' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell />
+								<TableCell>
+									{adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
+								</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>

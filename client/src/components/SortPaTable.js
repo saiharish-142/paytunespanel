@@ -13,6 +13,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import EditIcon from '@material-ui/icons/Edit';
+import { CSVLink } from 'react-csv';
 
 function SortPaTable(props) {
 	const history = useHistory();
@@ -41,25 +42,27 @@ function SortPaTable(props) {
 								{props.headers.map((ad) => {
 									return (
 										<TableCell
-											key={ad.id}
+											key={ad.key}
 											sortDirection={'asc'}
 											onClick={() => {
 												var direction =
-													props.order === ad.id
+													props.order === ad.key
 														? props.direc === 'asc' ? 'desc' : 'asc'
 														: 'asc';
-												// console.log(direction, ad.id);
-												dispatchRedux(props.orderManager(direction, ad.id, ad.type));
+												// console.log(direction, ad.key);
+												dispatchRedux(props.orderManager(direction, ad.key, ad.type));
 											}}
 										>
-											<TableSortLabel active={props.order === ad.id} direction={props.direc}>
-												{ad.lable}
+											<TableSortLabel active={props.order === ad.key} direction={props.direc}>
+												{ad.label}
 											</TableSortLabel>
 										</TableCell>
 									);
 								})}
 								{props.tabletype !== 'campagins' && !props.clientview && <TableCell />}
-								<TableCell />
+								<TableCell>
+									<CSVLink {...props.csvReport}>Download Data</CSVLink>
+								</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>

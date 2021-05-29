@@ -4,6 +4,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { orderSetter } from '../redux/actions/manageadsAction';
+import { CSVLink } from 'react-csv';
 
 const useStyles = makeStyles({
 	table: {
@@ -25,6 +26,26 @@ function PincodeAdmin({ title, report, state1, arrowRetuner }) {
 		var setData = orderSetter(orde, column, adss, type);
 		setadss(setData);
 	};
+	const headers = [
+		{ key: 'zip', label: 'Pincode' },
+		{ key: 'area', label: 'Urban/Rural' },
+		{ key: 'lowersubcity', label: 'Lower Sub City' },
+		{ key: 'subcity', label: 'Subsubcity' },
+		{ key: 'city', label: 'City' },
+		{ key: 'grandcity', label: 'Grand City' },
+		{ key: 'district', label: 'District' },
+		{ key: 'comparison', label: 'Comparison' },
+		{ key: 'state', label: 'State' },
+		{ key: 'grandstate', label: 'Grand State' },
+		{ key: 'impression', label: 'Impressions' },
+		{ key: 'clicks', label: 'Clicks' },
+		{ key: 'ctr', label: 'CTR' }
+	];
+	var csvReport = {
+		filename: `${state1}_${title}_PublisherData.csv`,
+		headers: headers,
+		data: adss
+	};
 	useEffect(
 		() => {
 			if (report && report.length > 0) {
@@ -38,6 +59,7 @@ function PincodeAdmin({ title, report, state1, arrowRetuner }) {
 						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) /
 						parseInt(row.impression);
 				});
+				csvReport.data = data;
 				setadss(data);
 			} else {
 				setadss(report);

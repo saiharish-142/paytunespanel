@@ -4,6 +4,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { orderSetter } from '../redux/actions/manageadsAction';
+import { CSVLink } from 'react-csv';
 
 const useStyles = makeStyles({
 	table: {
@@ -24,6 +25,24 @@ function IbaReportAdmin({ title, report, state1, arrowRetuner }) {
 		setsa(column);
 		var setData = orderSetter(orde, column, adss, type);
 		setadss(setData);
+	};
+	const headers = [
+		{ key: 'category', label: 'Category' },
+		{ key: 'Name', label: 'Name' },
+		{ key: 'tier1', label: 'Tier 1' },
+		{ key: 'tier2', label: 'Tier 2' },
+		{ key: 'tier3', label: 'Tier 3' },
+		{ key: 'tier4', label: 'Tier 4' },
+		{ key: 'genderCategory', label: 'Gender Category' },
+		{ key: 'AgeCategory', label: 'Age Category' },
+		{ key: 'impression', label: 'Impressions' },
+		{ key: 'clicks', label: 'Clicks' },
+		{ key: 'ctr', label: 'CTR' }
+	];
+	var csvReport = {
+		filename: `${state1}_${title}_PublisherData.csv`,
+		headers: headers,
+		data: adss
 	};
 	useEffect(
 		() => {
@@ -47,6 +66,7 @@ function IbaReportAdmin({ title, report, state1, arrowRetuner }) {
 						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) /
 						(row.impressions ? row.impressions : 0);
 				});
+				csvReport.data = data;
 				setadss(data);
 			} else {
 				setadss(report);
@@ -123,7 +143,9 @@ function IbaReportAdmin({ title, report, state1, arrowRetuner }) {
 								<TableCell onClick={() => tablesorter('ctr', 'number')} style={{ cursor: 'pointer' }}>
 									CTR{arrowRetuner(sa === 'ctr' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell />
+								<TableCell>
+									{adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
+								</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>

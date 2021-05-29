@@ -5,7 +5,8 @@ import {
 	REPORT_LOADED,
 	REPORT_ERROR,
 	REPORT_ID_,
-	REPORT_SPENT_LOADED
+	REPORT_SPENT_LOADED,
+	REPORT_CLEAR
 } from '../types.js';
 import { tokenConfig } from './authAction.js';
 
@@ -38,7 +39,7 @@ export const loadReportBase = () => (dispatch, getState) => {
 			})
 		})
 			.then((res) => res.json())
-			.then((result) => {
+			.then(async (result) => {
 				// settitle(result[0].AdTitle)
 				// setloading(false)
 				console.log(result);
@@ -52,8 +53,8 @@ export const loadReportBase = () => (dispatch, getState) => {
 						endDate: result.endDate[0]
 					}
 				});
-				dispatch(loadSpentData());
-				dispatch(loadReport());
+				await dispatch(loadSpentData());
+				await dispatch(loadReport());
 			})
 			.catch((err) => {
 				// setloading(false)
@@ -95,7 +96,7 @@ export const loadSpentData = () => (dispatch, getState) => {
 
 export const loadReport = () => (dispatch, getState) => {
 	const datast = getState().report;
-	// console.log(data);
+	// console.log(datast.ids.audio);
 	if (datast) {
 		fetch('/offreport/sumreportofcamall2', {
 			method: 'put',
@@ -122,6 +123,15 @@ export const loadReport = () => (dispatch, getState) => {
 				var audiospentOffline = 0;
 				var displayspentOffline = 0;
 				var videospentOffline = 0;
+				if (!data.audio) {
+					data.audio = [];
+				}
+				if (!data.display) {
+					data.display = [];
+				}
+				if (!data.video) {
+					data.video = [];
+				}
 				data.audio.length &&
 					data.audio.map((re) => {
 						re.publishername = re.apppubidpo.length
@@ -223,7 +233,7 @@ export const loadReportBaseBundle = () => (dispatch, getState) => {
 			}
 		})
 			.then((res) => res.json())
-			.then((result) => {
+			.then(async (result) => {
 				dispatch({
 					type: REPORT_BASE_LOADED,
 					payload: {
@@ -234,12 +244,18 @@ export const loadReportBaseBundle = () => (dispatch, getState) => {
 						endDate: result.endDate
 					}
 				});
-				dispatch(loadSpentData());
-				dispatch(loadReport());
+				await dispatch(loadSpentData());
+				await dispatch(loadReport());
 				console.log(result);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 	}
+};
+
+export const ClearReport = () => (dispatch, getState) => {
+	dispatch({
+		type: REPORT_CLEAR
+	});
 };

@@ -4,7 +4,8 @@ import {
 	REPORT_LOADED,
 	REPORT_ERROR,
 	REPORT_ID_,
-	REPORT_SPENT_LOADED
+	REPORT_SPENT_LOADED,
+	REPORT_CLEAR
 } from '../types.js';
 
 const initialState = {
@@ -60,6 +61,21 @@ export default function(state = initialState, action) {
 				...state,
 				isLoading: false,
 				loadfail: true
+			};
+		case REPORT_CLEAR:
+			return {
+				req_id: null,
+				ids: null,
+				combine_ids: null,
+				title: null,
+				endDate: null,
+				startDate: null,
+				report: null,
+				spent: null,
+				message: null,
+				error: null,
+				isLoading: true,
+				loadfail: null
 			};
 		default:
 			return state;

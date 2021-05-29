@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { IdContext } from '../App';
 import PreLoader from '../components/loaders/PreLoader';
-import BasicTableBundle from '../components/TableBundle';
+// import BasicTableBundle from '../components/TableBundle';
 import TablePro from '../components/tablePro';
-import { idStorer, loadReportBaseBundle, ReportLoading } from '../redux/actions/reportActions';
+import { ClearReport, idStorer, loadReportBaseBundle, ReportLoading } from '../redux/actions/reportActions';
 
 function ReportBundle() {
 	const { campname } = useParams();
@@ -20,6 +20,7 @@ function ReportBundle() {
 	console.log(report);
 	useEffect(
 		() => {
+			dispatchRedux(ClearReport());
 			if (campname) {
 				dispatchRedux(ReportLoading());
 				dispatchRedux(idStorer(campname));

@@ -2,8 +2,9 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 import React, { useEffect } from 'react';
 import TablePagination from '@material-ui/core/TablePagination';
 import { useHistory } from 'react-router-dom';
-import regiondata from './Regionfinder';
+// import regiondata from './Regionfinder';
 import { orderSetter } from '../redux/actions/manageadsAction';
+import { CSVLink } from 'react-csv';
 
 function LanguagePro({ ids, url, adtype, state1, arrowRetuner }) {
 	// console.log(click,ratio)
@@ -13,6 +14,17 @@ function LanguagePro({ ids, url, adtype, state1, arrowRetuner }) {
 	const [ adss, setadss ] = React.useState([]);
 	const [ sa, setsa ] = React.useState('impression');
 	const [ order, setorder ] = React.useState('desc');
+	const headers = [
+		{ key: 'citylanguage', label: 'Language' },
+		{ key: 'impression', label: 'Total Impressions Delivered till date' },
+		{ key: 'clicks', label: 'Total Clicks Delivered till date' },
+		{ key: 'ctr', label: 'CTR' }
+	];
+	var csvReport = {
+		filename: `${state1}_${adtype}_PublisherData.csv`,
+		headers: headers,
+		data: adss
+	};
 	useEffect(
 		() => {
 			// console.log(ids,url,adtype)
@@ -46,6 +58,7 @@ function LanguagePro({ ids, url, adtype, state1, arrowRetuner }) {
 										: 0 + a.SovClickTracking ? a.SovClickTracking : 0
 								) / parseInt(a.impression ? parseInt(a.impression) : 0);
 						});
+						csvReport.data = loco;
 						setadss(loco);
 					})
 					.catch((err) => console.log(err));
@@ -96,7 +109,9 @@ function LanguagePro({ ids, url, adtype, state1, arrowRetuner }) {
 							<TableCell onClick={() => tablesorter('ctr', 'number')} style={{ cursor: 'pointer' }}>
 								CTR{arrowRetuner(sa === 'ctr' ? (order === 'asc' ? '1' : '2') : '3')}
 							</TableCell>
-							<TableCell />
+							<TableCell>
+								{adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
+							</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>

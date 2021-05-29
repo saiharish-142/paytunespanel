@@ -34,25 +34,31 @@ function Dashboard({ clientview }) {
 		);
 	}
 	const headers = [
-		{ type: 'string', id: 'Adtitle', lable: 'Name' },
-		{ type: 'string', id: 'Advertiser', lable: 'Advertiser' },
-		{ type: 'string', id: 'Pricing', lable: 'Pricing' },
-		{ type: 'string', id: 'ro', lable: 'RO from Advertiser' },
-		{ type: 'string', id: 'PricingModel', lable: 'Pricing Model' },
-		{ type: 'string', id: 'Category', lable: 'Category' },
-		{ type: 'date', id: 'createdOn', lable: 'Created On' },
-		{ type: 'date', id: 'startDate', lable: 'Start Date' },
-		{ type: 'date', id: 'endDate', lable: 'End Date' },
-		{ type: 'number', id: 'remainingDays', lable: 'Remaining Days' }
+		{ type: 'string', key: 'Adtitle', label: 'Name' },
+		{ type: 'string', key: 'Advertiser', label: 'Advertiser' },
+		{ type: 'string', key: 'Pricing', label: 'Pricing' },
+		{ type: 'string', key: 'ro', label: 'RO from Advertiser' },
+		{ type: 'string', key: 'PricingModel', label: 'Pricing Model' },
+		{ type: 'string', key: 'Category', label: 'Category' },
+		{ type: 'date', key: 'createdOn', label: 'Created On' },
+		{ type: 'date', key: 'startDate', label: 'Start Date' },
+		{ type: 'date', key: 'endDate', label: 'End Date' },
+		{ type: 'number', key: 'remainingDays', label: 'Remaining Days' }
 	];
 	// console.log(manageads);
 	if (manageads && manageads.searchedmanageads) {
+		const csvReport = {
+			filename: 'ManageAds.csv',
+			headers: headers,
+			data: manageads.searchedmanageads
+		};
 		return (
 			<div className="dashboard">
 				<SearchCampagin state={user && user.usertype} inval={searchval} setInval={onChangeRedux} />
 				<SortPaTable
 					tabletype="campagins"
 					headers={headers}
+					csvReport={csvReport}
 					orderManager={orderManager}
 					clientview={clientview}
 					adss={manageads.searchedmanageads}

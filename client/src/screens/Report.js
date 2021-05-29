@@ -6,7 +6,7 @@ import { IdContext } from '../App';
 import PreLoader from '../components/loaders/PreLoader';
 // import EnhancedTable from '../components/Table';
 import TablePro from '../components/tablePro';
-import { idStorer, loadReportBase, ReportLoading } from '../redux/actions/reportActions';
+import { ClearReport, idStorer, loadReportBase, ReportLoading } from '../redux/actions/reportActions';
 // import M from 'materialize-css'
 
 function Report() {
@@ -18,6 +18,7 @@ function Report() {
 	console.log(report);
 	useEffect(
 		() => {
+			dispatchRedux(ClearReport());
 			if (campname) {
 				dispatchRedux(ReportLoading());
 				dispatchRedux(idStorer(campname));
