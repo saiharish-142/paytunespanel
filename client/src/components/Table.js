@@ -9,7 +9,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { useHistory } from 'react-router-dom';
 import { IdContext } from '../App';
-import { USDINRratioContext } from '../App';
 import IconBreadcrumbs from './breadBreed';
 import Auditable from './auditable.js';
 import PincodeAdmin from './pincodeAdmin.js';
@@ -20,6 +19,7 @@ import PublisherAdmin from './PublisherAdmin';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import CreativeReport from './creative_report';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles({
 	table: {
@@ -30,7 +30,7 @@ const useStyles = makeStyles({
 export default function BasicTable({ singlead }) {
 	const history = useHistory();
 	const { state1 } = useContext(IdContext);
-	const { stateru } = useContext(USDINRratioContext);
+	const stateru = useSelector((state) => state.ratio.ratio);
 	const [ usinr, setusinr ] = useState(74.94715);
 	const [ summaryReport, setsummaryReport ] = useState({});
 	const [ audioReport, setaudioReport ] = useState({});
@@ -92,7 +92,7 @@ export default function BasicTable({ singlead }) {
 	useEffect(
 		() => {
 			// console.log(spentOffline)
-			console.log(stateru);
+			// console.log(stateru);
 			if (stateru) {
 				setusinr(stateru);
 			}

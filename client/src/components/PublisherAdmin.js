@@ -3,6 +3,8 @@ import React, { useEffect } from 'react';
 import TablePagination from '@material-ui/core/TablePagination';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import { orderSetter } from '../redux/actions/manageadsAction';
+import { CSVLink } from 'react-csv';
 
 const useStyles = makeStyles({
 	table: {
@@ -22,14 +24,33 @@ function PublisherAdmin({
 	spentOfflinev,
 	colorfinder,
 	ids,
-	tablesorter,
-	arrowRetuner
+	arrowRetuner,
+	titleData
 }) {
 	const history = useHistory();
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
-	const [ sa, setsa ] = React.useState('impre');
+	const [ sa, setsa ] = React.useState('impressions');
+	const [ order, setorder ] = React.useState('desc');
 	const [ adss, setadss ] = React.useState(report);
+	const headers = [
+		{ key: 'publishername', label: 'Publisher' },
+		{ key: 'ssp', label: 'SSP' },
+		{ key: 'target', label: 'Total Impressions to be delivered' },
+		{ key: 'impressions', label: 'Total Impressions Delivered till date' },
+		{ key: 'avgreq', label: 'Avg required' },
+		{ key: 'avgach', label: 'Avg Achieved' },
+		{ key: 'spent', label: 'Total spent' },
+		{ key: 'clicks', label: 'Total Clicks Delivered till date' },
+		{ key: 'ctr', label: 'CTR' },
+		{ key: 'balance', label: 'Balance Impressions' },
+		{ key: 'feed', label: 'Feed' }
+	];
+	var csvReport = {
+		filename: `${titleData}_${title}_PublisherData.csv`,
+		headers: headers,
+		data: adss
+	};
 	useEffect(
 		() => {
 			if (report && report.length > 0) {
@@ -37,6 +58,16 @@ function PublisherAdmin({
 				data.sort(function(a, b) {
 					return b.impressions - a.impressions;
 				});
+				data.map((ad) => {
+					ad.spent =
+						spentfinder(ad.Publisher._id, ad.campaignId._id, ad.impressions) +
+						parseInt(title === 'Audio' ? (spentOffline ? spentOffline : 0) : 0) +
+						parseInt(title === 'Display' ? (spentOfflined ? spentOfflined : 0) : 0) +
+						parseInt(title === 'Video' ? (spentOfflinev ? spentOfflinev : 0) : 0);
+					ad.balance = parseInt(ad.target) - ad.impressions;
+					return ad;
+				});
+				csvReport.data = data;
 				setadss(data);
 			} else {
 				setadss(report);
@@ -52,103 +83,84 @@ function PublisherAdmin({
 		setRowsPerPage(+event.target.value);
 		setPage(0);
 	};
+	const tablesorter = (column, type) => {
+		var orde = sa === column ? (order === 'asc' ? 'desc' : 'asc') : 'asc';
+		setorder(orde);
+		setsa(column);
+		var setData = orderSetter(orde, column, adss, type);
+		setadss(setData);
+	};
 	// console.log(adss && adss.length ? 'data' : 'no data')
 	return (
 		<Paper>
 			<TableContainer style={{ margin: '20px 0' }}>
 				<div style={{ margin: '5px', fontWeight: 'bolder' }}>{title} Report</div>
-				{singlead._id && adss.length && ids ? (
+				{state1 && adss.length && ids ? (
 					<Table className={classes.table} aria-label="simple table">
 						<TableHead>
 							<TableRow>
 								<TableCell
-									onClick={() =>
-										tablesorter(
-											'pub',
-											1,
-											'text',
-											'apppubidpo',
-											'publishername',
-											true,
-											setsa,
-											setadss,
-											adss
-										)}
-									onDoubleClick={() =>
-										tablesorter(
-											'revpub',
-											-1,
-											'text',
-											'apppubidpo',
-											'publishername',
-											true,
-											setsa,
-											setadss,
-											adss
-										)}
+									onClick={() => tablesorter('publishername', 'string')}
+									style={{ cursor: 'pointer' }}
 								>
-									Publisher {arrowRetuner(sa === 'pub' ? '1' : sa === 'revpub' ? '2' : '3')}
+									Publisher
+									{arrowRetuner(sa === 'publishername' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell>
-									Feed {arrowRetuner(sa === 'cat' ? '1' : sa === 'revcat' ? '2' : '3')}
-								</TableCell>
-								<TableCell>
-									SSP {arrowRetuner(sa === 'cat' ? '1' : sa === 'revcat' ? '2' : '3')}
-								</TableCell>
-								<TableCell>
-									Total Impressions to be delivered{' '}
-									{arrowRetuner(sa === 'cat' ? '1' : sa === 'revcat' ? '2' : '3')}
+								<TableCell onClick={() => tablesorter('ssp', 'string')} style={{ cursor: 'pointer' }}>
+									SSP {arrowRetuner(sa === 'ssp' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
-									onClick={() =>
-										tablesorter(
-											'impre',
-											1,
-											'num',
-											'impressions',
-											false,
-											false,
-											setsa,
-											setadss,
-											adss
-										)}
-									onDoubleClick={() =>
-										tablesorter(
-											'revimpre',
-											-1,
-											'num',
-											'impressions',
-											false,
-											false,
-											setsa,
-											setadss,
-											adss
-										)}
+									onClick={() => tablesorter('target', 'number')}
+									style={{ cursor: 'pointer' }}
+								>
+									Total Impressions to be delivered{' '}
+									{arrowRetuner(sa === 'target' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('impressions', 'number')}
+									style={{ cursor: 'pointer' }}
 								>
 									Total Impressions Delivered till date{' '}
-									{arrowRetuner(sa === 'impre' ? '1' : sa === 'revimpre' ? '2' : '3')}
+									{arrowRetuner(sa === 'impressions' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell>
-									Avg required {arrowRetuner(sa === 'cat' ? '1' : sa === 'revcat' ? '2' : '3')}
+								<TableCell
+									onClick={() => tablesorter('avgreq', 'number')}
+									style={{ cursor: 'pointer' }}
+								>
+									Avg required {arrowRetuner(sa === 'avgreq' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell>
-									Avg Achieved {arrowRetuner(sa === 'cat' ? '1' : sa === 'revcat' ? '2' : '3')}
+								<TableCell
+									onClick={() => tablesorter('avgach', 'number')}
+									style={{ cursor: 'pointer' }}
+								>
+									Avg Achieved {arrowRetuner(sa === 'avgach' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell>
-									Total spent {arrowRetuner(sa === 'cat' ? '1' : sa === 'revcat' ? '2' : '3')}
+								<TableCell onClick={() => tablesorter('spent', 'number')} style={{ cursor: 'pointer' }}>
+									Total spent {arrowRetuner(sa === 'spent' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell>
+								<TableCell
+									onClick={() => tablesorter('clicks', 'number')}
+									style={{ cursor: 'pointer' }}
+								>
 									Total Clicks Delivered till date{' '}
-									{arrowRetuner(sa === 'cat' ? '1' : sa === 'revcat' ? '2' : '3')}
+									{arrowRetuner(sa === 'clicks' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell onClick={() => tablesorter('ctr', 'number')} style={{ cursor: 'pointer' }}>
+									CTR {arrowRetuner(sa === 'ctr' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('balance', 'number')}
+									style={{ cursor: 'pointer' }}
+								>
+									Balance Impressions{' '}
+									{arrowRetuner(sa === 'balance' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell onClick={() => tablesorter('feed', 'string')} style={{ cursor: 'pointer' }}>
+									Feed {arrowRetuner(sa === 'feed' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell>
-									CTR {arrowRetuner(sa === 'cat' ? '1' : sa === 'revcat' ? '2' : '3')}
+									{adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
 								</TableCell>
-								<TableCell>
-									Balance Impressions {arrowRetuner(sa === 'cat' ? '1' : sa === 'revcat' ? '2' : '3')}
-								</TableCell>
-								
-								<TableCell />
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -158,62 +170,24 @@ function PublisherAdmin({
 										key={i}
 										style={{
 											background: colorfinder(
-												timefinder(singlead.endDate[0], singlead.startDate[0]),
-												timefinder(Date.now(), singlead.startDate[0]),
-												parseInt(log.campaignId.TargetImpressions),
+												timefinder(singlead.endDate, singlead.startDate),
+												timefinder(Date.now(), singlead.startDate),
+												parseInt(log.target),
 												log.impressions
 											)
 										}}
 									>
-										<TableCell>
-											{log.apppubidpo ? log.apppubidpo.length ? log.apppubidpo[0]
-												.publishername ? (
-												log.apppubidpo[0].publishername
-											) : (
-												log.Publisher.AppName
-											) : (
-												log.Publisher.AppName
-											) : (
-												log.Publisher.AppName
-											)}
-										</TableCell>
-										<TableCell>
-											{log.feed||log.feed==""?log.feed:"null"}
-										</TableCell>
-										<TableCell>
-											{log.apppubidpo && log.apppubidpo[0] && log.apppubidpo[0].ssp}
-										</TableCell>
-										<TableCell>{parseInt(log.campaignId.TargetImpressions)}</TableCell>
+										<TableCell>{log.publishername}</TableCell>
+										<TableCell>{log.ssp}</TableCell>
+										<TableCell>{parseInt(log.target)}</TableCell>
 										<TableCell>{log.impressions}</TableCell>
-										<TableCell>
-											{Math.round(
-												parseInt(log.campaignId.TargetImpressions) /
-													timefinder(singlead.endDate[0], singlead.startDate[0]) *
-													10
-											) / 10}
-										</TableCell>
-										<TableCell>
-											{Math.round(
-												log.impressions / timefinder(Date.now(), singlead.startDate[0]) * 10
-											) / 10}
-										</TableCell>
-										<TableCell>
-											{Math.round(
-												(spentfinder(log.Publisher._id, log.campaignId._id, log.impressions) +
-													parseInt(title === 'audio' ? spentOffline : 0) +
-													parseInt(title === 'display' ? spentOfflined : 0) +
-													parseInt(title === 'video' ? spentOfflinev : 0)) *
-													1
-											) / 1}
-										</TableCell>
+										<TableCell>{Math.round(parseFloat(log.avgreq) * 10) / 10}</TableCell>
+										<TableCell>{Math.round(parseFloat(log.avgach) * 10) / 10}</TableCell>
+										<TableCell>{Math.round(log.spent * 1) / 1}</TableCell>
 										<TableCell>{log.clicks}</TableCell>
-										<TableCell>
-											{Math.round(log.clicks * 100 / log.impressions * 100) / 100}%
-										</TableCell>
-										<TableCell>
-											{parseInt(log.campaignId.TargetImpressions) - log.impressions}
-										</TableCell>
-										
+										<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>
+										<TableCell>{parseInt(log.balance)}</TableCell>
+										<TableCell>{log.feed}</TableCell>
 										<TableCell
 											className="mangeads__report"
 											onClick={() => history.push(`/manageAds/${state1}/detailed`)}

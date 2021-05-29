@@ -12,6 +12,8 @@ import {
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
+import EditIcon from '@material-ui/icons/Edit';
+import { CSVLink } from 'react-csv';
 
 function SortPaTable(props) {
 	const history = useHistory();
@@ -40,31 +42,38 @@ function SortPaTable(props) {
 								{props.headers.map((ad) => {
 									return (
 										<TableCell
-											key={ad.id}
+											key={ad.key}
 											sortDirection={'asc'}
 											onClick={() => {
 												var direction =
-													props.order === ad.id
+													props.order === ad.key
 														? props.direc === 'asc' ? 'desc' : 'asc'
 														: 'asc';
-												// console.log(direction, ad.id);
-												dispatchRedux(props.orderManager(direction, ad.id));
+												// console.log(direction, ad.key);
+												dispatchRedux(props.orderManager(direction, ad.key, ad.type));
 											}}
 										>
-											<TableSortLabel active={props.order === ad.id} direction={props.direc}>
-												{ad.lable}
+											<TableSortLabel active={props.order === ad.key} direction={props.direc}>
+												{ad.label}
 											</TableSortLabel>
 										</TableCell>
 									);
 								})}
-								<TableCell />
+								{props.tabletype !== 'campagins' && !props.clientview && <TableCell />}
+								<TableCell>
+									<CSVLink {...props.csvReport}>Download Data</CSVLink>
+								</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
 							{props.adss.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
 								return (
 									<TableRow key={row._id}>
-										<TableCell>{row.Adtitle}</TableCell>
+										{props.tabletype === 'campagins' ? (
+											<TableCell>{row.Adtitle}</TableCell>
+										) : (
+											<TableCell>{row.bundleadtitle}</TableCell>
+										)}
 										<TableCell>{row.Advertiser}</TableCell>
 										<TableCell>{row.Pricing}</TableCell>
 										<TableCell>{row.ro}</TableCell>
@@ -80,13 +89,31 @@ function SortPaTable(props) {
 												row.remainingDays
 											)}
 										</TableCell>
+										{props.tabletype !== 'campagins' &&
+										!props.clientview && (
+											<TableCell
+												align="center"
+												className="mangeads__report"
+												onClick={() => history.push(`/bundleManage/${row._id}/edit`)}
+											>
+												<EditIcon />
+											</TableCell>
+										)}
 										<TableCell
 											className="mangeads__report"
 											onClick={() => {
-												if (props.clientview) {
-													history.push(`/clientSideCamp/${row._id}`);
+												if (props.tabletype === 'campagins') {
+													if (props.clientview) {
+														history.push(`/clientSideCamp/${row._id}`);
+													} else {
+														history.push(`/manageAds/${row._id}`);
+													}
 												} else {
-													history.push(`/manageAds/${row._id}`);
+													if (props.clientview) {
+														history.push(`/clientSideCamp/${row._id}`);
+													} else {
+														history.push(`/manageBundles/${row._id}`);
+													}
 												}
 											}}
 										>

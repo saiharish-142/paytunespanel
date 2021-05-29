@@ -4,20 +4,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import { useHistory } from 'react-router-dom';
 import regiondata from './Regionfinder';
 
-function Auditable({
-	streamingads,
-	title,
-	jsotitle,
-	ids,
-	url,
-	regtitle,
-	adtype,
-	state1,
-	client,
-	ratio,
-	impression,
-	click
-}) {
+function Auditable({ title, jsotitle, ids, url, adtype, state1, client, impression, click }) {
 	// console.log(click,ratio)
 	const history = useHistory();
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
