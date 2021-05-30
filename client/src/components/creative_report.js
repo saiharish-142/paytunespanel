@@ -61,7 +61,7 @@ function Creative_Report({ title, report, state1 }) {
 										<TableCell component="th" scope="row">
 											{row._id.creativeset ? row._id.creativeset : ''}
 										</TableCell>
-										<TableCell>{row.status ? row.status: ''}</TableCell>
+										<TableCell>{ row.status}</TableCell>
 										<TableCell>{row ? row.impression : ''}</TableCell>
 										<TableCell>
 											{parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)}
