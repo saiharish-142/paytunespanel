@@ -1703,7 +1703,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 			},
 			{
 				$project: {
-					creative_id: { $cond: [ { $eq: [ '$creativeid', '' ] }, null, '$creativeid' ] },
+					creative_id: { $cond: [ { $eq: [ '$creativeid', ""||"null" ] }, null, '$creativeid' ] },
 					campaignId: 1,
 					impression: 1,
 					CompanionClickTracking: 1,
