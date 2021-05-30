@@ -88,7 +88,19 @@ function TablePro() {
 				.then((res) => res.json())
 				.then((result) => {
 					console.log(result[0]);
-					setpincodereports(result[0]);
+					var data = result[0];
+					if (data) {
+						if (data.audio) {
+							data.audio = data.audio.filter((x) => x.impression > 0);
+						}
+						if (data.display) {
+							data.display = data.display.filter((x) => x.impression > 0);
+						}
+						if (data.video) {
+							data.video = data.video.filter((x) => x.impression > 0);
+						}
+					}
+					setpincodereports(data);
 				})
 				.catch((err) => console.log(err));
 		}
@@ -110,7 +122,19 @@ function TablePro() {
 				.then((res) => res.json())
 				.then((result) => {
 					console.log(result[0]);
-					setphoneModelReports(result[0]);
+					var data = result[0];
+					if (data) {
+						if (data.audio) {
+							data.audio = data.audio.filter((x) => x.impression > 0);
+						}
+						if (data.display) {
+							data.display = data.display.filter((x) => x.impression > 0);
+						}
+						if (data.video) {
+							data.video = data.video.filter((x) => x.impression > 0);
+						}
+					}
+					setphoneModelReports(data);
 				})
 				.catch((err) => console.log(err));
 		}
@@ -132,7 +156,19 @@ function TablePro() {
 				.then((res) => res.json())
 				.then((result) => {
 					console.log(result);
-					setibaReports(result);
+					var data = result;
+					if (data) {
+						if (data.audio) {
+							data.audio = data.audio.filter((x) => x.impression > 0);
+						}
+						if (data.display) {
+							data.display = data.display.filter((x) => x.impression > 0);
+						}
+						if (data.video) {
+							data.video = data.video.filter((x) => x.impression > 0);
+						}
+					}
+					setibaReports(data);
 				})
 				.catch((err) => console.log(err));
 		}
@@ -154,7 +190,19 @@ function TablePro() {
 				.then((res) => res.json())
 				.then((result) => {
 					console.log(result);
-					setfrequencyReport(result);
+					var data = result;
+					if (data) {
+						if (data.audio) {
+							data.audio = data.audio.filter((x) => x.impression > 0);
+						}
+						if (data.display) {
+							data.display = data.display.filter((x) => x.impression > 0);
+						}
+						if (data.video) {
+							data.video = data.video.filter((x) => x.impression > 0);
+						}
+					}
+					setfrequencyReport(data);
 				})
 				.catch((err) => console.log(err));
 		}
