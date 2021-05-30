@@ -1703,7 +1703,21 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 			},
 			{
 				$project: {
-					creative_id: { $cond: [ { $eq: [ '$creativeid', ""||"null" ] }, null, '$creativeid' ] },
+					creative_id: { $cond: [ { $eq: [ '$creativeid', "" ] }, null, '$creativeid' ] },
+					campaignId: 1,
+					impression: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					start: 1,
+					midpoint: 1,
+					thirdQuartile: 1,
+					complete: 1,
+					createdOn: 1
+				}
+			},
+			{
+				$project: {
+					creativeids: { $cond: [ { $eq: [ '$creative_id', "null" ] }, null, '$creative_id' ] },
 					campaignId: 1,
 					impression: 1,
 					CompanionClickTracking: 1,
@@ -1716,7 +1730,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 				}
 			},
 
-			{ $addFields: { creative_id: { $toObjectId: '$creative_id' } } },
+			{ $addFields: { creative_id: { $toObjectId: '$creativeids' } } },
 			{
 				$lookup: {
 					from: 'creativesets',
@@ -1738,7 +1752,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 					thirdQuartile: { $sum: '$thirdQuartile' },
 					complete: { $sum: '$complete' },
 					createdOn: { $push: '$createdOn' },
-					status:{$first: '$extra_details.status'} 
+					status:{$first:'$extra_details.status'}
 				}
 			},
 			{ $sort: { impression: -1 } }
