@@ -125,12 +125,18 @@ export const loadReport = () => (dispatch, getState) => {
 				var videospentOffline = 0;
 				if (!data.audio) {
 					data.audio = [];
+				} else {
+					data.audio = data.audio.filter((x) => x.impressions > 0);
 				}
 				if (!data.display) {
 					data.display = [];
+				} else {
+					data.display = data.display.filter((x) => x.impressions > 0);
 				}
 				if (!data.video) {
 					data.video = [];
+				} else {
+					data.video = data.video.filter((x) => x.impressions > 0);
 				}
 				data.audio.length &&
 					data.audio.map((re) => {
