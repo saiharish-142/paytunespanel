@@ -139,6 +139,7 @@ export default function Phonedata() {
 								{/* <TableCell>{title}</TableCell> */}
 								{<TableCell>Make_And_Model</TableCell>}
 								{<TableCell>Impressions</TableCell>}
+								{<TableCell>Clicks</TableCell>}
 								{<TableCell>Release Month And Year</TableCell>}
 								<TableCell>Release Cost or MRP</TableCell>
 								<TableCell>Company Name</TableCell>
@@ -156,6 +157,7 @@ export default function Phonedata() {
 										{row.make_model ? row.make_model : ''}
 									</TableCell>
 									<TableCell>{row.impressions ? row.impressions : ''}</TableCell>
+									<TableCell>{row.click ? row.click : ''}</TableCell>
 									<TableCell>{row.release ? row.release : ''}</TableCell>
 									<TableCell>{row.cost ? row.cost : ''}</TableCell>
 									<TableCell>{row.company ? row.company : ''}</TableCell>
