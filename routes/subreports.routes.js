@@ -1315,75 +1315,80 @@ router.put('/editphonedata', adminauth, async (req, res) => {
 
 router.get('/phonedata', adminauth, async (req, res) => {
 	try {
-		const phone = await phonemodelreports.aggregate([
-			{
-				$lookup: {
-					from: 'phonemodel2reports',
-					localField: 'phoneModel',
-					foreignField: 'make_model',
-					as: 'extra_details'
-				}
-			},
-			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-			{
-				$project: {
-					phoneModel: 1,
-					impression: 1,
-					extra_details: {
-						$ifNull: [
-							'$extra_details',
-							{
-								make_model: '',
-								cost: '',
-								cumulative: '',
-								release: '',
-								company: '',
-								type: '',
-								total_percent: '',
-								model: '',
-								combined_make_model: ''
-							}
-						]
-					}
-				}
-			},
-			{
-				$match: {
-					$or: [
-						{ 'extra_details.make_model': '' },
-						{ 'extra_details.cumulative': '' },
-						{ 'extra_details.release': '' },
-						{ 'extra_details.company': '' },
-						{ 'extra_details.type': '' },
-						{ 'extra_details.total_percent': '' },
-						{ 'extra_details.model': '' },
-						{ 'extra_details.cost': '' }
-					]
-				}
-			},
-			{
-				$group: {
-					_id: { make_model: '$phoneModel' },
-					impressions: { $sum: '$impression' },
-					extra: { $first: '$extra_details' }
-				}
-			},
-			{
-				$project: {
-					impressions: 1,
-					make_model: '$_id.make_model',
-					cost: '$extra.cost',
-					cumulative: '$extra.cumulative',
-					release: '$extra.release',
-					company: '$extra.company',
-					type: '$extra.type',
-					model: '$extra.model',
-					total_percent: '$extra.total_percent',
-					combined_make_and_model: '$extra.combined_make_model'
-				}
-			},
-			{ $sort: { impressions: -1 } }
-		]);
+
+		const phone=await phonemodel2.aggregate([
+			{$sort:{impression:-1}}
+		])
+
+		// const phone = await phonemodelreports.aggregate([
+		// 	{
+		// 		$lookup: {
+		// 			from: 'phonemodel2reports',
+		// 			localField: 'phoneModel',
+		// 			foreignField: 'make_model',
+		// 			as: 'extra_details'
+		// 		}
+		// 	},
+		// 	{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+		// 	{
+		// 		$project: {
+		// 			phoneModel: 1,
+		// 			impression: 1,
+		// 			extra_details: {
+		// 				$ifNull: [
+		// 					'$extra_details',
+		// 					{
+		// 						make_model: '',
+		// 						cost: '',
+		// 						cumulative: '',
+		// 						release: '',
+		// 						company: '',
+		// 						type: '',
+		// 						total_percent: '',
+		// 						model: '',
+		// 						combined_make_model: ''
+		// 					}
+		// 				]
+		// 			}
+		// 		}
+		// 	},
+		// 	{
+		// 		$match: {
+		// 			$or: [
+		// 				{ 'extra_details.make_model': '' },
+		// 				{ 'extra_details.cumulative': '' },
+		// 				{ 'extra_details.release': '' },
+		// 				{ 'extra_details.company': '' },
+		// 				{ 'extra_details.type': '' },
+		// 				{ 'extra_details.total_percent': '' },
+		// 				{ 'extra_details.model': '' },
+		// 				{ 'extra_details.cost': '' }
+		// 			]
+		// 		}
+		// 	},
+		// 	{
+		// 		$group: {
+		// 			_id: { make_model: '$phoneModel' },
+		// 			impressions: { $sum: '$impression' },
+		// 			extra: { $first: '$extra_details' }
+		// 		}
+		// 	},
+		// 	{
+		// 		$project: {
+		// 			impressions: 1,
+		// 			make_model: '$_id.make_model',
+		// 			cost: '$extra.cost',
+		// 			cumulative: '$extra.cumulative',
+		// 			release: '$extra.release',
+		// 			company: '$extra.company',
+		// 			type: '$extra.type',
+		// 			model: '$extra.model',
+		// 			total_percent: '$extra.total_percent',
+		// 			combined_make_and_model: '$extra.combined_make_model'
+		// 		}
+		// 	},
+		// 	{ $sort: { impressions: -1 } }
+		//]);
 
 		res.status(200).json(phone);
 	} catch (err) {

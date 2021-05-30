@@ -507,7 +507,7 @@ async function PincodeRefresher() {
 				SovClickTracking: 1
 			}
 		},
-		{ $match: { test: yesterday } },
+		// { $match: { test: yesterday } },
 		{
 			$group: {
 				_id: { zip: "$zip" },
@@ -543,6 +543,66 @@ async function PincodeRefresher() {
 			console.log('updated', updateddoc)
 		}
 	})
+}
+
+cron.schedule('30 12 * * *',function(){
+	PhoneRefresher()
+})
+
+async function PhoneRefresher(){
+	let date = new Date(new Date())
+	date.setDate(date.getDate() - 1)
+	date = new Date(date)
+	const year = date.getFullYear()
+	const month = `0${date.getMonth() + 1}`
+	const date1 = date.getDate()
+	let yesterday = `${year}-${month}-${date1}`
+	console.log('yesterday', yesterday)
+	const PhoneModelReports = require('./models/phonemodelreports')
+	const Phonereports2 = require('./models/phonemodel2reports')
+	const phones = await PhoneModelReports.aggregate([
+		{
+			$project: {
+				test: { $dateToString: { format: "%Y-%m-%d", date: "$createdOn" } },
+				phoneModel: "$phoneModel",
+				impression: "$impression",
+				CompanionClickTracking: 1,
+				SovClickTracking: 1
+			}
+		},
+		//{ $match: { test: yesterday } },
+		{
+			$group: {
+				_id: { phone: "$phoneModel" },
+				CompanionClickTracking: { $sum: "$CompanionClickTracking" },
+				SovClickTracking: { $sum: "$SovClickTracking" },
+				impressions: { $sum: "$impression" }
+			}
+		}
+	])
+	console.log(phones)
+	phones.forEach(async (phone) => {
+		const match = await Phonereports2.findOne({ make_model: phone._id.phone })
+		if (!match) {
+			const newzip = new Phonereports2 ({
+				cost:'',
+    			make_model:phone._id.phone, 
+    			cumulative:'',
+    			release:'',
+    			company:'',
+    			type:'',
+    			total_percent:'',
+    			model:'',
+    			combined_make_model:'',
+				impression: phone.impressions,
+				click: phone.CompanionClickTracking + phone.SovClickTracking
+			})
+			await newzip.save()
+		} else {
+			const updateddoc = await Phonereports2.findOneAndUpdate({ make_model: phone._id.phone }, { $inc: { impression: phone.impressions, click: phone.CompanionClickTracking + phone.SovClickTracking } }, { new: true })
+			console.log('updated', updateddoc)
+		}
+})
 }
 
 async function uniqueMaker({ date }) {

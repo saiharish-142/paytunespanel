@@ -9,7 +9,9 @@ var phonemodel2reportsSchema = new Schema({
     type:String,
     total_percent:String,
     model:String,
-    combined_make_model:String
+    combined_make_model:String,
+    impression:Number,
+    click:Number
 });
 phonemodel2reportsSchema.index({ make_model: 1 });
 
