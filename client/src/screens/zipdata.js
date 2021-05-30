@@ -129,7 +129,7 @@ export default function Zipdata() {
 			</div>
 
 			<Paper>
-				<TableContainer>
+				<TableContainer style={{maxHeight:440}}>
 					<Table stickyHeader aria-label="sticky table">
 						<TableHead>
 							<TableRow>
