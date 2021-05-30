@@ -187,7 +187,7 @@ function PublisherAdmin({
 										<TableCell>{log.clicks}</TableCell>
 										<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>
 										<TableCell>{parseInt(log.balance)}</TableCell>
-										<TableCell>{log.feed}</TableCell>
+										<TableCell>{log.feed==="3"?"Podcast":log.feed===""?"Ondemand and Streaming" :"" }</TableCell>
 										<TableCell
 											className="mangeads__report"
 											onClick={() => history.push(`/manageAds/${state1}/detailed`)}
