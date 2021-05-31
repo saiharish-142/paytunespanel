@@ -163,7 +163,7 @@ export default function Zipdata() {
 										</TableCell>
 										<TableCell>{row.impression ? row.impression : ''}</TableCell>
 										<TableCell>{row.click ? row.click : ''}</TableCell>
-										<TableCell>{row.click/row.impression}%</TableCell>
+										<TableCell>{ row.impression!==0? Math.round(row.click/row.impression) :0}%</TableCell>
 										<TableCell>{row.area ? row.area : ''}</TableCell>
 										<TableCell>{row.lowersubcity ? row.lowersubcity : ''}</TableCell>
 										<TableCell>{row.subcity ? row.subcity : ''}</TableCell>

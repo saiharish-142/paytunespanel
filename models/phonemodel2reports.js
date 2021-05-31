@@ -22,4 +22,4 @@ phonemodel2reportsSchema.statics.load = function(id, cb) {
         .exec(cb);
 };
 
-mongoose.model('phonemodel2reports', phonemodel2reportsSchema);
+module.exports=mongoose.model('phonemodel2reports', phonemodel2reportsSchema);
