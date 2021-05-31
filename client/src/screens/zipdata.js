@@ -136,6 +136,8 @@ export default function Zipdata() {
 								{/* <TableCell>{title}</TableCell> */}
 								{<TableCell>Pincode</TableCell>}
 								{<TableCell>Impressions</TableCell>}
+								{<TableCell>Click</TableCell>}
+								{<TableCell>CTR</TableCell>}
 								{<TableCell>Urban/Rural</TableCell>}
 								{<TableCell>Lower Sub City</TableCell>}
 								<TableCell>Subcity</TableCell>
@@ -147,7 +149,7 @@ export default function Zipdata() {
 								{<TableCell>Grand State</TableCell>}
 								{<TableCell>Lat</TableCell>}
 								{<TableCell>Long</TableCell>}
-								{<TableCell>Click</TableCell>}
+								
 								{<TableCell />}
 							</TableRow>
 						</TableHead>
@@ -160,6 +162,8 @@ export default function Zipdata() {
 											{row.pincode ? row.pincode : ''}
 										</TableCell>
 										<TableCell>{row.impression ? row.impression : ''}</TableCell>
+										<TableCell>{row.click ? row.click : ''}</TableCell>
+										<TableCell>{row.click/row.impression}%</TableCell>
 										<TableCell>{row.area ? row.area : ''}</TableCell>
 										<TableCell>{row.lowersubcity ? row.lowersubcity : ''}</TableCell>
 										<TableCell>{row.subcity ? row.subcity : ''}</TableCell>
@@ -171,7 +175,7 @@ export default function Zipdata() {
 										<TableCell>{row.grandstate ? row.grandstate : ''}</TableCell>
 										<TableCell>{row.latitude ? row.latitude : ''}</TableCell>
 										<TableCell>{row.longitude ? row.longitude : ''}</TableCell>
-										<TableCell>{row.click ? row.click : ''}</TableCell>
+										
 										<TableCell>
 											<button className="btn" onClick={() => handleShow(row)}>
 												Edit{' '}
