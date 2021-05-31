@@ -1625,6 +1625,8 @@ router.get('/categorydata', adminauth, async (req, res) => {
 			{
 				$project: {
 					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
 					category: '$_id.category',
 					name: '$extra.Name',
 					tier1: '$extra.tier1',

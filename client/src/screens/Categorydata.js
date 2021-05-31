@@ -140,6 +140,7 @@ export default function Categorydata() {
 								{/* <TableCell>{title}</TableCell> */}
 								{<TableCell>Category</TableCell>}
 								{<TableCell>Impressions</TableCell>}
+								{<TableCell>Clicks</TableCell>}
 								{<TableCell>Name</TableCell>}
 								<TableCell>Tier1</TableCell>
 								<TableCell>Tier2</TableCell>
@@ -158,6 +159,7 @@ export default function Categorydata() {
 										{row.category ? row.category : ''}
 									</TableCell>
 									<TableCell>{row.impressions ? row.impressions : ''}</TableCell>
+									<TableCell>{row.CompanionClickTracking+SovClickTracking}</TableCell>
 									<TableCell>{row.name ? row.name : ''}</TableCell>
 									<TableCell>{row.tier1 ? row.tier1 : ''}</TableCell>
 									<TableCell>{row.tier2 ? row.tier2 : ''}</TableCell>
