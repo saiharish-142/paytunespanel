@@ -1400,14 +1400,15 @@ router.get('/phonedata', adminauth, async (req, res) => {
 router.get('/zipdata', adminauth, async (req, res) => {
 	try {
 		const result=await Zipreports2.aggregate([
-		    {$match:{ $or:[
-			{area:""},
-		    {city:""},
-		    {district:""},
-		    {state:""},
-		    {latitude:""},
-		    {longitude:""},
-		]}},
+		//     {$match:{ $or:[
+		// 	{area:""},
+		//     {city:""},
+		//     {district:""},
+		//     {state:""},
+		//     {latitude:""},
+		//     {longitude:""},
+		// ]}},
+		{$match:{}},
 		{$sort:{impression:-1}}
 		])
 
