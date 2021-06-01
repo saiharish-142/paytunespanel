@@ -97,7 +97,7 @@ export default function Phonedata() {
 	}, []);
 	React.useMemo(() => {
 		let sortedProducts = rows;
-		if (sortedField !== null) {
+		if (sortconfig !== null) {
 		  sortedProducts.sort((a, b) => {
 			if (a[sortconfig.key] < b[sortconfig.key]) {
 			  return sortconfig.direction === 'ascending' ? -1 : 1;
@@ -114,17 +114,17 @@ export default function Phonedata() {
 	
 	const requestSort=(key)=>{
 		let direction = 'ascending';
-		if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+		if (sortconfig.key === key && sortconfig.direction === 'ascending') {
 		  direction = 'descending';
 		}
 		setsortconfig({ key, direction });
 	}
 
 	const getClassNamesFor = (name) => {
-		if (!sortConfig) {
+		if (!sortconfig) {
 		  return;
 		}
-		return sortConfig.key === name ? sortConfig.direction : undefined;
+		return sortconfig.key === name ? sortconfig.direction : undefined;
 	  };
 
 	return (
