@@ -114,7 +114,7 @@ export default function Phonedata() {
 	
 	const requestSort=(key)=>{
 		let direction = 'ascending';
-		if (sortconfig.key === key && sortconfig.direction === 'ascending') {
+		if (sortconfig && sortconfig.key === key && sortconfig.direction === 'ascending') {
 		  direction = 'descending';
 		}
 		setsortconfig({ key, direction });
