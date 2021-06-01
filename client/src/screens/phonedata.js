@@ -35,7 +35,7 @@ export default function Phonedata() {
 	const [ error, seterror ] = useState('');
 	const [ success, setsuccess ] = useState('');
 	const [ rows, setrows ] = useState([]);
-	const [ rowsPerPage, setRowsPerPage ] = useState(7);
+	const [ rowsPerPage, setRowsPerPage ] = useState(100);
 	const [ page, setPage ] = useState(0);
 	const [sortconfig,setsortconfig]=useState(null)
 	const handleChangePage = (event, newPage) => {
@@ -127,6 +127,16 @@ export default function Phonedata() {
 		return sortconfig.key === name ? sortconfig.direction : undefined;
 	  };
 
+	  const arrowRetuner = (mode) => {
+		if (mode === '1') {
+			return <ArrowUpwardRoundedIcon fontSize="small" />;
+		} else if (mode === '2') {
+			return <ArrowDownwardRoundedIcon fontSize="small" />;
+		} else {
+			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
+		}
+	};
+
 	return (
 		<div>
 			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Phone data </h4>
@@ -204,7 +214,7 @@ export default function Phonedata() {
 					</Table>
 				</TableContainer>
 				<TablePagination
-					rowsPerPageOptions={[ 10, 100, 1000, 10000 ]}
+					rowsPerPageOptions={[ 100, 1000, 10000 ]}
 					component="div"
 					count={rows ? rows.length : 0}
 					rowsPerPage={rowsPerPage}
