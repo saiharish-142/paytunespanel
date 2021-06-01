@@ -36,7 +36,7 @@ export default function Categorydata() {
 	const [ error, seterror ] = useState('');
 	const [ success, setsuccess ] = useState('');
 	const [ rows, setrows ] = useState([]);
-	const [ rowsPerPage, setRowsPerPage ] = useState(7);
+	const [ rowsPerPage, setRowsPerPage ] = useState(10);
 	const [ page, setPage ] = useState(0);
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);

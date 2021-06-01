@@ -570,7 +570,7 @@ async function PhoneRefresher(){
 				SovClickTracking: 1
 			}
 		},
-		// { $match: { test: yesterday } },
+		{ $match: { test: yesterday } },
 		{
 			$group: {
 				_id: { phone: "$phoneModel" },
