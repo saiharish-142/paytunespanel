@@ -37,6 +37,7 @@ export default function Phonedata() {
 	const [ rows, setrows ] = useState([]);
 	const [ rowsPerPage, setRowsPerPage ] = useState(7);
 	const [ page, setPage ] = useState(0);
+	const [sortconfig,setsortconfig]=useState(null)
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
@@ -94,10 +95,39 @@ export default function Phonedata() {
 				console.log(dat);
 			});
 	}, []);
+	useEffect(()=>{
+		React.useMemo(() => {
+			let sortedProducts = rows;
+			if (sortedField !== null) {
+			  sortedProducts.sort((a, b) => {
+				if (a[sortconfig.key] < b[sortconfig.key]) {
+				  return sortconfig.direction === 'ascending' ? -1 : 1;
+				}
+				if (a[sortconfig.key] > b[sortconfig.key]) {
+				  return sortconfig.direction === 'ascending' ? 1 : -1;
+				}
+				return 0;
+			  });
+			}
+			return sortedProducts;
+		  }, [rows, sortconfig]);
+	},[])
+	
+	
+	const requestSort=(key)=>{
+		let direction = 'ascending';
+		if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+		  direction = 'descending';
+		}
+		setsortconfig({ key, direction });
+	}
 
-	const editPhonedata = () => {
-		//console.log(model,impression)
-	};
+	const getClassNamesFor = (name) => {
+		if (!sortConfig) {
+		  return;
+		}
+		return sortConfig.key === name ? sortConfig.direction : undefined;
+	  };
 
 	return (
 		<div>
@@ -137,16 +167,16 @@ export default function Phonedata() {
 						<TableHead  style={{position:"sticky",top:0}}>
 							<TableRow >
 								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell>Make_And_Model</TableCell>}
-								{<TableCell>Impressions</TableCell>}
-								{<TableCell>Clicks</TableCell>}
-								{<TableCell>Release Month And Year</TableCell>}
-								<TableCell>Release Cost or MRP</TableCell>
-								<TableCell>Company Name</TableCell>
-								<TableCell>Model</TableCell>
-								{<TableCell>Type of Device</TableCell>}
-								{<TableCell>% of Total</TableCell>}
-								{<TableCell> Cumulative %</TableCell>}
+								{<TableCell> <button onClick={()=>requestSort('make_model')} className={getClassNamesFor('make_model')}> Make_And_Model </button></TableCell>}
+								{<TableCell> <button onClick={()=>requestSort('impression')} className={getClassNamesFor('impression')}>Impressions</button> </TableCell>}
+								{<TableCell> <button onClick={()=>requestSort('click')} className={getClassNamesFor('click')}>Clicks</button> </TableCell>}
+								{<TableCell> <button onClick={()=>requestSort('release')} className={getClassNamesFor('release')}>Release Month And Year</button> </TableCell>}
+								<TableCell>  <button onClick={()=>requestSort('cost')} className={getClassNamesFor('cost')}>Release Cost or MRP</button> </TableCell>
+								<TableCell>  <button onClick={()=>requestSort('company')} className={getClassNamesFor('company')}>Company Name</button> </TableCell>
+								<TableCell>  <button onClick={()=>requestSort('model')} className={getClassNamesFor('model')}>Model</button> </TableCell>
+								{<TableCell> <button onClick={()=>requestSort('type')} className={getClassNamesFor('type')}>Type of Device</button> </TableCell>}
+								{<TableCell> <button onClick={()=>requestSort('total_percent')} className={getClassNamesFor('total_percent')}>% of Total</button></TableCell>}
+								{<TableCell> <button onClick={()=>requestSort('cumulative')} className={getClassNamesFor('cumulative')}>Cumulative %</button></TableCell>}
 								{<TableCell />}
 							</TableRow>
 						</TableHead>
