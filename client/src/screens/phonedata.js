@@ -127,15 +127,15 @@ export default function Phonedata() {
 		return sortconfig.key === name ? sortconfig.direction : undefined;
 	  };
 
-	  const arrowRetuner = (mode) => {
-		if (mode === '1') {
-			return <ArrowUpwardRoundedIcon fontSize="small" />;
-		} else if (mode === '2') {
-			return <ArrowDownwardRoundedIcon fontSize="small" />;
-		} else {
-			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
-		}
-	};
+	//   const arrowRetuner = (mode) => {
+	// 	if (mode === '1') {
+	// 		return <ArrowUpwardRoundedIcon fontSize="small" />;
+	// 	} else if (mode === '2') {
+	// 		return <ArrowDownwardRoundedIcon fontSize="small" />;
+	// 	} else {
+	// 		return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
+	// 	}
+	// };
 
 	return (
 		<div>
