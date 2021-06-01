@@ -158,16 +158,16 @@ export default function Categorydata() {
 									<TableCell component="th" scope="row">
 										{row.category ? row.category : ''}
 									</TableCell>
-									<TableCell>{row.impressions ? row.impressions : ''}</TableCell>
-									<TableCell>{row.CompanionClickTracking+row.SovClickTracking}</TableCell>
-									<TableCell>{row.name ? row.name : ''}</TableCell>
+									<TableCell>{row.impression ? row.impression : ''}</TableCell>
+									<TableCell>{row.click?row.click:''}</TableCell>
+									<TableCell>{row.Name ? row.Name : ''}</TableCell>
 									<TableCell>{row.tier1 ? row.tier1 : ''}</TableCell>
 									<TableCell>{row.tier2 ? row.tier2 : ''}</TableCell>
 									<TableCell>{row.tier3 ? row.tier3 : ''}</TableCell>
 									<TableCell>{row.tier4 ? row.tier4 : ''}</TableCell>
-									<TableCell>{row.gender_category ? row.gender_category : ''}</TableCell>
-									<TableCell>{row.age_category ? row.age_category : ''}</TableCell>
-									<TableCell>{row.taxonamy ? row.taxonamy : ''}</TableCell>
+									<TableCell>{row.genderCategory ? row.genderCategory : ''}</TableCell>
+									<TableCell>{row.AgeCategory ? row.AgeCategory : ''}</TableCell>
+									<TableCell>{row.new_taxonamy ? row.new_taxonamy : ''}</TableCell>
 									<TableCell>
 										<button className="btn" onClick={() => handleShow(row)}>
 											Edit{' '}

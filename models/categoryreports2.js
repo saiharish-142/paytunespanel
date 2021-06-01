@@ -11,7 +11,9 @@ var categoryreportsSchema1 = new Schema({
 	tier4: String,
 	genderCategory: String,
 	AgeCategory: String,
-	new_taxonamy: Number
+	new_taxonamy: String,
+	impression:Number,
+	click:Number
 });
 categoryreportsSchema1.index({ category: 1 });
 
@@ -21,4 +23,4 @@ categoryreportsSchema1.statics.load = function(id, cb) {
 	}).exec(cb);
 };
 
-mongoose.model('categoryreports2', categoryreportsSchema1);
+module.exports=mongoose.model('categoryreports2', categoryreportsSchema1);

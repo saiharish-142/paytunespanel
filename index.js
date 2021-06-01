@@ -605,6 +605,70 @@ async function PhoneRefresher(){
 })
 }
 
+cron.schedule('30 00 * * *',function(){
+	CategoryRefresher()
+})
+
+async function CategoryRefresher(){
+	let date = new Date(new Date())
+	date.setDate(date.getDate() - 1)
+	date = new Date(date)
+	const year = date.getFullYear()
+	const month = `0${date.getMonth() + 1}`
+	const date1 = date.getDate()
+	let yesterday = `${year}-${month}-${date1}`
+	console.log('yesterday', yesterday)
+	const CategoryReports = require('./models/categoryreports')
+	const Categoryreports2 = require('./models/categoryreports2')
+	const phones = await CategoryReports.aggregate([
+		{
+			$project: {
+				test: { $dateToString: { format: "%Y-%m-%d", date: "$createdOn" } },
+				category: "$category",
+				impression: "$impression",
+				CompanionClickTracking: 1,
+				SovClickTracking: 1
+			}
+		},
+		//{ $match: { test: yesterday } },
+		{
+			$group: {
+				_id: { category: "$category" },
+				CompanionClickTracking: { $sum: "$CompanionClickTracking" },
+				SovClickTracking: { $sum: "$SovClickTracking" },
+				impressions: { $sum: "$impression" }
+			}
+		}
+	])
+	console.log(phones)
+	phones.forEach(async (cat) => {
+		const match = await Categoryreports2.findOne({ $or:[{category: cat._id.category},{new_taxonamy:cat._id.category}]  })
+		if (!match) {
+			const newzip = new Categoryreports2({
+				parent: '',
+				category: cat._id.category,
+				Name: '',
+				tier1: '',
+				tier2: '',
+				tier3: '',
+				tier4: '',
+				genderCategory: '',
+				AgeCategory: '',
+				new_taxonamy: '',
+				impression: cat.impressions,
+				click: cat.CompanionClickTracking + cat.SovClickTracking
+			})
+			await newzip.save()
+		} else {
+			const updateddoc = await Categoryreports2.findOneAndUpdate({ $or:[{category: cat._id.category},{new_taxonamy:cat._id.category}]  }, { $inc: { impression: cat.impressions, click: cat.CompanionClickTracking + cat.SovClickTracking } }, { new: true })
+			console.log('updated', updateddoc)
+		}
+})
+}
+
+
+
+
 async function uniqueMaker({ date }) {
 	let uniqueids = await trackinglogs
 		.distinct('campaignId', { date: date, type: 'impression' })

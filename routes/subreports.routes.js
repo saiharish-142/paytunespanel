@@ -12,10 +12,12 @@ const phonemodelreports = mongoose.model('phonemodelreports');
 const spentreports = mongoose.model('spentreports');
 const phonemodel2 = mongoose.model('phonemodel2reports');
 const Zipreports2 = mongoose.model('zipreports2');
-const CategoryReports2 = mongoose.model('categoryreports2');
+//const CategoryReports2 = mongoose.model('categoryreports2');
 const Campaignwisereports = mongoose.model('campaignwisereports');
 const CategoryReports = mongoose.model('categoryreports');
+const CategoryReports2=require('../models/categoryreports2')
 const adminauth = require('../authenMiddleware/adminauth');
+const categoryreports2 = require('../models/categoryreports2');
 
 router.get('/phonemake', adminauth, (req, res) => {
 	phonemakereports
@@ -1548,107 +1550,117 @@ router.put('/editzipdata', adminauth, async (req, res) => {
 
 router.get('/categorydata', adminauth, async (req, res) => {
 	try {
-		const result = await CategoryReports.aggregate([
-			{
-				$group: {
-					_id: { category: '$category' },
-					impressions: { $sum: '$impression' },
-					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
-					SovClickTracking: { $sum: '$SovClickTracking' }
-				}
-			},
-			{
-				$lookup: {
-					from: 'categoryreports2',
-					localField: '_id.category',
-					foreignField: 'category',
-					as: 'extra_details'
-				}
-			},
-			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-			//{$addFields:{"temp_category":{$toInt:"$_id.category"}}},
-			{
-				$lookup: {
-					from: 'categoryreports2',
-					localField: '_id.category',
-					foreignField: 'new_taxonamy',
-					as: 'extra_details1'
-				}
-			},
-			{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
-			{ $sort: { impressions: -1 } },
-			{
-				$project: {
-					impressions: 1,
-					CompanionClickTracking: 1,
-					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
-				}
-			},
-			{
-				$project: {
-					impressions: 1,
-					CompanionClickTracking: 1,
-					SovClickTracking: 1,
-					extra: {
-						$ifNull: [
-							'$extra_details',
-							{
-								parent: '',
-								category: '',
-								Name: '',
-								tier1: '',
-								tier2: '',
-								tier3: '',
-								tier4: '',
-								genderCategory: '',
-								AgeCategory: '',
-								new_taxonamy: ''
-							}
-						]
-					}
-				}
-			},
-			{
-				$match: {
-					$or: [
-						{ 'extra.Name': '' },
-						{ 'extra.tier1': '' },
-						{ 'extra.tier2': '' },
-						{ 'extra.tier3': '' },
-						{ 'extra.tier4': '' },
-						{ 'extra.genderCategory': '' },
-						{ 'extra.AgeCategory': '' },
-						{ 'extra.new_taxonamy': '' }
-					]
-				}
-			},
-			{
-				$project: {
-					impressions: 1,
-					CompanionClickTracking: 1,
-					SovClickTracking: 1,
-					category: '$_id.category',
-					name: '$extra.Name',
-					tier1: '$extra.tier1',
-					tier2: '$extra.tier2',
-					tier3: '$extra.tier3',
-					tier4: '$extra.tier4',
-					gender_category: '$extra.genderCategory',
-					age_category: '$extra.AgeCategory',
-					taxonamy: '$extra.new_taxonamy',
-					parent: '$extra.parent'
-				}
-			},
-			{ $sort: { impressions: -1 } }
-		]);
-
+		const result=await Categoryreports2.aggregate([
+			{$match:{}},
+			{$sort:{impression:-1}}
+		])
 		res.status(200).json(result);
-	} catch (err) {
+	}catch(err){
 		console.log(err.message);
-		res.status(400).send({ error: err.mesaage });
+	 	res.status(400).send({ error: err.mesaage });
 	}
-});
+})
+	// 	const result = await CategoryReports.aggregate([
+	// 		{
+	// 			$group: {
+	// 				_id: { category: '$category' },
+	// 				impressions: { $sum: '$impression' },
+	// 				CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+	// 				SovClickTracking: { $sum: '$SovClickTracking' }
+	// 			}
+	// 		},
+	// 		{
+	// 			$lookup: {
+	// 				from: 'categoryreports2',
+	// 				localField: '_id.category',
+	// 				foreignField: 'category',
+	// 				as: 'extra_details'
+	// 			}
+	// 		},
+	// 		{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+	// 		//{$addFields:{"temp_category":{$toInt:"$_id.category"}}},
+	// 		{
+	// 			$lookup: {
+	// 				from: 'categoryreports2',
+	// 				localField: '_id.category',
+	// 				foreignField: 'new_taxonamy',
+	// 				as: 'extra_details1'
+	// 			}
+	// 		},
+	// 		{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+	// 		{ $sort: { impressions: -1 } },
+	// 		{
+	// 			$project: {
+	// 				impressions: 1,
+	// 				CompanionClickTracking: 1,
+	// 				SovClickTracking: 1,
+	// 				extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+	// 			}
+	// 		},
+	// 		{
+	// 			$project: {
+	// 				impressions: 1,
+	// 				CompanionClickTracking: 1,
+	// 				SovClickTracking: 1,
+	// 				extra: {
+	// 					$ifNull: [
+	// 						'$extra_details',
+	// 						{
+	// 							parent: '',
+	// 							category: '',
+	// 							Name: '',
+	// 							tier1: '',
+	// 							tier2: '',
+	// 							tier3: '',
+	// 							tier4: '',
+	// 							genderCategory: '',
+	// 							AgeCategory: '',
+	// 							new_taxonamy: ''
+	// 						}
+	// 					]
+	// 				}
+	// 			}
+	// 		},
+	// 		{
+	// 			$match: {
+	// 				$or: [
+	// 					{ 'extra.Name': '' },
+	// 					{ 'extra.tier1': '' },
+	// 					{ 'extra.tier2': '' },
+	// 					{ 'extra.tier3': '' },
+	// 					{ 'extra.tier4': '' },
+	// 					{ 'extra.genderCategory': '' },
+	// 					{ 'extra.AgeCategory': '' },
+	// 					{ 'extra.new_taxonamy': '' }
+	// 				]
+	// 			}
+	// 		},
+	// 		{
+	// 			$project: {
+	// 				impressions: 1,
+	// 				CompanionClickTracking: 1,
+	// 				SovClickTracking: 1,
+	// 				category: '$_id.category',
+	// 				name: '$extra.Name',
+	// 				tier1: '$extra.tier1',
+	// 				tier2: '$extra.tier2',
+	// 				tier3: '$extra.tier3',
+	// 				tier4: '$extra.tier4',
+	// 				gender_category: '$extra.genderCategory',
+	// 				age_category: '$extra.AgeCategory',
+	// 				taxonamy: '$extra.new_taxonamy',
+	// 				parent: '$extra.parent'
+	// 			}
+	// 		},
+	// 		{ $sort: { impressions: -1 } }
+	// 	]);
+
+	// 	res.status(200).json(result);
+	// } catch (err) {
+	// 	console.log(err.message);
+	// 	res.status(400).send({ error: err.mesaage });
+	// }
+//});
 
 router.put('/editcategorydata', adminauth, async (req, res) => {
 	try {
