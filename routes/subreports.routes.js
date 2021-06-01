@@ -1550,7 +1550,7 @@ router.put('/editzipdata', adminauth, async (req, res) => {
 
 router.get('/categorydata', adminauth, async (req, res) => {
 	try {
-		const result=await Categoryreports2.aggregate([
+		const result=await CategoryReports2.aggregate([
 			{$match:{}},
 			{$sort:{impression:-1}}
 		])
