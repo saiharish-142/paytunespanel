@@ -1747,7 +1747,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 					as: 'extra_details'
 				}
 			},
-			{ $unwind: '$extra_details' },
+			{ $unwind: {path:'$extra_details',preserveNullAndEmptyArrays:true} },
 			{
 				$group: {
 					_id: { creativeset: '$extra_details.name' },
