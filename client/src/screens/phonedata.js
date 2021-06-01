@@ -95,23 +95,21 @@ export default function Phonedata() {
 				console.log(dat);
 			});
 	}, []);
-	useEffect(()=>{
-		React.useMemo(() => {
-			let sortedProducts = rows;
-			if (sortedField !== null) {
-			  sortedProducts.sort((a, b) => {
-				if (a[sortconfig.key] < b[sortconfig.key]) {
-				  return sortconfig.direction === 'ascending' ? -1 : 1;
-				}
-				if (a[sortconfig.key] > b[sortconfig.key]) {
-				  return sortconfig.direction === 'ascending' ? 1 : -1;
-				}
-				return 0;
-			  });
+	React.useMemo(() => {
+		let sortedProducts = rows;
+		if (sortedField !== null) {
+		  sortedProducts.sort((a, b) => {
+			if (a[sortconfig.key] < b[sortconfig.key]) {
+			  return sortconfig.direction === 'ascending' ? -1 : 1;
 			}
-			return sortedProducts;
-		  }, [rows, sortconfig]);
-	},[])
+			if (a[sortconfig.key] > b[sortconfig.key]) {
+			  return sortconfig.direction === 'ascending' ? 1 : -1;
+			}
+			return 0;
+		  });
+		}
+		return sortedProducts;
+	  }, [rows, sortconfig]);
 	
 	
 	const requestSort=(key)=>{
