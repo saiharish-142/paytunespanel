@@ -37,6 +37,7 @@ export default function Zipdata() {
 	const [ rows, setrows ] = useState([]);
 	const [ rowsPerPage, setRowsPerPage ] = useState(7);
 	const [ page, setPage ] = useState(0);
+	const [sortconfig,setsortconfig]=useState(null)
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
@@ -96,6 +97,39 @@ export default function Zipdata() {
 			});
 	}, []);
 
+
+	React.useMemo(() => {
+		let sortedProducts = rows;
+		if (sortconfig !== null) {
+		  sortedProducts.sort((a, b) => {
+			if (a[sortconfig.key] < b[sortconfig.key]) {
+			  return sortconfig.direction === 'ascending' ? -1 : 1;
+			}
+			if (a[sortconfig.key] > b[sortconfig.key]) {
+			  return sortconfig.direction === 'ascending' ? 1 : -1;
+			}
+			return 0;
+		  });
+		}
+		return sortedProducts;
+	  }, [rows, sortconfig]);
+	
+	
+	const requestSort=(key)=>{
+		let direction = 'ascending';
+		if (sortconfig && sortconfig.key === key && sortconfig.direction === 'ascending') {
+		  direction = 'descending';
+		}
+		setsortconfig({ key, direction });
+	}
+
+	const getClassNamesFor = (name) => {
+		if (!sortconfig) {
+		  return;
+		}
+		return sortconfig.key === name ? sortconfig.direction : undefined;
+	  };
+
 	return (
 		<div>
 			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Pincode data </h4>
@@ -134,21 +168,21 @@ export default function Zipdata() {
 						<TableHead>
 							<TableRow>
 								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell>Pincode</TableCell>}
-								{<TableCell>Impressions</TableCell>}
-								{<TableCell>Click</TableCell>}
+								{<TableCell><button onClick={()=>requestSort('pincode')} className={getClassNamesFor('pincode')}> Pincode </button></TableCell>}
+								{<TableCell><button onClick={()=>requestSort('impression')} className={getClassNamesFor('impression')}> Impressions </button></TableCell>}
+								{<TableCell><button onClick={()=>requestSort('click')} className={getClassNamesFor('click')}> Click </button></TableCell>}
 								{<TableCell>CTR</TableCell>}
-								{<TableCell>Urban/Rural</TableCell>}
-								{<TableCell>Lower Sub City</TableCell>}
-								<TableCell>Subcity</TableCell>
-								<TableCell>City</TableCell>
-								<TableCell>Grand City</TableCell>
-								{<TableCell>District</TableCell>}
-								{<TableCell>Comparison</TableCell>}
-								{<TableCell> State</TableCell>}
-								{<TableCell>Grand State</TableCell>}
-								{<TableCell>Lat</TableCell>}
-								{<TableCell>Long</TableCell>}
+								{<TableCell><button onClick={()=>requestSort('area')} className={getClassNamesFor('area')}> Urban/Rural </button></TableCell>}
+								{<TableCell><button onClick={()=>requestSort('lowersubcity')} className={getClassNamesFor('lowersubcity')}> Lower Sub City </button></TableCell>}
+								<TableCell><button onClick={()=>requestSort('subcity')} className={getClassNamesFor('subcity')}> SubCity </button></TableCell>
+								<TableCell><button onClick={()=>requestSort('city')} className={getClassNamesFor('city')}> City </button></TableCell>
+								<TableCell><button onClick={()=>requestSort('grandcity')} className={getClassNamesFor('grandcity')}> Grand City </button></TableCell>
+								{<TableCell><button onClick={()=>requestSort('district')} className={getClassNamesFor('district')}> District </button></TableCell>}
+								{<TableCell><button onClick={()=>requestSort('comparison')} className={getClassNamesFor('comparison')}> Comparison </button></TableCell>}
+								{<TableCell> <button onClick={()=>requestSort('state')} className={getClassNamesFor('state')}> State </button></TableCell>}
+								{<TableCell><button onClick={()=>requestSort('grandstate')} className={getClassNamesFor('grandstate')}> Grand State </button></TableCell>}
+								{<TableCell><button onClick={()=>requestSort('latitude')} className={getClassNamesFor('latitude')}> Latitude </button></TableCell>}
+								{<TableCell><button onClick={()=>requestSort('longitude')} className={getClassNamesFor('longitude')}> Longitude </button></TableCell>}
 								
 								{<TableCell />}
 							</TableRow>
