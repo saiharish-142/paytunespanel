@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-
+import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
+import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import { Alert } from '@material-ui/lab';
 import {
 	Table,
@@ -127,15 +128,15 @@ export default function Phonedata() {
 		return sortconfig.key === name ? sortconfig.direction : undefined;
 	  };
 
-	//   const arrowRetuner = (mode) => {
-	// 	if (mode === '1') {
-	// 		return <ArrowUpwardRoundedIcon fontSize="small" />;
-	// 	} else if (mode === '2') {
-	// 		return <ArrowDownwardRoundedIcon fontSize="small" />;
-	// 	} else {
-	// 		return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
-	// 	}
-	// };
+	  const arrowRetuner = (mode) => {
+		if (mode === '1') {
+			return <ArrowUpwardRoundedIcon fontSize="small" />;
+		} else if (mode === '2') {
+			return <ArrowDownwardRoundedIcon fontSize="small" />;
+		} else {
+			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
+		}
+	};
 
 	return (
 		<div>
@@ -175,16 +176,16 @@ export default function Phonedata() {
 						<TableHead  style={{position:"sticky",top:0}}>
 							<TableRow >
 								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell onClick={()=>requestSort('make_model')} className={getClassNamesFor('make_model')}>  Make_And_Model </TableCell>}
-								{<TableCell onClick={()=>requestSort('impression')} className={getClassNamesFor('impression')}> Impressions </TableCell>}
-								{<TableCell onClick={()=>requestSort('click')} className={getClassNamesFor('click')}> Clicks </TableCell>}
-								{<TableCell onClick={()=>requestSort('release')} className={getClassNamesFor('release')}> Release Month And Year </TableCell>}
-								<TableCell onClick={()=>requestSort('cost')} className={getClassNamesFor('cost')}>  Release Cost or MRP </TableCell>
-								<TableCell onClick={()=>requestSort('company')} className={getClassNamesFor('company')}>  Company Name </TableCell>
-								<TableCell onClick={()=>requestSort('model')} className={getClassNamesFor('model')}>  Model </TableCell>
-								{<TableCell onClick={()=>requestSort('type')} className={getClassNamesFor('type')}> Type of Device</TableCell>}
-								{<TableCell onClick={()=>requestSort('total_percent')} className={getClassNamesFor('total_percent')}> % of Total</TableCell>}
-								{<TableCell onClick={()=>requestSort('cumulative')}  className={getClassNamesFor('cumulative')}> Cumulative %</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('make_model')} className={getClassNamesFor('make_model')}>  Make_And_Model {arrowRetuner( sortconfig.key==='make_model'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('impression')} className={getClassNamesFor('impression')}> Impressions {arrowRetuner( sortconfig.key==='impression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('click')} className={getClassNamesFor('click')}> Clicks {arrowRetuner( sortconfig.key==='click'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('release')} className={getClassNamesFor('release')}> Release Month And Year {arrowRetuner( sortconfig.key==='release'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('cost')} className={getClassNamesFor('cost')}>  Release Cost or MRP {arrowRetuner( sortconfig.key==='cost'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>
+								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('company')} className={getClassNamesFor('company')}>  Company Name {arrowRetuner( sortconfig.key==='company'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>
+								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('model')} className={getClassNamesFor('model')}>  Model {arrowRetuner( sortconfig.key==='model'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('type')} className={getClassNamesFor('type')}> Type of Device {arrowRetuner( sortconfig.key==='type'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('total_percent')} className={getClassNamesFor('total_percent')}> % of Total {arrowRetuner( sortconfig.key==='total_percent'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('cumulative')}  className={getClassNamesFor('cumulative')}> Cumulative % {arrowRetuner( sortconfig.key==='cumulative'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell />}
 							</TableRow>
 						</TableHead>
