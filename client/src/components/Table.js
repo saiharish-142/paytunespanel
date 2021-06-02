@@ -302,6 +302,7 @@ export default function BasicTable({ singlead }) {
 							}
 						}
 					});
+					console.log('checking',result.audio.length)
 				setaudiologs(result.audio);
 				setdisplaylogs(result.display);
 				setvideologs(result.video);
