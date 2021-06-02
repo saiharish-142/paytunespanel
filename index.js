@@ -630,7 +630,7 @@ async function CategoryRefresher(){
 				SovClickTracking: 1
 			}
 		},
-		//{ $match: { test: yesterday } },
+		{ $match: { test: yesterday } },
 		{
 			$group: {
 				_id: { category: "$category" },
