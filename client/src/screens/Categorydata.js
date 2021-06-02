@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-
+import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
+import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 // import { useForm } from 'react-hook-form';
 import { Alert } from '@material-ui/lab';
 import {
@@ -36,6 +37,7 @@ export default function Categorydata() {
 	const [ error, seterror ] = useState('');
 	const [ success, setsuccess ] = useState('');
 	const [ rows, setrows ] = useState([]);
+	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
 	const [ rowsPerPage, setRowsPerPage ] = useState(10);
 	const [ page, setPage ] = useState(0);
 	const handleChangePage = (event, newPage) => {
@@ -96,8 +98,46 @@ export default function Categorydata() {
 			});
 	}, []);
 
-	const editPhonedata = () => {
-		//console.log(model,impression)
+	React.useMemo(() => {
+		let sortedProducts = rows;
+		if (sortconfig !== null) {
+		  sortedProducts.sort((a, b) => {
+			if (a[sortconfig.key] < b[sortconfig.key]) {
+			  return sortconfig.direction === 'ascending' ? -1 : 1;
+			}
+			if (a[sortconfig.key] > b[sortconfig.key]) {
+			  return sortconfig.direction === 'ascending' ? 1 : -1;
+			}
+			return 0;
+		  });
+		}
+		return sortedProducts;
+	  }, [rows, sortconfig]);
+	
+	
+	const requestSort=(key)=>{
+		let direction = 'ascending';
+		if (sortconfig && sortconfig.key === key && sortconfig.direction === 'ascending') {
+		  direction = 'descending';
+		}
+		setsortconfig({ key, direction });
+	}
+
+	const getClassNamesFor = (name) => {
+		if (!sortconfig) {
+		  return;
+		}
+		return sortconfig.key === name ? sortconfig.direction : undefined;
+	  };
+
+	  const arrowRetuner = (mode) => {
+		if (mode === '1') {
+			return <ArrowUpwardRoundedIcon fontSize="small" />;
+		} else if (mode === '2') {
+			return <ArrowDownwardRoundedIcon fontSize="small" />;
+		} else {
+			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
+		}
 	};
 
 	return (
@@ -138,17 +178,17 @@ export default function Categorydata() {
 						<TableHead>
 							<TableRow>
 								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell>Category</TableCell>}
-								{<TableCell>Impressions</TableCell>}
-								{<TableCell>Clicks</TableCell>}
-								{<TableCell>Name</TableCell>}
-								<TableCell>Tier1</TableCell>
-								<TableCell>Tier2</TableCell>
-								<TableCell>Tier3</TableCell>
-								{<TableCell>Tier4</TableCell>}
-								{<TableCell>Gender Category</TableCell>}
-								{<TableCell>Age category</TableCell>}
-								{<TableCell>New Taxonamy</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('category')} className={getClassNamesFor('category')}>Category {arrowRetuner( sortconfig.key==='category'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('impression')} className={getClassNamesFor('impression')}>Impressions {arrowRetuner( sortconfig.key==='impression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('click')} className={getClassNamesFor('click')}>Clicks {arrowRetuner( sortconfig.key==='click'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('Name')} className={getClassNamesFor('Name')}>Name {arrowRetuner( sortconfig.key==='Name'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier1')} className={getClassNamesFor('tier1')}>Tier1 {arrowRetuner( sortconfig.key==='tier1'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
+								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier2')} className={getClassNamesFor('tier2')}>Tier2 {arrowRetuner( sortconfig.key==='tier2'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
+								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier3')} className={getClassNamesFor('tier3')}>Tier3 {arrowRetuner( sortconfig.key==='tier3'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier4')} className={getClassNamesFor('tier4')}>Tier4 {arrowRetuner( sortconfig.key==='tier4'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('genderCategory')} className={getClassNamesFor('genderCategory')}>Gender Category {arrowRetuner( sortconfig.key==='genderCategory'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('AgeCategory')} className={getClassNamesFor('AgeCategory')}>Age category {arrowRetuner( sortconfig.key==='AgeCategory'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('new_taxonamy')} className={getClassNamesFor('new_taxonmay')}>New Taxonamy {arrowRetuner( sortconfig.key==='new_taxonamy'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
 								{<TableCell />}
 							</TableRow>
 						</TableHead>

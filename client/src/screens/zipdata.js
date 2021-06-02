@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 // import  {useForm} from 'react-hook-form'
+import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
+import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import { Alert } from '@material-ui/lab';
 import {
 	Table,
@@ -37,7 +39,7 @@ export default function Zipdata() {
 	const [ rows, setrows ] = useState([]);
 	const [ rowsPerPage, setRowsPerPage ] = useState(7);
 	const [ page, setPage ] = useState(0);
-	const [sortconfig,setsortconfig]=useState(null)
+	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
@@ -129,6 +131,15 @@ export default function Zipdata() {
 		}
 		return sortconfig.key === name ? sortconfig.direction : undefined;
 	  };
+	  const arrowRetuner = (mode) => {
+		if (mode === '1') {
+			return <ArrowUpwardRoundedIcon fontSize="small" />;
+		} else if (mode === '2') {
+			return <ArrowDownwardRoundedIcon fontSize="small" />;
+		} else {
+			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
+		}
+	};
 
 	return (
 		<div>
@@ -168,21 +179,21 @@ export default function Zipdata() {
 						<TableHead>
 							<TableRow>
 								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell><button onClick={()=>requestSort('pincode')} className={getClassNamesFor('pincode')}> Pincode </button></TableCell>}
-								{<TableCell><button onClick={()=>requestSort('impression')} className={getClassNamesFor('impression')}> Impressions </button></TableCell>}
-								{<TableCell><button onClick={()=>requestSort('click')} className={getClassNamesFor('click')}> Click </button></TableCell>}
+								{<TableCell onClick={()=>requestSort('pincode')} className={getClassNamesFor('pincode')} style={{ cursor: 'pointer' }}> Pincode {arrowRetuner( sortconfig.key==='pincode'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell onClick={()=>requestSort('impression')} className={getClassNamesFor('impression')} style={{ cursor: 'pointer' }}> Impressions {arrowRetuner( sortconfig.key==='impression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell onClick={()=>requestSort('click')} className={getClassNamesFor('click')} style={{ cursor: 'pointer' }}> Click {arrowRetuner( sortconfig.key==='click'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
 								{<TableCell>CTR</TableCell>}
-								{<TableCell><button onClick={()=>requestSort('area')} className={getClassNamesFor('area')}> Urban/Rural </button></TableCell>}
-								{<TableCell><button onClick={()=>requestSort('lowersubcity')} className={getClassNamesFor('lowersubcity')}> Lower Sub City </button></TableCell>}
-								<TableCell><button onClick={()=>requestSort('subcity')} className={getClassNamesFor('subcity')}> SubCity </button></TableCell>
-								<TableCell><button onClick={()=>requestSort('city')} className={getClassNamesFor('city')}> City </button></TableCell>
-								<TableCell><button onClick={()=>requestSort('grandcity')} className={getClassNamesFor('grandcity')}> Grand City </button></TableCell>
-								{<TableCell><button onClick={()=>requestSort('district')} className={getClassNamesFor('district')}> District </button></TableCell>}
-								{<TableCell><button onClick={()=>requestSort('comparison')} className={getClassNamesFor('comparison')}> Comparison </button></TableCell>}
-								{<TableCell> <button onClick={()=>requestSort('state')} className={getClassNamesFor('state')}> State </button></TableCell>}
-								{<TableCell><button onClick={()=>requestSort('grandstate')} className={getClassNamesFor('grandstate')}> Grand State </button></TableCell>}
-								{<TableCell><button onClick={()=>requestSort('latitude')} className={getClassNamesFor('latitude')}> Latitude </button></TableCell>}
-								{<TableCell><button onClick={()=>requestSort('longitude')} className={getClassNamesFor('longitude')}> Longitude </button></TableCell>}
+								{<TableCell onClick={()=>requestSort('area')} className={getClassNamesFor('area')} style={{ cursor: 'pointer' }}> Urban/Rural {arrowRetuner( sortconfig.key==='area'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell onClick={()=>requestSort('lowersubcity')} className={getClassNamesFor('lowersubcity')} style={{ cursor: 'pointer' }}> Lower Sub City {arrowRetuner( sortconfig.key==='lowersubcity'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								<TableCell onClick={()=>requestSort('subcity')} className={getClassNamesFor('subcity')} style={{ cursor: 'pointer' }}> SubCity {arrowRetuner( sortconfig.key==='subcity'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
+								<TableCell onClick={()=>requestSort('city')} className={getClassNamesFor('city')} style={{ cursor: 'pointer' }}> City {arrowRetuner( sortconfig.key==='city'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
+								<TableCell onClick={()=>requestSort('grandcity')} className={getClassNamesFor('grandcity')} style={{ cursor: 'pointer' }}> Grand City {arrowRetuner( sortconfig.key==='grandcity'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
+								{<TableCell onClick={()=>requestSort('district')} className={getClassNamesFor('district')} style={{ cursor: 'pointer' }}> District {arrowRetuner( sortconfig.key==='district'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell onClick={()=>requestSort('comparison')} className={getClassNamesFor('comparison')} style={{ cursor: 'pointer' }}> Comparison {arrowRetuner( sortconfig.key==='comparison'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell onClick={()=>requestSort('state')} className={getClassNamesFor('state')} style={{ cursor: 'pointer' }}>  State {arrowRetuner( sortconfig.key==='state'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell onClick={()=>requestSort('grandstate')} className={getClassNamesFor('grandstate')} style={{ cursor: 'pointer' }}> Grand State {arrowRetuner( sortconfig.key==='grandstate'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell onClick={()=>requestSort('latitude')} className={getClassNamesFor('latitude')} style={{ cursor: 'pointer' }}> Latitude {arrowRetuner( sortconfig.key==='latitude'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell onClick={()=>requestSort('longitude')} className={getClassNamesFor('longitude')} style={{ cursor: 'pointer' }}> Longitude {arrowRetuner( sortconfig.key==='longitude'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
 								
 								{<TableCell />}
 							</TableRow>
