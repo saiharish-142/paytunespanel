@@ -184,7 +184,7 @@ function PublisherAdmin({
 										<TableCell>{Math.round(parseFloat(log.avgreq) * 10) / 10}</TableCell>
 										<TableCell>{Math.round(parseFloat(log.avgach) * 10) / 10}</TableCell>
 										<TableCell>{Math.round(log.spent * 1) / 1}</TableCell>
-										<TableCell>{log.clicks+log.clicks1}</TableCell>
+										<TableCell>{log.clicks}</TableCell>
 										<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>
 										<TableCell>{parseInt(log.balance)}</TableCell>
 										<TableCell>{log.feed==="3"?"Podcast":log.feed===""?"Ondemand and Streaming" :"" }</TableCell>

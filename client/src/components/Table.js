@@ -260,9 +260,9 @@ export default function BasicTable({ singlead }) {
 				var audiospentOffline = 0;
 				var displayspentOffline = 0;
 				var videospentOffline = 0;
-				result.audio = result.audio && result.audio.filter((x) => x.impressions > 0);
-				result.display = result.display && result.display.filter((x) => x.impressions > 0);
-				result.video = result.video && result.video.filter((x) => x.impressions > 0);
+				// result.audio = result.audio && result.audio.filter((x) => x.impressions > 0);
+				// result.display = result.display && result.display.filter((x) => x.impressions > 0);
+				// result.video = result.video && result.video.filter((x) => x.impressions > 0);
 				result.audio &&
 					result.audio.map((re) => {
 						if (re.apppubidpo && re.apppubidpo[0] && re.apppubidpo[0].ssp === 'offline') {
