@@ -175,16 +175,16 @@ export default function Phonedata() {
 						<TableHead  style={{position:"sticky",top:0}}>
 							<TableRow >
 								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell> <button onClick={()=>requestSort('make_model')} className={getClassNamesFor('make_model')}> Make_And_Model </button></TableCell>}
-								{<TableCell> <button onClick={()=>requestSort('impression')} className={getClassNamesFor('impression')}>Impressions</button> </TableCell>}
-								{<TableCell> <button onClick={()=>requestSort('click')} className={getClassNamesFor('click')}>Clicks</button> </TableCell>}
-								{<TableCell> <button onClick={()=>requestSort('release')} className={getClassNamesFor('release')}>Release Month And Year</button> </TableCell>}
-								<TableCell>  <button onClick={()=>requestSort('cost')} className={getClassNamesFor('cost')}>Release Cost or MRP</button> </TableCell>
-								<TableCell>  <button onClick={()=>requestSort('company')} className={getClassNamesFor('company')}>Company Name</button> </TableCell>
-								<TableCell>  <button onClick={()=>requestSort('model')} className={getClassNamesFor('model')}>Model</button> </TableCell>
-								{<TableCell> <button onClick={()=>requestSort('type')} className={getClassNamesFor('type')}>Type of Device</button> </TableCell>}
-								{<TableCell> <button onClick={()=>requestSort('total_percent')} className={getClassNamesFor('total_percent')}>% of Total</button></TableCell>}
-								{<TableCell> <button onClick={()=>requestSort('cumulative')} className={getClassNamesFor('cumulative')}>Cumulative %</button></TableCell>}
+								{<TableCell onClick={()=>requestSort('make_model')} className={getClassNamesFor('make_model')}>  Make_And_Model </TableCell>}
+								{<TableCell onClick={()=>requestSort('impression')} className={getClassNamesFor('impression')}> Impressions </TableCell>}
+								{<TableCell onClick={()=>requestSort('click')} className={getClassNamesFor('click')}> Clicks </TableCell>}
+								{<TableCell onClick={()=>requestSort('release')} className={getClassNamesFor('release')}> Release Month And Year </TableCell>}
+								<TableCell onClick={()=>requestSort('cost')} className={getClassNamesFor('cost')}>  Release Cost or MRP </TableCell>
+								<TableCell onClick={()=>requestSort('company')} className={getClassNamesFor('company')}>  Company Name </TableCell>
+								<TableCell onClick={()=>requestSort('model')} className={getClassNamesFor('model')}>  Model </TableCell>
+								{<TableCell onClick={()=>requestSort('type')} className={getClassNamesFor('type')}> Type of Device</TableCell>}
+								{<TableCell onClick={()=>requestSort('total_percent')} className={getClassNamesFor('total_percent')}> % of Total</TableCell>}
+								{<TableCell onClick={()=>requestSort('cumulative')}  className={getClassNamesFor('cumulative')}> Cumulative %</TableCell>}
 								{<TableCell />}
 							</TableRow>
 						</TableHead>
