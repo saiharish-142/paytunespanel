@@ -38,7 +38,7 @@ export default function Phonedata() {
 	const [ rows, setrows ] = useState([]);
 	const [ rowsPerPage, setRowsPerPage ] = useState(100);
 	const [ page, setPage ] = useState(0);
-	const [sortconfig,setsortconfig]=useState(null)
+	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
