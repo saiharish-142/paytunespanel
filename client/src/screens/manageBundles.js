@@ -54,11 +54,7 @@ function DashboardBundle({ clientview }) {
 	}
 	const headers = [
 		{ type: 'string', key: 'bundleadtitle', label: 'Name' },
-		{ type: 'string', key: 'Advertiser', label: 'Advertiser' },
-		{ type: 'string', key: 'Pricing', label: 'Pricing' },
-		{ type: 'string', key: 'ro', label: 'RO from Advertiser' },
 		{ type: 'string', key: 'PricingModel', label: 'Pricing Model' },
-		{ type: 'string', key: 'Category', label: 'Category' },
 		{ type: 'date', key: 'createdOn', label: 'Created On' },
 		{ type: 'date', key: 'startDate', label: 'Start Date' },
 		{ type: 'date', key: 'endDate', label: 'End Date' },

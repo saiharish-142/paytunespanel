@@ -42,7 +42,7 @@ function PincodeAdmin({ title, report, state1, arrowRetuner }) {
 		{ key: 'ctr', label: 'CTR' }
 	];
 	var csvReport = {
-		filename: `${state1}_${title}_PublisherData.csv`,
+		filename: `${state1}_${title}_PincodeData.csv`,
 		headers: headers,
 		data: adss
 	};
@@ -149,7 +149,9 @@ function PincodeAdmin({ title, report, state1, arrowRetuner }) {
 								<TableCell onClick={() => tablesorter('ctr', 'number')} style={{ cursor: 'pointer' }}>
 									CTR{arrowRetuner(sa === 'ctr' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell />
+								<TableCell>
+									{adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
+								</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>

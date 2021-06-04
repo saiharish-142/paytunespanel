@@ -31,7 +31,7 @@ function PhoneModelAdmin({ title, report, state1, arrowRetuner }) {
 		{ key: 'ctr', label: 'CTR' }
 	];
 	var csvReport = {
-		filename: `${state1}_${title}_PublisherData.csv`,
+		filename: `${state1}_${title}_PhoneModelData.csv`,
 		headers: headers,
 		data: adss
 	};

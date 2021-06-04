@@ -21,7 +21,7 @@ function LanguagePro({ ids, url, adtype, state1, arrowRetuner }) {
 		{ key: 'ctr', label: 'CTR' }
 	];
 	var csvReport = {
-		filename: `${state1}_${adtype}_PublisherData.csv`,
+		filename: `${state1}_${adtype}_LanguageData.csv`,
 		headers: headers,
 		data: adss
 	};

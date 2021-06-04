@@ -19,7 +19,7 @@ function FrequencyAdmin({ title, report, state1, arrowRetuner }) {
 	const [ page, setPage ] = React.useState(0);
 	const [ adss, setadss ] = React.useState(report);
 	const [ sa, setsa ] = React.useState('_id');
-	const [ order, setorder ] = React.useState('desc');
+	const [ order, setorder ] = React.useState('asc');
 	const tablesorter = (column, type) => {
 		var orde = sa === column ? (order === 'asc' ? 'desc' : 'asc') : 'asc';
 		setorder(orde);
@@ -34,7 +34,7 @@ function FrequencyAdmin({ title, report, state1, arrowRetuner }) {
 		{ key: 'ctr', label: 'CTR' }
 	];
 	var csvReport = {
-		filename: `${state1}_${title}_PublisherData.csv`,
+		filename: `${state1}_${title}_FrequencyData.csv`,
 		headers: headers,
 		data: adss
 	};
@@ -43,7 +43,7 @@ function FrequencyAdmin({ title, report, state1, arrowRetuner }) {
 			if (report && report.length > 0) {
 				var data = report;
 				data.sort(function(a, b) {
-					return parseInt(b._id) - parseInt(a._id);
+					return parseInt(a._id) - parseInt(b._id);
 				});
 				data.map((ad) => {
 					ad.ctr = parseInt(ad.click) / parseInt(ad.impression);

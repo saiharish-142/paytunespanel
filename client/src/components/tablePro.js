@@ -13,12 +13,16 @@ import FrequencyAdmin from './frequencyAdmin';
 import IbaReportAdmin from './ibaReportAdmin';
 import PincodeAdmin from './pincodeAdmin';
 import Creative_Report from './creative_report';
+import { ExcelSheet, ExcelFile } from 'react-data-export';
 
 const useStyles = makeStyles({
 	table: {
 		minWidth: 650
 	}
 });
+
+// const ExcelFile = ReactExport.ExcelFile;
+// const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 
 function TablePro() {
 	const history = useHistory();

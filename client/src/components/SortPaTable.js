@@ -74,11 +74,7 @@ function SortPaTable(props) {
 										) : (
 											<TableCell>{row.bundleadtitle}</TableCell>
 										)}
-										<TableCell>{row.Advertiser}</TableCell>
-										<TableCell>{row.Pricing}</TableCell>
-										<TableCell>{row.ro}</TableCell>
 										<TableCell>{row.PricingModel}</TableCell>
-										<TableCell>{row.Category}</TableCell>
 										<TableCell>{dateformatchanger(row.createdOn.substring(0, 10))}</TableCell>
 										<TableCell>{dateformatchanger(row.startDate.substring(0, 10))}</TableCell>
 										<TableCell>{dateformatchanger(row.endDate.substring(0, 10))}</TableCell>

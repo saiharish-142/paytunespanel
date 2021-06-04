@@ -38,12 +38,9 @@ function PublisherAdmin({
 		{ key: 'ssp', label: 'SSP' },
 		{ key: 'target', label: 'Total Impressions to be delivered' },
 		{ key: 'impressions', label: 'Total Impressions Delivered till date' },
-		{ key: 'avgreq', label: 'Avg required' },
-		{ key: 'avgach', label: 'Avg Achieved' },
 		{ key: 'spent', label: 'Total spent' },
 		{ key: 'clicks', label: 'Total Clicks Delivered till date' },
 		{ key: 'ctr', label: 'CTR' },
-		{ key: 'balance', label: 'Balance Impressions' },
 		{ key: 'feed', label: 'Feed' }
 	];
 	var csvReport = {
@@ -64,7 +61,6 @@ function PublisherAdmin({
 						parseInt(title === 'Audio' ? (spentOffline ? spentOffline : 0) : 0) +
 						parseInt(title === 'Display' ? (spentOfflined ? spentOfflined : 0) : 0) +
 						parseInt(title === 'Video' ? (spentOfflinev ? spentOfflinev : 0) : 0);
-					ad.balance = parseInt(ad.target) - ad.impressions;
 					return ad;
 				});
 				csvReport.data = data;
@@ -123,18 +119,6 @@ function PublisherAdmin({
 									Total Impressions Delivered till date{' '}
 									{arrowRetuner(sa === 'impressions' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell
-									onClick={() => tablesorter('avgreq', 'number')}
-									style={{ cursor: 'pointer' }}
-								>
-									Avg required {arrowRetuner(sa === 'avgreq' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
-								<TableCell
-									onClick={() => tablesorter('avgach', 'number')}
-									style={{ cursor: 'pointer' }}
-								>
-									Avg Achieved {arrowRetuner(sa === 'avgach' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
 								<TableCell onClick={() => tablesorter('spent', 'number')} style={{ cursor: 'pointer' }}>
 									Total spent {arrowRetuner(sa === 'spent' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
@@ -147,13 +131,6 @@ function PublisherAdmin({
 								</TableCell>
 								<TableCell onClick={() => tablesorter('ctr', 'number')} style={{ cursor: 'pointer' }}>
 									CTR {arrowRetuner(sa === 'ctr' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
-								<TableCell
-									onClick={() => tablesorter('balance', 'number')}
-									style={{ cursor: 'pointer' }}
-								>
-									Balance Impressions{' '}
-									{arrowRetuner(sa === 'balance' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell onClick={() => tablesorter('feed', 'string')} style={{ cursor: 'pointer' }}>
 									Feed {arrowRetuner(sa === 'feed' ? (order === 'asc' ? '1' : '2') : '3')}
@@ -181,13 +158,18 @@ function PublisherAdmin({
 										<TableCell>{log.ssp}</TableCell>
 										<TableCell>{parseInt(log.target)}</TableCell>
 										<TableCell>{log.impressions}</TableCell>
-										<TableCell>{Math.round(parseFloat(log.avgreq) * 10) / 10}</TableCell>
-										<TableCell>{Math.round(parseFloat(log.avgach) * 10) / 10}</TableCell>
 										<TableCell>{Math.round(log.spent * 1) / 1}</TableCell>
 										<TableCell>{log.clicks}</TableCell>
 										<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>
-										<TableCell>{parseInt(log.balance)}</TableCell>
-										<TableCell>{log.feed==="3"?"Podcast":log.feed===""?"Ondemand and Streaming" :"" }</TableCell>
+										<TableCell>
+											{log.feed === '3' ? (
+												'Podcast'
+											) : log.feed === '' ? (
+												'Ondemand and Streaming'
+											) : (
+												''
+											)}
+										</TableCell>
 										<TableCell
 											className="mangeads__report"
 											onClick={() => history.push(`/manageAds/${state1}/detailed`)}

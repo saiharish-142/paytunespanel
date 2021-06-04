@@ -594,7 +594,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						},
 						{
 							$group: {
-								_id: { app: '$appId', appubid: '$apppubid' ,feed:"$feed" },
+								_id: { app: '$appId', appubid: '$apppubid', feed: '$feed' },
 								ssp: { $push: '$ssp' },
 								updatedAt: { $push: '$createdOn' },
 								camp: { $push: '$campaignId' },
@@ -611,7 +611,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							$project: {
 								Publisher: '$_id.app',
 								PublisherSplit: '$_id.appubid',
-								feed:"$_id.feed",
+								feed: '$_id.feed',
 								updatedAt: '$updatedAt',
 								ssp: '$ssp',
 								campaignId: '$camp',
@@ -642,7 +642,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						},
 						{
 							$group: {
-								_id: { app: '$appId', appubid: '$apppubid', feed:"$feed" },
+								_id: { app: '$appId', appubid: '$apppubid', feed: '$feed' },
 								ssp: { $push: '$ssp' },
 								updatedAt: { $push: '$createdOn' },
 								camp: { $push: '$campaignId' },
@@ -659,7 +659,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							$project: {
 								Publisher: '$_id.app',
 								PublisherSplit: '$_id.appubid',
-								feed:"$_id.feed",
+								feed: '$_id.feed',
 								updatedAt: '$updatedAt',
 								ssp: '$ssp',
 								campaignId: '$camp',
@@ -690,7 +690,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						},
 						{
 							$group: {
-								_id: { app: '$appId', appubid: '$apppubid',feed:"$feed" },
+								_id: { app: '$appId', appubid: '$apppubid', feed: '$feed' },
 								ssp: { $push: '$ssp' },
 								updatedAt: { $push: '$createdOn' },
 								camp: { $push: '$campaignId' },
@@ -707,7 +707,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							$project: {
 								Publisher: '$_id.app',
 								PublisherSplit: '$_id.appubid',
-								feed:"$_id.feed",
+								feed: '$_id.feed',
 								updatedAt: '$updatedAt',
 								ssp: '$ssp',
 								campaignId: '$camp',
@@ -835,7 +835,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 			updatedAtTimes.sort(function(a, b) {
 				return new Date(b) - new Date(a);
 			});
-			var summaryCompleteReport = { impressions: 0, clicks: 0, complete: 0 };
+			var summaryCompleteReport = { impressions: 0, clicks: 0, complete: 0, fq: 0, sq: 0, tq: 0 };
 			summaryCompleteReport.impressions +=
 				parseInt(audioCompleteReport.impressions) +
 				parseInt(displayCompleteReport.impressions) +
@@ -848,6 +848,18 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				parseInt(audioCompleteReport.complete) +
 				parseInt(displayCompleteReport.complete) +
 				parseInt(videoCompleteReport.complete);
+			summaryCompleteReport.fq +=
+				parseInt(audioCompleteReport.firstQuartile) +
+				parseInt(displayCompleteReport.firstQuartile) +
+				parseInt(videoCompleteReport.firstQuartile);
+			summaryCompleteReport.sq +=
+				parseInt(audioCompleteReport.midpoint) +
+				parseInt(displayCompleteReport.midpoint) +
+				parseInt(videoCompleteReport.midpoint);
+			summaryCompleteReport.tq +=
+				parseInt(audioCompleteReport.thirdQuartile) +
+				parseInt(displayCompleteReport.thirdQuartile) +
+				parseInt(videoCompleteReport.thirdQuartile);
 			response.audioCompleteReport = audioCompleteReport;
 			response.displayCompleteReport = displayCompleteReport;
 			response.videoCompleteReport = videoCompleteReport;
