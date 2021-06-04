@@ -10,8 +10,10 @@
     "materialize-css": "^1.0.0-rc.2",
     "react": "^16.13.1",
     "react-csv": "^2.0.3",
+    "react-data-export": "^0.6.0",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.3"
+    "react-scripts": "3.4.3",
+    "xlsx": "^0.17.0"
   },
   "scripts": {
     "start": "react-scripts start",
