@@ -603,6 +603,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 								clicks: { $sum: '$CompanionClickTracking' },
 								clicks1: { $sum: '$SovClickTracking' },
 								thirdQuartile: { $sum: '$thirdQuartile' },
+								start: { $sum: '$start' },
 								firstQuartile: { $sum: '$firstQuartile' },
 								midpoint: { $sum: '$midpoint' }
 							}
@@ -620,6 +621,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 								clicks: '$clicks',
 								clicks1: '$clicks1',
 								midpoint: '$midpoint',
+								start: '$start',
 								firstQuartile: '$firstQuartile',
 								thirdQuartile: '$thirdQuartile',
 								_id: 0
@@ -651,6 +653,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 								clicks: { $sum: '$CompanionClickTracking' },
 								clicks1: { $sum: '$SovClickTracking' },
 								thirdQuartile: { $sum: '$thirdQuartile' },
+								start: { $sum: '$start' },
 								firstQuartile: { $sum: '$firstQuartile' },
 								midpoint: { $sum: '$midpoint' }
 							}
@@ -668,6 +671,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 								clicks: '$clicks',
 								clicks1: '$clicks1',
 								midpoint: '$midpoint',
+								start: '$start',
 								firstQuartile: '$firstQuartile',
 								thirdQuartile: '$thirdQuartile',
 								_id: 0
@@ -699,6 +703,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 								clicks: { $sum: '$CompanionClickTracking' },
 								clicks1: { $sum: '$SovClickTracking' },
 								thirdQuartile: { $sum: '$thirdQuartile' },
+								start: { $sum: '$start' },
 								firstQuartile: { $sum: '$firstQuartile' },
 								midpoint: { $sum: '$midpoint' }
 							}
@@ -716,6 +721,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 								clicks: '$clicks',
 								clicks1: '$clicks1',
 								midpoint: '$midpoint',
+								start: '$start',
 								firstQuartile: '$firstQuartile',
 								thirdQuartile: '$thirdQuartile',
 								_id: 0
@@ -740,6 +746,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				impressions: 0,
 				clicks: 0,
 				complete: 0,
+				start: 0,
 				firstQuartile: 0,
 				midpoint: 0,
 				thirdQuartile: 0
@@ -748,6 +755,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				impressions: 0,
 				clicks: 0,
 				complete: 0,
+				start: 0,
 				firstQuartile: 0,
 				midpoint: 0,
 				thirdQuartile: 0
@@ -756,6 +764,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				impressions: 0,
 				clicks: 0,
 				complete: 0,
+				start: 0,
 				firstQuartile: 0,
 				midpoint: 0,
 				thirdQuartile: 0
@@ -789,6 +798,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					audioCompleteReport.clicks += parseInt(x.clicks);
 					audioCompleteReport.complete += parseInt(x.complete);
 					audioCompleteReport.midpoint += parseInt(x.midpoint);
+					audioCompleteReport.start += parseInt(x.start);
 					audioCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					audioCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
 					x.updatedAt.sort(function(a, b) {
@@ -806,6 +816,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					displayCompleteReport.clicks += parseInt(x.clicks);
 					displayCompleteReport.complete += parseInt(x.complete);
 					displayCompleteReport.midpoint += parseInt(x.midpoint);
+					displayCompleteReport.start += parseInt(x.start);
 					displayCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					displayCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
 					x.updatedAt.sort(function(a, b) {
@@ -823,6 +834,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					videoCompleteReport.clicks += parseInt(x.clicks);
 					videoCompleteReport.complete += parseInt(x.complete);
 					videoCompleteReport.midpoint += parseInt(x.midpoint);
+					videoCompleteReport.start += parseInt(x.start);
 					videoCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					videoCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
 					x.updatedAt.sort(function(a, b) {
@@ -848,6 +860,10 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				parseInt(audioCompleteReport.complete) +
 				parseInt(displayCompleteReport.complete) +
 				parseInt(videoCompleteReport.complete);
+			summaryCompleteReport.start +=
+				parseInt(audioCompleteReport.start) +
+				parseInt(displayCompleteReport.start) +
+				parseInt(videoCompleteReport.start);
 			summaryCompleteReport.fq +=
 				parseInt(audioCompleteReport.firstQuartile) +
 				parseInt(displayCompleteReport.firstQuartile) +
@@ -866,34 +882,6 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 			response.summaryCompleteReport = summaryCompleteReport;
 			response.allrecentupdate = updatedAtTimes ? updatedAtTimes[0] : undefined;
 			res.json(response);
-			// var data = reports;
-			// data = data.filter(x => x.Publisher!== "")
-			// publisherapps.populate(data,{path:'Publisher'},function(err,populatedreports){
-			//     if(err){
-			//         return res.status(422).json(err)
-			//     }
-			//     resu = populatedreports;
-			//     // console.log(populatedreports)
-			//     resu.map((det)=>{
-			//         var resregion = [].concat.apply([], det.region);
-			//         resregion = [...new Set(resregion)];
-			//         det.region = resregion
-			//         var rescampaignId = [].concat.apply([], det.campaignId);
-			//         rescampaignId = [...new Set(rescampaignId)];
-			//         det.campaignId = rescampaignId[0]
-			//         var updatedDate = det.updatedAt
-			//         updatedDate.sort(function(a,b){
-			//             return new Date(b) - new Date(a);
-			//         });
-			//         det.updatedAt = updatedDate
-			//     })
-			//     StreamingAds.populate(resu,{path:'campaignId'},function(err,populatedres){
-			//         if(err){
-			//             return res.status(422).json(resu)
-			//         }
-			//         res.json(populatedres)
-			//     })
-			// })
 		})
 		.catch((err) => console.log(err));
 });
