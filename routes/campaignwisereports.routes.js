@@ -847,7 +847,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 			updatedAtTimes.sort(function(a, b) {
 				return new Date(b) - new Date(a);
 			});
-			var summaryCompleteReport = { impressions: 0, clicks: 0, complete: 0, fq: 0, sq: 0, tq: 0 };
+			var summaryCompleteReport = { impressions: 0, clicks: 0, complete: 0, start: 0, fq: 0, sq: 0, tq: 0 };
 			summaryCompleteReport.impressions +=
 				parseInt(audioCompleteReport.impressions) +
 				parseInt(displayCompleteReport.impressions) +
