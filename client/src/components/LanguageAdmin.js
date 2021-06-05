@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { orderSetter } from '../redux/actions/manageadsAction';
 import { CSVLink } from 'react-csv';
 
-function LanguagePro({ ids, url, adtype, state1, arrowRetuner }) {
+function LanguagePro({ ids, url, adtype, state1, arrowRetuner, setdata }) {
 	// console.log(click,ratio)
 	const history = useHistory();
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
@@ -56,10 +56,13 @@ function LanguagePro({ ids, url, adtype, state1, arrowRetuner }) {
 									a.CompanionClickTracking
 										? a.CompanionClickTracking
 										: 0 + a.SovClickTracking ? a.SovClickTracking : 0
-								) / parseInt(a.impression ? parseInt(a.impression) : 0);
+								) /
+								parseInt(a.impression ? parseInt(a.impression) : 0) *
+								100;
 						});
 						csvReport.data = loco;
 						setadss(loco);
+						setdata(loco);
 					})
 					.catch((err) => console.log(err));
 			}

@@ -1,4 +1,4 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,7 +13,30 @@ import FrequencyAdmin from './frequencyAdmin';
 import IbaReportAdmin from './ibaReportAdmin';
 import PincodeAdmin from './pincodeAdmin';
 import Creative_Report from './creative_report';
-import { ExcelSheet, ExcelFile } from 'react-data-export';
+// import { ExcelSheet, ExcelFile, ExcelColumn } from 'react-data-export';
+import ReactExport from 'react-data-export';
+import {
+	FrequencyBody,
+	FrequencyHead,
+	IBABody,
+	IBAHead,
+	LanguageBody,
+	LanguageHead,
+	PhoneModelBody,
+	PhoneModelHead,
+	PublishBody,
+	PublishHead,
+	QuartileBody,
+	QuartileHead,
+	PincodeHead,
+	PincodeBody
+} from './CommonFun';
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+// const ExcelColumn = ReactExport.ExcelFile.ExcelSheet.ExcelColumn;
+
+// import ExcelColumn from 'react-data-export/dist/ExcelPlugin/elements/ExcelColumn';
 
 const useStyles = makeStyles({
 	table: {
@@ -36,6 +59,10 @@ function TablePro() {
 	const [ ibaReports, setibaReports ] = useState([]);
 	const [ frequencyReport, setfrequencyReport ] = useState([]);
 	const [ creativereports, setcreative ] = useState([]);
+	const [ languageDownloadA, setlanguageDownloadA ] = useState([]);
+	const [ languageDownloadD, setlanguageDownloadD ] = useState([]);
+	const [ languageDownloadV, setlanguageDownloadV ] = useState([]);
+	// const [ creativereports, setcreative ] = useState([]);
 	useEffect(
 		() => {
 			if (stateratio) {
@@ -425,10 +452,297 @@ function TablePro() {
 		arrowRetuner: arrowRetuner,
 		url: 'citylanguagebycampids'
 	};
+	// console.log(report.report.audio.length && PublishBody('Audio', report.report.audio));
+	const PublisherDown = {
+		audio: [
+			{
+				columns: PublishHead,
+				data: report.report.audio.length && PublishBody('Audio', report.report.audio, spentfinder, report)
+			}
+		],
+		display: [
+			{
+				columns: PublishHead,
+				data: report.report.display.length && PublishBody('Display', report.report.display, spentfinder, report)
+			}
+		],
+		video: [
+			{
+				columns: PublishHead,
+				data: report.report.video.length && PublishBody('Video', report.report.video, spentfinder, report)
+			}
+		]
+	};
+	const QuartileDown = {
+		audio: [
+			{
+				columns: QuartileHead,
+				data: report.report.audio.length && QuartileBody(report.report.audio)
+			}
+		],
+		video: [
+			{
+				columns: QuartileHead,
+				data: report.report.video.length && QuartileBody(report.report.video)
+			}
+		]
+	};
+	const LanguageDown = {
+		audio: [
+			{
+				columns: LanguageHead,
+				data:
+					report.ids &&
+					report.ids.audio &&
+					report.ids.audio.length &&
+					languageDownloadA &&
+					LanguageBody(languageDownloadA)
+			}
+		],
+		display: [
+			{
+				columns: LanguageHead,
+				data:
+					report.ids &&
+					report.ids.display &&
+					report.ids.display.length &&
+					languageDownloadD &&
+					LanguageBody(languageDownloadD)
+			}
+		],
+		video: [
+			{
+				columns: LanguageHead,
+				data:
+					report.ids &&
+					report.ids.video &&
+					report.ids.video.length &&
+					languageDownloadV &&
+					LanguageBody(languageDownloadV)
+			}
+		]
+	};
+	const PhoneModelDown = {
+		audio: [
+			{
+				columns: PhoneModelHead,
+				data:
+					report.ids &&
+					report.ids.audio &&
+					report.ids.audio.length &&
+					phoneModelReports &&
+					phoneModelReports.audio &&
+					PhoneModelBody(phoneModelReports.audio)
+			}
+		],
+		display: [
+			{
+				columns: PhoneModelHead,
+				data:
+					report.ids &&
+					report.ids.display &&
+					report.ids.display.length &&
+					phoneModelReports &&
+					phoneModelReports.display &&
+					PhoneModelBody(phoneModelReports.display)
+			}
+		],
+		video: [
+			{
+				columns: PhoneModelHead,
+				data:
+					report.ids &&
+					report.ids.video &&
+					report.ids.video.length &&
+					phoneModelReports &&
+					phoneModelReports.video &&
+					PhoneModelBody(phoneModelReports.video)
+			}
+		]
+	};
+	const FrequencyDown = {
+		audio: [
+			{
+				columns: FrequencyHead,
+				data:
+					report.ids &&
+					report.ids.audio &&
+					report.ids.audio.length &&
+					frequencyReport &&
+					frequencyReport.audio &&
+					FrequencyBody(frequencyReport.audio)
+			}
+		],
+		display: [
+			{
+				columns: FrequencyHead,
+				data:
+					report.ids &&
+					report.ids.display &&
+					report.ids.display.length &&
+					frequencyReport &&
+					frequencyReport.display &&
+					FrequencyBody(frequencyReport.display)
+			}
+		],
+		video: [
+			{
+				columns: FrequencyHead,
+				data:
+					report.ids &&
+					report.ids.video &&
+					report.ids.video.length &&
+					frequencyReport &&
+					frequencyReport.video &&
+					FrequencyBody(frequencyReport.video)
+			}
+		]
+	};
+	const IBADown = {
+		audio: [
+			{
+				columns: IBAHead,
+				data:
+					report.ids &&
+					report.ids.audio &&
+					report.ids.audio.length &&
+					ibaReports &&
+					ibaReports.audio &&
+					IBABody(ibaReports.audio)
+			}
+		],
+		display: [
+			{
+				columns: IBAHead,
+				data:
+					report.ids &&
+					report.ids.display &&
+					report.ids.display.length &&
+					ibaReports &&
+					ibaReports.display &&
+					IBABody(ibaReports.display)
+			}
+		],
+		video: [
+			{
+				columns: IBAHead,
+				data:
+					report.ids &&
+					report.ids.video &&
+					report.ids.video.length &&
+					ibaReports &&
+					ibaReports.video &&
+					IBABody(ibaReports.video)
+			}
+		]
+	};
+	const PincodeDown = {
+		audio: [
+			{
+				columns: PincodeHead,
+				data:
+					report.ids &&
+					report.ids.audio &&
+					report.ids.audio.length &&
+					pincodereports &&
+					pincodereports.audio &&
+					PincodeBody(pincodereports.audio)
+			}
+		],
+		display: [
+			{
+				columns: PincodeHead,
+				data:
+					report.ids &&
+					report.ids.display &&
+					report.ids.display.length &&
+					pincodereports &&
+					pincodereports.display &&
+					PincodeBody(pincodereports.display)
+			}
+		],
+		video: [
+			{
+				columns: PincodeHead,
+				data:
+					report.ids &&
+					report.ids.video &&
+					report.ids.video.length &&
+					pincodereports &&
+					pincodereports.video &&
+					PincodeBody(pincodereports.video)
+			}
+		]
+	};
 	return (
 		<div>
 			<div className="titleReport">{report.title && report.title.toUpperCase()} Campaign</div>
 			<div className="titleReport">Summary Report</div>
+			<ExcelFile
+				filename={`Complete Report ${report.title}`}
+				element={
+					<Button variant="outlined" color="primary">
+						Download Complete Report
+					</Button>
+				}
+			>
+				{report.report.audio.length && <ExcelSheet dataSet={PublisherDown.audio} name="Publisher Audio Wise" />}
+				{report.report.display.length && (
+					<ExcelSheet dataSet={PublisherDown.display} name="Publisher Display Wise" />
+				)}
+				{report.report.video.length && <ExcelSheet dataSet={PublisherDown.video} name="Publisher Video Wise" />}
+				{report.report.audio.length && <ExcelSheet dataSet={QuartileDown.audio} name="Quartile Audio Wise" />}
+				{report.report.video.length && <ExcelSheet dataSet={QuartileDown.video} name="Quartile Video Wise" />}
+				{report.ids &&
+				report.ids.audio &&
+				report.ids.audio.length && <ExcelSheet dataSet={LanguageDown.audio} name="Language Audio Wise" />}
+				{report.ids &&
+				report.ids.display &&
+				report.ids.display.length && <ExcelSheet dataSet={LanguageDown.display} name="Language Display Wise" />}
+				{report.ids &&
+				report.ids.video &&
+				report.ids.video.length && <ExcelSheet dataSet={LanguageDown.video} name="Language Video Wise" />}
+				{report.ids &&
+				report.ids.audio &&
+				report.ids.audio.length && <ExcelSheet dataSet={PhoneModelDown.audio} name="PhoneModel Audio Wise" />}
+				{report.ids &&
+				report.ids.display &&
+				report.ids.display.length && (
+					<ExcelSheet dataSet={PhoneModelDown.display} name="PhoneModel Display Wise" />
+				)}
+				{report.ids &&
+				report.ids.video &&
+				report.ids.video.length && <ExcelSheet dataSet={PhoneModelDown.video} name="PhoneModel Video Wise" />}
+				{report.ids &&
+				report.ids.audio &&
+				report.ids.audio.length && <ExcelSheet dataSet={FrequencyDown.audio} name="Frequency Audio Wise" />}
+				{report.ids &&
+				report.ids.display &&
+				report.ids.display.length && (
+					<ExcelSheet dataSet={FrequencyDown.display} name="Frequency Display Wise" />
+				)}
+				{report.ids &&
+				report.ids.video &&
+				report.ids.video.length && <ExcelSheet dataSet={FrequencyDown.video} name="Frequency Video Wise" />}
+				{report.ids &&
+				report.ids.audio &&
+				report.ids.audio.length && <ExcelSheet dataSet={IBADown.audio} name="Category Audio Wise" />}
+				{report.ids &&
+				report.ids.display &&
+				report.ids.display.length && <ExcelSheet dataSet={IBADown.display} name="Category Display Wise" />}
+				{report.ids &&
+				report.ids.video &&
+				report.ids.video.length && <ExcelSheet dataSet={IBADown.video} name="Category Video Wise" />}
+				{report.ids &&
+				report.ids.audio &&
+				report.ids.audio.length && <ExcelSheet dataSet={PincodeDown.audio} name="Pincode Audio Wise" />}
+				{report.ids &&
+				report.ids.display &&
+				report.ids.display.length && <ExcelSheet dataSet={PincodeDown.display} name="Pincode Display Wise" />}
+				{report.ids &&
+				report.ids.video &&
+				report.ids.video.length && <ExcelSheet dataSet={PincodeDown.video} name="Pincode Video Wise" />}
+			</ExcelFile>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
@@ -476,6 +790,18 @@ function TablePro() {
 				''
 			)}
 			<div className="titleReport">Publisher Report</div>
+			<ExcelFile
+				filename={`Publisher Wise Report ${report.title}`}
+				element={
+					<Button variant="outlined" color="primary">
+						Download Tables
+					</Button>
+				}
+			>
+				{report.report.audio.length && <ExcelSheet dataSet={PublisherDown.audio} name="Audio Wise" />}
+				{report.report.display.length && <ExcelSheet dataSet={PublisherDown.display} name="Display Wise" />}
+				{report.report.video.length && <ExcelSheet dataSet={PublisherDown.video} name="Video Wise" />}
+			</ExcelFile>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
@@ -499,6 +825,17 @@ function TablePro() {
 				''
 			)}
 			<div className="titleReport">Quartile Summary Report</div>
+			<ExcelFile
+				filename={`Quartile Report ${report.title}`}
+				element={
+					<Button variant="outlined" color="primary">
+						Download Tables
+					</Button>
+				}
+			>
+				{report.report.audio.length && <ExcelSheet dataSet={QuartileDown.audio} name="Audio Wise" />}
+				{report.report.video.length && <ExcelSheet dataSet={QuartileDown.video} name="Video Wise" />}
+			</ExcelFile>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
@@ -507,6 +844,7 @@ function TablePro() {
 					<TableHead>
 						<TableRow>
 							<TableCell />
+							<TableCell>Start</TableCell>
 							<TableCell>First Quartile</TableCell>
 							<TableCell>Second Quartile</TableCell>
 							<TableCell>Third Quartile</TableCell>
@@ -517,6 +855,7 @@ function TablePro() {
 					<TableBody>
 						<TableRow>
 							<TableCell>Impressions</TableCell>
+							<TableCell>{report.report.summaryCompleteReport.start}</TableCell>
 							<TableCell>{report.report.summaryCompleteReport.fq}</TableCell>
 							<TableCell>{report.report.summaryCompleteReport.sq}</TableCell>
 							<TableCell>{report.report.summaryCompleteReport.tq}</TableCell>
@@ -552,25 +891,76 @@ function TablePro() {
 				)}
 			</TableContainer>
 			<div className="titleReport">Language Wise Summary Report</div>
+			<ExcelFile
+				filename={`Language Wise Report ${report.title}`}
+				element={
+					<Button variant="outlined" color="primary">
+						Download Tables
+					</Button>
+				}
+			>
+				{report.ids &&
+				report.ids.audio &&
+				report.ids.audio.length && <ExcelSheet dataSet={LanguageDown.audio} name="Audio Wise" />}
+				{report.ids &&
+				report.ids.display &&
+				report.ids.display.length && <ExcelSheet dataSet={LanguageDown.display} name="Display Wise" />}
+				{report.ids &&
+				report.ids.video &&
+				report.ids.video.length && <ExcelSheet dataSet={LanguageDown.video} name="Video Wise" />}
+			</ExcelFile>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
 			{report.ids && report.ids.audio && report.ids.audio.length ? (
-				<LanguagePro {...LanguageProps} adtype="Audio" ids={report.ids && report.ids.audio} />
+				<LanguagePro
+					{...LanguageProps}
+					setdata={setlanguageDownloadA}
+					adtype="Audio"
+					ids={report.ids && report.ids.audio}
+				/>
 			) : (
 				''
 			)}
 			{report.ids && report.ids.display && report.ids.display.length ? (
-				<LanguagePro {...LanguageProps} adtype="Display" ids={report.ids && report.ids.display} />
+				<LanguagePro
+					{...LanguageProps}
+					setdata={setlanguageDownloadD}
+					adtype="Display"
+					ids={report.ids && report.ids.display}
+				/>
 			) : (
 				''
 			)}
 			{report.ids && report.ids.video && report.ids.video.length ? (
-				<LanguagePro {...LanguageProps} adtype="Video" ids={report.ids && report.ids.video} />
+				<LanguagePro
+					{...LanguageProps}
+					setdata={setlanguageDownloadV}
+					adtype="Video"
+					ids={report.ids && report.ids.video}
+				/>
 			) : (
 				''
 			)}
 			<div className="titleReport">Phone Make Model Wise Summary Report</div>
+			<ExcelFile
+				filename={`Phone Make Model Wise Report ${report.title}`}
+				element={
+					<Button variant="outlined" color="primary">
+						Download Tables
+					</Button>
+				}
+			>
+				{report.ids &&
+				report.ids.audio &&
+				report.ids.audio.length && <ExcelSheet dataSet={PhoneModelDown.audio} name="Audio Wise" />}
+				{report.ids &&
+				report.ids.display &&
+				report.ids.display.length && <ExcelSheet dataSet={PhoneModelDown.display} name="Display Wise" />}
+				{report.ids &&
+				report.ids.video &&
+				report.ids.video.length && <ExcelSheet dataSet={PhoneModelDown.video} name="Video Wise" />}
+			</ExcelFile>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
@@ -614,6 +1004,24 @@ function TablePro() {
 				''
 			)}
 			<div className="titleReport">Frequency Report</div>
+			<ExcelFile
+				filename={`Frequency Report ${report.title}`}
+				element={
+					<Button variant="outlined" color="primary">
+						Download Tables
+					</Button>
+				}
+			>
+				{report.ids &&
+				report.ids.audio &&
+				report.ids.audio.length && <ExcelSheet dataSet={FrequencyDown.audio} name="Audio Wise" />}
+				{report.ids &&
+				report.ids.display &&
+				report.ids.display.length && <ExcelSheet dataSet={FrequencyDown.display} name="Display Wise" />}
+				{report.ids &&
+				report.ids.video &&
+				report.ids.video.length && <ExcelSheet dataSet={FrequencyDown.video} name="Video Wise" />}
+			</ExcelFile>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
@@ -648,6 +1056,24 @@ function TablePro() {
 				''
 			)}
 			<div className="titleReport">Category Wise Summary Report</div>
+			<ExcelFile
+				filename={`Category Wise Report ${report.title}`}
+				element={
+					<Button variant="outlined" color="primary">
+						Download Tables
+					</Button>
+				}
+			>
+				{report.ids &&
+				report.ids.audio &&
+				report.ids.audio.length && <ExcelSheet dataSet={IBADown.audio} name="Audio Wise" />}
+				{report.ids &&
+				report.ids.display &&
+				report.ids.display.length && <ExcelSheet dataSet={IBADown.display} name="Display Wise" />}
+				{report.ids &&
+				report.ids.video &&
+				report.ids.video.length && <ExcelSheet dataSet={IBADown.video} name="Video Wise" />}
+			</ExcelFile>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
@@ -682,6 +1108,24 @@ function TablePro() {
 				''
 			)}
 			<div className="titleReport">Pincode Wise Summary Report</div>
+			<ExcelFile
+				filename={`Pincode Report ${report.title}`}
+				element={
+					<Button variant="outlined" color="primary">
+						Download Tables
+					</Button>
+				}
+			>
+				{report.ids &&
+				report.ids.audio &&
+				report.ids.audio.length && <ExcelSheet dataSet={PincodeDown.audio} name="Audio Wise" />}
+				{report.ids &&
+				report.ids.display &&
+				report.ids.display.length && <ExcelSheet dataSet={PincodeDown.display} name="Display Wise" />}
+				{report.ids &&
+				report.ids.video &&
+				report.ids.video.length && <ExcelSheet dataSet={PincodeDown.video} name="Video Wise" />}
+			</ExcelFile>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>

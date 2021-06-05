@@ -26,7 +26,7 @@ function PhoneModelAdmin({ title, report, state1, arrowRetuner }) {
 		{ key: 'company', label: 'Company Name' },
 		{ key: 'model', label: 'Model' },
 		{ key: 'type', label: 'Type of Device' },
-		{ key: 'impression', label: 'TImpressions' },
+		{ key: 'impression', label: 'Impressions' },
 		{ key: 'clicks', label: 'Clicks' },
 		{ key: 'ctr', label: 'CTR' }
 	];

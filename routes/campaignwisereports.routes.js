@@ -857,25 +857,13 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				parseInt(displayCompleteReport.clicks) +
 				parseInt(videoCompleteReport.clicks);
 			summaryCompleteReport.complete +=
-				parseInt(audioCompleteReport.complete) +
-				parseInt(displayCompleteReport.complete) +
-				parseInt(videoCompleteReport.complete);
-			summaryCompleteReport.start +=
-				parseInt(audioCompleteReport.start) +
-				parseInt(displayCompleteReport.start) +
-				parseInt(videoCompleteReport.start);
+				parseInt(audioCompleteReport.complete) + parseInt(videoCompleteReport.complete);
+			summaryCompleteReport.start += parseInt(audioCompleteReport.start) + parseInt(videoCompleteReport.start);
 			summaryCompleteReport.fq +=
-				parseInt(audioCompleteReport.firstQuartile) +
-				parseInt(displayCompleteReport.firstQuartile) +
-				parseInt(videoCompleteReport.firstQuartile);
-			summaryCompleteReport.sq +=
-				parseInt(audioCompleteReport.midpoint) +
-				parseInt(displayCompleteReport.midpoint) +
-				parseInt(videoCompleteReport.midpoint);
+				parseInt(audioCompleteReport.firstQuartile) + parseInt(videoCompleteReport.firstQuartile);
+			summaryCompleteReport.sq += parseInt(audioCompleteReport.midpoint) + parseInt(videoCompleteReport.midpoint);
 			summaryCompleteReport.tq +=
-				parseInt(audioCompleteReport.thirdQuartile) +
-				parseInt(displayCompleteReport.thirdQuartile) +
-				parseInt(videoCompleteReport.thirdQuartile);
+				parseInt(audioCompleteReport.thirdQuartile) + parseInt(videoCompleteReport.thirdQuartile);
 			response.audioCompleteReport = audioCompleteReport;
 			response.displayCompleteReport = displayCompleteReport;
 			response.videoCompleteReport = videoCompleteReport;

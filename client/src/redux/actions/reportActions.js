@@ -6,7 +6,8 @@ import {
 	REPORT_ERROR,
 	REPORT_ID_,
 	REPORT_SPENT_LOADED,
-	REPORT_CLEAR
+	REPORT_CLEAR,
+	REPORT_READY
 } from '../types.js';
 import { tokenConfig } from './authAction.js';
 
@@ -125,19 +126,19 @@ export const loadReport = () => (dispatch, getState) => {
 				var videospentOffline = 0;
 				if (!data.audio) {
 					data.audio = [];
-				} 
+				}
 				// else {
 				// 	data.audio = data.audio.filter((x) => x.impressions > 0);
 				// }
 				if (!data.display) {
 					data.display = [];
-				} 
+				}
 				// else {
 				// 	data.display = data.display.filter((x) => x.impressions > 0);
 				// }
 				if (!data.video) {
 					data.video = [];
-				} 
+				}
 				// else {
 				// 	data.video = data.video.filter((x) => x.impressions > 0);
 				// }
@@ -153,7 +154,7 @@ export const loadReport = () => (dispatch, getState) => {
 						re.click = parseInt(re.clicks) + parseInt(re.clicks1);
 						re.ctr =
 							parseInt(re.click) / parseInt(re.impressions)
-								? parseInt(re.click) / parseInt(re.impressions)
+								? parseInt(re.click) * 100 / parseInt(re.impressions)
 								: 0;
 						if (re.apppubidpo && re.apppubidpo[0] && re.apppubidpo[0].ssp === 'offline') {
 							// Humgama
@@ -178,7 +179,7 @@ export const loadReport = () => (dispatch, getState) => {
 						re.click = parseInt(re.clicks) + parseInt(re.clicks1);
 						re.ctr =
 							parseInt(re.click) / parseInt(re.impressions)
-								? parseInt(re.click) / parseInt(re.impressions)
+								? parseInt(re.click) * 100 / parseInt(re.impressions)
 								: 0;
 						if (re.apppubidpo && re.apppubidpo[0] && re.apppubidpo[0].ssp === 'offline') {
 							// Humgama
@@ -203,7 +204,7 @@ export const loadReport = () => (dispatch, getState) => {
 						re.click = parseInt(re.clicks) + parseInt(re.clicks1);
 						re.ctr =
 							parseInt(re.click) / parseInt(re.impressions)
-								? parseInt(re.click) / parseInt(re.impressions)
+								? parseInt(re.click) * 100 / parseInt(re.impressions)
 								: 0;
 						if (re.apppubidpo && re.apppubidpo[0] && re.apppubidpo[0].ssp === 'offline') {
 							// Humgama
@@ -266,5 +267,11 @@ export const loadReportBaseBundle = () => (dispatch, getState) => {
 export const ClearReport = () => (dispatch, getState) => {
 	dispatch({
 		type: REPORT_CLEAR
+	});
+};
+
+export const ShowReport = () => (dispatch, getState) => {
+	dispatch({
+		type: REPORT_READY
 	});
 };

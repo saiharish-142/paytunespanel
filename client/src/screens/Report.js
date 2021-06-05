@@ -6,7 +6,7 @@ import { IdContext } from '../App';
 import PreLoader from '../components/loaders/PreLoader';
 // import EnhancedTable from '../components/Table';
 import TablePro from '../components/tablePro';
-import { ClearReport, idStorer, loadReportBase, ReportLoading } from '../redux/actions/reportActions';
+import { ClearReport, idStorer, loadReportBase, ReportLoading, ShowReport } from '../redux/actions/reportActions';
 // import M from 'materialize-css'
 
 function Report() {
@@ -28,6 +28,11 @@ function Report() {
 		},
 		[ campname ]
 	);
+	useEffect(() => {
+		if (report.report && report.spent) {
+			dispatchRedux(ShowReport());
+		}
+	}, []);
 	// useEffect(
 	// 	() => {
 	// 		if (campname) {

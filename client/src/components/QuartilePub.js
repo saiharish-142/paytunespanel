@@ -4,6 +4,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { orderSetter } from '../redux/actions/manageadsAction';
+import { CSVLink } from 'react-csv';
 
 const useStyles = makeStyles({
 	table: {
@@ -17,6 +18,20 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 	const [ sa, setsa ] = React.useState('impressions');
 	const [ order, setorder ] = React.useState('desc');
 	const [ adss, setadss ] = React.useState(report);
+	const headers = [
+		{ key: 'publishername', label: 'Publisher' },
+		{ key: 'start', label: 'Start' },
+		{ key: 'firstQuartile', label: 'First Quartile' },
+		{ key: 'midpoint', label: 'Second Quartile' },
+		{ key: 'thirdQuartile', label: 'Third Quartile' },
+		{ key: 'complete', label: 'Complete' },
+		{ key: 'impressions', label: 'Total Impressions' }
+	];
+	var csvReport = {
+		filename: `${state1}_${title}_QuartileData.csv`,
+		headers: headers,
+		data: adss
+	};
 	useEffect(
 		() => {
 			if (report && report.length > 0) {
@@ -50,7 +65,9 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 	return (
 		<Paper>
 			<TableContainer style={{ margin: '20px 0' }}>
-				<div style={{ margin: '5px', fontWeight: 'bolder' }}>{title} Report</div>
+				<div style={{ margin: '5px', fontWeight: 'bolder' }}>
+					{title} Report {adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
+				</div>
 				{state1 && adss.length && ids ? (
 					<Table className={classes.table} aria-label="simple table">
 						<TableHead>
@@ -61,6 +78,9 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 								>
 									Publisher
 									{arrowRetuner(sa === 'publishername' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell onClick={() => tablesorter('start', 'number')} style={{ cursor: 'pointer' }}>
+									Start {arrowRetuner(sa === 'start' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
 									onClick={() => tablesorter('firstQuartile', 'number')}
@@ -103,6 +123,7 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 								return (
 									<TableRow key={i}>
 										<TableCell>{log.publishername}</TableCell>
+										<TableCell>{log.start}</TableCell>
 										<TableCell>{log.firstQuartile}</TableCell>
 										<TableCell>{log.midpoint}</TableCell>
 										<TableCell>{log.thirdQuartile}</TableCell>
