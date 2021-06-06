@@ -457,19 +457,21 @@ function TablePro() {
 		audio: [
 			{
 				columns: PublishHead,
-				data: report.report.audio.length && PublishBody('Audio', report.report.audio, spentfinder, report)
+				data: report.report.audio.length ? PublishBody('Audio', report.report.audio, spentfinder, report) : null
 			}
 		],
 		display: [
 			{
 				columns: PublishHead,
-				data: report.report.display.length && PublishBody('Display', report.report.display, spentfinder, report)
+				data: report.report.display.length
+					? PublishBody('Display', report.report.display, spentfinder, report)
+					: null
 			}
 		],
 		video: [
 			{
 				columns: PublishHead,
-				data: report.report.video.length && PublishBody('Video', report.report.video, spentfinder, report)
+				data: report.report.video.length ? PublishBody('Video', report.report.video, spentfinder, report) : null
 			}
 		]
 	};
@@ -641,12 +643,9 @@ function TablePro() {
 			{
 				columns: PincodeHead,
 				data:
-					report.ids &&
-					report.ids.audio &&
-					report.ids.audio.length &&
-					pincodereports &&
-					pincodereports.audio &&
-					PincodeBody(pincodereports.audio)
+					report.ids && report.ids.audio && report.ids.audio.length && pincodereports && pincodereports.audio
+						? PincodeBody(pincodereports.audio)
+						: []
 			}
 		],
 		display: [
@@ -657,20 +656,18 @@ function TablePro() {
 					report.ids.display &&
 					report.ids.display.length &&
 					pincodereports &&
-					pincodereports.display &&
-					PincodeBody(pincodereports.display)
+					pincodereports.display
+						? PincodeBody(pincodereports.display)
+						: []
 			}
 		],
 		video: [
 			{
 				columns: PincodeHead,
 				data:
-					report.ids &&
-					report.ids.video &&
-					report.ids.video.length &&
-					pincodereports &&
-					pincodereports.video &&
-					PincodeBody(pincodereports.video)
+					report.ids && report.ids.video && report.ids.video.length && pincodereports && pincodereports.video
+						? PincodeBody(pincodereports.video)
+						: []
 			}
 		]
 	};
@@ -798,9 +795,9 @@ function TablePro() {
 					</Button>
 				}
 			>
-				{report.report.audio.length && <ExcelSheet dataSet={PublisherDown.audio} name="Audio Wise" />}
-				{report.report.display.length && <ExcelSheet dataSet={PublisherDown.display} name="Display Wise" />}
-				{report.report.video.length && <ExcelSheet dataSet={PublisherDown.video} name="Video Wise" />}
+				{PublisherDown.audio[0].data && <ExcelSheet dataSet={PublisherDown.audio} name="Audio Wise" />}
+				{PublisherDown.display[0].data && <ExcelSheet dataSet={PublisherDown.display} name="Display Wise" />}
+				{PublisherDown.video[0].data && <ExcelSheet dataSet={PublisherDown.video} name="Video Wise" />}
 			</ExcelFile>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}

@@ -56,7 +56,8 @@ function PincodeAdmin({ title, report, state1, arrowRetuner }) {
 				data.map((row) => {
 					row.clicks = parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
 					row.ctr =
-						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) /
+						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) *
+						100 /
 						parseInt(row.impression);
 				});
 				csvReport.data = data;

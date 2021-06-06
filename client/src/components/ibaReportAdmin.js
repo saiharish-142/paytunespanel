@@ -63,7 +63,8 @@ function IbaReportAdmin({ title, report, state1, arrowRetuner }) {
 					row.impression = row.impressions ? row.impressions : 0;
 					row.clicks = parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
 					row.ctr =
-						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) /
+						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) *
+						100 /
 						(row.impressions ? row.impressions : 0);
 				});
 				csvReport.data = data;

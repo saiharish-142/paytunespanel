@@ -46,7 +46,7 @@ function FrequencyAdmin({ title, report, state1, arrowRetuner }) {
 					return parseInt(a._id) - parseInt(b._id);
 				});
 				data.map((ad) => {
-					ad.ctr = parseInt(ad.click) / parseInt(ad.impression);
+					ad.ctr = parseInt(ad.click) * 100 / parseInt(ad.impression);
 				});
 				csvReport.data = data;
 				setadss(data);

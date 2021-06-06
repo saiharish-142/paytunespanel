@@ -59,7 +59,7 @@ function PhoneModelAdmin({ title, report, state1, arrowRetuner }) {
 					a.impression = a ? a.impression : null;
 					a.clicks = parseInt(a.CompanionClickTracking) + parseInt(a.SovClickTracking);
 					a.ctr = a.impression
-						? (parseInt(a.CompanionClickTracking) + parseInt(a.SovClickTracking)) / a.impression
+						? (parseInt(a.CompanionClickTracking) + parseInt(a.SovClickTracking)) * 100 / a.impression
 						: 0;
 				});
 				csvReport.data = data;
