@@ -68,6 +68,7 @@ function IbaReportAdmin({ title, report, state1, arrowRetuner }) {
 						(row.impressions ? row.impressions : 0);
 				});
 				csvReport.data = data;
+				console.log('neww',data)
 				setadss(data);
 			} else {
 				setadss(report);
@@ -153,7 +154,7 @@ function IbaReportAdmin({ title, report, state1, arrowRetuner }) {
 							{adss.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => {
 								return (
 									<TableRow key={i}>
-										<TableCell>{row.category}</TableCell>
+										<TableCell>{row._id.category}</TableCell>
 										<TableCell>{row.Name}</TableCell>
 										<TableCell>{row.tier1}</TableCell>
 										<TableCell>{row.tier2}</TableCell>
