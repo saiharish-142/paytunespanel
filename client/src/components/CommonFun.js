@@ -118,7 +118,8 @@ export const LanguageBody = (report1) => {
 				log.CompanionClickTracking
 					? log.CompanionClickTracking
 					: 0 + log.SovClickTracking ? log.SovClickTracking : 0
-			) /
+			) *
+			100 /
 			parseInt(log.impression ? parseInt(log.impression) : 0) *
 			100;
 		return [
@@ -140,7 +141,7 @@ export const PhoneModelBody = (report1) => {
 		var impression = log ? log.impression : 0;
 		var clicks = parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking);
 		var ctr = log.impression
-			? (parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) / log.impression
+			? (parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) * 100 / log.impression
 			: 0;
 		return [
 			{ value: phoneModel ? phoneModel : '' },
@@ -157,7 +158,7 @@ export const PhoneModelBody = (report1) => {
 };
 export const FrequencyBody = (report1) => {
 	return report1.map((log, index) => {
-		var ctr = parseInt(log.click) / parseInt(log.impression);
+		var ctr = parseInt(log.click) * 100 / parseInt(log.impression);
 		return [
 			{ value: log._id ? log._id : '' },
 			{ value: log.impression ? log.impression : 0 },
@@ -179,7 +180,8 @@ export const IBABody = (report1) => {
 		var impression = log.impressions ? log.impressions : 0;
 		var clicks = parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking);
 		var ctr =
-			(parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) /
+			(parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) *
+			100 /
 			(log.impressions ? log.impressions : 0);
 		return [
 			{ value: category ? category : '' },
@@ -199,7 +201,8 @@ export const IBABody = (report1) => {
 export const PincodeBody = (report1) => {
 	return report1.map((log, index) => {
 		var clicks = parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking);
-		var ctr = (parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) / parseInt(log.impression);
+		var ctr =
+			(parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) * 100 / parseInt(log.impression);
 		return [
 			{ value: log.zip ? log.zip : '' },
 			{ value: log.lowersubcity ? log.lowersubcity : '' },

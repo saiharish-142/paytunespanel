@@ -671,75 +671,56 @@ function TablePro() {
 			}
 		]
 	};
+	function ExeclDownload(props) {
+		console.log(props);
+		const data = React.Children.map(props.children, (child) => {
+			console.log(child);
+			if (child.props.dataSet && child.props.dataSet[0].data) {
+				return child;
+			}
+		});
+		console.log(data);
+		return (
+			<ExcelFile
+				filename={props.filename}
+				element={
+					<Button variant="outlined" color="primary">
+						Download Tables
+					</Button>
+				}
+			>
+				{data.map((child) => {
+					return child;
+				})}
+			</ExcelFile>
+		);
+	}
 	return (
 		<div>
 			<div className="titleReport">{report.title && report.title.toUpperCase()} Campaign</div>
 			<div className="titleReport">Summary Report</div>
-			<ExcelFile
-				filename={`Complete Report ${report.title}`}
-				element={
-					<Button variant="outlined" color="primary">
-						Download Complete Report
-					</Button>
-				}
-			>
-				{report.report.audio.length && <ExcelSheet dataSet={PublisherDown.audio} name="Publisher Audio Wise" />}
-				{report.report.display.length && (
-					<ExcelSheet dataSet={PublisherDown.display} name="Publisher Display Wise" />
-				)}
-				{report.report.video.length && <ExcelSheet dataSet={PublisherDown.video} name="Publisher Video Wise" />}
-				{report.report.audio.length && <ExcelSheet dataSet={QuartileDown.audio} name="Quartile Audio Wise" />}
-				{report.report.video.length && <ExcelSheet dataSet={QuartileDown.video} name="Quartile Video Wise" />}
-				{report.ids &&
-				report.ids.audio &&
-				report.ids.audio.length && <ExcelSheet dataSet={LanguageDown.audio} name="Language Audio Wise" />}
-				{report.ids &&
-				report.ids.display &&
-				report.ids.display.length && <ExcelSheet dataSet={LanguageDown.display} name="Language Display Wise" />}
-				{report.ids &&
-				report.ids.video &&
-				report.ids.video.length && <ExcelSheet dataSet={LanguageDown.video} name="Language Video Wise" />}
-				{report.ids &&
-				report.ids.audio &&
-				report.ids.audio.length && <ExcelSheet dataSet={PhoneModelDown.audio} name="PhoneModel Audio Wise" />}
-				{report.ids &&
-				report.ids.display &&
-				report.ids.display.length && (
-					<ExcelSheet dataSet={PhoneModelDown.display} name="PhoneModel Display Wise" />
-				)}
-				{report.ids &&
-				report.ids.video &&
-				report.ids.video.length && <ExcelSheet dataSet={PhoneModelDown.video} name="PhoneModel Video Wise" />}
-				{report.ids &&
-				report.ids.audio &&
-				report.ids.audio.length && <ExcelSheet dataSet={FrequencyDown.audio} name="Frequency Audio Wise" />}
-				{report.ids &&
-				report.ids.display &&
-				report.ids.display.length && (
-					<ExcelSheet dataSet={FrequencyDown.display} name="Frequency Display Wise" />
-				)}
-				{report.ids &&
-				report.ids.video &&
-				report.ids.video.length && <ExcelSheet dataSet={FrequencyDown.video} name="Frequency Video Wise" />}
-				{report.ids &&
-				report.ids.audio &&
-				report.ids.audio.length && <ExcelSheet dataSet={IBADown.audio} name="Category Audio Wise" />}
-				{report.ids &&
-				report.ids.display &&
-				report.ids.display.length && <ExcelSheet dataSet={IBADown.display} name="Category Display Wise" />}
-				{report.ids &&
-				report.ids.video &&
-				report.ids.video.length && <ExcelSheet dataSet={IBADown.video} name="Category Video Wise" />}
-				{report.ids &&
-				report.ids.audio &&
-				report.ids.audio.length && <ExcelSheet dataSet={PincodeDown.audio} name="Pincode Audio Wise" />}
-				{report.ids &&
-				report.ids.display &&
-				report.ids.display.length && <ExcelSheet dataSet={PincodeDown.display} name="Pincode Display Wise" />}
-				{report.ids &&
-				report.ids.video &&
-				report.ids.video.length && <ExcelSheet dataSet={PincodeDown.video} name="Pincode Video Wise" />}
-			</ExcelFile>
+			<ExeclDownload filename={`Complete Report ${report.title}`}>
+				<ExcelSheet dataSet={PublisherDown.audio} name="Publisher Audio Wise" />
+				<ExcelSheet dataSet={PublisherDown.display} name="Publisher Display Wise" />
+				<ExcelSheet dataSet={PublisherDown.video} name="Publisher Video Wise" />
+				<ExcelSheet dataSet={QuartileDown.audio} name="Quartile Audio Wise" />
+				<ExcelSheet dataSet={QuartileDown.video} name="Quartile Video Wise" />
+				<ExcelSheet dataSet={LanguageDown.audio} name="Language Audio Wise" />
+				<ExcelSheet dataSet={LanguageDown.display} name="Language Display Wise" />
+				<ExcelSheet dataSet={LanguageDown.video} name="Language Video Wise" />
+				<ExcelSheet dataSet={PhoneModelDown.audio} name="PhoneModel Audio Wise" />
+				<ExcelSheet dataSet={PhoneModelDown.display} name="PhoneModel Display Wise" />
+				<ExcelSheet dataSet={PhoneModelDown.video} name="PhoneModel Video Wise" />
+				<ExcelSheet dataSet={FrequencyDown.audio} name="Frequency Audio Wise" />
+				<ExcelSheet dataSet={FrequencyDown.display} name="Frequency Display Wise" />
+				<ExcelSheet dataSet={FrequencyDown.video} name="Frequency Video Wise" />
+				<ExcelSheet dataSet={IBADown.audio} name="Category Audio Wise" />
+				<ExcelSheet dataSet={IBADown.display} name="Category Display Wise" />
+				<ExcelSheet dataSet={IBADown.video} name="Category Video Wise" />
+				<ExcelSheet dataSet={PincodeDown.audio} name="Pincode Audio Wise" />
+				<ExcelSheet dataSet={PincodeDown.display} name="Pincode Display Wise" />
+				<ExcelSheet dataSet={PincodeDown.video} name="Pincode Video Wise" />
+			</ExeclDownload>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
@@ -787,18 +768,11 @@ function TablePro() {
 				''
 			)}
 			<div className="titleReport">Publisher Report</div>
-			<ExcelFile
-				filename={`Publisher Wise Report ${report.title}`}
-				element={
-					<Button variant="outlined" color="primary">
-						Download Tables
-					</Button>
-				}
-			>
-				{PublisherDown.audio[0].data && <ExcelSheet dataSet={PublisherDown.audio} name="Audio Wise" />}
-				{PublisherDown.display[0].data && <ExcelSheet dataSet={PublisherDown.display} name="Display Wise" />}
-				{PublisherDown.video[0].data && <ExcelSheet dataSet={PublisherDown.video} name="Video Wise" />}
-			</ExcelFile>
+			<ExeclDownload filename={`Publisher Wise Report ${report.title}`}>
+				<ExcelSheet dataSet={PublisherDown.audio} name="Audio Wise" />
+				<ExcelSheet dataSet={PublisherDown.display} name="Display Wise" />
+				<ExcelSheet dataSet={PublisherDown.video} name="Video Wise" />
+			</ExeclDownload>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
@@ -822,17 +796,10 @@ function TablePro() {
 				''
 			)}
 			<div className="titleReport">Quartile Summary Report</div>
-			<ExcelFile
-				filename={`Quartile Report ${report.title}`}
-				element={
-					<Button variant="outlined" color="primary">
-						Download Tables
-					</Button>
-				}
-			>
-				{report.report.audio.length && <ExcelSheet dataSet={QuartileDown.audio} name="Audio Wise" />}
-				{report.report.video.length && <ExcelSheet dataSet={QuartileDown.video} name="Video Wise" />}
-			</ExcelFile>
+			<ExeclDownload filename={`Quartile Wise Report ${report.title}`}>
+				<ExcelSheet dataSet={QuartileDown.audio} name="Audio Wise" />
+				<ExcelSheet dataSet={QuartileDown.video} name="Video Wise" />
+			</ExeclDownload>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
@@ -888,24 +855,11 @@ function TablePro() {
 				)}
 			</TableContainer>
 			<div className="titleReport">Language Wise Summary Report</div>
-			<ExcelFile
-				filename={`Language Wise Report ${report.title}`}
-				element={
-					<Button variant="outlined" color="primary">
-						Download Tables
-					</Button>
-				}
-			>
-				{report.ids &&
-				report.ids.audio &&
-				report.ids.audio.length && <ExcelSheet dataSet={LanguageDown.audio} name="Audio Wise" />}
-				{report.ids &&
-				report.ids.display &&
-				report.ids.display.length && <ExcelSheet dataSet={LanguageDown.display} name="Display Wise" />}
-				{report.ids &&
-				report.ids.video &&
-				report.ids.video.length && <ExcelSheet dataSet={LanguageDown.video} name="Video Wise" />}
-			</ExcelFile>
+			<ExeclDownload filename={`Language Wise Report ${report.title}`}>
+				<ExcelSheet dataSet={LanguageDown.audio} name="Audio Wise" />
+				<ExcelSheet dataSet={LanguageDown.display} name="Display Wise" />
+				<ExcelSheet dataSet={LanguageDown.video} name="Video Wise" />
+			</ExeclDownload>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
@@ -940,24 +894,11 @@ function TablePro() {
 				''
 			)}
 			<div className="titleReport">Phone Make Model Wise Summary Report</div>
-			<ExcelFile
-				filename={`Phone Make Model Wise Report ${report.title}`}
-				element={
-					<Button variant="outlined" color="primary">
-						Download Tables
-					</Button>
-				}
-			>
-				{report.ids &&
-				report.ids.audio &&
-				report.ids.audio.length && <ExcelSheet dataSet={PhoneModelDown.audio} name="Audio Wise" />}
-				{report.ids &&
-				report.ids.display &&
-				report.ids.display.length && <ExcelSheet dataSet={PhoneModelDown.display} name="Display Wise" />}
-				{report.ids &&
-				report.ids.video &&
-				report.ids.video.length && <ExcelSheet dataSet={PhoneModelDown.video} name="Video Wise" />}
-			</ExcelFile>
+			<ExeclDownload filename={`Phone Make Model Wise Report ${report.title}`}>
+				<ExcelSheet dataSet={PhoneModelDown.audio} name="Audio Wise" />
+				<ExcelSheet dataSet={PhoneModelDown.display} name="Display Wise" />
+				<ExcelSheet dataSet={PhoneModelDown.video} name="Video Wise" />
+			</ExeclDownload>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
@@ -1019,6 +960,11 @@ function TablePro() {
 				report.ids.video &&
 				report.ids.video.length && <ExcelSheet dataSet={FrequencyDown.video} name="Video Wise" />}
 			</ExcelFile>
+			<ExeclDownload filename={`Frequency Wise Report ${report.title}`}>
+				<ExcelSheet dataSet={FrequencyDown.audio} name="Audio Wise" />
+				<ExcelSheet dataSet={FrequencyDown.display} name="Display Wise" />
+				<ExcelSheet dataSet={FrequencyDown.video} name="Video Wise" />
+			</ExeclDownload>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
@@ -1053,24 +999,11 @@ function TablePro() {
 				''
 			)}
 			<div className="titleReport">Category Wise Summary Report</div>
-			<ExcelFile
-				filename={`Category Wise Report ${report.title}`}
-				element={
-					<Button variant="outlined" color="primary">
-						Download Tables
-					</Button>
-				}
-			>
-				{report.ids &&
-				report.ids.audio &&
-				report.ids.audio.length && <ExcelSheet dataSet={IBADown.audio} name="Audio Wise" />}
-				{report.ids &&
-				report.ids.display &&
-				report.ids.display.length && <ExcelSheet dataSet={IBADown.display} name="Display Wise" />}
-				{report.ids &&
-				report.ids.video &&
-				report.ids.video.length && <ExcelSheet dataSet={IBADown.video} name="Video Wise" />}
-			</ExcelFile>
+			<ExeclDownload filename={`Category Wise Report ${report.title}`}>
+				<ExcelSheet dataSet={IBADown.audio} name="Audio Wise" />
+				<ExcelSheet dataSet={IBADown.display} name="Display Wise" />
+				<ExcelSheet dataSet={IBADown.video} name="Video Wise" />
+			</ExeclDownload>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
@@ -1105,24 +1038,11 @@ function TablePro() {
 				''
 			)}
 			<div className="titleReport">Pincode Wise Summary Report</div>
-			<ExcelFile
-				filename={`Pincode Report ${report.title}`}
-				element={
-					<Button variant="outlined" color="primary">
-						Download Tables
-					</Button>
-				}
-			>
-				{report.ids &&
-				report.ids.audio &&
-				report.ids.audio.length && <ExcelSheet dataSet={PincodeDown.audio} name="Audio Wise" />}
-				{report.ids &&
-				report.ids.display &&
-				report.ids.display.length && <ExcelSheet dataSet={PincodeDown.display} name="Display Wise" />}
-				{report.ids &&
-				report.ids.video &&
-				report.ids.video.length && <ExcelSheet dataSet={PincodeDown.video} name="Video Wise" />}
-			</ExcelFile>
+			<ExeclDownload filename={`Pincode Wise Report ${report.title}`}>
+				<ExcelSheet dataSet={PincodeDown.audio} name="Audio Wise" />
+				<ExcelSheet dataSet={PincodeDown.display} name="Display Wise" />
+				<ExcelSheet dataSet={PincodeDown.video} name="Video Wise" />
+			</ExeclDownload>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
