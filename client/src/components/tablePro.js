@@ -942,24 +942,6 @@ function TablePro() {
 				''
 			)}
 			<div className="titleReport">Frequency Report</div>
-			<ExcelFile
-				filename={`Frequency Report ${report.title}`}
-				element={
-					<Button variant="outlined" color="primary">
-						Download Tables
-					</Button>
-				}
-			>
-				{report.ids &&
-				report.ids.audio &&
-				report.ids.audio.length && <ExcelSheet dataSet={FrequencyDown.audio} name="Audio Wise" />}
-				{report.ids &&
-				report.ids.display &&
-				report.ids.display.length && <ExcelSheet dataSet={FrequencyDown.display} name="Display Wise" />}
-				{report.ids &&
-				report.ids.video &&
-				report.ids.video.length && <ExcelSheet dataSet={FrequencyDown.video} name="Video Wise" />}
-			</ExcelFile>
 			<ExeclDownload filename={`Frequency Wise Report ${report.title}`}>
 				<ExcelSheet dataSet={FrequencyDown.audio} name="Audio Wise" />
 				<ExcelSheet dataSet={FrequencyDown.display} name="Display Wise" />
