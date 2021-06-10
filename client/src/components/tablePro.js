@@ -189,16 +189,18 @@ function TablePro() {
 				.then((res) => res.json())
 				.then((result) => {
 					console.log(result);
+					// console.log(result.audio);
+					// console.log(result.display);
 					var data = result;
 					if (data) {
 						if (data.audio) {
-							data.audio = data.audio.filter((x) => x.impression > 0);
+							data.audio = data.audio.filter((x) => x.impressions > 0);
 						}
 						if (data.display) {
-							data.display = data.display.filter((x) => x.impression > 0);
+							data.display = data.display.filter((x) => x.impressions > 0);
 						}
 						if (data.video) {
-							data.video = data.video.filter((x) => x.impression > 0);
+							data.video = data.video.filter((x) => x.impressions > 0);
 						}
 					}
 					setibaReports(data);
