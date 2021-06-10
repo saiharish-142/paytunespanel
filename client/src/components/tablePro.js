@@ -715,9 +715,6 @@ function TablePro() {
 				<ExcelSheet dataSet={PublisherDown.video} name="Publisher Video Wise" />
 				<ExcelSheet dataSet={QuartileDown.audio} name="Quartile Audio Wise" />
 				<ExcelSheet dataSet={QuartileDown.video} name="Quartile Video Wise" />
-				<ExcelSheet dataSet={LanguageDown.audio} name="Language Audio Wise" />
-				<ExcelSheet dataSet={LanguageDown.display} name="Language Display Wise" />
-				<ExcelSheet dataSet={LanguageDown.video} name="Language Video Wise" />
 				<ExcelSheet dataSet={PhoneModelDown.audio} name="PhoneModel Audio Wise" />
 				<ExcelSheet dataSet={PhoneModelDown.display} name="PhoneModel Display Wise" />
 				<ExcelSheet dataSet={PhoneModelDown.video} name="PhoneModel Video Wise" />
@@ -865,45 +862,6 @@ function TablePro() {
 					''
 				)}
 			</TableContainer>
-			<div className="titleReport">Language Wise Summary Report</div>
-			<ExeclDownload filename={`Language Wise Report ${report.title}`}>
-				<ExcelSheet dataSet={LanguageDown.audio} name="Audio Wise" />
-				<ExcelSheet dataSet={LanguageDown.display} name="Display Wise" />
-				<ExcelSheet dataSet={LanguageDown.video} name="Video Wise" />
-			</ExeclDownload>
-			<div>
-				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
-			</div>
-			{report.ids && report.ids.audio && report.ids.audio.length ? (
-				<LanguagePro
-					{...LanguageProps}
-					setdata={setlanguageDownloadA}
-					adtype="Audio"
-					ids={report.ids && report.ids.audio}
-				/>
-			) : (
-				''
-			)}
-			{report.ids && report.ids.display && report.ids.display.length ? (
-				<LanguagePro
-					{...LanguageProps}
-					setdata={setlanguageDownloadD}
-					adtype="Display"
-					ids={report.ids && report.ids.display}
-				/>
-			) : (
-				''
-			)}
-			{report.ids && report.ids.video && report.ids.video.length ? (
-				<LanguagePro
-					{...LanguageProps}
-					setdata={setlanguageDownloadV}
-					adtype="Video"
-					ids={report.ids && report.ids.video}
-				/>
-			) : (
-				''
-			)}
 			<div className="titleReport">Phone Make Model Wise Summary Report</div>
 			<ExeclDownload filename={`Phone Make Model Wise Report ${report.title}`}>
 				<ExcelSheet dataSet={PhoneModelDown.audio} name="Audio Wise" />
