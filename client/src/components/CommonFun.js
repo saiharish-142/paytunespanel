@@ -38,6 +38,7 @@ export const PhoneModelHead = [
 export const FrequencyHead = [
 	{ title: 'Frequency' },
 	{ title: 'Impressions' },
+	{ title: 'Distinct Users' },
 	{ title: 'Clicks' },
 	{ title: 'CTR' }
 ];
@@ -169,6 +170,7 @@ export const FrequencyBody = (report1) => {
 		return [
 			{ value: log._id ? log._id : '' },
 			{ value: log.impression ? log.impression : 0 },
+			{ value: log.users ? log.users : 0 },
 			{ value: log.click ? log.click : 0 },
 			{ value: ctr ? ctr : 0 }
 		];
