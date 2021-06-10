@@ -29,7 +29,9 @@ import {
 	QuartileBody,
 	QuartileHead,
 	PincodeHead,
-	PincodeBody
+	PincodeBody,
+	CreativeHead,
+	CreativeBody
 } from './CommonFun';
 
 const ExcelFile = ReactExport.ExcelFile;
@@ -671,15 +673,21 @@ function TablePro() {
 			}
 		]
 	};
+	const CreativeDown = [
+		{
+			columns: CreativeHead,
+			data: report.ids && creativereports && creativereports.length && CreativeBody(creativereports)
+		}
+	];
 	function ExeclDownload(props) {
-		console.log(props);
+		// console.log(props);
 		const data = React.Children.map(props.children, (child) => {
-			console.log(child);
+			// console.log(child);
 			if (child.props.dataSet && child.props.dataSet[0].data) {
 				return child;
 			}
 		});
-		console.log(data);
+		// console.log(data);
 		return (
 			<ExcelFile
 				filename={props.filename}
@@ -720,6 +728,7 @@ function TablePro() {
 				<ExcelSheet dataSet={PincodeDown.audio} name="Pincode Audio Wise" />
 				<ExcelSheet dataSet={PincodeDown.display} name="Pincode Display Wise" />
 				<ExcelSheet dataSet={PincodeDown.video} name="Pincode Video Wise" />
+				<ExcelSheet dataSet={CreativeDown} name="Creative Wise" />
 			</ExeclDownload>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
@@ -1059,6 +1068,9 @@ function TablePro() {
 				''
 			)}
 			<div className="titleReport">Creative Wise Summary Report</div>
+			<ExeclDownload filename={`Creative Wise Report ${report.title}`}>
+				<ExcelSheet dataSet={CreativeDown} name="Creative Wise" />
+			</ExeclDownload>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>

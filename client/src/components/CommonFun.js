@@ -70,6 +70,13 @@ export const PincodeHead = [
 	{ title: 'Clicks' },
 	{ title: 'CTR' }
 ];
+export const CreativeHead = [
+	{ title: 'Creative Set' },
+	{ title: 'Status' },
+	{ title: 'Impressions' },
+	{ title: 'Clicks' },
+	{ title: 'CTR' }
+];
 export const PublishBody = (type, report1, spentfinder, report) => {
 	var spentOffline = report.audiospentOffline ? report.audiospentOffline : 0;
 	var spentOfflined = report.displayspentOffline ? report.displayspentOffline : 0;
@@ -214,6 +221,29 @@ export const PincodeBody = (report1) => {
 			{ value: log.state ? log.state : '' },
 			{ value: log.grandstate ? log.grandstate : '' },
 			{ value: log.impression ? log.impression : 0 },
+			{ value: clicks ? clicks : 0 },
+			{ value: ctr ? ctr : 0 }
+		];
+	});
+};
+export const CreativeBody = (report1) => {
+	return report1.map((log, index) => {
+		var creativeset = log._id.creativeset ? log._id.creativeset : '';
+		var impression = log ? log.impression : 0;
+		var clicks = parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking);
+		var ctr =
+			Math.round(
+				(parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) *
+					100 /
+					parseInt(log.impression) *
+					100
+			) /
+				100 +
+			'%';
+		return [
+			{ value: creativeset },
+			{ value: log.status ? log.status : '' },
+			{ value: impression ? impression : 0 },
 			{ value: clicks ? clicks : 0 },
 			{ value: ctr ? ctr : 0 }
 		];
