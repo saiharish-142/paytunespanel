@@ -43,7 +43,15 @@ const useStyles = makeStyles((theme) => ({
 			// minWidth: '55%',
 			width: '98%'
 		}
-	}
+	},
+	paper: {
+		position: 'absolute',
+		width: 400,
+		backgroundColor: theme.palette.background.paper,
+		border: '2px solid #000',
+		boxShadow: theme.shadows[5],
+		padding: theme.spacing(2, 4, 3),
+	  }
 }));
 
 export default function Phonedata() {
@@ -259,16 +267,19 @@ export default function Phonedata() {
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
-        <div>hello</div>
-      </Modal>
-						{/* <h4>Edit Phone Data</h4>
+		  <div className={classes.paper}>
+		  <h4>Edit Phone Data</h4>
 						<Phonedataform
 							props={tempdata}
 							setShow={setShow}
 							setsuccess={setsuccess}
 							data1={data}
 							seterror={seterror}
-						/> */}
+						/>
+		  </div>
+        				
+      </Modal>
+						
 					</div>
 				) : (
 					<React.Fragment />
