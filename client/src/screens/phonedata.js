@@ -267,7 +267,7 @@ export default function Phonedata() {
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
-		  <div className={classes.paper}>
+		  <div style={modalStyle} className={classes.paper}>
 		  <h4>Edit Phone Data</h4>
 						<Phonedataform
 							props={tempdata}
