@@ -43,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Phonedata() {
 	const classes = useStyles();
-	const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = (data) => {
