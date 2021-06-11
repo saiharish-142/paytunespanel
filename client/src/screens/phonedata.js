@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import {Modal} from '@material-ui/core'
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import { Alert } from '@material-ui/lab';
@@ -17,6 +18,21 @@ import {
 
 import Phonedataform from '../components/phonedataform';
 
+function rand() {
+	return Math.round(Math.random() * 20) - 10;
+  }
+  
+  function getModalStyle() {
+	const top = 50 + rand();
+	const left = 50 + rand();
+  
+	return {
+	  top: `${top}%`,
+	  left: `${left}%`,
+	  transform: `translate(-${top}%, -${left}%)`,
+	};
+  }
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		width: '100%',
@@ -32,7 +48,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Phonedata() {
 	const classes = useStyles();
+	const [modalStyle] = React.useState(getModalStyle);
+  const [open, setOpen] = React.useState(false);
 
+  const handleOpen = (data) => {
+    setOpen(true);
+	settempdata(data);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 	const [ error, seterror ] = useState('');
 	const [ success, setsuccess ] = useState('');
 	const [ rows, setrows ] = useState([]);
@@ -205,7 +231,7 @@ export default function Phonedata() {
 									<TableCell>{row.total_percent ? row.total_percent : ''}</TableCell>
 									<TableCell>{row.cumulative ? row.cumulative : ''}</TableCell>
 									<TableCell>
-										<button className="btn" onClick={() => handleShow(row)}>
+										<button className="btn" onClick={() => handleOpen(row)}>  
 											Edit{' '}
 										</button>
 									</TableCell>
@@ -226,14 +252,22 @@ export default function Phonedata() {
 				/>
 				{show ? (
 					<div>
-						<h4>Edit Phone Data</h4>
+						 <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <div>hello</div>
+      </Modal>
+						{/* <h4>Edit Phone Data</h4>
 						<Phonedataform
 							props={tempdata}
 							setShow={setShow}
 							setsuccess={setsuccess}
 							data1={data}
 							seterror={seterror}
-						/>
+						/> */}
 					</div>
 				) : (
 					<React.Fragment />

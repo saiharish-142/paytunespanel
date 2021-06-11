@@ -16,7 +16,7 @@ function IbaReportAdmin({ title, report, state1, arrowRetuner }) {
 	const history = useHistory();
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
-	const [ adss, setadss ] = React.useState(report);
+	const [ adss, setadss ] = React.useState([]);
 	const [ sa, setsa ] = React.useState('impression');
 	const [ order, setorder ] = React.useState('desc');
 	const tablesorter = (column, type) => {
@@ -154,7 +154,7 @@ function IbaReportAdmin({ title, report, state1, arrowRetuner }) {
 							{adss.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => {
 								return (
 									<TableRow key={i}>
-										<TableCell>{row._id.category}</TableCell>
+										<TableCell>{row.category}</TableCell>
 										<TableCell>{row.Name}</TableCell>
 										<TableCell>{row.tier1}</TableCell>
 										<TableCell>{row.tier2}</TableCell>
