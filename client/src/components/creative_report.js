@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import TablePagination from '@material-ui/core/TablePagination';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import { CSVLink } from 'react-csv';
 
 const useStyles = makeStyles({
 	table: {
@@ -11,16 +12,41 @@ const useStyles = makeStyles({
 });
 
 function Creative_Report({ title, report, state1 }) {
-	const history = useHistory();
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
 	const [ adss, setadss ] = React.useState(report);
+	const headers = [
+		{ key: 'creativeset', label: 'Creative Set' },
+		{ key: 'status', label: 'Status' },
+		{ key: 'impression', label: 'Impressions' },
+		{ key: 'clicks', label: 'Clicks' },
+		{ key: 'ctr', label: 'CTR' }
+	];
+	var csvReport = {
+		filename: `${state1}_${title}_CreativeReportData.csv`,
+		headers: headers,
+		data: adss
+	};
 	useEffect(
 		() => {
 			if (report && report.length > 0) {
 				var data = report;
 				data.sort(function(a, b) {
 					return b.impressions - a.impressions;
+				});
+				data.map((row) => {
+					row.creativeset = row._id.creativeset ? row._id.creativeset : '';
+					row.impression = row ? row.impression : 0;
+					row.clicks = parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
+					row.ctr =
+						Math.round(
+							(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) *
+								100 /
+								parseInt(row.impression) *
+								100
+						) /
+							100 +
+						'%';
 				});
 				setadss(data);
 			} else {
@@ -51,7 +77,9 @@ function Creative_Report({ title, report, state1 }) {
 								<TableCell>Impressions</TableCell>
 								<TableCell>Clicks</TableCell>
 								<TableCell>CTR</TableCell>
-								<TableCell />
+								<TableCell>
+									{adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
+								</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -61,7 +89,7 @@ function Creative_Report({ title, report, state1 }) {
 										<TableCell component="th" scope="row">
 											{row._id.creativeset ? row._id.creativeset : ''}
 										</TableCell>
-										<TableCell>{ row.status}</TableCell>
+										<TableCell>{row.status}</TableCell>
 										<TableCell>{row ? row.impression : ''}</TableCell>
 										<TableCell>
 											{parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)}
@@ -69,7 +97,8 @@ function Creative_Report({ title, report, state1 }) {
 										<TableCell>
 											{Math.round(
 												(parseInt(row.CompanionClickTracking) +
-													parseInt(row.SovClickTracking)) /
+													parseInt(row.SovClickTracking)) *
+													100 /
 													parseInt(row.impression) *
 													100
 											) /

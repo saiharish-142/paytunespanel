@@ -30,6 +30,7 @@ function FrequencyAdmin({ title, report, state1, arrowRetuner }) {
 	const headers = [
 		{ key: '_id', label: 'Frequency' },
 		{ key: 'impression', label: 'Impressions' },
+		{ key: 'users', label: 'Distinct Users' },
 		{ key: 'click', label: 'Clicks' },
 		{ key: 'ctr', label: 'CTR' }
 	];
@@ -81,6 +82,9 @@ function FrequencyAdmin({ title, report, state1, arrowRetuner }) {
 								>
 									Total Impressions Delivered till date{arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
+								<TableCell onClick={() => tablesorter('users', 'number')} style={{ cursor: 'pointer' }}>
+									Distinct Users{arrowRetuner(sa === 'users' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
 								<TableCell onClick={() => tablesorter('click', 'number')} style={{ cursor: 'pointer' }}>
 									Total Clicks Delivered till date{arrowRetuner(sa === 'click' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
@@ -101,6 +105,7 @@ function FrequencyAdmin({ title, report, state1, arrowRetuner }) {
 												<TableRow key={i} hover role="checkbox" tabIndex={-1} key={row._id}>
 													<TableCell>{row._id}</TableCell>
 													<TableCell>{row.impression}</TableCell>
+													<TableCell>{row.users}</TableCell>
 													<TableCell>{row.click}</TableCell>
 													<TableCell>{Math.round(row.ctr * 100) / 100}%</TableCell>
 													<TableCell

@@ -38,6 +38,7 @@ export const PhoneModelHead = [
 export const FrequencyHead = [
 	{ title: 'Frequency' },
 	{ title: 'Impressions' },
+	{ title: 'Distinct Users' },
 	{ title: 'Clicks' },
 	{ title: 'CTR' }
 ];
@@ -66,6 +67,13 @@ export const PincodeHead = [
 	{ title: 'Comparison' },
 	{ title: 'State' },
 	{ title: 'Grand State' },
+	{ title: 'Impressions' },
+	{ title: 'Clicks' },
+	{ title: 'CTR' }
+];
+export const CreativeHead = [
+	{ title: 'Creative Set' },
+	{ title: 'Status' },
 	{ title: 'Impressions' },
 	{ title: 'Clicks' },
 	{ title: 'CTR' }
@@ -162,6 +170,7 @@ export const FrequencyBody = (report1) => {
 		return [
 			{ value: log._id ? log._id : '' },
 			{ value: log.impression ? log.impression : 0 },
+			{ value: log.users ? log.users : 0 },
 			{ value: log.click ? log.click : 0 },
 			{ value: ctr ? ctr : 0 }
 		];
@@ -214,6 +223,29 @@ export const PincodeBody = (report1) => {
 			{ value: log.state ? log.state : '' },
 			{ value: log.grandstate ? log.grandstate : '' },
 			{ value: log.impression ? log.impression : 0 },
+			{ value: clicks ? clicks : 0 },
+			{ value: ctr ? ctr : 0 }
+		];
+	});
+};
+export const CreativeBody = (report1) => {
+	return report1.map((log, index) => {
+		var creativeset = log._id.creativeset ? log._id.creativeset : '';
+		var impression = log ? log.impression : 0;
+		var clicks = parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking);
+		var ctr =
+			Math.round(
+				(parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) *
+					100 /
+					parseInt(log.impression) *
+					100
+			) /
+				100 +
+			'%';
+		return [
+			{ value: creativeset },
+			{ value: log.status ? log.status : '' },
+			{ value: impression ? impression : 0 },
 			{ value: clicks ? clicks : 0 },
 			{ value: ctr ? ctr : 0 }
 		];
