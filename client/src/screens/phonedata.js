@@ -33,11 +33,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 	paper: {
 		position: 'absolute',
-		width: 600,
+		width: 500,
 		backgroundColor: theme.palette.background.paper,
 		border: '2px solid #000',
 		boxShadow: theme.shadows[5],
-		padding: '2%',
+		padding: '2% 2% 2% 6%',
 	  }
 }));
 
