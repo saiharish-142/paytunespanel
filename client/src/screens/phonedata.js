@@ -18,20 +18,7 @@ import {
 
 import Phonedataform from '../components/phonedataform';
 
-function rand() {
-	return Math.round(Math.random() * 20) - 20;
-  }
-  
-  function getModalStyle() {
-	const top = 50 + rand();
-	const left = 50 + rand();
-  
-	return {
-	  top: `${top}%`,
-	  left: `${left}%`,
-	  transform: `translate(-${top}%, -${left}%)`,
-	};
-  }
+
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -46,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	paper: {
 		position: 'absolute',
-		width: 800,
+		width: 600,
 		backgroundColor: theme.palette.background.paper,
 		border: '2px solid #000',
 		boxShadow: theme.shadows[5],
