@@ -53,6 +53,7 @@ export default function Phonedata() {
 
   const handleOpen = (data) => {
     setOpen(true);
+	setShow(true)
 	settempdata(data);
   };
 
@@ -231,7 +232,7 @@ export default function Phonedata() {
 									<TableCell>{row.total_percent ? row.total_percent : ''}</TableCell>
 									<TableCell>{row.cumulative ? row.cumulative : ''}</TableCell>
 									<TableCell>
-										<button className="btn" onClick={() => handleShow(row)}>  
+										<button className="btn" onClick={() => handleOpen(row)}>  
 											Edit{' '}
 										</button>
 									</TableCell>
@@ -252,22 +253,22 @@ export default function Phonedata() {
 				/>
 				{show ? (
 					<div>
-						 {/* <Modal
+						 <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
         <div>hello</div>
-      </Modal> */}
-						<h4>Edit Phone Data</h4>
+      </Modal>
+						{/* <h4>Edit Phone Data</h4>
 						<Phonedataform
 							props={tempdata}
 							setShow={setShow}
 							setsuccess={setsuccess}
 							data1={data}
 							seterror={seterror}
-						/>
+						/> */}
 					</div>
 				) : (
 					<React.Fragment />
