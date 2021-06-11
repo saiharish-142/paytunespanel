@@ -19,7 +19,7 @@ import {
 import Phonedataform from '../components/phonedataform';
 
 function rand() {
-	return Math.round(Math.random() * 20) - 10;
+	return Math.round(Math.random() * 20) - 20;
   }
   
   function getModalStyle() {
