@@ -68,7 +68,7 @@ export default function Phonedataform({ props, setShow, setsuccess, data1, seter
 					label="Make_And_Model"
 					required={true}
 					value={make_model ? make_model : ''}
-					style={{ width: '30%' }}
+					style={{ width: '50%' }}
 					onChange={(e) => {
 						setMake_model(e.target.value);
 					}}
@@ -79,7 +79,7 @@ export default function Phonedataform({ props, setShow, setsuccess, data1, seter
 					margin="dense"
 					label="Impressions (No Change)"
 					required={true}
-					style={{ width: '30%' }}
+					style={{ width: '50%' }}
 					value={impression ? impression : ''}
 				/>
 				<br />
@@ -87,7 +87,7 @@ export default function Phonedataform({ props, setShow, setsuccess, data1, seter
 					placeholder="Release Month and Year"
 					margin="dense"
 					label="Release Month and Year"
-					style={{ width: '30%' }}
+					style={{ width: '50%' }}
 					value={release ? release : ''}
 					required={true}
 					onChange={(e) => {
@@ -100,7 +100,7 @@ export default function Phonedataform({ props, setShow, setsuccess, data1, seter
 					margin="dense"
 					required={true}
 					label="Cost"
-					style={{ width: '30%' }}
+					style={{ width: '50%' }}
 					value={cost ? cost : ''}
 					onChange={(e) => {
 						setcost(e.target.value);
@@ -112,7 +112,7 @@ export default function Phonedataform({ props, setShow, setsuccess, data1, seter
 					margin="dense"
 					required={true}
 					label="Company"
-					style={{ width: '30%' }}
+					style={{ width: '50%' }}
 					value={company ? company : ''}
 					onChange={(e) => {
 						setcompany(e.target.value);
@@ -124,7 +124,7 @@ export default function Phonedataform({ props, setShow, setsuccess, data1, seter
 					margin="dense"
 					required={true}
 					label="Model"
-					style={{ width: '30%' }}
+					style={{ width: '50%' }}
 					value={model ? model : ''}
 					onChange={(e) => {
 						setmodel(e.target.value);
@@ -135,7 +135,7 @@ export default function Phonedataform({ props, setShow, setsuccess, data1, seter
 					placeholder="Type Of Device"
 					margin="dense"
 					label="Type of Device"
-					style={{ width: '30%' }}
+					style={{ width: '50%' }}
 					value={type ? type : ''}
 					required={true}
 					onChange={(e) => {
@@ -147,7 +147,7 @@ export default function Phonedataform({ props, setShow, setsuccess, data1, seter
 					placeholder="Cumulative %"
 					margin="dense"
 					label="Cumulative %"
-					style={{ width: '30%' }}
+					style={{ width: '50%' }}
 					value={cumulative ? cumulative : ''}
 					required={true}
 					onChange={(e) => {
@@ -159,7 +159,7 @@ export default function Phonedataform({ props, setShow, setsuccess, data1, seter
 					placeholder="Total %"
 					margin="dense"
 					label="Total%"
-					style={{ width: '30%' }}
+					style={{ width: '50%' }}
 					value={total_percent ? total_percent : ''}
 					required={true}
 					onChange={(e) => {
