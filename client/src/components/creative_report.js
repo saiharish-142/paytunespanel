@@ -42,10 +42,8 @@ function Creative_Report({ title, report, state1 }) {
 						Math.round(
 							(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) *
 								100 /
-								parseInt(row.impression) *
-								100
-						) /
-							100 +
+								parseInt(row.impression)
+						) +
 						'%';
 				});
 				setadss(data);
@@ -95,15 +93,7 @@ function Creative_Report({ title, report, state1 }) {
 											{parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)}
 										</TableCell>
 										<TableCell>
-											{Math.round(
-												(parseInt(row.CompanionClickTracking) +
-													parseInt(row.SovClickTracking)) *
-													100 /
-													parseInt(row.impression) *
-													100
-											) /
-												100 +
-												'%'}
+											{row.ctr}
 										</TableCell>
 										{/* <TableCell
 											className="mangeads__report"

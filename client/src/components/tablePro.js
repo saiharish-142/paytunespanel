@@ -7,7 +7,7 @@ import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import PublisherAdmin from './PublisherAdmin';
 import QuartilePublisher from './QuartilePub';
-import LanguagePro from './LanguageAdmin';
+// import LanguagePro from './LanguageAdmin';
 import PhoneModelAdmin from './PhoneModelAdmin';
 import FrequencyAdmin from './frequencyAdmin';
 import IbaReportAdmin from './ibaReportAdmin';
