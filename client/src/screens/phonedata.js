@@ -162,7 +162,7 @@ export default function Phonedata() {
 	};
 
 	function SearchData(){
-		const arr=[]
+		let arr=[]
 		arr=rows.filter((row)=>row.make_model===search)
 			setsearchedData(arr)
 	}
@@ -171,8 +171,9 @@ export default function Phonedata() {
 		<div>
 			<div>
 			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Phone data </h4>
+			<input placeholder="Search PhoneModel" onClick={ SearchData } onChange={(e)=>setsearch(e.target.value)} style={{textAlign:'center',width:'20%',padding:'0.1%', border:'1px solid rgba(61, 61, 64, .25)', background:'#ffffff' }} />
 			</div>
-			<input placeholder="Search PhoneModel" onClick={ SearchData } onChange={(e)=>setsearch(e.target.value)} style={{textAlign:'right',padding:'1rem', border:'1px solid rgba(61, 61, 64, .25)', background:'#ffffff' }} />
+			
 			
 			<div className={classes.root}>
 				{success ? (
