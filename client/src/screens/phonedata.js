@@ -172,7 +172,7 @@ export default function Phonedata() {
 			<div>
 			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Phone data </h4>
 			<input placeholder="Search PhoneModel"  onChange={(e)=>setsearch(e.target.value)} style={{textAlign:'center',width:'20%',padding:'0.1%', border:'1px solid rgba(61, 61, 64, .25)', background:'#ffffff' }} />
-			<button className="btn" onClick={ SearchData } >Search</button>
+			<button className="btn" style={{marginLeft:'2%'}} onClick={ SearchData } >Search</button>
 			</div>
 			
 			
