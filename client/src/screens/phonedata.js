@@ -164,7 +164,10 @@ export default function Phonedata() {
 	function SearchData(){
 		let arr=[]
 		arr=rows.filter((row)=>row.make_model  ===search)
-		setsearchedData(arr)
+		if(arr.length===0){
+			setsearchedData('No Data Found!')
+		}else
+			setsearchedData(arr)
 	}
 
 	return (
@@ -225,7 +228,7 @@ export default function Phonedata() {
 							</TableRow>
 						</TableHead>
 						<TableBody >
-							{(searchedData.length!==0 ?searchedData:rows).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+							{(searchedData.length!==0 ?searchedData: (searchedData==='No Data Found!'?[]:rows)  ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
 								<TableRow key={row.name}>
 									<TableCell component="th" scope="row">
 										{row.make_model ? row.make_model : ''}
