@@ -207,9 +207,9 @@ export default function Phonedata() {
 					''
 				)}
 			</div>
-
+				
 			<Paper>
-				<TableContainer style={{maxHeight:440}}>
+			{searchedData==='No Data Found!'? <h7>{searchedData}</h7>:  <TableContainer style={{maxHeight:440}}>
 					<Table stickyHeader aria-label="sticky table" >
 						<TableHead  style={{position:"sticky",top:0}}>
 							<TableRow >
@@ -228,7 +228,7 @@ export default function Phonedata() {
 							</TableRow>
 						</TableHead>
 						<TableBody >
-							{(searchedData.length!==0 ?searchedData: (searchedData==='No Data Found!'?[]:rows)  ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+							{(searchedData.length!==0 ?searchedData: rows  ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
 								<TableRow key={row.name}>
 									<TableCell component="th" scope="row">
 										{row.make_model ? row.make_model : ''}
@@ -251,7 +251,8 @@ export default function Phonedata() {
 							))}
 						</TableBody>
 					</Table>
-				</TableContainer>
+				</TableContainer>  }
+				
 				<TablePagination
 					rowsPerPageOptions={[ 100, 1000, 10000 ]}
 					component="div"
