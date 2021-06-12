@@ -58,6 +58,8 @@ export default function Phonedata() {
 	const [ success, setsuccess ] = useState('');
 	const [ rows, setrows ] = useState([]);
 	const [ rowsPerPage, setRowsPerPage ] = useState(100);
+	const [search,setsearch ] = useState('')
+	const [searchedData, setsearchedData ]=useState([])
 	const [ page, setPage ] = useState(0);
 	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
 	const handleChangePage = (event, newPage) => {
@@ -159,9 +161,19 @@ export default function Phonedata() {
 		}
 	};
 
+	function SearchData(){
+		const arr=[]
+		arr=rows.filter((row)=>row.make_model===search)
+			setsearchedData(arr)
+	}
+
 	return (
 		<div>
+			<div>
 			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Phone data </h4>
+			</div>
+			<input placeholder="Search PhoneModel" onClick={ SearchData } onChange={(e)=>setsearch(e.target.value)} style={{textAlign:'right',padding:'1rem', border:'1px solid rgba(61, 61, 64, .25)', background:'#ffffff' }} />
+			
 			<div className={classes.root}>
 				{success ? (
 					<Alert
@@ -211,7 +223,7 @@ export default function Phonedata() {
 							</TableRow>
 						</TableHead>
 						<TableBody >
-							{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+							{(searchedData.length!==0 ?searchedData:rows).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
 								<TableRow key={row.name}>
 									<TableCell component="th" scope="row">
 										{row.make_model ? row.make_model : ''}
