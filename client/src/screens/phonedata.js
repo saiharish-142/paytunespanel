@@ -163,7 +163,7 @@ export default function Phonedata() {
 
 	function SearchData(){
 		let arr=[]
-		arr=rows.filter((row)=>row.make_model.trim()  ===search.trim())
+		arr=rows.filter((row)=>row.make_model  ===search)
 		setsearchedData(arr)
 	}
 
