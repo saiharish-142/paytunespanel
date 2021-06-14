@@ -163,7 +163,7 @@ router.get(
 
                 {$project:{
                     appName:"$app_details.AppName",
-                    date:_id.Date,
+                    date:'$_id.Date',
                     impressions:1
                 }},
                 {$sort:{impressions:-1}}
