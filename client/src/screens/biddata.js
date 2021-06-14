@@ -232,7 +232,7 @@ export default function Biddata() {
 	};
 
 	React.useMemo(() => {
-		let sortedProducts = rows;
+		let sortedProducts = publisherbids;
 		if (sortconfig !== null) {
 		  sortedProducts.sort((a, b) => {
 			if (a[sortconfig.key] < b[sortconfig.key]) {
