@@ -31,6 +31,7 @@ export default function Biddata() {
 	const [ rowsPerPage, setRowsPerPage ] = useState(7);
 	const [ rowsPerPage1, setRowsPerPage1 ] = useState(7);
 	const [ rowsPerPage2, setRowsPerPage2 ] = useState(10);
+	const [sortconfig,setsortconfig]=useState({key:'appName',direction:'descending'})
 
 	const [ page, setPage ] = useState(0);
 	const [ page1, setPage1 ] = useState(0);
@@ -229,6 +230,49 @@ export default function Biddata() {
 		return 0;
 	};
 
+	React.useMemo(() => {
+		let sortedProducts = rows;
+		if (sortconfig !== null) {
+		  sortedProducts.sort((a, b) => {
+			if (a[sortconfig.key] < b[sortconfig.key]) {
+			  return sortconfig.direction === 'ascending' ? -1 : 1;
+			}
+			if (a[sortconfig.key] > b[sortconfig.key]) {
+			  return sortconfig.direction === 'ascending' ? 1 : -1;
+			}
+			return 0;
+		  });
+		}
+		return sortedProducts;
+	  }, [rows, sortconfig]);
+	
+	
+	const requestSort=(key)=>{
+		let direction = 'ascending';
+		if (sortconfig && sortconfig.key === key && sortconfig.direction === 'ascending') {
+		  direction = 'descending';
+		}
+		setsortconfig({ key, direction });
+	}
+
+	const getClassNamesFor = (name) => {
+		if (!sortconfig) {
+		  return;
+		}
+		return sortconfig.key === name ? sortconfig.direction : undefined;
+	  };
+	  const arrowRetuner = (mode) => {
+		if (mode === '1') {
+			return <ArrowUpwardRoundedIcon fontSize="small" />;
+		} else if (mode === '2') {
+			return <ArrowDownwardRoundedIcon fontSize="small" />;
+		} else {
+			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
+		}
+	};
+
+
+
 	return (
 		<div>
 			<h4>Bid Request Data Triton </h4>
@@ -319,19 +363,19 @@ export default function Biddata() {
 				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
-							<TableCell>Date</TableCell>
-							<TableCell>App Name</TableCell>
-							<TableCell>Bids Won</TableCell>
+							<TableCell onClick={()=>requestSort('date')} className={getClassNamesFor('date')} style={{ cursor: 'pointer' }} >Date {arrowRetuner( sortconfig.key==='date'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>
+							<TableCell onClick={()=>requestSort('appName')} className={getClassNamesFor('appName')} style={{ cursor: 'pointer' }} >App Name {arrowRetuner( sortconfig.key==='appName'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>
+							<TableCell onClick={()=>requestSort('impressions')} className={getClassNamesFor('impressions')} style={{ cursor: 'pointer' }} >Bids Won {arrowRetuner( sortconfig.key==='impressions'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{publisherbids.slice(page2 * rowsPerPage2, page2 * rowsPerPage2 + rowsPerPage2).map((row) => (
 							<TableRow key={row.name}>
 								<TableCell component="th" scope="row">
-									{row._id.Date}
+									{row.date}
 								</TableCell>
-								<TableCell>{row.appName ? row.appName : ''}</TableCell>
-								<TableCell>{row.impressions ? row.impressions : 0}</TableCell>
+								<TableCell>{row.appName ? row.appName : ''} </TableCell>
+								<TableCell  >{row.impressions ? row.impressions : 0}</TableCell>
 							</TableRow>
 						))}
 					</TableBody>
