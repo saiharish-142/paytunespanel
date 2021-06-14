@@ -40,10 +40,10 @@ function Creative_Report({ title, report, state1 }) {
 					row.clicks = parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
 					row.ctr =
 						Math.round(
-							(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) *
+							((parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) *
 								100 /
-								parseInt(row.impression)
-						) +
+								parseInt(row.impression))*100
+						)/100 +
 						'%';
 				});
 				setadss(data);
