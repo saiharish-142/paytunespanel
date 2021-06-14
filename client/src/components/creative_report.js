@@ -1,7 +1,7 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import TablePagination from '@material-ui/core/TablePagination';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { CSVLink } from 'react-csv';
 
@@ -40,12 +40,10 @@ function Creative_Report({ title, report, state1 }) {
 					row.clicks = parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
 					row.ctr =
 						Math.round(
-							(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) *
+							((parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) *
 								100 /
-								parseInt(row.impression) *
-								100
-						) /
-							100 +
+								parseInt(row.impression))*100
+						)/100 +
 						'%';
 				});
 				setadss(data);
@@ -95,15 +93,7 @@ function Creative_Report({ title, report, state1 }) {
 											{parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)}
 										</TableCell>
 										<TableCell>
-											{Math.round(
-												(parseInt(row.CompanionClickTracking) +
-													parseInt(row.SovClickTracking)) *
-													100 /
-													parseInt(row.impression) *
-													100
-											) /
-												100 +
-												'%'}
+											{row.ctr}
 										</TableCell>
 										{/* <TableCell
 											className="mangeads__report"

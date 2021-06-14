@@ -173,7 +173,7 @@ function PincodeAdmin({ title, report, state1, arrowRetuner }) {
 										<TableCell>{row.grandstate ? row.grandstate : ''}</TableCell>
 										<TableCell>{row.impression ? row.impression : ''}</TableCell>
 										<TableCell>{row.clicks}</TableCell>
-										<TableCell>{Math.round(row.ctr * 100 / 100)}%</TableCell>
+										<TableCell>{Math.round(row.ctr * 100)/100}%</TableCell>
 										<TableCell
 											className="mangeads__report"
 											onClick={() => history.push(`/manageAds/${state1}/detailed`)}
