@@ -163,7 +163,7 @@ export default function Phonedata() {
 
 	function SearchData(){
 		let arr=[]
-		arr=rows.filter((row)=>row.make_model.toLowerCase()===search.toLowerCase())
+		arr=rows.filter((row)=> row.make_model? row.make_model.toLowerCase()===search.toLowerCase():'')
 		if(arr.length===0){
 			setsearchedData('No Data Found!')
 		}else
