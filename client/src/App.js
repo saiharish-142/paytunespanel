@@ -102,24 +102,23 @@ function App() {
 							<Route path="/manageAds" exact render={() => <Dashboard />} />
 							<Route path="/manageAds/:campname" exact render={() => <Report />} />
 							<Route path="/manageAds/:campname/detailed" exact render={() => <DetailedTable />} />
+							<Route path="/manageBundles" exact render={() => <DashboardBundle />} />
+							<Route path="/manageBundles/:campname" exact render={() => <ReportBundle />} />
 							<Route
 								path="/manageBundles/:campname/detailed"
 								exact
 								render={() => <DetailedTableBundle />}
 							/>
-							<Route path="/manageBundles" exact render={() => <DashboardBundle />} />
 							<Route path="/bundleManage/createbundle" exact render={() => <CampaignBundle />} />
 							<Route path="/bundleManage/:bundlename/edit" exact render={() => <CampaignBundle />} />
-							<Route path="/bundleManage/:bundlename/edit" exact render={() => <CampaignBundle />} />
-							<Route path="/clientSideCamp" exact render={() => <DashboardBundle clientview={true} />} />
 							<Route path="/manageusers" exact render={() => <ManageUser />} />
 							<Route path="/EditUser/:id" exact render={() => <EditUser />} />
-							<Route path="/manageBundles/:campname" exact render={() => <ReportBundle />} />
-							<Route path="/clientSideCamp/:campname" exact render={() => <ClientReport />} />
 							<Route path="/biddata" exact render={() => <Biddata />} />
 							<Route path="/phonedata" exact render={() => <Phonedata />} />
-							<Route path="/zipdata" exact render={() => <Zipdata />} />
 							<Route path="/categorydata" exact render={() => <Categorydata />} />
+							<Route path="/zipdata" exact render={() => <Zipdata />} />
+							<Route path="/clientSideCamp" exact render={() => <DashboardBundle clientview={true} />} />
+							<Route path="/clientSideCamp/:campname" exact render={() => <ClientReport />} />
 							<Redirect to="/" />
 						</Switch>
 					</BrowserRouter>
