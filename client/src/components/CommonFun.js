@@ -95,7 +95,7 @@ export const PublishBody = (type, report1, spentfinder, report) => {
 			{ value: log.impressions ? log.impressions : 0 },
 			{ value: spent ? Math.round(spent * 1) / 1 : 0 },
 			{ value: log.clicks ? log.clicks : 0 },
-			{ value: log.ctr ? Math.round(log.ctr * 1000) / 1000 + '%' : 0 },
+			{ value: log.ctr ? Math.round(log.ctr * 100) / 100 + '%' : 0 },
 			{
 				value: log.feed === '3' ? 'Podcast' : log.feed === '' ? 'Ondemand and Streaming' : ''
 			}
@@ -234,11 +234,8 @@ export const CreativeBody = (report1) => {
 		var clicks = parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking);
 		var ctr =
 			Math.round(
-				(parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) *
-					100 /
-					parseInt(log.impression)
-			) +
-			'%';
+				(parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) * 100 / parseInt(log.impression)
+			) + '%';
 		return [
 			{ value: creativeset },
 			{ value: log.status ? log.status : '' },
