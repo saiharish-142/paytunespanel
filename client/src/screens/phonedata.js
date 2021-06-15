@@ -58,7 +58,7 @@ export default function Phonedata() {
 	const [ success, setsuccess ] = useState('');
 	const [ rows, setrows ] = useState([]);
 	const [ rowsPerPage, setRowsPerPage ] = useState(100);
-	const [search,setsearch ] = useState('')
+	const [search1,setsearch ] = useState('')
 	const [searchedData, setsearchedData ]=useState([])
 	const [ page, setPage ] = useState(0);
 	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
@@ -163,7 +163,7 @@ export default function Phonedata() {
 
 	function SearchData(){
 		let arr=[]
-		arr=rows.filter((row)=> row.make_model? row.make_model.toLowerCase()===search.toLowerCase():'')
+		arr=rows.filter((row)=> row.make_model.search(search1)!=-1 )
 		if(arr.length===0){
 			setsearchedData('No Data Found!')
 		}else
