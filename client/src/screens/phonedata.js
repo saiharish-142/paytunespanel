@@ -167,8 +167,11 @@ export default function Phonedata() {
 		arr=rows12.filter((row)=> row.make_model.toString().replace(/\s+/g, '').trim().toLowerCase()=== search1.replace(/\s+/g, '').trim().toLowerCase())
 		if(arr.length===0){
 			setsearchedData('No Data Found!')
-		}else
+		}else{
 			setsearchedData(arr)
+			console.log('jvhvhvhv',arr)
+		}
+			
 	}
 
 	return (
