@@ -146,12 +146,13 @@ router.get(
     adminauth,
     async(req,res)=>{
         try{
-            const dat=new Date().toISOString()
-            const t=dat.split('T')
-            const date=t[0]
+            // const dat=new Date().toISOString()
+            // const t=dat.split('T')
+            // const date=t[0]
             const result=await Campaignwisereports.aggregate([
                 {$group:{_id:{Date:'$date',appId:'$appId'},impressions:{$sum:"$impression"}}},
-                {$match:{ '_id.Date':date}},
+                //{$match:{ '_id.Date':date}},
+
                 {$addFields:{"new_appid":{"$toObjectId":"$_id.appId"}}},
                 {$lookup:{
                     from:'publisherapps',
