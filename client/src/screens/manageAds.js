@@ -50,7 +50,7 @@ function Dashboard({ clientview }) {
 		};
 		return (
 			<div className="dashboard">
-				<SearchCampagin state={user && user.usertype} inval={searchval} setInval={onChangeRedux} />
+				<SearchCampagin state={user && user.user.usertype} inval={searchval} setInval={onChangeRedux} />
 				<SortPaTable
 					tabletype="campagins"
 					headers={headers}

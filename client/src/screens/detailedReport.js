@@ -23,7 +23,7 @@ export default function DetailedTable() {
 	const [ publishlogsd, setpublishlogsd ] = useState([]);
 	const [ datelogsv, setdatelogsv ] = useState([]);
 	const [ publishlogsv, setpublishlogsv ] = useState([]);
-	const [ phonedata, setphonedata]=useState([]);
+	const [ phonedata, setphonedata ] = useState([]);
 	const [ currentad, setcurrentad ] = useState('');
 	// id pusher to redux
 	useEffect(
@@ -385,7 +385,7 @@ export default function DetailedTable() {
 	);
 	useEffect(
 		() => {
-			if (ids ) {
+			if (ids) {
 				// let arr=[]
 				// ids.audio.forEach((audio)=>
 				// {
@@ -411,7 +411,7 @@ export default function DetailedTable() {
 				})
 					.then((res) => res.json())
 					.then((result) => {
-						setphonedata(result)
+						setphonedata(result);
 						// setpublishlogsv(result)
 						// offlinereportspublisherv(result);
 						// console.log(result)
@@ -994,7 +994,7 @@ export default function DetailedTable() {
 					Phone Model wise Report
 				</Typography>
 				<div>last updated at - {datefinderpublisher()}</div>
-				<div style={{ margin: '5px', fontWeight: 'bolder' }}></div>
+				<div style={{ margin: '5px', fontWeight: 'bolder' }} />
 				<Table
 					style={{ margin: '20px', width: 'fit-content', border: '1px lightgray solid' }}
 					aria-label="simple table"
@@ -1021,23 +1021,15 @@ export default function DetailedTable() {
 											<TableCell component="th" scope="row">
 												{row._id.make_model}
 											</TableCell>
-											<TableCell>
-												{row.impressions}
-											</TableCell>
-											<TableCell >{row.release}</TableCell>
-											<TableCell >{row.cost}</TableCell>
-											<TableCell>
-												{row.company}
-											</TableCell>
-											<TableCell>
-												{row.model}
-											</TableCell>
-											<TableCell>
-												{row.type}
-											</TableCell>
+											<TableCell>{row.impressions}</TableCell>
+											<TableCell>{row.release}</TableCell>
+											<TableCell>{row.cost}</TableCell>
+											<TableCell>{row.company}</TableCell>
+											<TableCell>{row.model}</TableCell>
+											<TableCell>{row.type}</TableCell>
 											<TableCell>{row.total_percent}</TableCell>
 											{/* <TableCell >{row.clicks >= 0 ? (
-													Math.round(row.clicks * 100 / row.impressions * 100) / 100
+													Math.round((row.clicks * 100 / row.impressions )* 100) / 100
 												) : (
 													Math.round(
 														row.CompanionClickTracking * 100 / row.impression * 100
@@ -1051,7 +1043,7 @@ export default function DetailedTable() {
 						)}
 					</TableBody>
 				</Table>
-				</TableContainer>
+			</TableContainer>
 		</div>
 	);
 }
