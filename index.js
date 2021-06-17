@@ -1407,7 +1407,7 @@ async function ReportsRefresher(date, credate) {
 	// res.json(compr)
 }
 
-cron.schedule('40 21 * * *', function() {
+cron.schedule('40 00 * * *', function() {
 	PublisherDataRefresher();
 });
 
