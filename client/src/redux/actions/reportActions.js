@@ -144,10 +144,10 @@ export const loadReport = () => (dispatch, getState) => {
 				// }
 				data.audio.length &&
 					data.audio.map((re) => {
-						re.publishername = re.apppubidpo.length
-							? re.apppubidpo[0].publishername ? re.apppubidpo[0].publishername : re.PublisherSplit
+						re.publishername = re.apppubidpo
+							? re.apppubidpo.publishername ? re.apppubidpo.publishername : re.PublisherSplit
 							: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
-						re.ssp = re.ssp.length ? re.ssp[0] : re.apppubidpo.length ? re.apppubidpo[0].ssp : null;
+						// re.ssp = re.ssp.length ? re.ssp[0] : re.apppubidpo.length ? re.apppubidpo[0].ssp : null;
 						re.target = datast.ids.audimpression;
 						re.avgreq = parseInt(re.target) / parseInt(wholeTime);
 						re.avgach = parseInt(re.impressions) / parseInt(leftTime);
@@ -169,10 +169,10 @@ export const loadReport = () => (dispatch, getState) => {
 					});
 				data.display.length &&
 					data.display.map((re) => {
-						re.publishername = re.apppubidpo.length
-							? re.apppubidpo[0].publishername ? re.apppubidpo[0].publishername : re.PublisherSplit
+						re.publishername = re.apppubidpo
+							? re.apppubidpo.publishername ? re.apppubidpo.publishername : re.PublisherSplit
 							: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
-						re.ssp = re.ssp.length ? re.ssp[0] : re.apppubidpo.length ? re.apppubidpo[0].ssp : null;
+						// re.ssp = re.ssp.length ? re.ssp[0] : re.apppubidpo.length ? re.apppubidpo[0].ssp : null;
 						re.target = datast.ids.disimpression;
 						re.avgreq = parseInt(re.target) / parseInt(wholeTime);
 						re.avgach = parseInt(re.impressions) / parseInt(leftTime);
@@ -194,10 +194,10 @@ export const loadReport = () => (dispatch, getState) => {
 					});
 				data.video.length &&
 					data.video.map((re) => {
-						re.publishername = re.apppubidpo.length
-							? re.apppubidpo[0].publishername ? re.apppubidpo[0].publishername : re.PublisherSplit
+						re.publishername = re.apppubidpo
+							? re.apppubidpo.publishername ? re.apppubidpo.publishername : re.PublisherSplit
 							: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
-						re.ssp = re.ssp.length ? re.ssp[0] : re.apppubidpo.length ? re.apppubidpo[0].ssp : null;
+						// re.ssp = re.ssp.length ? re.ssp[0] : re.apppubidpo.length ? re.apppubidpo[0].ssp : null;
 						re.target = datast.ids.vidimpression;
 						re.avgreq = parseInt(re.target) / parseInt(wholeTime);
 						re.avgach = parseInt(re.impressions) / parseInt(leftTime);

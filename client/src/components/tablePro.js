@@ -20,8 +20,6 @@ import {
 	FrequencyHead,
 	IBABody,
 	IBAHead,
-	LanguageBody,
-	LanguageHead,
 	PhoneModelBody,
 	PhoneModelHead,
 	PublishBody,
@@ -61,9 +59,9 @@ function TablePro() {
 	const [ ibaReports, setibaReports ] = useState([]);
 	const [ frequencyReport, setfrequencyReport ] = useState([]);
 	const [ creativereports, setcreative ] = useState([]);
-	const [ languageDownloadA, setlanguageDownloadA ] = useState([]);
-	const [ languageDownloadD, setlanguageDownloadD ] = useState([]);
-	const [ languageDownloadV, setlanguageDownloadV ] = useState([]);
+	// const [ languageDownloadA, setlanguageDownloadA ] = useState([]);
+	// const [ languageDownloadD, setlanguageDownloadD ] = useState([]);
+	// const [ languageDownloadV, setlanguageDownloadV ] = useState([]);
 	// const [ creativereports, setcreative ] = useState([]);
 	useEffect(
 		() => {
@@ -408,23 +406,41 @@ function TablePro() {
 		}
 	};
 	// spent finder by ids
-	const spentfinder = (appId, campaignId, impressions) => {
+	const spentfinder = (appId, campaignId, impressions, appbu, text) => {
 		if (spentdata.length) {
-			// Humgama
-			if (appId.toString() === '5d10c405844dd970bf41e2af') {
-				return parseInt(impressions) * 4.25 / (usinr * 100);
+			if (text === 'appid') {
+				// Humgama
+				if (appId.toString() === '5d10c405844dd970bf41e2af') {
+					return parseInt(impressions) * 4.25 / (usinr * 100);
+				}
+				// Wynk
+				if (appId.toString() === '5b2210af504f3097e73e0d8b') {
+					return parseInt(impressions) * 10 / (usinr * 100);
+				}
+				var datarq = spentdata.filter((x) => x.campaignId === campaignId && x.appId === appId);
+				var spent = 0;
+				// console.log(datarq)
+				datarq.map((dat) => {
+					spent += parseFloat(dat.totalSpent);
+				});
+				return spent;
+			} else {
+				// Humgama
+				if (appId.toString() === '5d10c405844dd970bf41e2af') {
+					return parseInt(impressions) * 4.25 / (usinr * 100);
+				}
+				// Wynk
+				if (appId.toString() === '5b2210af504f3097e73e0d8b') {
+					return parseInt(impressions) * 10 / (usinr * 100);
+				}
+				var datarq = spentdata.filter((x) => x.campaignId === campaignId && x.PublisherSplit === appbu);
+				var spent = 0;
+				// console.log(datarq)
+				datarq.map((dat) => {
+					spent += parseFloat(dat.totalSpent);
+				});
+				return spent;
 			}
-			// Wynk
-			if (appId.toString() === '5b2210af504f3097e73e0d8b') {
-				return parseInt(impressions) * 10 / (usinr * 100);
-			}
-			var datarq = spentdata.filter((x) => x.campaignId === campaignId && x.appId === appId);
-			var spent = 0;
-			// console.log(datarq)
-			datarq.map((dat) => {
-				spent += parseFloat(dat.totalSpent);
-			});
-			return spent;
 		}
 		return 0;
 	};
@@ -451,11 +467,11 @@ function TablePro() {
 		spentOfflinev: report.videospentOffline ? report.videospentOffline : 0,
 		state1: report.req_id
 	};
-	const LanguageProps = {
-		state1: report.req_id,
-		arrowRetuner: arrowRetuner,
-		url: 'citylanguagebycampids'
-	};
+	// const LanguageProps = {
+	// 	state1: report.req_id,
+	// 	arrowRetuner: arrowRetuner,
+	// 	url: 'citylanguagebycampids'
+	// };
 	// console.log(report.report.audio.length && PublishBody('Audio', report.report.audio));
 	const PublisherDown = {
 		audio: [
@@ -493,41 +509,41 @@ function TablePro() {
 			}
 		]
 	};
-	const LanguageDown = {
-		audio: [
-			{
-				columns: LanguageHead,
-				data:
-					report.ids &&
-					report.ids.audio &&
-					report.ids.audio.length &&
-					languageDownloadA &&
-					LanguageBody(languageDownloadA)
-			}
-		],
-		display: [
-			{
-				columns: LanguageHead,
-				data:
-					report.ids &&
-					report.ids.display &&
-					report.ids.display.length &&
-					languageDownloadD &&
-					LanguageBody(languageDownloadD)
-			}
-		],
-		video: [
-			{
-				columns: LanguageHead,
-				data:
-					report.ids &&
-					report.ids.video &&
-					report.ids.video.length &&
-					languageDownloadV &&
-					LanguageBody(languageDownloadV)
-			}
-		]
-	};
+	// const LanguageDown = {
+	// 	audio: [
+	// 		{
+	// 			columns: LanguageHead,
+	// 			data:
+	// 				report.ids &&
+	// 				report.ids.audio &&
+	// 				report.ids.audio.length &&
+	// 				languageDownloadA &&
+	// 				LanguageBody(languageDownloadA)
+	// 		}
+	// 	],
+	// 	display: [
+	// 		{
+	// 			columns: LanguageHead,
+	// 			data:
+	// 				report.ids &&
+	// 				report.ids.display &&
+	// 				report.ids.display.length &&
+	// 				languageDownloadD &&
+	// 				LanguageBody(languageDownloadD)
+	// 		}
+	// 	],
+	// 	video: [
+	// 		{
+	// 			columns: LanguageHead,
+	// 			data:
+	// 				report.ids &&
+	// 				report.ids.video &&
+	// 				report.ids.video.length &&
+	// 				languageDownloadV &&
+	// 				LanguageBody(languageDownloadV)
+	// 		}
+	// 	]
+	// };
 	const PhoneModelDown = {
 		audio: [
 			{

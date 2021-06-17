@@ -57,7 +57,13 @@ function PublisherAdmin({
 				});
 				data.map((ad) => {
 					ad.spent =
-						spentfinder(ad.Publisher._id, ad.campaignId._id, ad.impressions) +
+						spentfinder(
+							ad.Publisher._id,
+							ad.campaignId._id,
+							ad.impressions,
+							ad.PublisherSplit,
+							ad.PublisherSplit ? 'apppub' : 'appid'
+						) +
 						parseInt(title === 'Audio' ? (spentOffline ? spentOffline : 0) : 0) +
 						parseInt(title === 'Display' ? (spentOfflined ? spentOfflined : 0) : 0) +
 						parseInt(title === 'Video' ? (spentOfflinev ? spentOfflinev : 0) : 0);

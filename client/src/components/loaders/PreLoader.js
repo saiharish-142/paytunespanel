@@ -3,9 +3,9 @@ import PreLoaders from './PreLoader.module.css';
 
 function PreLoader() {
 	return (
-		<div class={PreLoaders.gooey}>
-			<span class={PreLoaders.dot} />
-			<div class={PreLoaders.dots}>
+		<div className={PreLoaders.gooey}>
+			<span className={PreLoaders.dot} />
+			<div className={PreLoaders.dots}>
 				<span />
 				<span />
 				<span />
