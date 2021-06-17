@@ -423,7 +423,7 @@ function TablePro() {
 				datarq.map((dat) => {
 					spent += parseFloat(dat.totalSpent);
 				});
-				return spent;
+				return null;
 			} else {
 				// Humgama
 				if (appId.toString() === '5d10c405844dd970bf41e2af') {
