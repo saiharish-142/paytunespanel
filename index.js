@@ -1411,21 +1411,6 @@ cron.schedule('40 00 * * *', function() {
 	PublisherDataRefresher();
 });
 
-// {
-// 	$project: {
-// 		test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-// 		appId: '$appId',
-// 		apppubid: '$apppubid',
-// 		feed: '$feed',
-// 		ssp: '$ssp',
-// 		campaignId: '$campaignId',
-// 		impression: '$impression',
-// 		CompanionClickTracking: 1,
-// 		SovClickTracking: 1
-// 	}
-// },
-// { $match: { test: yesterday } },
-
 async function PublisherDataRefresher() {
 	let date = new Date(new Date());
 	date.setDate(date.getDate() - 1);
@@ -1441,6 +1426,20 @@ async function PublisherDataRefresher() {
 	const campaignwisereports = mongoose.model('campaignwisereports');
 	var publisherData = await campaignwisereports
 		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					appId: '$appId',
+					apppubid: '$apppubid',
+					feed: '$feed',
+					ssp: '$ssp',
+					campaignId: '$campaignId',
+					impression: '$impression',
+					CompanionClickTracking: 1,
+					SovClickTracking: 1
+				}
+			},
+			{ $match: { test: yesterday } },
 			{
 				$group: {
 					_id: { appubid: '$apppubid', feed: '$feed' },
@@ -1515,7 +1514,7 @@ async function PublisherDataRefresher() {
 				click: publisherBit.clicks ? publisherBit.clicks : 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
 			});
 			var suc = await newzip.save().catch((err) => console.log(err));
-			console.log(suc, 'created');
+			console.log('created');
 		} else {
 			const updateddoc = await publisherwiseConsole
 				.findOneAndUpdate(
@@ -1531,7 +1530,7 @@ async function PublisherDataRefresher() {
 					{ new: true }
 				)
 				.catch((err) => console.log(err));
-			console.log('updated', updateddoc);
+			console.log('updated');
 		}
 	});
 }
