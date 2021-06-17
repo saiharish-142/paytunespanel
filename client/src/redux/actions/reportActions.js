@@ -148,7 +148,7 @@ export const loadReport = () => (dispatch, getState) => {
 							? re.apppubidpo.publishername ? re.apppubidpo.publishername : re.PublisherSplit
 							: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
 						// re.ssp = re.ssp.length ? re.ssp[0] : re.apppubidpo.length ? re.apppubidpo[0].ssp : null;
-						re.target = datast.ids.audimpression;
+						re.target = re.targetimpre;
 						re.avgreq = parseInt(re.target) / parseInt(wholeTime);
 						re.avgach = parseInt(re.impressions) / parseInt(leftTime);
 						re.click = parseInt(re.clicks) + parseInt(re.clicks1);

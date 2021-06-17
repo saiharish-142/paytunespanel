@@ -433,7 +433,7 @@ function TablePro() {
 				if (appId.toString() === '5b2210af504f3097e73e0d8b') {
 					return parseInt(impressions) * 10 / (usinr * 100);
 				}
-				var datarq = spentdata.filter((x) => x.campaignId === campaignId && x.PublisherSplit === appbu);
+				var datarq = spentdata.filter((x) => x.campaignId === campaignId && x.apppubid === appbu);
 				var spent = 0;
 				// console.log(datarq)
 				datarq.map((dat) => {
