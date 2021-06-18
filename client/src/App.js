@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Categorydata from './screens/Categorydata';
 import PreLoader from './components/loaders/PreLoader';
 import { loadRatio } from './redux/actions/currencyAction';
+import PublisherConsole from './screens/PublisherConsole';
 
 export const IdContext = createContext();
 
@@ -114,6 +115,7 @@ function App() {
 							<Route path="/manageusers" exact render={() => <ManageUser />} />
 							<Route path="/EditUser/:id" exact render={() => <EditUser />} />
 							<Route path="/biddata" exact render={() => <Biddata />} />
+							<Route path="/publisherdata" exact render={() => <PublisherConsole />} />
 							<Route path="/phonedata" exact render={() => <Phonedata />} />
 							<Route path="/categorydata" exact render={() => <Categorydata />} />
 							<Route path="/zipdata" exact render={() => <Zipdata />} />
