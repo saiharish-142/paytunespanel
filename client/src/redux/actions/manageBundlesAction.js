@@ -4,7 +4,8 @@ import {
 	MANAGEBUNDLES_LOADDED,
 	MANAGEBUNDLES_SEARCH,
 	MANAGEBUNDLES_LOAD_ERROR,
-	MANAGEBUNDLES_SORT_NAME
+	MANAGEBUNDLES_SORT_NAME,
+	MANAGEBUNDLES_PAGINATION
 } from '../types.js';
 import { tokenConfig } from './authAction.js';
 import { orderSetter } from './manageadsAction.js';
@@ -12,6 +13,16 @@ import { orderSetter } from './manageadsAction.js';
 export const loadingBundles = () => (dispatch, getState) => {
 	dispatch({
 		type: MANAGEBUNDLES_LOADING
+	});
+};
+
+export const storepaginationBundles = (pagination, rpp) => (dispatch, getState) => {
+	dispatch({
+		type: MANAGEBUNDLES_PAGINATION,
+		payload: {
+			pagination: pagination,
+			rowspp: rpp
+		}
 	});
 };
 

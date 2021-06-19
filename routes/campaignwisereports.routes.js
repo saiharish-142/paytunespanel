@@ -575,6 +575,16 @@ router.put('/sumreportofcamall', adminauth, (req, res) => {
 		.catch((err) => console.log(err));
 });
 
+function arrayincludefinder(array, id) {
+	var status = false;
+	array.map((x) => {
+		if (x.equals(id)) {
+			status = true;
+		}
+	});
+	return status;
+}
+
 router.put('/sumreportofcamall2', adminauth, (req, res) => {
 	const { campaignId } = req.body;
 	// var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
@@ -594,7 +604,8 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						},
 						{
 							$group: {
-								_id: { app: '$appId', appubid: '$apppubid', feed: '$feed' },
+								_id: { appubid: '$apppubid', feed: '$feed' },
+								appId: { $push: '$appId' },
 								ssp: { $push: '$ssp' },
 								updatedAt: { $push: '$createdOn' },
 								camp: { $push: '$campaignId' },
@@ -610,7 +621,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						},
 						{
 							$project: {
-								Publisher: '$_id.app',
+								Publisher: '$appId',
 								PublisherSplit: '$_id.appubid',
 								feed: '$_id.feed',
 								updatedAt: '$updatedAt',
@@ -624,6 +635,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 								start: '$start',
 								firstQuartile: '$firstQuartile',
 								thirdQuartile: '$thirdQuartile',
+								targetimpre: '0',
 								_id: 0
 							}
 						},
@@ -644,7 +656,8 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						},
 						{
 							$group: {
-								_id: { app: '$appId', appubid: '$apppubid', feed: '$feed' },
+								_id: { appubid: '$apppubid', feed: '$feed' },
+								appId: { $push: '$appId' },
 								ssp: { $push: '$ssp' },
 								updatedAt: { $push: '$createdOn' },
 								camp: { $push: '$campaignId' },
@@ -660,7 +673,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						},
 						{
 							$project: {
-								Publisher: '$_id.app',
+								Publisher: '$appId',
 								PublisherSplit: '$_id.appubid',
 								feed: '$_id.feed',
 								updatedAt: '$updatedAt',
@@ -674,6 +687,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 								start: '$start',
 								firstQuartile: '$firstQuartile',
 								thirdQuartile: '$thirdQuartile',
+								targetimpre: '0',
 								_id: 0
 							}
 						},
@@ -694,7 +708,8 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						},
 						{
 							$group: {
-								_id: { app: '$appId', appubid: '$apppubid', feed: '$feed' },
+								_id: { appubid: '$apppubid', feed: '$feed' },
+								appId: { $push: '$appId' },
 								ssp: { $push: '$ssp' },
 								updatedAt: { $push: '$createdOn' },
 								camp: { $push: '$campaignId' },
@@ -710,7 +725,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						},
 						{
 							$project: {
-								Publisher: '$_id.app',
+								Publisher: '$appId',
 								PublisherSplit: '$_id.appubid',
 								feed: '$_id.feed',
 								updatedAt: '$updatedAt',
@@ -724,6 +739,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 								start: '$start',
 								firstQuartile: '$firstQuartile',
 								thirdQuartile: '$thirdQuartile',
+								targetimpre: '0',
 								_id: 0
 							}
 						},
@@ -740,6 +756,55 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 			}
 		])
 		.then(async (reports) => {
+			var targetgetter = await adsetting.aggregate([
+				{
+					$facet: {
+						audio: [
+							{
+								$match: {
+									campaignId: { $in: audio }
+								}
+							},
+							{
+								$project: {
+									targetImpression: '$targetImpression',
+									campaignId: '$campaignId',
+									appId: '$appId'
+								}
+							}
+						],
+						display: [
+							{
+								$match: {
+									campaignId: { $in: display }
+								}
+							},
+							{
+								$project: {
+									targetImpression: '$targetImpression',
+									campaignId: '$campaignId',
+									appId: '$appId'
+								}
+							}
+						],
+						video: [
+							{
+								$match: {
+									campaignId: { $in: video }
+								}
+							},
+							{
+								$project: {
+									targetImpression: '$targetImpression',
+									campaignId: '$campaignId',
+									appId: '$appId'
+								}
+							}
+						]
+					}
+				}
+			]);
+			targetgetter = targetgetter[0];
 			var response = reports[0];
 			var updatedAtTimes = [];
 			var audioCompleteReport = {
@@ -769,30 +834,33 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				midpoint: 0,
 				thirdQuartile: 0
 			};
-			response.audio = await publisherapps
-				.populate(response.audio, { path: 'Publisher', select: '_id AppName' })
-				.catch((err) => console.log(err));
-			response.display = await publisherapps
-				.populate(response.display, { path: 'Publisher', select: '_id AppName' })
-				.catch((err) => console.log(err));
-			response.video = await publisherapps
-				.populate(response.video, { path: 'Publisher', select: '_id AppName' })
-				.catch((err) => console.log(err));
-			response.audio = await StreamingAds.populate(response.audio, {
-				path: 'campaignId',
-				select: '_id TargetImpressions startDate endDate'
-			}).catch((err) => console.log(err));
-			response.display = await StreamingAds.populate(response.display, {
-				path: 'campaignId',
-				select: '_id TargetImpressions startDate endDate'
-			}).catch((err) => console.log(err));
-			response.video = await StreamingAds.populate(response.video, {
-				path: 'campaignId',
-				select: '_id TargetImpressions startDate endDate'
-			}).catch((err) => console.log(err));
+			// response.audio = await StreamingAds.populate(response.audio, {
+			// 	path: 'campaignId',
+			// 	select: '_id TargetImpressions'
+			// }).catch((err) => console.log(err));
+			// response.display = await StreamingAds.populate(response.display, {
+			// 	path: 'campaignId',
+			// 	select: '_id TargetImpressions'
+			// }).catch((err) => console.log(err));
+			// response.video = await StreamingAds.populate(response.video, {
+			// 	path: 'campaignId',
+			// 	select: '_id TargetImpressions'
+			// }).catch((err) => console.log(err));
 			response.audio &&
 				response.audio.map((x) => {
 					x.updatedAt = [ ...new Set(x.updatedAt) ];
+					x.Publisher = [ ...new Set(x.Publisher) ];
+					x.ssp = [ ...new Set(x.ssp) ];
+					var testappubid = x.apppubidpo;
+					var forda;
+					if (testappubid && testappubid.length)
+						for (var i = 0; i < testappubid.length; i++) {
+							if (testappubid && testappubid[i] && testappubid[i].publishername) {
+								forda = testappubid[i];
+								break;
+							}
+						}
+					x.apppubidpo = forda;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
 					audioCompleteReport.impressions += parseInt(x.impressions);
 					audioCompleteReport.clicks += parseInt(x.clicks);
@@ -804,13 +872,39 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					x.updatedAt.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
+					x.Publisher = x.Publisher[0];
+					var numberta = 0;
+					var targetfii =
+						targetgetter.audio &&
+						targetgetter.audio.filter(
+							(y) => arrayincludefinder(x.campaignId, y.campaignId) && x.Publisher === y.appId
+						);
+					targetfii &&
+						targetfii.map((cx) => {
+							numberta += cx.targetImpression;
+						});
+					// console.log(numberta);
+					x.targetimpre = numberta;
 					x.updatedAt = x.updatedAt[0];
+					x.ssp = x.ssp ? x.ssp[0] : '';
 					x.campaignId = x.campaignId[0];
 					updatedAtTimes.push(x.updatedAt);
 				});
 			response.display &&
 				response.display.map((x) => {
 					x.updatedAt = [ ...new Set(x.updatedAt) ];
+					x.Publisher = [ ...new Set(x.Publisher) ];
+					x.ssp = [ ...new Set(x.ssp) ];
+					var testappubid = x.apppubidpo;
+					var forda;
+					if (testappubid && testappubid.length)
+						for (var i = 0; i < testappubid.length; i++) {
+							if (testappubid && testappubid[i] && testappubid[i].publishername) {
+								forda = testappubid[i];
+								break;
+							}
+						}
+					x.apppubidpo = forda;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId);
 					displayCompleteReport.impressions += parseInt(x.impressions);
 					displayCompleteReport.clicks += parseInt(x.clicks);
@@ -823,12 +917,38 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						return new Date(b) - new Date(a);
 					});
 					x.updatedAt = x.updatedAt[0];
+					x.Publisher = x.Publisher[0];
+					var numberta = 0;
+					var targetfii =
+						targetgetter.audio &&
+						targetgetter.audio.filter(
+							(y) => arrayincludefinder(x.campaignId, y.campaignId) && x.Publisher === y.appId
+						);
+					targetfii &&
+						targetfii.map((cx) => {
+							numberta += cx.targetImpression;
+						});
+					// console.log(numberta);
+					x.targetimpre = numberta;
+					x.ssp = x.ssp ? x.ssp[0] : '';
 					x.campaignId = x.campaignId[0];
 					updatedAtTimes.push(x.updatedAt);
 				});
 			response.video &&
 				response.video.map((x) => {
 					x.updatedAt = [ ...new Set(x.updatedAt) ];
+					x.Publisher = [ ...new Set(x.Publisher) ];
+					x.ssp = [ ...new Set(x.ssp) ];
+					var testappubid = x.apppubidpo;
+					var forda;
+					if (testappubid && testappubid.length)
+						for (var i = 0; i < testappubid.length; i++) {
+							if (testappubid && testappubid[i] && testappubid[i].publishername) {
+								forda = testappubid[i];
+								break;
+							}
+						}
+					x.apppubidpo = forda;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId);
 					videoCompleteReport.impressions += parseInt(x.impressions);
 					videoCompleteReport.clicks += parseInt(x.clicks);
@@ -841,6 +961,20 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						return new Date(b) - new Date(a);
 					});
 					x.updatedAt = x.updatedAt[0];
+					x.Publisher = x.Publisher[0];
+					var numberta = 0;
+					var targetfii =
+						targetgetter.audio &&
+						targetgetter.audio.filter(
+							(y) => arrayincludefinder(x.campaignId, y.campaignId) && x.Publisher === y.appId
+						);
+					targetfii &&
+						targetfii.map((cx) => {
+							numberta += cx.targetImpression;
+						});
+					// console.log(numberta);
+					x.targetimpre = numberta;
+					x.ssp = x.ssp ? x.ssp[0] : '';
 					x.campaignId = x.campaignId[0];
 					updatedAtTimes.push(x.updatedAt);
 				});
@@ -869,10 +1003,21 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 			response.videoCompleteReport = videoCompleteReport;
 			response.summaryCompleteReport = summaryCompleteReport;
 			response.allrecentupdate = updatedAtTimes ? updatedAtTimes[0] : undefined;
+			response.audio = await publisherapps
+				.populate(response.audio, { path: 'Publisher', select: '_id AppName' })
+				.catch((err) => console.log(err));
+			response.display = await publisherapps
+				.populate(response.display, { path: 'Publisher', select: '_id AppName' })
+				.catch((err) => console.log(err));
+			response.video = await publisherapps
+				.populate(response.video, { path: 'Publisher', select: '_id AppName' })
+				.catch((err) => console.log(err));
 			res.json(response);
 		})
 		.catch((err) => console.log(err));
 });
+
+// db.getCollection('campaignwisereports').find({campaignId:ObjectId("60c175048473711b21db0804")}).sort({_id:-1})
 
 router.put('/reportbycamp', adminauth, (req, res) => {
 	const { campaignId } = req.body;

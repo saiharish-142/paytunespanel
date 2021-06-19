@@ -15,7 +15,8 @@ const options = {
 	useUnifiedTopology: true,
 	serverSelectionTimeoutMS: 900000,
 	socketTimeoutMS: 900000,
-	useCreateIndex: true
+	useCreateIndex: true,
+	useFindAndModify: false
 };
 
 mongoose.connect(MONGOURI, options);
@@ -59,6 +60,7 @@ require('./models/phonemodel2reports.js');
 require('./models/categoryreports');
 require('./models/categoryreports2');
 require('./models/apppublishers.model');
+require('./models/publisherwiseConsole.model');
 
 app.use('/auth', require('./routes/user.routes'));
 app.use('/streamingads', require('./routes/streamingads.routes'));
@@ -181,7 +183,7 @@ app.listen(port, () => console.log(`app listening on port ${port}!`));
 //     .catch(err => console.log(err))
 // });
 
-cron.schedule('00 02 * * *', function () {
+cron.schedule('00 02 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -205,7 +207,7 @@ cron.schedule('00 02 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 04 * * *', function () {
+cron.schedule('00 04 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -229,7 +231,7 @@ cron.schedule('00 04 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 06 * * *', function () {
+cron.schedule('00 06 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -253,7 +255,7 @@ cron.schedule('00 06 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 08 * * *', function () {
+cron.schedule('00 08 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -277,7 +279,7 @@ cron.schedule('00 08 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 10 * * *', function () {
+cron.schedule('00 10 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -301,7 +303,7 @@ cron.schedule('00 10 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 12 * * *', function () {
+cron.schedule('00 12 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -325,7 +327,7 @@ cron.schedule('00 12 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 14 * * *', function () {
+cron.schedule('00 14 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -349,7 +351,7 @@ cron.schedule('00 14 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 16 * * *', function () {
+cron.schedule('00 16 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -373,7 +375,7 @@ cron.schedule('00 16 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 18 * * *', function () {
+cron.schedule('00 18 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -397,7 +399,7 @@ cron.schedule('00 18 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 20 * * *', function () {
+cron.schedule('00 20 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -421,7 +423,7 @@ cron.schedule('00 20 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 22 * * *', function () {
+cron.schedule('00 22 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -445,7 +447,7 @@ cron.schedule('00 22 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('10 00 * * *', function () {
+cron.schedule('10 00 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate() - 1);
 	if (d.getDate() < 10) {
@@ -462,9 +464,9 @@ cron.schedule('10 00 * * *', function () {
 	uniqueMaker(date);
 });
 
-//Pincode 
+//Pincode
 
-cron.schedule('00 1 * * *', function () {
+cron.schedule('00 1 * * *', function() {
 	// var d = new Date()
 	// d.setDate(d.getDate());
 	// if(d.getDate() < 10){
@@ -480,93 +482,102 @@ cron.schedule('00 1 * * *', function () {
 	// }
 	// var currentTime = new Date();
 	// var currentOffset = currentTime.getTimezoneOffset();
-	// var ISTOffset = 330;   // IST offset UTC +5:30 
+	// var ISTOffset = 330;   // IST offset UTC +5:30
 	// var ISTTime = new Date(currentTime.getTime() + (ISTOffset*2 + currentOffset -5)*60000);
 	// console.log(ISTTime,date)
-	PincodeRefresher()
-})
+	PincodeRefresher();
+});
 
 async function PincodeRefresher() {
-	let date = new Date(new Date())
-	date.setDate(date.getDate() - 1)
-	date = new Date(date)
-	const year = date.getFullYear()
-	const month = `0${date.getMonth() + 1}`
-	const date1 = date.getDate()
-	let yesterday = `${year}-${month}-${date1}`
-	console.log('yesterday', yesterday)
+	let date = new Date(new Date());
+	date.setDate(date.getDate() - 1);
+	date = new Date(date);
+	const year = date.getFullYear();
+	const month = `0${date.getMonth() + 1}`;
+	const date1 = date.getDate();
+	let yesterday = `${year}-${month}-${date1}`;
+	console.log('yesterday', yesterday);
 
-	const ZipModelReports = require('./models/zipreports')
-	const Zipreports2 = require('./models/zipdata2reports')
+	const ZipModelReports = require('./models/zipreports');
+	const Zipreports2 = require('./models/zipdata2reports');
 	const pincodes = await ZipModelReports.aggregate([
 		{
 			$project: {
-				test: { $dateToString: { format: "%Y-%m-%d", date: "$createdOn" } },
-				zip: "$zip",
-				impression: "$impression",
+				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+				zip: '$zip',
+				impression: '$impression',
 				CompanionClickTracking: 1,
 				SovClickTracking: 1
 			}
 		},
-		 { $match: { test: yesterday } },
+		{ $match: { test: yesterday } },
 		{
 			$group: {
-				_id: { zip: "$zip" },
-				CompanionClickTracking: { $sum: "$CompanionClickTracking" },
-				SovClickTracking: { $sum: "$SovClickTracking" },
-				impressions: { $sum: "$impression" }
+				_id: { zip: '$zip' },
+				CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+				SovClickTracking: { $sum: '$SovClickTracking' },
+				impressions: { $sum: '$impression' }
 			}
 		}
-	])
+	]);
 	pincodes.forEach(async (pincode) => {
-		console.log(pincode.zip)
-		const match = await Zipreports2.findOne({ pincode: pincode._id.zip })
+		console.log(pincode.zip);
+		const match = await Zipreports2.findOne({ pincode: pincode._id.zip });
 		if (!match) {
 			const newzip = new Zipreports2({
-				area: "",
+				area: '',
 				pincode: pincode._id.zip,
-				lowersubcity: "",
-				subcity: "",
-				city: "",
-				grandcity: "",
-				district: "",
-				comparison: "",
-				state: "",
-				grandstate: "",
-				latitude: "",
-				longitude: "",
+				lowersubcity: '',
+				subcity: '',
+				city: '',
+				grandcity: '',
+				district: '',
+				comparison: '',
+				state: '',
+				grandstate: '',
+				latitude: '',
+				longitude: '',
 				impression: pincode.impressions,
 				click: pincode.CompanionClickTracking + pincode.SovClickTracking
-			})
-			await newzip.save()
+			});
+			await newzip.save();
 		} else {
-			const updateddoc = await Zipreports2.findOneAndUpdate({ pincode: pincode._id.zip }, { $inc: { impression: pincode.impressions, click: pincode.CompanionClickTracking + pincode.SovClickTracking } }, { new: true })
-			console.log('updated', updateddoc)
+			const updateddoc = await Zipreports2.findOneAndUpdate(
+				{ pincode: pincode._id.zip },
+				{
+					$inc: {
+						impression: pincode.impressions,
+						click: pincode.CompanionClickTracking + pincode.SovClickTracking
+					}
+				},
+				{ new: true }
+			);
+			console.log('updated', updateddoc);
 		}
-	})
+	});
 }
 
-cron.schedule('30 12 * * *',function(){
-	PhoneRefresher()
-})
+cron.schedule('30 12 * * *', function() {
+	PhoneRefresher();
+});
 
-async function PhoneRefresher(){
-	let date = new Date(new Date())
-	date.setDate(date.getDate() - 1)
-	date = new Date(date)
-	const year = date.getFullYear()
-	const month = `0${date.getMonth() + 1}`
-	const date1 = date.getDate()
-	let yesterday = `${year}-${month}-${date1}`
-	console.log('yesterday', yesterday)
-	const PhoneModelReports = require('./models/phonemodelreports')
-	const Phonereports2 = require('./models/phonemodel2reports')
+async function PhoneRefresher() {
+	let date = new Date(new Date());
+	date.setDate(date.getDate() - 1);
+	date = new Date(date);
+	const year = date.getFullYear();
+	const month = `0${date.getMonth() + 1}`;
+	const date1 = date.getDate();
+	let yesterday = `${year}-${month}-${date1}`;
+	console.log('yesterday', yesterday);
+	const PhoneModelReports = require('./models/phonemodelreports');
+	const Phonereports2 = require('./models/phonemodel2reports');
 	const phones = await PhoneModelReports.aggregate([
 		{
 			$project: {
-				test: { $dateToString: { format: "%Y-%m-%d", date: "$createdOn" } },
-				phoneModel: "$phoneModel",
-				impression: "$impression",
+				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+				phoneModel: '$phoneModel',
+				impression: '$impression',
 				CompanionClickTracking: 1,
 				SovClickTracking: 1
 			}
@@ -574,59 +585,68 @@ async function PhoneRefresher(){
 		{ $match: { test: yesterday } },
 		{
 			$group: {
-				_id: { phone: "$phoneModel" },
-				CompanionClickTracking: { $sum: "$CompanionClickTracking" },
-				SovClickTracking: { $sum: "$SovClickTracking" },
-				impressions: { $sum: "$impression" }
+				_id: { phone: '$phoneModel' },
+				CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+				SovClickTracking: { $sum: '$SovClickTracking' },
+				impressions: { $sum: '$impression' }
 			}
 		}
-	])
-	console.log(phones)
+	]);
+	console.log(phones);
 	phones.forEach(async (phone) => {
-		const match = await Phonereports2.findOne({ make_model: phone._id.phone })
+		const match = await Phonereports2.findOne({ make_model: phone._id.phone });
 		if (!match) {
-			const newzip = new Phonereports2 ({
-				cost:'',
-    			make_model:phone._id.phone, 
-    			cumulative:'',
-    			release:'',
-    			company:'',
-    			type:'',
-    			total_percent:'',
-    			model:'',
-    			combined_make_model:'',
+			const newzip = new Phonereports2({
+				cost: '',
+				make_model: phone._id.phone,
+				cumulative: '',
+				release: '',
+				company: '',
+				type: '',
+				total_percent: '',
+				model: '',
+				combined_make_model: '',
 				impression: phone.impressions,
 				click: phone.CompanionClickTracking + phone.SovClickTracking
-			})
-			await newzip.save()
+			});
+			await newzip.save();
 		} else {
-			const updateddoc = await Phonereports2.findOneAndUpdate({ make_model: phone._id.phone }, { $inc: { impression: phone.impressions, click: phone.CompanionClickTracking + phone.SovClickTracking } }, { new: true })
-			console.log('updated', updateddoc)
+			const updateddoc = await Phonereports2.findOneAndUpdate(
+				{ make_model: phone._id.phone },
+				{
+					$inc: {
+						impression: phone.impressions,
+						click: phone.CompanionClickTracking + phone.SovClickTracking
+					}
+				},
+				{ new: true }
+			);
+			console.log('updated', updateddoc);
 		}
-})
+	});
 }
 
-cron.schedule('30 00 * * *',function(){
-	CategoryRefresher()
-})
+cron.schedule('30 00 * * *', function() {
+	CategoryRefresher();
+});
 
-async function CategoryRefresher(){
-	let date = new Date(new Date())
-	date.setDate(date.getDate() - 1)
-	date = new Date(date)
-	const year = date.getFullYear()
-	const month = `0${date.getMonth() + 1}`
-	const date1 = date.getDate()
-	let yesterday = `${year}-${month}-${date1}`
-	console.log('yesterday', yesterday)
-	const CategoryReports = require('./models/categoryreports')
-	const Categoryreports2 = require('./models/categoryreports2')
+async function CategoryRefresher() {
+	let date = new Date(new Date());
+	date.setDate(date.getDate() - 1);
+	date = new Date(date);
+	const year = date.getFullYear();
+	const month = `0${date.getMonth() + 1}`;
+	const date1 = date.getDate();
+	let yesterday = `${year}-${month}-${date1}`;
+	console.log('yesterday', yesterday);
+	const CategoryReports = require('./models/categoryreports');
+	const Categoryreports2 = require('./models/categoryreports2');
 	const phones = await CategoryReports.aggregate([
 		{
 			$project: {
-				test: { $dateToString: { format: "%Y-%m-%d", date: "$createdOn" } },
-				category: "$category",
-				impression: "$impression",
+				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+				category: '$category',
+				impression: '$impression',
 				CompanionClickTracking: 1,
 				SovClickTracking: 1
 			}
@@ -634,16 +654,18 @@ async function CategoryRefresher(){
 		{ $match: { test: yesterday } },
 		{
 			$group: {
-				_id: { category: "$category" },
-				CompanionClickTracking: { $sum: "$CompanionClickTracking" },
-				SovClickTracking: { $sum: "$SovClickTracking" },
-				impressions: { $sum: "$impression" }
+				_id: { category: '$category' },
+				CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+				SovClickTracking: { $sum: '$SovClickTracking' },
+				impressions: { $sum: '$impression' }
 			}
 		}
-	])
-	console.log(phones)
+	]);
+	console.log(phones);
 	phones.forEach(async (cat) => {
-		const match = await Categoryreports2.findOne({ $or:[{category: cat._id.category},{new_taxonamy:cat._id.category}]  })
+		const match = await Categoryreports2.findOne({
+			$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ]
+		});
 		if (!match) {
 			const newzip = new Categoryreports2({
 				parent: '',
@@ -658,16 +680,23 @@ async function CategoryRefresher(){
 				new_taxonamy: '',
 				impression: cat.impressions,
 				click: cat.CompanionClickTracking + cat.SovClickTracking
-			})
-			await newzip.save()
+			});
+			await newzip.save();
 		} else {
-			const updateddoc = await Categoryreports2.findOneAndUpdate({ $or:[{category: cat._id.category},{new_taxonamy:cat._id.category}]  }, { $inc: { impression: cat.impressions, click: cat.CompanionClickTracking + cat.SovClickTracking } }, { new: true })
-			console.log('updated', updateddoc)
+			const updateddoc = await Categoryreports2.findOneAndUpdate(
+				{ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ] },
+				{ $inc: { impression: cat.impressions, click: cat.CompanionClickTracking + cat.SovClickTracking } },
+				{ new: true }
+			);
+			console.log('updated', updateddoc);
 		}
-})
+	});
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 68e7c455af45bc51b4ae2a32931beb8564bc8039
 async function uniqueMaker({ date }) {
 	let uniqueids = await trackinglogs
 		.distinct('campaignId', { date: date, type: 'impression' })
@@ -676,8 +705,8 @@ async function uniqueMaker({ date }) {
 	let response = await StreamingAds.aggregate([
 		{ $match: { _id: { $in: uniqueids } } },
 		{ $project: { AdTitle: { $toLower: '$AdTitle' } } },
-		{ $project: { AdTitle: { $split: ['$AdTitle', '_'] } } },
-		{ $project: { AdTitle: { $slice: ['$AdTitle', 2] } } },
+		{ $project: { AdTitle: { $split: [ '$AdTitle', '_' ] } } },
+		{ $project: { AdTitle: { $slice: [ '$AdTitle', 2 ] } } },
 		{
 			$project: {
 				AdTitle: {
@@ -685,7 +714,7 @@ async function uniqueMaker({ date }) {
 						input: '$AdTitle',
 						initialValue: '',
 						in: {
-							$concat: ['$$value', { $cond: [{ $eq: ['$$value', ''] }, '', '_'] }, '$$this']
+							$concat: [ '$$value', { $cond: [ { $eq: [ '$$value', '' ] }, '', '_' ] }, '$$this' ]
 						}
 					}
 				},
@@ -794,7 +823,7 @@ async function ReportsRefresher(date, credate) {
 				{
 					$facet: {
 						uniquesumdatawise: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId' },
@@ -814,7 +843,7 @@ async function ReportsRefresher(date, credate) {
 										$reduce: {
 											input: '$unique',
 											initialValue: [],
-											in: { $concatArrays: ['$$value', '$$this'] }
+											in: { $concatArrays: [ '$$value', '$$this' ] }
 										}
 									}
 								}
@@ -822,7 +851,7 @@ async function ReportsRefresher(date, credate) {
 							{ $project: { _id: 0, campaignId: '$_id', unique: { $size: '$unique' }, publishdata: 1 } }
 						],
 						regionwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId', region: '$region' },
@@ -844,7 +873,7 @@ async function ReportsRefresher(date, credate) {
 							{ $project: { _id: 0, campaignId: '$_id', results: 1 } }
 						],
 						pinwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId', zip: '$zip' },
@@ -866,7 +895,7 @@ async function ReportsRefresher(date, credate) {
 							{ $project: { _id: 0, campaignId: '$_id', results: 1 } }
 						],
 						lanwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId', language: '$language' },
@@ -1043,7 +1072,7 @@ async function ReportsRefresher(date, credate) {
 										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
 										result: {
 											$push: {
-												phoneModel: { $concat: ['$_id.phoneMake', ' - ', '$_id.phoneModel'] },
+												phoneModel: { $concat: [ '$_id.phoneMake', ' - ', '$_id.phoneModel' ] },
 												result: { $arrayToObject: '$result' }
 											}
 										}
@@ -1088,7 +1117,7 @@ async function ReportsRefresher(date, credate) {
 										result: {
 											$push: {
 												platformType: {
-													$concat: ['$_id.platformType', ' - ', '$_id.osVersion']
+													$concat: [ '$_id.platformType', ' - ', '$_id.osVersion' ]
 												},
 												result: { $arrayToObject: '$result' }
 											}
@@ -1381,4 +1410,132 @@ async function ReportsRefresher(date, credate) {
 		console.log(e);
 	}
 	// res.json(compr)
+}
+
+cron.schedule('40 00 * * *', function() {
+	PublisherDataRefresher();
+});
+
+async function PublisherDataRefresher() {
+	let date = new Date(new Date());
+	date.setDate(date.getDate() - 1);
+	date = new Date(date);
+	const year = date.getFullYear();
+	const month = `0${date.getMonth() + 1}`;
+	const date1 = date.getDate();
+	let yesterday = `${year}-${month}-${date1}`;
+	console.log('yesterday', yesterday);
+	// const StreamingAds = mongoose.model('streamingads');
+	const publisherapps = mongoose.model('publisherapps');
+	const publisherwiseConsole = mongoose.model('publisherwiseConsole');
+	const campaignwisereports = mongoose.model('campaignwisereports');
+	var publisherData = await campaignwisereports
+		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					appId: '$appId',
+					apppubid: '$apppubid',
+					feed: '$feed',
+					ssp: '$ssp',
+					campaignId: '$campaignId',
+					impression: '$impression',
+					CompanionClickTracking: 1,
+					SovClickTracking: 1
+				}
+			},
+			{ $match: { test: yesterday } },
+			{
+				$group: {
+					_id: { appubid: '$apppubid', feed: '$feed' },
+					appId: { $push: '$appId' },
+					ssp: { $push: '$ssp' },
+					camp: { $push: '$campaignId' },
+					impressions: { $sum: '$impression' },
+					clicks: { $sum: '$CompanionClickTracking' },
+					clicks1: { $sum: '$SovClickTracking' }
+				}
+			},
+			{
+				$project: {
+					Publisher: '$appId',
+					PublisherSplit: '$_id.appubid',
+					feed: '$_id.feed',
+					updatedAt: '$updatedAt',
+					ssp: '$ssp',
+					campaignId: '$camp',
+					impressions: '$impressions',
+					clicks: '$clicks',
+					clicks1: '$clicks1',
+					_id: 0
+				}
+			},
+			{
+				$lookup: {
+					from: 'apppublishers',
+					localField: 'PublisherSplit',
+					foreignField: 'publisherid',
+					as: 'apppubidpo'
+				}
+			}
+		])
+		.catch((err) => console.log(err));
+	publisherData = await publisherapps
+		.populate(publisherData, { path: 'Publisher', select: '_id AppName' })
+		.catch((err) => console.log(err));
+	publisherData.forEach(async (publisherB) => {
+		console.log(publisherB.PublisherSplit);
+		var publisherBit = publisherB;
+		publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
+		publisherBit.ssp = [ ...new Set(publisherBit.ssp) ];
+		var testappubid = publisherBit.apppubidpo;
+		var forda;
+		if (testappubid && testappubid.length)
+			for (var i = 0; i < testappubid.length; i++) {
+				if (testappubid && testappubid[i] && testappubid[i].publishername) {
+					forda = testappubid[i];
+					break;
+				}
+			}
+		publisherBit.apppubidpo = forda;
+		publisherBit.Publisher = publisherBit.Publisher[0];
+		publisherBit.ssp = publisherBit.ssp ? publisherBit.ssp[0] : '';
+		publisherBit.campaignId = publisherBit.campaignId[0];
+		const match = await publisherwiseConsole
+			.findOne({ apppubid: publisherBit.PublisherSplit })
+			.catch((err) => console.log(err));
+		if (!match) {
+			const newzip = new publisherwiseConsole({
+				apppubid: publisherBit.PublisherSplit,
+				campaignId: publisherBit.campaignId,
+				publisherName: publisherBit.apppubidpo
+					? publisherBit.apppubidpo.publishername
+						? publisherBit.apppubidpo.publishername
+						: publisherBit.PublisherSplit
+					: publisherBit.PublisherSplit ? publisherBit.PublisherSplit : publisherBit.Publisher.AppName,
+				ssp: publisherBit.ssp,
+				feed: publisherBit.feed ? publisherBit.feed : null,
+				impression: publisherBit.impressions ? publisherBit.impressions : 0,
+				click: publisherBit.clicks ? publisherBit.clicks : 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+			});
+			var suc = await newzip.save().catch((err) => console.log(err));
+			console.log('created');
+		} else {
+			const updateddoc = await publisherwiseConsole
+				.findOneAndUpdate(
+					{ publisherBit: publisherBit.PublisherSplit },
+					{
+						$inc: {
+							impression: publisherBit.impressions,
+							click: publisherBit.clicks
+								? publisherBit.clicks
+								: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+						}
+					},
+					{ new: true }
+				)
+				.catch((err) => console.log(err));
+			console.log('updated');
+		}
+	});
 }
