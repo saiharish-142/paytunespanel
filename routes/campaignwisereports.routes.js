@@ -599,7 +599,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 								updatedAt: { $push: '$createdOn' },
 								camp: { $push: '$campaignId' },
 								impressions: { $sum: '$impression' },
-								complete: { $sum: '$completedAudioImpressions' },
+								complete: { $sum: '$complete' },
 								clicks: { $sum: '$CompanionClickTracking' },
 								clicks1: { $sum: '$SovClickTracking' },
 								thirdQuartile: { $sum: '$thirdQuartile' },

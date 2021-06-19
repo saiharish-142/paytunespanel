@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const { MONGOURI } = require('./config/keys');
 const cron = require('node-cron');
+const phonemodel2reports = require('./models/phonemodel2reports');
 
 app.use(express.json());
 app.use(cors());
@@ -665,8 +666,6 @@ async function CategoryRefresher(){
 		}
 })
 }
-
-
 
 
 async function uniqueMaker({ date }) {
