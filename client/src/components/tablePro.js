@@ -296,7 +296,7 @@ function TablePro() {
 		// console.log(spent);
 		return (
 			<TableContainer style={{ margin: '20px 0' }} elevation={3} component={Paper}>
-				<div style={{ margin: '5px', fontWeight: 'bolder' }}>{title} Report</div>
+				<div style={{ margin: '5px', fontWeight: 'bolder' }}>Overall {title} Report</div>
 				{report.req_id && reportsub && report.ids ? (
 					<Table className={classes.table} aria-label="simple table">
 						<TableHead>
@@ -724,7 +724,7 @@ function TablePro() {
 	return (
 		<div>
 			<div className="titleReport">{report.title && report.title.toUpperCase()} Campaign</div>
-			<div className="titleReport">Summary Report</div>
+			<div className="titleReport">Overall Summary Report</div>
 			<ExeclDownload filename={`Complete Report ${report.title}`}>
 				<ExcelSheet dataSet={PublisherDown.audio} name="Publisher Audio Wise" />
 				<ExcelSheet dataSet={PublisherDown.display} name="Publisher Display Wise" />

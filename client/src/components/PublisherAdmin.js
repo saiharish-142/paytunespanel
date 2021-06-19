@@ -111,6 +111,9 @@ function PublisherAdmin({
 								<TableCell onClick={() => tablesorter('ssp', 'string')} style={{ cursor: 'pointer' }}>
 									SSP {arrowRetuner(sa === 'ssp' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
+								<TableCell onClick={() => tablesorter('feed', 'string')} style={{ cursor: 'pointer' }}>
+									Feed {arrowRetuner(sa === 'feed' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
 								<TableCell
 									onClick={() => tablesorter('target', 'number')}
 									style={{ cursor: 'pointer' }}
@@ -138,9 +141,6 @@ function PublisherAdmin({
 								<TableCell onClick={() => tablesorter('ctr', 'number')} style={{ cursor: 'pointer' }}>
 									CTR {arrowRetuner(sa === 'ctr' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell onClick={() => tablesorter('feed', 'string')} style={{ cursor: 'pointer' }}>
-									Feed {arrowRetuner(sa === 'feed' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
 								<TableCell>
 									{adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
 								</TableCell>
@@ -162,11 +162,6 @@ function PublisherAdmin({
 									>
 										<TableCell>{log.publishername}</TableCell>
 										<TableCell>{log.ssp}</TableCell>
-										<TableCell>{parseInt(log.target)}</TableCell>
-										<TableCell>{log.impressions}</TableCell>
-										<TableCell>{Math.round(log.spent * 1) / 1}</TableCell>
-										<TableCell>{log.clicks}</TableCell>
-										<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>
 										<TableCell>
 											{log.feed === '3' ? (
 												'Podcast'
@@ -176,6 +171,11 @@ function PublisherAdmin({
 												''
 											)}
 										</TableCell>
+										<TableCell>{parseInt(log.target)}</TableCell>
+										<TableCell>{log.impressions}</TableCell>
+										<TableCell>{Math.round(log.spent * 1) / 1}</TableCell>
+										<TableCell>{log.clicks}</TableCell>
+										<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>
 										<TableCell
 											className="mangeads__report"
 											onClick={() => history.push(`/manageAds/${state1}/detailed`)}
