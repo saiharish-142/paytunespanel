@@ -35,13 +35,13 @@ function PublisherAdmin({
 	const [ adss, setadss ] = React.useState(report);
 	const headers = [
 		{ key: 'publishername', label: 'Publisher' },
+		{ key: 'feed', label: 'Feed' },
 		{ key: 'ssp', label: 'SSP' },
 		{ key: 'target', label: 'Total Impressions to be delivered' },
 		{ key: 'impressions', label: 'Total Impressions Delivered till date' },
 		{ key: 'spent', label: 'Total spent' },
 		{ key: 'clicks', label: 'Total Clicks Delivered till date' },
-		{ key: 'ctr', label: 'CTR' },
-		{ key: 'feed', label: 'Feed' }
+		{ key: 'ctr', label: 'CTR' }
 	];
 	var csvReport = {
 		filename: `${titleData}_${title}_PublisherData.csv`,

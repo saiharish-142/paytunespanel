@@ -3,6 +3,7 @@ import {
 	MANAGEADS_LOADING,
 	MANAGEADS_LOADDED,
 	MANAGEADS_SEARCH,
+	MANAGEADS_PAGINATION,
 	MANAGEADS_LOAD_ERROR,
 	MANAGEADS_SORT_NAME
 } from '../types.js';
@@ -11,6 +12,20 @@ import { tokenConfig } from './authAction.js';
 export const loadingAds = () => (dispatch, getState) => {
 	dispatch({
 		type: MANAGEADS_LOADING
+	});
+};
+
+export const storepagination = (pagination, rpp) => (dispatch, getState) => {
+	// console.log({
+	// 	pagination: pagination,
+	// 	rowspp: rpp
+	// });
+	dispatch({
+		type: MANAGEADS_PAGINATION,
+		payload: {
+			pagination: pagination,
+			rowspp: rpp
+		}
 	});
 };
 

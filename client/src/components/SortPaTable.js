@@ -18,12 +18,14 @@ import { CSVLink } from 'react-csv';
 function SortPaTable(props) {
 	const history = useHistory();
 	const dispatchRedux = useDispatch();
-	const [ page, setPage ] = React.useState(0);
-	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
+	const [ page, setPage ] = React.useState(props.pagination);
+	const [ rowsPerPage, setRowsPerPage ] = React.useState(props.rpp);
 	const handleChangePage = (event, newPage) => {
+		dispatchRedux(props.actionToSet(newPage, rowsPerPage));
 		setPage(newPage);
 	};
 	const handleChangeRowsPerPage = (event) => {
+		dispatchRedux(props.actionToSet(page, +event.target.value));
 		setRowsPerPage(+event.target.value);
 		setPage(0);
 	};

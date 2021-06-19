@@ -3,6 +3,7 @@ import {
 	MANAGEBUNDLES_LOADDED,
 	MANAGEBUNDLES_LOAD_ERROR,
 	MANAGEBUNDLES_SEARCH,
+	MANAGEBUNDLES_PAGINATION,
 	MANAGEBUNDLES_SORT_NAME
 } from '../types.js';
 
@@ -15,6 +16,8 @@ const initialState = {
 	error: null,
 	isLoading: true,
 	loadfail: null,
+	pagination: 0,
+	rowspp: 5,
 	value: ''
 };
 
@@ -52,6 +55,12 @@ export default function(state = initialState, action) {
 				...state,
 				searchedmanagebundles: action.payload.ads,
 				value: action.payload.value
+			};
+		case MANAGEBUNDLES_PAGINATION:
+			return {
+				...state,
+				pagination: action.payload.pagination,
+				rowspp: action.payload.rowspp
 			};
 		default:
 			return state;

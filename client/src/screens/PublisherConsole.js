@@ -1,7 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { LoadPublisherData, PublisherLoading } from '../redux/actions/ConsoledateActions';
+import {
+	LoadPublisherData,
+	orderManagerPublisherData,
+	PublisherLoading,
+	searchPublisherData,
+	storepaginationPublisherData
+} from '../redux/actions/ConsoledateActions';
 import PreLoader from '../components/loaders/PreLoader';
+import SearchCampagin from '../components/SearchCampagin';
 import { CSVLink } from 'react-csv';
 import {
 	Paper,
@@ -20,15 +27,25 @@ import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 function PublisherConsole() {
 	const dispatchRedux = useDispatch();
 	const consoledata = useSelector((state) => state.consoleDateReport);
+	const [ searchval, setSearchval ] = useState('');
 	useEffect(() => {
-		dispatchRedux(PublisherLoading());
-		dispatchRedux(LoadPublisherData());
+		if (consoledata && !consoledata.publisherData) {
+			dispatchRedux(PublisherLoading());
+			dispatchRedux(LoadPublisherData());
+		}
+		if (consoledata && consoledata.publisherDataValue) {
+			setSearchval(consoledata.publisherDataValue);
+		}
 	}, []);
-	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
-	const [ page, setPage ] = React.useState(0);
-	const [ sa, setsa ] = React.useState('impressions');
-	const [ order, setorder ] = React.useState('desc');
-	const [ adss, setadss ] = React.useState(consoledata.publisherData);
+	const onChangeRedux = (val) => {
+		dispatchRedux(searchPublisherData(val));
+		setSearchval(val);
+	};
+	const [ rowsPerPage, setRowsPerPage ] = useState(consoledata.publisherDataRPP);
+	const [ page, setPage ] = useState(consoledata.publisherDataPagination);
+	const [ sa, setsa ] = useState(consoledata.publisherDataordername);
+	const [ order, setorder ] = useState(consoledata.publisherDataorderdir);
+	const [ adss, setadss ] = useState(consoledata.searchedpublisherData);
 	const headers = [
 		{ key: 'publisherName', label: 'Publisher' },
 		{ key: 'ssp', label: 'SSP' },
@@ -43,9 +60,11 @@ function PublisherConsole() {
 		data: adss
 	};
 	const handleChangePage = (event, newPage) => {
+		dispatchRedux(storepaginationPublisherData(newPage, rowsPerPage));
 		setPage(newPage);
 	};
 	const handleChangeRowsPerPage = (event) => {
+		dispatchRedux(storepaginationPublisherData(page, +event.target.value));
 		setRowsPerPage(+event.target.value);
 		setPage(0);
 	};
@@ -54,6 +73,7 @@ function PublisherConsole() {
 		setorder(orde);
 		setsa(column);
 		var setData = orderSetter(orde, column, adss, type);
+		dispatchRedux(orderManagerPublisherData(orde, column));
 		setadss(setData);
 	};
 	const arrowRetuner = (mode) => {
@@ -67,8 +87,9 @@ function PublisherConsole() {
 	};
 	useEffect(
 		() => {
-			if (consoledata.publisherData) {
-				setadss(consoledata.publisherData);
+			if (consoledata.searchedpublisherData) {
+				setadss(consoledata.searchedpublisherData);
+				// tablesorter('impression', 'number');
 			}
 		},
 		[ consoledata ]
@@ -80,7 +101,7 @@ function PublisherConsole() {
 			</div>
 		);
 	}
-	console.log(adss);
+	// console.log(adss);
 	return (
 		<div>
 			<div className="heading">
@@ -92,6 +113,9 @@ function PublisherConsole() {
 				) : (
 					''
 				)}
+			</div>
+			<div className="tableCont">
+				<SearchCampagin state={'client'} inval={searchval} setInval={onChangeRedux} />
 			</div>
 			<Paper className="tableCont">
 				<TableContainer>

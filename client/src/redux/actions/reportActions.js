@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {
 	REPORT_LOADING,
 	REPORT_BASE_LOADED,

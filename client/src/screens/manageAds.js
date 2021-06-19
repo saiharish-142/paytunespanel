@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 // import { useHistory } from 'react-router-dom'
 import SearchCampagin from '../components/SearchCampagin';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadAds, loadingAds, searchads } from '../redux/actions/manageadsAction';
+import { loadAds, loadingAds, searchads, storepagination } from '../redux/actions/manageadsAction';
 import PreLoader from '../components/loaders/PreLoader';
 import SortPaTable from '../components/SortPaTable';
 import { orderManager } from '../redux/actions/manageadsAction';
@@ -60,6 +60,9 @@ function Dashboard({ clientview }) {
 					adss={manageads.searchedmanageads}
 					order={manageads.ordername}
 					direc={manageads.orderdir}
+					actionToSet={storepagination}
+					pagination={manageads.pagination}
+					rpp={manageads.rowspp}
 				/>
 			</div>
 		);

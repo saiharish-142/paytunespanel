@@ -4,7 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import PreLoader from '../components/loaders/PreLoader';
 import SearchCampagin from '../components/SearchCampagin';
 import SortPaTable from '../components/SortPaTable';
-import { loadBundles, loadingBundles, orderManagerBundles, searchBundles } from '../redux/actions/manageBundlesAction';
+import {
+	loadBundles,
+	loadingBundles,
+	orderManagerBundles,
+	searchBundles,
+	storepaginationBundles
+} from '../redux/actions/manageBundlesAction';
 
 function DashboardBundle({ clientview }) {
 	// const history = useHistory()
@@ -78,6 +84,9 @@ function DashboardBundle({ clientview }) {
 					adss={managebundles.searchedmanagebundles}
 					order={managebundles.ordername}
 					direc={managebundles.orderdir}
+					actionToSet={storepaginationBundles}
+					pagination={managebundles.pagination}
+					rpp={managebundles.rowspp}
 				/>
 			</div>
 		);
