@@ -693,10 +693,6 @@ async function CategoryRefresher() {
 	});
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 68e7c455af45bc51b4ae2a32931beb8564bc8039
 async function uniqueMaker({ date }) {
 	let uniqueids = await trackinglogs
 		.distinct('campaignId', { date: date, type: 'impression' })
