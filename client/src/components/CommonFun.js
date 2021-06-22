@@ -45,7 +45,6 @@ export const FrequencyHead = [
 export const IBAHead = [
 	{ title: 'Category' },
 	{ title: 'Name' },
-	{ title: 'Clicks' },
 	{ title: 'Tier 1' },
 	{ title: 'Tier 2' },
 	{ title: 'Tier 3' },
@@ -64,7 +63,6 @@ export const PincodeHead = [
 	{ title: 'City' },
 	{ title: 'Grand City' },
 	{ title: 'District' },
-	{ title: 'Comparison' },
 	{ title: 'State' },
 	{ title: 'Grand State' },
 	{ title: 'Impressions' },
@@ -215,6 +213,7 @@ export const PincodeBody = (report1) => {
 			(parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) * 100 / parseInt(log.impression);
 		return [
 			{ value: log.zip ? log.zip : '' },
+			{ value: log.area ? log.area : '' },
 			{ value: log.lowersubcity ? log.lowersubcity : '' },
 			{ value: log.subcity ? log.subcity : '' },
 			{ value: log.city ? log.city : '' },
