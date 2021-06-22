@@ -69,7 +69,7 @@ export default function Categorydataform({ props, setShow, setsuccess, data1, se
 					label="Category"
 					required={true}
 					value={category}
-					style={{ width: '30%' }}
+					style={{ width: '60%' }}
 					onChange={(e) => {
 						setcategory(e.target.value);
 					}}
@@ -80,7 +80,7 @@ export default function Categorydataform({ props, setShow, setsuccess, data1, se
 					margin="dense"
 					label="Impressions (No Change)"
 					required={true}
-					style={{ width: '30%' }}
+					style={{ width: '60%' }}
 					value={impression ? impression : ''}
 					onChange={(e) => {
 						setimpression(e.target.value);
@@ -93,7 +93,7 @@ export default function Categorydataform({ props, setShow, setsuccess, data1, se
 					margin="dense"
 					required={true}
 					label="Tier1"
-					style={{ width: '30%' }}
+					style={{ width: '60%' }}
 					value={tier1}
 					onChange={(e) => {
 						settier1(e.target.value);
@@ -105,7 +105,7 @@ export default function Categorydataform({ props, setShow, setsuccess, data1, se
 					margin="dense"
 					required={true}
 					label="Tier2"
-					style={{ width: '30%' }}
+					style={{ width: '60%' }}
 					value={tier2}
 					onChange={(e) => {
 						settier2(e.target.value);
@@ -117,7 +117,7 @@ export default function Categorydataform({ props, setShow, setsuccess, data1, se
 					margin="dense"
 					required={true}
 					label="Tier3"
-					style={{ width: '30%' }}
+					style={{ width: '60%' }}
 					value={tier3}
 					onChange={(e) => {
 						settier3(e.target.value);
@@ -128,7 +128,7 @@ export default function Categorydataform({ props, setShow, setsuccess, data1, se
 					placeholder="Tier4"
 					margin="dense"
 					label="Tier4"
-					style={{ width: '30%' }}
+					style={{ width: '60%' }}
 					value={tier4}
 					required={true}
 					onChange={(e) => {
@@ -140,7 +140,7 @@ export default function Categorydataform({ props, setShow, setsuccess, data1, se
 					placeholder="Gender_Category"
 					margin="dense"
 					label="Gender_Category"
-					style={{ width: '30%' }}
+					style={{ width: '60%' }}
 					value={gendercategory}
 					required={true}
 					onChange={(e) => {
@@ -152,7 +152,7 @@ export default function Categorydataform({ props, setShow, setsuccess, data1, se
 					placeholder="Age_Category"
 					margin="dense"
 					label="Age_Category"
-					style={{ width: '30%' }}
+					style={{ width: '60%' }}
 					value={agecategory}
 					required={true}
 					onChange={(e) => {
@@ -164,7 +164,7 @@ export default function Categorydataform({ props, setShow, setsuccess, data1, se
 					placeholder="New_Taxonamy"
 					margin="dense"
 					label="New_Taxonamy"
-					style={{ width: '30%' }}
+					style={{ width: '60%' }}
 					value={taxonamy}
 					required={true}
 					onChange={(e) => {
