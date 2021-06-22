@@ -1,7 +1,7 @@
 export const PublishHead = [
 	{ title: 'Publisher' },
 	{ title: 'SSP' },
-	{ title: 'Impressions to be delivered' },
+	{ title: 'Tagret Impressions' },
 	{ title: 'Impressions Delivered' },
 	{ title: 'Total spent' },
 	{ title: 'Clicks Delivered' },
@@ -10,13 +10,13 @@ export const PublishHead = [
 ];
 export const QuartileHead = [
 	{ title: 'Publisher' },
+	{ title: 'impressions' },
 	{ title: 'start' },
 	{ title: 'firstQuartile' },
 	{ title: 'midpoint' },
-	{ title: 'Impressions Delivered' },
 	{ title: 'thirdQuartile' },
 	{ title: 'complete' },
-	{ title: 'impressions' }
+	{ title: 'LTR' }
 ];
 export const LanguageHead = [
 	{ title: 'Language' },
@@ -104,14 +104,16 @@ export const PublishBody = (type, report1, spentfinder, report) => {
 };
 export const QuartileBody = (report1) => {
 	return report1.map((log, index) => {
+		log.ltr = (log.complete ? parseInt(log.complete) : 0) * 100 / (log.impressions ? parseInt(log.impressions) : 0);
 		return [
 			{ value: log.publishername ? log.publishername : '' },
+			{ value: log.impressions ? log.impressions : 0 },
 			{ value: log.start ? log.start : 0 },
 			{ value: log.firstQuartile ? log.firstQuartile : 0 },
 			{ value: log.midpoint ? log.midpoint : 0 },
 			{ value: log.thirdQuartile ? log.thirdQuartile : 0 },
 			{ value: log.complete ? log.complete : 0 },
-			{ value: log.impressions ? log.impressions : 0 }
+			{ value: log.ltr ? log.ltr : 0 }
 		];
 	});
 };

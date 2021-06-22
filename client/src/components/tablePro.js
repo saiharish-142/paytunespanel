@@ -71,6 +71,13 @@ function TablePro() {
 		},
 		[ stateratio ]
 	);
+	// spentdata refresher
+	useEffect(
+		() => {
+			console.log(spentdata);
+		},
+		[ spentdata ]
+	);
 	// data puller effect
 	useEffect(
 		() => {
@@ -407,41 +414,48 @@ function TablePro() {
 	};
 	// spent finder by ids
 	const spentfinder = (appId, campaignId, impressions, appbu, text) => {
-		if (spentdata.length) {
-			if (text === 'appid') {
-				// Humgama
-				if (appId.toString() === '5d10c405844dd970bf41e2af') {
-					return parseInt(impressions) * 4.25 / (usinr * 100);
+		// console.log(text);
+		if (spentdata != null)
+			if (spentdata.length) {
+				if (text === 'appid') {
+					// Humgama
+					if (appId.toString() === '5d10c405844dd970bf41e2af') {
+						return parseInt(impressions) * 4.25 / (usinr * 100);
+					}
+					// Wynk
+					if (appId.toString() === '5b2210af504f3097e73e0d8b') {
+						return parseInt(impressions) * 10 / (usinr * 100);
+					}
+					var datarq = spentdata.filter((x) => x.campaignId === campaignId && x.appId === appId);
+					var spent = 0;
+					// console.log(datarq)
+					datarq.map((dat) => {
+						spent += parseFloat(dat.totalSpent);
+					});
+					return null;
+				} else if (text === 'apppub') {
+					// console.log(appbu);
+					// Humgama
+					if (appId.toString() === '5d10c405844dd970bf41e2af') {
+						return parseInt(impressions) * 4.25 / (usinr * 100);
+					}
+					// Wynk
+					if (appId.toString() === '5b2210af504f3097e73e0d8b') {
+						return parseInt(impressions) * 10 / (usinr * 100);
+					}
+					var datt = spentdata;
+					// datt.map((x) => {
+					// 	console.log(x.campaignId === campaignId, x.campaignId, campaignId);
+					// });
+					var datarq = spentdata.filter((x) => x.campaignId === campaignId && x.apppubid === appbu);
+					var spent = 0;
+					// console.log(datarq);
+					datarq.map((dat) => {
+						spent += parseFloat(dat.totalSpent);
+					});
+					return spent;
 				}
-				// Wynk
-				if (appId.toString() === '5b2210af504f3097e73e0d8b') {
-					return parseInt(impressions) * 10 / (usinr * 100);
-				}
-				var datarq = spentdata.filter((x) => x.campaignId === campaignId && x.appId === appId);
-				var spent = 0;
-				// console.log(datarq)
-				datarq.map((dat) => {
-					spent += parseFloat(dat.totalSpent);
-				});
-				return null;
-			} else {
-				// Humgama
-				if (appId.toString() === '5d10c405844dd970bf41e2af') {
-					return parseInt(impressions) * 4.25 / (usinr * 100);
-				}
-				// Wynk
-				if (appId.toString() === '5b2210af504f3097e73e0d8b') {
-					return parseInt(impressions) * 10 / (usinr * 100);
-				}
-				var datarq = spentdata.filter((x) => x.campaignId === campaignId && x.apppubid === appbu);
-				var spent = 0;
-				// console.log(datarq)
-				datarq.map((dat) => {
-					spent += parseFloat(dat.totalSpent);
-				});
-				return spent;
 			}
-		}
 		return 0;
 	};
 	// returns arrow of the asecding and other function
@@ -461,6 +475,7 @@ function TablePro() {
 		colorfinder: colorfinder,
 		timefinder: timefinder,
 		ids: report.ids,
+		spentdata: spentdata,
 		spentfinder: spentfinder,
 		spentOffline: report.audiospentOffline ? report.audiospentOffline : 0,
 		spentOfflined: report.displayspentOffline ? report.displayspentOffline : 0,
@@ -665,7 +680,7 @@ function TablePro() {
 				data:
 					report.ids && report.ids.audio && report.ids.audio.length && pincodereports && pincodereports.audio
 						? PincodeBody(pincodereports.audio)
-						: []
+						: null
 			}
 		],
 		display: [
@@ -678,7 +693,7 @@ function TablePro() {
 					pincodereports &&
 					pincodereports.display
 						? PincodeBody(pincodereports.display)
-						: []
+						: null
 			}
 		],
 		video: [
@@ -687,7 +702,7 @@ function TablePro() {
 				data:
 					report.ids && report.ids.video && report.ids.video.length && pincodereports && pincodereports.video
 						? PincodeBody(pincodereports.video)
-						: []
+						: null
 			}
 		]
 	};

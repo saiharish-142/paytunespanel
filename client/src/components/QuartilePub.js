@@ -20,12 +20,13 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 	const [ adss, setadss ] = React.useState(report);
 	const headers = [
 		{ key: 'publishername', label: 'Publisher' },
+		{ key: 'impressions', label: 'Total Impressions' },
 		{ key: 'start', label: 'Start' },
 		{ key: 'firstQuartile', label: 'First Quartile' },
 		{ key: 'midpoint', label: 'Second Quartile' },
 		{ key: 'thirdQuartile', label: 'Third Quartile' },
 		{ key: 'complete', label: 'Complete' },
-		{ key: 'impressions', label: 'Total Impressions' }
+		{ key: 'ltr', label: 'LTR' }
 	];
 	var csvReport = {
 		filename: `${state1}_${title}_QuartileData.csv`,
@@ -38,6 +39,10 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 				var data = report;
 				data.sort(function(a, b) {
 					return b.impressions - a.impressions;
+				});
+				data.map((x) => {
+					x.ltr =
+						(x.complete ? parseInt(x.complete) : 0) * 100 / (x.impressions ? parseInt(x.impressions) : 0);
 				});
 				setadss(data);
 			} else {
@@ -79,6 +84,13 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 									Publisher
 									{arrowRetuner(sa === 'publishername' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('impressions', 'number')}
+									style={{ cursor: 'pointer' }}
+								>
+									Total Impresions{' '}
+									{arrowRetuner(sa === 'impressions' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
 								<TableCell onClick={() => tablesorter('start', 'number')} style={{ cursor: 'pointer' }}>
 									Start {arrowRetuner(sa === 'start' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
@@ -109,12 +121,8 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 								>
 									Complete {arrowRetuner(sa === 'complete' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell
-									onClick={() => tablesorter('impressions', 'number')}
-									style={{ cursor: 'pointer' }}
-								>
-									Total Impresions{' '}
-									{arrowRetuner(sa === 'impressions' ? (order === 'asc' ? '1' : '2') : '3')}
+								<TableCell onClick={() => tablesorter('ltr', 'number')} style={{ cursor: 'pointer' }}>
+									LTR {arrowRetuner(sa === 'ltr' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 							</TableRow>
 						</TableHead>
@@ -123,12 +131,13 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 								return (
 									<TableRow key={i}>
 										<TableCell>{log.publishername}</TableCell>
+										<TableCell>{log.impressions}</TableCell>
 										<TableCell>{log.start}</TableCell>
 										<TableCell>{log.firstQuartile}</TableCell>
 										<TableCell>{log.midpoint}</TableCell>
 										<TableCell>{log.thirdQuartile}</TableCell>
 										<TableCell>{log.complete}</TableCell>
-										<TableCell>{log.impressions}</TableCell>
+										<TableCell>{Math.round(log.ltr * 100) / 100}%</TableCell>
 									</TableRow>
 								);
 							})}
