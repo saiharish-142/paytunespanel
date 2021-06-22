@@ -7,15 +7,15 @@ export default function Categorydataform({ props, setShow, setsuccess, data1, se
 
 	const [ _id, set_id ] = useState(props._id);
 	const [ category, setcategory ] = useState(props.category);
-	const [ impression, setimpression ] = useState(props.impressions);
-	const [ name, setname ] = useState(props.name);
+	const [ impression, setimpression ] = useState(props.impression);
+	
 	const [ tier1, settier1 ] = useState(props.tier1);
 	const [ tier2, settier2 ] = useState(props.tier2);
 	const [ tier3, settier3 ] = useState(props.tier3);
 	const [ tier4, settier4 ] = useState(props.tier4);
-	const [ gendercategory, setgender ] = useState(props.gender_category);
-	const [ agecategory, setage ] = useState(props.age_category);
-	const [ taxonamy, settaxonamy ] = useState(props.taxonamy);
+	const [ gendercategory, setgender ] = useState(props.genderCategory);
+	const [ agecategory, setage ] = useState(props.AgeCategory);
+	const [ taxonamy, settaxonamy ] = useState(props.new_taxonamy);
 	//load()
 	function editCategorydata() {
 		fetch('/subrepo/editcategorydata', {
@@ -27,7 +27,6 @@ export default function Categorydataform({ props, setShow, setsuccess, data1, se
 			body: JSON.stringify({
 				_id,
 				category,
-				name,
 				tier1,
 				tier2,
 				tier3,
@@ -88,18 +87,7 @@ export default function Categorydataform({ props, setShow, setsuccess, data1, se
 					}}
 				/>
 				<br />
-				<TextField
-					placeholder="Name"
-					margin="dense"
-					label="Name"
-					style={{ width: '30%' }}
-					value={name}
-					required={true}
-					onChange={(e) => {
-						setname(e.target.value);
-					}}
-				/>
-				<br />
+				
 				<TextField
 					placeholder="Tier1"
 					margin="dense"

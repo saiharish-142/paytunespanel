@@ -181,7 +181,6 @@ export default function Categorydata() {
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('category')} className={getClassNamesFor('category')}>Category {arrowRetuner( sortconfig.key==='category'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('impression')} className={getClassNamesFor('impression')}>Impressions {arrowRetuner( sortconfig.key==='impression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('click')} className={getClassNamesFor('click')}>Clicks {arrowRetuner( sortconfig.key==='click'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('Name')} className={getClassNamesFor('Name')}>Name {arrowRetuner( sortconfig.key==='Name'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
 								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier1')} className={getClassNamesFor('tier1')}>Tier1 {arrowRetuner( sortconfig.key==='tier1'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
 								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier2')} className={getClassNamesFor('tier2')}>Tier2 {arrowRetuner( sortconfig.key==='tier2'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
 								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier3')} className={getClassNamesFor('tier3')}>Tier3 {arrowRetuner( sortconfig.key==='tier3'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
@@ -200,7 +199,6 @@ export default function Categorydata() {
 									</TableCell>
 									<TableCell>{row.impression ? row.impression : ''}</TableCell>
 									<TableCell>{row.click?row.click:''}</TableCell>
-									<TableCell>{row.Name ? row.Name : ''}</TableCell>
 									<TableCell>{row.tier1 ? row.tier1 : ''}</TableCell>
 									<TableCell>{row.tier2 ? row.tier2 : ''}</TableCell>
 									<TableCell>{row.tier3 ? row.tier3 : ''}</TableCell>

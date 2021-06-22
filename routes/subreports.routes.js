@@ -1570,10 +1570,9 @@ router.put('/editcategorydata', adminauth, async (req, res) => {
 	try {
 		//data.make_model=data.make_model.toLowerCase()
 
-		let { category, name, tier1, tier2, tier3, tier4, gendercategory, agecategory, taxonamy } = req.body;
+		let { category,tier1, tier2, tier3, tier4, gendercategory, agecategory, taxonamy } = req.body;
 		let updates = {
 			category,
-			Name: name,
 			tier1,
 			tier2,
 			tier3,
