@@ -28,12 +28,30 @@ const useStyles = makeStyles((theme) => ({
 			// minWidth: '55%',
 			width: '98%'
 		}
-	}
+	},
+	paper: {
+		position: 'absolute',
+		width: 500,
+		backgroundColor: theme.palette.background.paper,
+		border: '2px solid #000',
+		boxShadow: theme.shadows[5],
+		padding: '2% 2% 2% 6%',
+	  }
 }));
 
 export default function Categorydata() {
 	const classes = useStyles();
+	const [open, setOpen] = React.useState(false);
 
+	const handleOpen = (data) => {
+	  setOpen(true);
+	  setShow(true)
+	  settempdata(data);
+	};
+  
+	const handleClose = () => {
+	  setOpen(false);
+	};
 	const [ error, seterror ] = useState('');
 	const [ success, setsuccess ] = useState('');
 	const [ rows, setrows ] = useState([]);
@@ -50,10 +68,10 @@ export default function Categorydata() {
 	const [ show, setShow ] = useState(false);
 	const [ tempdata, settempdata ] = useState({});
 
-	const handleShow = (data) => {
-		setShow(true);
-		settempdata(data);
-	};
+	// const handleShow = (data) => {
+	// 	setShow(true);
+	// 	settempdata(data);
+	// };
 	//const [make_model,setmakemodel]=useState("")
 
 	const data = () => {
@@ -207,7 +225,7 @@ export default function Categorydata() {
 									<TableCell>{row.AgeCategory ? row.AgeCategory : ''}</TableCell>
 									<TableCell>{row.new_taxonamy ? row.new_taxonamy : ''}</TableCell>
 									<TableCell>
-										<button className="btn" onClick={() => handleShow(row)}>
+										<button className="btn" onClick={() =>  handleOpen(row)}>
 											Edit{' '}
 										</button>
 									</TableCell>
@@ -228,6 +246,13 @@ export default function Categorydata() {
 				/>
 				{show ? (
 					<div>
+						<Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+		  		<div style={{maxHeight:'100vh','overflow-y':'auto'}} className={classes.paper}>
 						<h4>Edit Category Data</h4>
 						<Categorydataform
 							props={tempdata}
@@ -236,6 +261,8 @@ export default function Categorydata() {
 							data1={data}
 							seterror={seterror}
 						/>
+						</div>
+						</Modal>
 					</div>
 				) : (
 					<React.Fragment />
