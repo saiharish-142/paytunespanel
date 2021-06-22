@@ -18,6 +18,7 @@ function PublisherAdmin({
 	state1,
 	timefinder,
 	singlead,
+	spentdata,
 	spentfinder,
 	spentOffline,
 	spentOfflined,
@@ -56,17 +57,20 @@ function PublisherAdmin({
 					return b.impressions - a.impressions;
 				});
 				data.map((ad) => {
+					var publishbid = ad.PublisherSplit;
+					// console.log(publishbid);
 					ad.spent =
 						spentfinder(
 							ad.Publisher._id,
-							ad.campaignId._id,
+							ad.campaignId,
 							ad.impressions,
-							ad.PublisherSplit,
-							ad.PublisherSplit ? 'apppub' : 'appid'
+							publishbid,
+							publishbid ? 'apppub' : 'appid'
 						) +
 						parseInt(title === 'Audio' ? (spentOffline ? spentOffline : 0) : 0) +
 						parseInt(title === 'Display' ? (spentOfflined ? spentOfflined : 0) : 0) +
 						parseInt(title === 'Video' ? (spentOfflinev ? spentOfflinev : 0) : 0);
+					// console.log(ad.spent);
 					return ad;
 				});
 				csvReport.data = data;
@@ -75,7 +79,7 @@ function PublisherAdmin({
 				setadss(report);
 			}
 		},
-		[ report ]
+		[ report, spentdata ]
 	);
 	const classes = useStyles();
 	const handleChangePage = (event, newPage) => {
