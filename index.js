@@ -557,7 +557,7 @@ async function PincodeRefresher() {
 	});
 }
 
-cron.schedule('30 15 * * *', function() {
+cron.schedule('20 00 * * *', function() {
 	PhoneRefresher();
 });
 
@@ -596,7 +596,7 @@ async function PhoneRefresher() {
 	phones.forEach(async (phone) => {
 		const match = await Phonereports2.findOne({ make_model: phone._id.phone });
 		if (!match) {
-			const newzip = new Phonereports2({
+			const newzip = new Phonereports2({  //7895906248
 				cost: '',
 				make_model: phone._id.phone,
 				cumulative: '',
