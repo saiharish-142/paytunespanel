@@ -111,7 +111,7 @@ export const QuartileBody = (report1) => {
 			{ value: log.midpoint ? log.midpoint : 0 },
 			{ value: log.thirdQuartile ? log.thirdQuartile : 0 },
 			{ value: log.complete ? log.complete : 0 },
-			{ value: log.ltr ? log.ltr : 0 }
+			{ value: log.ltr ? log.ltr + '%' : 0 }
 		];
 	});
 };
@@ -219,7 +219,6 @@ export const PincodeBody = (report1) => {
 			{ value: log.city ? log.city : '' },
 			{ value: log.grandcity ? log.grandcity : '' },
 			{ value: log.district ? log.district : '' },
-			{ value: log.comparison ? log.comparison : '' },
 			{ value: log.state ? log.state : '' },
 			{ value: log.grandstate ? log.grandstate : '' },
 			{ value: log.impression ? log.impression : 0 },
