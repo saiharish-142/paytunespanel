@@ -721,6 +721,7 @@ function TablePro() {
 			}
 		});
 		// console.log(data);
+		// console.log(data);
 		return (
 			<ExcelFile
 				filename={props.filename}
