@@ -557,7 +557,7 @@ async function PincodeRefresher() {
 	});
 }
 
-cron.schedule('30 12 * * *', function() {
+cron.schedule('30 15 * * *', function() {
 	PhoneRefresher();
 });
 
@@ -576,13 +576,13 @@ async function PhoneRefresher() {
 		{
 			$project: {
 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-				phoneModel: '$phoneModel',
+				phoneModel: {$toUpper:'$phoneModel'},
 				impression: '$impression',
 				CompanionClickTracking: 1,
 				SovClickTracking: 1
 			}
 		},
-		{ $match: { test: yesterday } },
+		{ $match: {test:{$gt:'2021-05-01'}} },
 		{
 			$group: {
 				_id: { phone: '$phoneModel' },

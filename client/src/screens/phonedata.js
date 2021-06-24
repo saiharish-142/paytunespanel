@@ -170,8 +170,7 @@ export default function Phonedata() {
 		}else{
 			setsearchedData(arr)
 			console.log('jvhvhvhv',arr)
-		}
-			
+		}	
 	}
 
 	return (
