@@ -112,7 +112,7 @@ export const QuartileBody = (report1) => {
 			{ value: log.midpoint ? log.midpoint : 0 },
 			{ value: log.thirdQuartile ? log.thirdQuartile : 0 },
 			{ value: log.complete ? log.complete : 0 },
-			{ value: log.ltr ? log.ltr : 0 }
+			{ value: log.ltr ? log.ltr + '%' : 0 }
 		];
 	});
 };
