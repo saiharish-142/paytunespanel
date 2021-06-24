@@ -6,6 +6,7 @@ var publisheriseConsoleSchema = new Schema({
 	apppubid: String,
 	campaignId: { type: ObjectId, ref: 'streamingadObj' },
 	publisherName: String,
+	type: String,
 	ssp: String,
 	impression: Number,
 	feed: Number,

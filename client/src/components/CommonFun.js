@@ -63,6 +63,7 @@ export const PincodeHead = [
 	{ title: 'City' },
 	{ title: 'Grand City' },
 	{ title: 'District' },
+	{ title: 'Comparison' },
 	{ title: 'State' },
 	{ title: 'Grand State' },
 	{ title: 'Impressions' },
