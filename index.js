@@ -582,7 +582,7 @@ async function PhoneRefresher() {
 				SovClickTracking: 1
 			}
 		},
-		{ $match: {test:{$gt:'2021-05-01'}} },
+		{ $match: yesterday },
 		{
 			$group: {
 				_id: { phone: '$phoneModel' },
@@ -596,7 +596,7 @@ async function PhoneRefresher() {
 	phones.forEach(async (phone) => {
 		const match = await Phonereports2.findOne({ make_model: phone._id.phone });
 		if (!match) {
-			const newzip = new Phonereports2({  //7895906248
+			const newzip = new Phonereports2({  
 				cost: '',
 				make_model: phone._id.phone,
 				cumulative: '',
