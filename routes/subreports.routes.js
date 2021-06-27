@@ -744,10 +744,11 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 				$facet: {
 					audio: [
 						{ $match: { campaignId: { $in: audio } } },
+						{$addFields:{phoneModel_sub:{$toUpper:"$phoneModel"}}},
 						{
 							$lookup: {
 								from: 'phonemodel2reports',
-								localField: 'phoneModel',
+								localField: 'phoneModel_sub',
 								foreignField: 'make_model',
 								as: 'extra_details'
 							}
@@ -834,10 +835,11 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 						//     createdOn:"$createdOn",
 						//     temp_phone:1
 						// }},
+						{$addFields:{phoneModel_sub:{$toUpper:"$phoneModel"}}},
 						{
 							$lookup: {
 								from: 'phonemodel2reports',
-								localField: 'phoneModel',
+								localField: 'phoneModel_sub',
 								foreignField: 'make_model',
 								as: 'extra_details'
 							}
@@ -924,10 +926,11 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 						//     createdOn:"$createdOn",
 						//     temp_phone:1
 						// }},
+						{$addFields:{phoneModel_sub:{$toUpper:"$phoneModel"}}},
 						{
 							$lookup: {
 								from: 'phonemodel2reports',
-								localField: 'phoneModel',
+								localField: 'phoneModel_sub',
 								foreignField: 'make_model',
 								as: 'extra_details'
 							}
