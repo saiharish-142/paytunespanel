@@ -557,7 +557,7 @@ async function PincodeRefresher() {
 	});
 }
 
-cron.schedule('20 00 * * *', function() {
+cron.schedule('30 12 * * *', function() {
 	PhoneRefresher();
 });
 
