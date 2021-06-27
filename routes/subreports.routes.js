@@ -778,20 +778,6 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 								}
 							}
 						},
-						// {
-						// 	$match: {
-						// 		$or: [
-						// 			{ 'extra_details.make_model': '' },
-						// 			{ 'extra_details.cumulative': '' },
-						// 			{ 'extra_details.release': '' },
-						// 			{ 'extra_details.company': '' },
-						// 			{ 'extra_details.type': '' },
-						// 			{ 'extra_details.total_percent': '' },
-						// 			{ 'extra_details.model': '' },
-						// 			{ 'extra_details.cost': '' }
-						// 		]
-						// 	}
-						// },
 						{
 							$group: {
 								_id: { combined_make_model: '$extra_details.combined_make_model' },
@@ -808,14 +794,6 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 								extra: '$extra',
 								CompanionClickTracking: 1,
 								SovClickTracking: 1
-								// cost: '$extra.cost',
-								// cumulative: '$extra.cumulative',
-								// release: '$extra.release',
-								// company: '$extra.company',
-								// type: '$extra.type',
-								// model: '$extra.model',
-								// total_percent: '$extra.total_percent',
-								//combined_make_and_model: '$extra.make_model'
 							}
 						},
 						{ $sort: { impression: -1 } }
