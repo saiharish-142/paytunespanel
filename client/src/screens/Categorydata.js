@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 // import { useForm } from 'react-hook-form';
+import { CSVLink } from 'react-csv';
 import { Alert } from '@material-ui/lab';
 import {
 	Table,
@@ -116,6 +117,24 @@ export default function Categorydata() {
 			});
 	}, []);
 
+	const headers = [
+		{ key: 'category', label: 'Category' },
+		{ key: 'impression', label: 'Impressions' },
+		{ key: 'click', label: 'Clicks' },
+		{ key: 'tier1', label: 'Tier1' },
+		{ key: 'tier2', label: 'Tier2' },
+		{ key: 'tier3', label: 'Tier3' },
+		{ key: 'tier4', label: 'Tier4' },
+		{ key: 'genderCategory', label: 'Gender Category' },
+		{ key: 'AgeCategory', label: 'Age Category' },
+		{ key: 'new_taxonamy', label: 'New Taxonamy' }
+	];
+	var csvReport = {
+		filename: `CategoryData.csv`,
+		headers: headers,
+		data: rows
+	};
+
 	React.useMemo(() => {
 		let sortedProducts = rows;
 		if (sortconfig !== null) {
@@ -191,6 +210,7 @@ export default function Categorydata() {
 			</div>
 
 			<Paper>
+			<CSVLink {...csvReport}  >Download Table</CSVLink>
 				<TableContainer style={{maxHeight:440}}>
 					<Table stickyHeader aria-label="sticky table">
 						<TableHead>
