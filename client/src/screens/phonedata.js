@@ -232,7 +232,7 @@ export default function Phonedata() {
 			</div>
 				
 			<Paper>
-				<CSVLink {...csvReport}>Download Table</CSVLink>
+				<CSVLink {...csvReport} style={{padding:'5px',marginTop:'5px'}} >Download Table</CSVLink>
 			{searchedData==='No Data Found!'? <h7>{searchedData}</h7>:  <TableContainer style={{maxHeight:440}}>
 					<Table stickyHeader aria-label="sticky table" >
 						<TableHead  style={{position:"sticky",top:0}}>
