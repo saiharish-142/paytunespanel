@@ -800,19 +800,6 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 					],
 					display: [
 						{ $match: { campaignId: { $in: display } } },
-						// {$addFields:{"temp_phone":"$phoneModel"}},
-						// {$project:{phoneModel:{$toLower:'$phoneModel'},
-						//     campaignId:"$campaignId",
-						//     impression:"$impression",
-						//     CompanionClickTracking:"$CompanionClickTracking",
-						//     SovClickTracking:"$SovClickTracking",
-						//     start:"$start",
-						//     midpoint:"$midpoint",
-						//     thirdQuartile:"$thirdQuartile",
-						//     complete:"$complete",
-						//     createdOn:"$createdOn",
-						//     temp_phone:1
-						// }},
 						{$addFields:{phoneModel_sub:{$toUpper:"$phoneModel"}}},
 						{
 							$lookup: {
@@ -847,20 +834,6 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 								}
 							}
 						},
-						// {
-						// 	$match: {
-						// 		$or: [
-						// 			{ 'extra_details.make_model': '' },
-						// 			{ 'extra_details.cumulative': '' },
-						// 			{ 'extra_details.release': '' },
-						// 			{ 'extra_details.company': '' },
-						// 			{ 'extra_details.type': '' },
-						// 			{ 'extra_details.total_percent': '' },
-						// 			{ 'extra_details.model': '' },
-						// 			{ 'extra_details.cost': '' }
-						// 		]
-						// 	}
-						// },
 						{
 							$group: {
 								_id: { combined_make_model: '$extra_details.combined_make_model' },
@@ -877,33 +850,12 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 								extra: '$extra',
 								CompanionClickTracking: 1,
 								SovClickTracking: 1
-								// cost: '$extra.cost',
-								// cumulative: '$extra.cumulative',
-								// release: '$extra.release',
-								// company: '$extra.company',
-								// type: '$extra.type',
-								// model: '$extra.model',
-								// total_percent: '$extra.total_percent',
-								//combined_make_and_model: '$extra.make_model'
 							}
 						},
 						{ $sort: { impression: -1 } }
 					],
 					video: [
 						{ $match: { campaignId: { $in: video } } },
-						// {$addFields:{"temp_phone":"$phoneModel"}},
-						// {$project:{phoneModel:{$toLower:'$phoneModel'},
-						//     campaignId:"$campaignId",
-						//     impression:"$impression",
-						//     CompanionClickTracking:"$CompanionClickTracking",
-						//     SovClickTracking:"$SovClickTracking",
-						//     start:"$start",
-						//     midpoint:"$midpoint",
-						//     thirdQuartile:"$thirdQuartile",
-						//     complete:"$complete",
-						//     createdOn:"$createdOn",
-						//     temp_phone:1
-						// }},
 						{$addFields:{phoneModel_sub:{$toUpper:"$phoneModel"}}},
 						{
 							$lookup: {
@@ -938,20 +890,6 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 								}
 							}
 						},
-						// {
-						// 	$match: {
-						// 		$or: [
-						// 			{ 'extra_details.make_model': '' },
-						// 			{ 'extra_details.cumulative': '' },
-						// 			{ 'extra_details.release': '' },
-						// 			{ 'extra_details.company': '' },
-						// 			{ 'extra_details.type': '' },
-						// 			{ 'extra_details.total_percent': '' },
-						// 			{ 'extra_details.model': '' },
-						// 			{ 'extra_details.cost': '' }
-						// 		]
-						// 	}
-						// },
 						{
 							$group: {
 								_id: { combined_make_model: '$extra_details.combined_make_model' },
@@ -968,21 +906,13 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 								extra: '$extra',
 								CompanionClickTracking: 1,
 								SovClickTracking: 1
-								// cost: '$extra.cost',
-								// cumulative: '$extra.cumulative',
-								// release: '$extra.release',
-								// company: '$extra.company',
-								// type: '$extra.type',
-								// model: '$extra.model',
-								// total_percent: '$extra.total_percent',
-								//combined_make_and_model: '$extra.make_model'
 							}
 						},
 						{ $sort: { impression: -1 } }
 					]
 				}
 			}
-		])
+		]).allowDiskUse(true)
 		.then((result) => res.json(result))
 		.catch((err) => res.status(422).json(err));
 });

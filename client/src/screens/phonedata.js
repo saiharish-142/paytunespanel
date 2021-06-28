@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import { Alert } from '@material-ui/lab';
+import { CSVLink } from 'react-csv';
 import {
 	Table,
 	TableBody,
@@ -119,6 +120,25 @@ export default function Phonedata() {
 				console.log(dat);
 			});
 	}, []);
+
+	const headers = [
+		{ key: 'make_model', label: 'Make_Model' },
+		{ key: 'impression', label: 'Impressions' },
+		{ key: 'click', label: 'Clicks' },
+		{ key: 'release', label: 'Release Month and Year' },
+		{ key: 'cost', label: 'Release Cost or Mrp' },
+		{ key: 'company', label: 'Company Name' },
+		{ key: 'model', label: 'Model' },
+		{ key: 'type', label: 'Type of Device' },
+		{ key: 'total_percent', label: 'Total Percent' },
+		{ key: 'cumulative', label: 'Cumulative' },
+	];
+	var csvReport = {
+		filename: `PhoneData.csv`,
+		headers: headers,
+		data: rows
+	};
+
 	React.useMemo(() => {
 		let sortedProducts = rows;
 		if (sortconfig !== null) {
@@ -212,6 +232,7 @@ export default function Phonedata() {
 			</div>
 				
 			<Paper>
+				<CSVLink {...csvReport}>Download Table</CSVLink>
 			{searchedData==='No Data Found!'? <h7>{searchedData}</h7>:  <TableContainer style={{maxHeight:440}}>
 					<Table stickyHeader aria-label="sticky table" >
 						<TableHead  style={{position:"sticky",top:0}}>
