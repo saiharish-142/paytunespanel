@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import { Alert } from '@material-ui/lab';
+import { CSVLink } from 'react-csv';
 import {
 	Table,
 	TableBody,
@@ -117,6 +118,27 @@ export default function Zipdata() {
 			});
 	}, []);
 
+	const headers = [
+		{ key: 'pincode', label: 'Pincode' },
+		{ key: 'impression', label: 'Impressions' },
+		{ key: 'click', label: 'Clicks' },
+		{ key: 'area', label: 'Area' },
+		{ key: 'lowersubcity', label: 'Lower Sub City' },
+		{ key: 'subcity', label: 'Subcity' },
+		{ key: 'city', label: 'City' },
+		{ key: 'grandcity', label: 'Grand City' },
+		{ key: 'district', label: 'District' },
+		{ key: 'comparison', label: 'Comparison' },
+		{ key: 'state', label: 'State' },
+		{ key: 'grandstate', label: 'Grand State' },
+		{ key: 'latitude', label: 'Latitude' },
+		{ key: 'longitude', label: 'Longitude' },
+	];
+	var csvReport = {
+		filename: `PincodeData.csv`,
+		headers: headers,
+		data: rows
+	};
 
 	React.useMemo(() => {
 		let sortedProducts = rows;
@@ -192,6 +214,7 @@ export default function Zipdata() {
 			</div>
 
 			<Paper>
+			<CSVLink {...csvReport}  >Download Table</CSVLink>
 				<TableContainer style={{ maxHeight: 440 }}>
 					<Table stickyHeader aria-label="sticky table">
 						<TableHead>
