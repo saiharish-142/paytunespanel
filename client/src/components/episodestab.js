@@ -117,6 +117,11 @@ export default function EpisodeTab(){
 
     return (
         <div>
+			<div>
+			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Episode Data Tab</h4>
+			{/* <input placeholder="Search PhoneModel"  onChange={(e)=>setsearch(e.target.value)} style={{textAlign:'center',width:'20%',padding:'0.1%', border:'1px solid rgba(61, 61, 64, .25)', background:'#ffffff' }} />
+			<button className="btn" style={{marginLeft:'1%'}} onClick={ SearchData } >Search</button> */}
+			</div>
             <Paper>
 				{/* <CSVLink {...csvReport} style={{padding:'10px',marginTop:'20px'}} >Download Table</CSVLink> */}
 			{/* {searchedData==='No Data Found!'? <h7>{searchedData}</h7>:   */}
