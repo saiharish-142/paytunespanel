@@ -38,6 +38,8 @@ const useStyles = makeStyles((theme) => ({
 	  }
 }));
 
+
+
 export default function EpisodeTab(){
 
     const [rows,setrows]=useState([])
@@ -52,6 +54,19 @@ export default function EpisodeTab(){
 		setRowsPerPage(+event.target.value);
 		setPage(0);
 	};
+
+	const headers = [
+		{ key: 'episodename', label: 'Episode Name' },
+		{ key: 'request', label: 'Request' },
+		{ key: 'publisher', label: 'Publisher Name' },
+		{ key: 'category', label: 'Category' }
+	];
+	var csvReport = {
+		filename: `EpisodeData.csv`,
+		headers: headers,
+		data: rows
+	};
+
     useEffect(() => {
 		fetch('/rtbreq/getepisodewise_report', {
 			method: 'POST',
@@ -123,7 +138,7 @@ export default function EpisodeTab(){
 			<button className="btn" style={{marginLeft:'1%'}} onClick={ SearchData } >Search</button> */}
 			</div>
             <Paper>
-				{/* <CSVLink {...csvReport} style={{padding:'10px',marginTop:'20px'}} >Download Table</CSVLink> */}
+				<CSVLink {...csvReport} style={{padding:'10px',marginTop:'20px'}} >Download Table</CSVLink>
 			{/* {searchedData==='No Data Found!'? <h7>{searchedData}</h7>:   */}
             <TableContainer style={{maxHeight:440}}>
 					<Table stickyHeader aria-label="sticky table" >
