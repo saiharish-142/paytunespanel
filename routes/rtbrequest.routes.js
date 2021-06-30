@@ -261,7 +261,7 @@ router.post(
                     request:"$request"
                 }}
             ])
-            res.status(200).json({result})
+            res.status(200).json(result)
         } catch (err) {
             res.status(400).json({ error: err.message })
             console.log(err.message)
