@@ -576,13 +576,13 @@ async function PhoneRefresher() {
 		{
 			$project: {
 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-				phoneModel: {$toUpper:'$phoneModel'},
+				phoneModel: { $toUpper: '$phoneModel' },
 				impression: '$impression',
 				CompanionClickTracking: 1,
 				SovClickTracking: 1
 			}
 		},
-		{ $match: {test:yesterday} },
+		{ $match: { test: yesterday } },
 		{
 			$group: {
 				_id: { phone: '$phoneModel' },
@@ -596,7 +596,7 @@ async function PhoneRefresher() {
 	phones.forEach(async (phone) => {
 		const match = await Phonereports2.findOne({ make_model: phone._id.phone });
 		if (!match) {
-			const newzip = new Phonereports2({  
+			const newzip = new Phonereports2({
 				cost: '',
 				make_model: phone._id.phone,
 				cumulative: '',
@@ -1412,6 +1412,42 @@ cron.schedule('40 00 * * *', function() {
 	PublisherDataRefresher();
 });
 
+function arrayincludefinder(array, id) {
+	var status = false;
+	array.map((x) => {
+		if (x)
+			if (x.equals(id)) {
+				status = true;
+			}
+	});
+	return status;
+}
+
+function arr_diff(a1, a2) {
+	var a = [],
+		diff = [],
+		daila = 0,
+		diffa = 0,
+		cou = 0;
+	for (var i = 0; i < a1.length; i++) {
+		diffa += 1;
+		a[a1[i]] = true;
+	}
+	for (var i = 0; i < a2.length; i++) {
+		if (a[a2[i]]) {
+			cou += 1;
+			delete a[a2[i]];
+		}
+	}
+	for (var k in a) {
+		daila += 1;
+		diff.push(k);
+	}
+	// console.log(diff.length, diffa - daila, cou);
+	return diff;
+}
+
+// PublisherDataRefresher();
 async function PublisherDataRefresher() {
 	let date = new Date(new Date());
 	date.setDate(date.getDate() - 1);
@@ -1421,12 +1457,48 @@ async function PublisherDataRefresher() {
 	const date1 = date.getDate();
 	let yesterday = `${year}-${month}-${date1}`;
 	console.log('yesterday', yesterday);
-	// const StreamingAds = mongoose.model('streamingads');
+	const adsetting = mongoose.model('adsetting');
+	const StreamingAds = mongoose.model('streamingads');
 	const publisherapps = mongoose.model('publisherapps');
 	const publisherwiseConsole = mongoose.model('publisherwiseConsole');
 	const campaignwisereports = mongoose.model('campaignwisereports');
-	var publisherData = await campaignwisereports
+	const idsTo = await StreamingAds.find({}, { _id: 1 }).catch((err) => console.log(err));
+	var totalids = [];
+	var idsDefined = [];
+	idsTo.forEach((x) => {
+		totalids.push(mongoose.Types.ObjectId(x._id));
+	});
+	const sup_ids = await adsetting
+		.find({ campaignId: { $in: totalids } })
+		.select('campaignId type')
+		.catch((err) => console.log(err));
+	var ids = { audio: [], display: [], video: [] };
+	var audio_type = sup_ids.filter((x) => x.type === 'audio');
+	var display_type = sup_ids.filter((x) => x.type === 'display');
+	var video_type = sup_ids.filter((x) => x.type === 'video');
+	audio_type.forEach((x) => {
+		ids.audio.push(x.campaignId.toString());
+		idsDefined.push(x.campaignId.toString());
+	});
+	display_type.forEach((x) => {
+		ids.display.push(x.campaignId.toString());
+		idsDefined.push(x.campaignId.toString());
+	});
+	video_type.forEach((x) => {
+		ids.video.push(x.campaignId.toString());
+		idsDefined.push(x.campaignId.toString());
+	});
+	// console.log(totalids.length);
+	// var audiodig = arr_diff(totalids, idsDefined);
+	// console.log(totalids.length, idsDefined.length);
+	// console.log(audiodig.length);
+	ids.audio = ids.audio.map((x) => mongoose.Types.ObjectId(x));
+	ids.display = ids.display.map((x) => mongoose.Types.ObjectId(x));
+	ids.video = ids.video.map((x) => mongoose.Types.ObjectId(x));
+	console.log(ids.audio.length, ids.display.length, ids.video.length);
+	var publisherDataAudio = await campaignwisereports
 		.aggregate([
+			{ $match: { campaignId: { $in: ids.audio } } },
 			{
 				$project: {
 					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
@@ -1476,11 +1548,123 @@ async function PublisherDataRefresher() {
 			}
 		])
 		.catch((err) => console.log(err));
-	publisherData = await publisherapps
-		.populate(publisherData, { path: 'Publisher', select: '_id AppName' })
+	var publisherDataDisplay = await campaignwisereports
+		.aggregate([
+			{ $match: { campaignId: { $in: ids.display } } },
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					appId: '$appId',
+					apppubid: '$apppubid',
+					feed: '$feed',
+					ssp: '$ssp',
+					campaignId: '$campaignId',
+					impression: '$impression',
+					CompanionClickTracking: 1,
+					SovClickTracking: 1
+				}
+			},
+			{ $match: { test: yesterday } },
+			{
+				$group: {
+					_id: { appubid: '$apppubid', feed: '$feed' },
+					appId: { $push: '$appId' },
+					ssp: { $push: '$ssp' },
+					camp: { $push: '$campaignId' },
+					impressions: { $sum: '$impression' },
+					clicks: { $sum: '$CompanionClickTracking' },
+					clicks1: { $sum: '$SovClickTracking' }
+				}
+			},
+			{
+				$project: {
+					Publisher: '$appId',
+					PublisherSplit: '$_id.appubid',
+					feed: '$_id.feed',
+					updatedAt: '$updatedAt',
+					ssp: '$ssp',
+					campaignId: '$camp',
+					impressions: '$impressions',
+					clicks: '$clicks',
+					clicks1: '$clicks1',
+					_id: 0
+				}
+			},
+			{
+				$lookup: {
+					from: 'apppublishers',
+					localField: 'PublisherSplit',
+					foreignField: 'publisherid',
+					as: 'apppubidpo'
+				}
+			}
+		])
 		.catch((err) => console.log(err));
-	publisherData.forEach(async (publisherB) => {
-		console.log(publisherB.PublisherSplit);
+	var publisherDataVideo = await campaignwisereports
+		.aggregate([
+			{ $match: { campaignId: { $in: ids.video } } },
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					appId: '$appId',
+					apppubid: '$apppubid',
+					feed: '$feed',
+					ssp: '$ssp',
+					campaignId: '$campaignId',
+					impression: '$impression',
+					CompanionClickTracking: 1,
+					SovClickTracking: 1
+				}
+			},
+			{ $match: { test: yesterday } },
+			{
+				$group: {
+					_id: { appubid: '$apppubid', feed: '$feed' },
+					appId: { $push: '$appId' },
+					ssp: { $push: '$ssp' },
+					camp: { $push: '$campaignId' },
+					impressions: { $sum: '$impression' },
+					clicks: { $sum: '$CompanionClickTracking' },
+					clicks1: { $sum: '$SovClickTracking' }
+				}
+			},
+			{
+				$project: {
+					Publisher: '$appId',
+					PublisherSplit: '$_id.appubid',
+					feed: '$_id.feed',
+					updatedAt: '$updatedAt',
+					ssp: '$ssp',
+					campaignId: '$camp',
+					impressions: '$impressions',
+					clicks: '$clicks',
+					clicks1: '$clicks1',
+					_id: 0
+				}
+			},
+			{
+				$lookup: {
+					from: 'apppublishers',
+					localField: 'PublisherSplit',
+					foreignField: 'publisherid',
+					as: 'apppubidpo'
+				}
+			}
+		])
+		.catch((err) => console.log(err));
+	publisherDataAudio = await publisherapps
+		.populate(publisherDataAudio, { path: 'Publisher', select: '_id AppName' })
+		.catch((err) => console.log(err));
+	publisherDataDisplay = await publisherapps
+		.populate(publisherDataDisplay, { path: 'Publisher', select: '_id AppName' })
+		.catch((err) => console.log(err));
+	publisherDataVideo = await publisherapps
+		.populate(publisherDataVideo, { path: 'Publisher', select: '_id AppName' })
+		.catch((err) => console.log(err));
+	console.log('started');
+	console.log(publisherDataAudio.length, publisherDataDisplay.length, publisherDataVideo.length);
+	publisherDataAudio.forEach(async (publisherB) => {
+		// console.log(publisherB.PublisherSplit);
 		var publisherBit = publisherB;
 		publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
 		publisherBit.ssp = [ ...new Set(publisherBit.ssp) ];
@@ -1498,19 +1682,20 @@ async function PublisherDataRefresher() {
 		publisherBit.ssp = publisherBit.ssp ? publisherBit.ssp[0] : '';
 		publisherBit.campaignId = publisherBit.campaignId[0];
 		const match = await publisherwiseConsole
-			.findOne({ apppubid: publisherBit.PublisherSplit })
+			.findOne({ apppubid: publisherBit.PublisherSplit, type: 'audio' })
 			.catch((err) => console.log(err));
 		if (!match) {
 			const newzip = new publisherwiseConsole({
 				apppubid: publisherBit.PublisherSplit,
 				campaignId: publisherBit.campaignId,
+				type: 'audio',
 				publisherName: publisherBit.apppubidpo
 					? publisherBit.apppubidpo.publishername
 						? publisherBit.apppubidpo.publishername
 						: publisherBit.PublisherSplit
 					: publisherBit.PublisherSplit ? publisherBit.PublisherSplit : publisherBit.Publisher.AppName,
 				ssp: publisherBit.ssp,
-				feed: publisherBit.feed ? publisherBit.feed : null,
+				feed: publisherBit.feed !== undefined ? publisherBit.feed : null,
 				impression: publisherBit.impressions ? publisherBit.impressions : 0,
 				click: publisherBit.clicks ? publisherBit.clicks : 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
 			});
@@ -1519,7 +1704,119 @@ async function PublisherDataRefresher() {
 		} else {
 			const updateddoc = await publisherwiseConsole
 				.findOneAndUpdate(
-					{ publisherBit: publisherBit.PublisherSplit },
+					{ publisherBit: publisherBit.PublisherSplit, type: 'audio' },
+					{
+						$inc: {
+							impression: publisherBit.impressions,
+							click: publisherBit.clicks
+								? publisherBit.clicks
+								: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+						}
+					},
+					{ new: true }
+				)
+				.catch((err) => console.log(err));
+			console.log('updated');
+		}
+	});
+	publisherDataDisplay.forEach(async (publisherB) => {
+		// console.log(publisherB.PublisherSplit);
+		var publisherBit = publisherB;
+		publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
+		publisherBit.ssp = [ ...new Set(publisherBit.ssp) ];
+		var testappubid = publisherBit.apppubidpo;
+		var forda;
+		if (testappubid && testappubid.length)
+			for (var i = 0; i < testappubid.length; i++) {
+				if (testappubid && testappubid[i] && testappubid[i].publishername) {
+					forda = testappubid[i];
+					break;
+				}
+			}
+		publisherBit.apppubidpo = forda;
+		publisherBit.Publisher = publisherBit.Publisher[0];
+		publisherBit.ssp = publisherBit.ssp ? publisherBit.ssp[0] : '';
+		publisherBit.campaignId = publisherBit.campaignId[0];
+		const match = await publisherwiseConsole
+			.findOne({ apppubid: publisherBit.PublisherSplit, type: 'display' })
+			.catch((err) => console.log(err));
+		if (!match) {
+			const newzip = new publisherwiseConsole({
+				apppubid: publisherBit.PublisherSplit,
+				campaignId: publisherBit.campaignId,
+				type: 'display',
+				publisherName: publisherBit.apppubidpo
+					? publisherBit.apppubidpo.publishername
+						? publisherBit.apppubidpo.publishername
+						: publisherBit.PublisherSplit
+					: publisherBit.PublisherSplit ? publisherBit.PublisherSplit : publisherBit.Publisher.AppName,
+				ssp: publisherBit.ssp,
+				feed: publisherBit.feed !== undefined ? publisherBit.feed : null,
+				impression: publisherBit.impressions ? publisherBit.impressions : 0,
+				click: publisherBit.clicks ? publisherBit.clicks : 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+			});
+			var suc = await newzip.save().catch((err) => console.log(err));
+			console.log('created');
+		} else {
+			const updateddoc = await publisherwiseConsole
+				.findOneAndUpdate(
+					{ publisherBit: publisherBit.PublisherSplit, type: 'display' },
+					{
+						$inc: {
+							impression: publisherBit.impressions,
+							click: publisherBit.clicks
+								? publisherBit.clicks
+								: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+						}
+					},
+					{ new: true }
+				)
+				.catch((err) => console.log(err));
+			console.log('updated');
+		}
+	});
+	publisherDataVideo.forEach(async (publisherB) => {
+		// console.log(publisherB.PublisherSplit);
+		var publisherBit = publisherB;
+		publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
+		publisherBit.ssp = [ ...new Set(publisherBit.ssp) ];
+		var testappubid = publisherBit.apppubidpo;
+		var forda;
+		if (testappubid && testappubid.length)
+			for (var i = 0; i < testappubid.length; i++) {
+				if (testappubid && testappubid[i] && testappubid[i].publishername) {
+					forda = testappubid[i];
+					break;
+				}
+			}
+		publisherBit.apppubidpo = forda;
+		publisherBit.Publisher = publisherBit.Publisher[0];
+		publisherBit.ssp = publisherBit.ssp ? publisherBit.ssp[0] : '';
+		publisherBit.campaignId = publisherBit.campaignId[0];
+		const match = await publisherwiseConsole
+			.findOne({ apppubid: publisherBit.PublisherSplit, type: 'video' })
+			.catch((err) => console.log(err));
+		if (!match) {
+			const newzip = new publisherwiseConsole({
+				apppubid: publisherBit.PublisherSplit,
+				campaignId: publisherBit.campaignId,
+				type: 'video',
+				publisherName: publisherBit.apppubidpo
+					? publisherBit.apppubidpo.publishername
+						? publisherBit.apppubidpo.publishername
+						: publisherBit.PublisherSplit
+					: publisherBit.PublisherSplit ? publisherBit.PublisherSplit : publisherBit.Publisher.AppName,
+				ssp: publisherBit.ssp,
+				feed: publisherBit.feed !== undefined ? publisherBit.feed : null,
+				impression: publisherBit.impressions ? publisherBit.impressions : 0,
+				click: publisherBit.clicks ? publisherBit.clicks : 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+			});
+			var suc = await newzip.save().catch((err) => console.log(err));
+			console.log('created');
+		} else {
+			const updateddoc = await publisherwiseConsole
+				.findOneAndUpdate(
+					{ publisherBit: publisherBit.PublisherSplit, type: 'video' },
 					{
 						$inc: {
 							impression: publisherBit.impressions,
