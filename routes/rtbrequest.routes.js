@@ -6,6 +6,7 @@ const adminauth = require('../authenMiddleware/adminauth')
 const Reqreport = mongoose.model('reqreport')
 const Resreport = mongoose.model('resreport')
 const EpisodeModel = require('../models/episodemodel')
+const CategoryReports2 = require('../models/categoryreports2')
 // const Campaignwisereports=require('../models/campaignwisereports.model')
 const SpentReport = mongoose.model('spentreports')
 const Campaignwisereports = mongoose.model('campaignwisereports')
@@ -246,22 +247,44 @@ router.post(
                     }
                 },
                 {
-                    $lookup:{
-                    from:'apppublishers',
-                    localField:'publisher',
-                    foreignField:'publisherid',
-                    as:'publisher_details'
+                    $lookup: {
+                        from: 'apppublishers',
+                        localField: 'publisher',
+                        foreignField: 'publisherid',
+                        as: 'publisher_details'
                     }
                 },
                 // {$unwind:"$publisher_details"},
-                {$project:{
-                    episodename:"$_id",
-                    category:"$category",
-                    publisher:{$setUnion:["$publisher_details.publishername",[]]},
-                    request:"$request"
-                }}
+                {
+                    $project: {
+                        episodename: "$_id",
+                        category: "$category",
+                        publisher: { $setUnion: ["$publisher_details.publishername", []] },
+                        request: "$request"
+                    }
+                }
             ])
             res.status(200).json(result)
+        } catch (err) {
+            res.status(400).json({ error: err.message })
+            console.log(err.message)
+        }
+    }
+)
+
+router.post(
+    '/getcategory',
+    adminauth,
+    async (req, res) => {
+        try {
+            let { category } = req.body
+            const match = await Categoryreports2.findOne({
+                $or: [{ category }, { new_taxonamy: category }]
+            });
+            if (!match) {
+                res.status(200).json({ category: '' })
+            }
+            res.status(200).json({ category: match.tier1 })
         } catch (err) {
             res.status(400).json({ error: err.message })
             console.log(err.message)

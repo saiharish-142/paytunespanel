@@ -44,6 +44,7 @@ export default function EpisodeTab(){
 
     const [rows,setrows]=useState([])
 	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
+	const [category_data,setcategorydata]=useState([])
 	const [ rowsPerPage, setRowsPerPage ] = useState(100);
 	const [ page, setPage ] = useState(0);
 	const classes=useStyles()
@@ -129,6 +130,54 @@ export default function EpisodeTab(){
 		}
 	};
 
+	const fetchcategory=(category)=>{
+		let array=[]
+		category.map(cat=>{
+			if(cat.split(',').length>1 ){
+				let categ=cat.split(',')
+				categ.map(cat1=>{
+					fetch('/rtbreq/getcategory', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: 'Bearer ' + localStorage.getItem('jwt')
+						},
+						body:JSON.stringify({category:cat1})
+					})
+						.then((data) => data.json())
+						.then((dat) => {
+							if (dat.error) {
+								//seterror(dat.error)
+								return console.log(dat.error);
+							}
+			
+							// setsuccess(dat)
+							array.push(dat.category)
+						});
+				})
+			}else{
+				fetch('/rtbreq/getcategory', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + localStorage.getItem('jwt')
+					},
+					body:JSON.stringify({category:cat})
+				})
+					.then((data) => data.json())
+					.then((dat) => {
+						if (dat.error) {
+							//seterror(dat.error)
+							return console.log(dat.error);
+						}
+		
+						// setsuccess(dat)
+						array.push(dat.category)
+					});
+			}
+		})
+		return array;
+	}
 
     return (
         <div>
@@ -161,7 +210,7 @@ export default function EpisodeTab(){
 									</TableCell>
 									<TableCell>{row.request ? row.request : ''}</TableCell>
 									<TableCell>{row.publisher ? row.publisher: ''}</TableCell>
-									<TableCell>{row.category ? row.category.toString() : ''}</TableCell>
+									<TableCell>{row.category ? fetchcategory(row.category) : ''}</TableCell>
 								</TableRow>
 							))}
 						</TableBody>
