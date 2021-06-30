@@ -19,6 +19,7 @@ import EditUser from './screens/EditUser';
 import Biddata from './screens/biddata';
 import Phonedata from './screens/phonedata';
 import Zipdata from './screens/zipdata';
+import EpisodeTab from './components/episodestab';
 import { loadUser, networkError } from './redux/actions/authAction';
 import { useDispatch, useSelector } from 'react-redux';
 import Categorydata from './screens/Categorydata';
@@ -119,6 +120,7 @@ function App() {
 							<Route path="/phonedata" exact render={() => <Phonedata />} />
 							<Route path="/categorydata" exact render={() => <Categorydata />} />
 							<Route path="/zipdata" exact render={() => <Zipdata />} />
+							<Route path="/episodetabdata" exact render={() => <EpisodeTab />} />
 							<Route path="/clientSideCamp" exact render={() => <DashboardBundle clientview={true} />} />
 							<Route path="/clientSideCamp/:campname" exact render={() => <ClientReport />} />
 							<Redirect to="/" />
