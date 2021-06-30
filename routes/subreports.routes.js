@@ -1183,7 +1183,7 @@ router.get('/publisherComplete2', adminauth, async (req, res) => {
 	let audio = await publisherwiseConsole.find({ type: 'audio' }).catch((err) => console.log(err));
 	let display = await publisherwiseConsole.find({ type: 'display' }).catch((err) => console.log(err));
 	let video = await publisherwiseConsole.find({ type: 'video' }).catch((err) => console.log(err));
-	res.json({ audio, display, video });
+	res.json({ audio: audio, display: display, video: video });
 });
 
 ///////////////////  new apis //////////////////////////////
