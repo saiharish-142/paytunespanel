@@ -744,7 +744,7 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 				$facet: {
 					audio: [
 						{ $match: { campaignId: { $in: audio } } },
-						{$addFields:{phoneModel_sub:{$toUpper:"$phoneModel"}}},
+						{ $addFields: { phoneModel_sub: { $toUpper: '$phoneModel' } } },
 						{
 							$lookup: {
 								from: 'phonemodel2reports',
@@ -800,7 +800,7 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 					],
 					display: [
 						{ $match: { campaignId: { $in: display } } },
-						{$addFields:{phoneModel_sub:{$toUpper:"$phoneModel"}}},
+						{ $addFields: { phoneModel_sub: { $toUpper: '$phoneModel' } } },
 						{
 							$lookup: {
 								from: 'phonemodel2reports',
@@ -856,7 +856,7 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 					],
 					video: [
 						{ $match: { campaignId: { $in: video } } },
-						{$addFields:{phoneModel_sub:{$toUpper:"$phoneModel"}}},
+						{ $addFields: { phoneModel_sub: { $toUpper: '$phoneModel' } } },
 						{
 							$lookup: {
 								from: 'phonemodel2reports',
@@ -912,7 +912,8 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 					]
 				}
 			}
-		]).allowDiskUse(true)
+		])
+		.allowDiskUse(true)
 		.then((result) => res.json(result))
 		.catch((err) => res.status(422).json(err));
 });
@@ -1176,6 +1177,13 @@ router.get('/publisherComplete', adminauth, (req, res) => {
 			res.json(result);
 		})
 		.catch((err) => console.log(err));
+});
+
+router.get('/publisherComplete2', adminauth, async (req, res) => {
+	let audio = await publisherwiseConsole.find({ type: 'audio' }).catch((err) => console.log(err));
+	let display = await publisherwiseConsole.find({ type: 'display' }).catch((err) => console.log(err));
+	let video = await publisherwiseConsole.find({ type: 'video' }).catch((err) => console.log(err));
+	res.json({ audio, display, video });
 });
 
 ///////////////////  new apis //////////////////////////////
@@ -1481,7 +1489,7 @@ router.put('/editcategorydata', adminauth, async (req, res) => {
 	try {
 		//data.make_model=data.make_model.toLowerCase()
 
-		let { category,tier1, tier2, tier3, tier4, gendercategory, agecategory, taxonamy } = req.body;
+		let { category, tier1, tier2, tier3, tier4, gendercategory, agecategory, taxonamy } = req.body;
 		let updates = {
 			category,
 			tier1,
