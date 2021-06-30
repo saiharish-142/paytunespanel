@@ -43,6 +43,7 @@ export default function EpisodeTab(){
     const [rows,setrows]=useState([])
 	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
 	const [ rowsPerPage, setRowsPerPage ] = useState(100);
+	const [ page, setPage ] = useState(0);
 	const classes=useStyles()
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
