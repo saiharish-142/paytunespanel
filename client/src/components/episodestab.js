@@ -41,8 +41,16 @@ const useStyles = makeStyles((theme) => ({
 export default function EpisodeTab(){
 
     const [rows,setrows]=useState([])
+	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
+	const [ rowsPerPage, setRowsPerPage ] = useState(100);
 	const classes=useStyles()
-
+	const handleChangePage = (event, newPage) => {
+		setPage(newPage);
+	};
+	const handleChangeRowsPerPage = (event) => {
+		setRowsPerPage(+event.target.value);
+		setPage(0);
+	};
     useEffect(() => {
 		fetch('/rtbreq/getepisodewise_report', {
 			method: 'POST',
