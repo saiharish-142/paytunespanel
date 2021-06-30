@@ -278,7 +278,7 @@ router.post(
     async (req, res) => {
         try {
             let { category } = req.body
-            const match = await Categoryreports2.findOne({
+            const match = await CategoryReports2.findOne({
                 $or: [{ category }, { new_taxonamy: category }]
             });
             if (!match) {
