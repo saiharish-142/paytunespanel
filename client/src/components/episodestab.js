@@ -130,7 +130,7 @@ export default function EpisodeTab(){
 		}
 	};
 
-	const fetchcategory=(category)=>{
+	function fetchcategory(category){
 		let array=[]
 		category.map(cat=>{
 			if(cat.split(',').length>1 ){
@@ -211,7 +211,7 @@ export default function EpisodeTab(){
 									</TableCell>
 									<TableCell>{row.request ? row.request : ''}</TableCell>
 									<TableCell>{row.publisher ? row.publisher: ''}</TableCell>
-									<TableCell>{row.category ? fetchcategory(row.category)[0].toString() : ''}</TableCell>
+									<TableCell>{row.category ? ()=>fetchcategory(row.category) : ''}</TableCell>
 								</TableRow>
 							))}
 						</TableBody>
