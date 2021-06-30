@@ -211,7 +211,7 @@ export default function EpisodeTab(){
 									</TableCell>
 									<TableCell>{row.request ? row.request : ''}</TableCell>
 									<TableCell>{row.publisher ? row.publisher: ''}</TableCell>
-									<TableCell>{row.category ? ()=>fetchcategory(row.category) : ''}</TableCell>
+									<TableCell>{row.category ? fetchcategory(row.category) : ''}</TableCell>
 								</TableRow>
 							))}
 						</TableBody>
