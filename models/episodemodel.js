@@ -6,6 +6,8 @@ var podcastepisodesSchema = new Schema({
     category: String,
     date: { type: String },
     requests: Number,
+    displayname:String,
+    hostPossibility:String,
     createdOn: { type: Date, default: Date.now },
 });
 podcastepisodesSchema.index({ publisherid: 1,episodename:1, date:1,category:1});
