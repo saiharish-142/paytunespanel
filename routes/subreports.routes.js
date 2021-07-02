@@ -1200,15 +1200,6 @@ router.get('/publisherComplete2', adminauth, async (req, res) => {
 			compo.thirdQuartile += x.thirdQuartile;
 			compo.complete += x.complete;
 		});
-	display &&
-		display.forEach((x) => {
-			compo.impression += x.impression;
-			compo.start += x.start;
-			compo.firstQuartile += x.firstQuartile;
-			compo.midpoint += x.midpoint;
-			compo.thirdQuartile += x.thirdQuartile;
-			compo.complete += x.complete;
-		});
 	video &&
 		video.forEach((x) => {
 			compo.impression += x.impression;
