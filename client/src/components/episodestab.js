@@ -130,8 +130,52 @@ export default function EpisodeTab(){
 		}
 	};
 
-	function fetchcategory(category){
+	 function fetchcategory(category){
 		let array=[]
+		// for (var i=0;i<category.length;i++){
+		// 	if(category[i].split(',').length>1 ){
+		// 		let categ=category[i].split(',')
+		// 		categ.map(cat1=>{
+		// 			fetch('/rtbreq/getcategory', {
+		// 				method: 'POST',
+		// 				headers: {
+		// 					'Content-Type': 'application/json',
+		// 					Authorization: 'Bearer ' + localStorage.getItem('jwt')
+		// 				},
+		// 				body:JSON.stringify({category:cat1})
+		// 			})
+		// 				.then((data) => data.json())
+		// 				.then((dat) => {
+		// 					if (dat.error) {
+		// 						//seterror(dat.error)
+		// 						return console.log(dat.error);
+		// 					}
+			
+		// 					// setsuccess(dat)
+		// 					array.push(dat.category)
+		// 				});
+		// 		})
+		// 	}else{
+		// 		fetch('/rtbreq/getcategory', {
+		// 			method: 'POST',
+		// 			headers: {
+		// 				'Content-Type': 'application/json',
+		// 				Authorization: 'Bearer ' + localStorage.getItem('jwt')
+		// 			},
+		// 			body:JSON.stringify({category:cat})
+		// 		})
+		// 			.then((data) => data.json())
+		// 			.then((dat) => {
+		// 				if (dat.error) {
+		// 					//seterror(dat.error)
+		// 					return console.log(dat.error);
+		// 				}
+		
+		// 				// setsuccess(dat)
+		// 				array.push(dat.category)
+		// 			});
+		// 	}
+		// }
 		category.map(cat=>{
 			if(cat.split(',').length>1 ){
 				let categ=cat.split(',')
@@ -177,7 +221,8 @@ export default function EpisodeTab(){
 			}
 		})
 		console.log(array)
-		return array;
+		setcategorydata(array)
+		return category_data
 	}
 
     return (
@@ -211,7 +256,7 @@ export default function EpisodeTab(){
 									</TableCell>
 									<TableCell>{row.request ? row.request : ''}</TableCell>
 									<TableCell>{row.publisher ? row.publisher: ''}</TableCell>
-									<TableCell>{row.category ? ()=>fetchcategory(row.category) : ''}</TableCell>
+									<TableCell>{row.category ? fetchcategory(row.category) : ''}</TableCell>
 								</TableRow>
 							))}
 						</TableBody>
