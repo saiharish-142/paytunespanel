@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import {
 	LoadPublisherData,
 	orderManagerPublisherData,
@@ -11,22 +12,11 @@ import PreLoader from '../components/loaders/PreLoader';
 // import SearchCampagin from '../components/SearchCampagin';
 // import { CSVLink } from 'react-csv';
 import PublisherConsoleTable from '../components/PublisherConsoleTable';
-// import {
-// 	Paper,
-// 	Table,
-// 	TableBody,
-// 	TablePagination,
-// 	TableCell,
-// 	TableContainer,
-// 	TableHead,
-// 	TableRow
-// } from '@material-ui/core';
-// import { orderSetter } from '../redux/actions/manageadsAction';
+import QuartilePublisherCon from '../components/QuartileCon';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
-import { ConsoleBody, Consoleheaders } from '../components/CommonFun';
+import { ConsolePhoneBody, Consoleheaders, QuartileHead, QuartileBodyCon } from '../components/CommonFun';
 import ReactExport from 'react-data-export';
-import { Button } from '@material-ui/core';
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 
@@ -164,19 +154,33 @@ function PublisherConsole() {
 		audio: [
 			{
 				columns: Consoleheaders,
-				data: consoledata.audiopublisherData && ConsoleBody(consoledata.audiopublisherData)
+				data: consoledata.audiopublisherData && ConsolePhoneBody(consoledata.audiopublisherData)
 			}
 		],
 		display: [
 			{
 				columns: Consoleheaders,
-				data: consoledata.displaypublisherData && ConsoleBody(consoledata.displaypublisherData)
+				data: consoledata.displaypublisherData && ConsolePhoneBody(consoledata.displaypublisherData)
 			}
 		],
 		video: [
 			{
 				columns: Consoleheaders,
-				data: consoledata.videopublisherData && ConsoleBody(consoledata.videopublisherData)
+				data: consoledata.videopublisherData && ConsolePhoneBody(consoledata.videopublisherData)
+			}
+		]
+	};
+	const QuartileDown = {
+		audio: [
+			{
+				columns: QuartileHead,
+				data: consoledata.audiopublisherData && QuartileBodyCon(consoledata.audiopublisherData)
+			}
+		],
+		video: [
+			{
+				columns: QuartileHead,
+				data: consoledata.videopublisherData && QuartileBodyCon(consoledata.videopublisherData)
 			}
 		]
 	};
@@ -184,8 +188,16 @@ function PublisherConsole() {
 	return (
 		<div>
 			<div className="heading">
-				Publisher Wise Data<br />
+				Complete Wise Data<br />
+				<ExeclDownload filename={`Complete Report Publisher wise`}>
+					<ExcelSheet dataSet={QuartileDown.audio} name="Complete Quartile Publisher Audio Wise" />
+					<ExcelSheet dataSet={QuartileDown.video} name="Complete Quartile Publisher Video Wise" />
+					<ExcelSheet dataSet={PhonComp.audio} name="Complete Publisher Audio Wise" />
+					<ExcelSheet dataSet={PhonComp.display} name="Complete Publisher Display Wise" />
+					<ExcelSheet dataSet={PhonComp.video} name="Complete Publisher Video Wise" />
+				</ExeclDownload>
 			</div>
+			<div className="titleReport">Publisher Wise Data</div>
 			<ExeclDownload filename={`Complete Report Publisher wise`}>
 				<ExcelSheet dataSet={PhonComp.audio} name="Complete Publisher Audio Wise" />
 				<ExcelSheet dataSet={PhonComp.display} name="Complete Publisher Display Wise" />
@@ -210,7 +222,7 @@ function PublisherConsole() {
 				storepaginationPublisherData={storepaginationPublisherData.display}
 			/>
 			<PublisherConsoleTable
-				title="Audio"
+				title="Video"
 				headers={headers}
 				consoledata={consoledatavideo}
 				arrowRetuner={arrowRetuner}
@@ -218,6 +230,40 @@ function PublisherConsole() {
 				orderManagerPublisherData={orderManagerPublisherData.video}
 				storepaginationPublisherData={storepaginationPublisherData.video}
 			/>
+			<div className="titleReport">Quartile Wise Data</div>
+			<ExeclDownload filename={`Complete Report Publisher wise`}>
+				<ExcelSheet dataSet={QuartileDown.audio} name="Complete Quartile Publisher Audio Wise" />
+				<ExcelSheet dataSet={QuartileDown.video} name="Complete Quartile Publisher Video Wise" />
+			</ExeclDownload>
+			<br />
+			<TableContainer className="tableCont" elevation={3} component={Paper}>
+				<Table>
+					<TableHead>
+						<TableRow>
+							<TableCell />
+							<TableCell>Start</TableCell>
+							<TableCell>First Quartile</TableCell>
+							<TableCell>Second Quartile</TableCell>
+							<TableCell>Third Quartile</TableCell>
+							<TableCell>Complete</TableCell>
+							<TableCell>Total Impresions</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						<TableRow>
+							<TableCell>Impressions</TableCell>
+							<TableCell>{consoledata.CompletepublisherData.start}</TableCell>
+							<TableCell>{consoledata.CompletepublisherData.firstQuartile}</TableCell>
+							<TableCell>{consoledata.CompletepublisherData.midpoint}</TableCell>
+							<TableCell>{consoledata.CompletepublisherData.thirdQuartile}</TableCell>
+							<TableCell>{consoledata.CompletepublisherData.complete}</TableCell>
+							<TableCell>{consoledata.CompletepublisherData.impression}</TableCell>
+						</TableRow>
+					</TableBody>
+				</Table>
+			</TableContainer>
+			<QuartilePublisherCon title={'Audio'} report={consoledata.audiopublisherData} arrowRetuner={arrowRetuner} />
+			<QuartilePublisherCon title={'Video'} report={consoledata.videopublisherData} arrowRetuner={arrowRetuner} />
 		</div>
 	);
 }
@@ -227,31 +273,31 @@ export default PublisherConsole;
 {
 	/* <div className="tableCont">
 	<SearchCampagin state={'client'} inval={searchval} setInval={onChangeRedux} />
-</div>
+	</div>
 <Paper className="tableCont">
-	<TableContainer>
-		<Table aria-label="simple table">
-			<TableHead>
-				<TableRow>
-					<TableCell
+<TableContainer>
+<Table aria-label="simple table">
+<TableHead>
+<TableRow>
+<TableCell
 						onClick={() => tablesorter('publisherName', 'string')}
 						style={{ cursor: 'pointer' }}
 					>
-						Publisher
+					Publisher
 						{arrowRetuner(sa === 'publisherName' ? (order === 'asc' ? '1' : '2') : '3')}
-					</TableCell>
-					<TableCell onClick={() => tablesorter('ssp', 'string')} style={{ cursor: 'pointer' }}>
+						</TableCell>
+						<TableCell onClick={() => tablesorter('ssp', 'string')} style={{ cursor: 'pointer' }}>
 						SSP {arrowRetuner(sa === 'ssp' ? (order === 'asc' ? '1' : '2') : '3')}
-					</TableCell>
+						</TableCell>
 					<TableCell onClick={() => tablesorter('feed', 'string')} style={{ cursor: 'pointer' }}>
-						Feed {arrowRetuner(sa === 'feed' ? (order === 'asc' ? '1' : '2') : '3')}
+					Feed {arrowRetuner(sa === 'feed' ? (order === 'asc' ? '1' : '2') : '3')}
 					</TableCell>
 					<TableCell
-						onClick={() => tablesorter('impression', 'number')}
-						style={{ cursor: 'pointer' }}
+					onClick={() => tablesorter('impression', 'number')}
+					style={{ cursor: 'pointer' }}
 					>
-						Total Impressions Delivered till date{' '}
-						{arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}
+					Total Impressions Delivered till date{' '}
+					{arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}
 					</TableCell>
 					<TableCell onClick={() => tablesorter('click', 'number')} style={{ cursor: 'pointer' }}>
 						Total Clicks Delivered till date{' '}
@@ -263,25 +309,25 @@ export default PublisherConsole;
 				</TableRow>
 			</TableHead>
 			<TableBody>
-				{adss && adss.length ? (
-					adss.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((log, i) => {
+			{adss && adss.length ? (
+				adss.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((log, i) => {
 						return (
 							<TableRow key={i}>
-								<TableCell>{log.publisherName}</TableCell>
-								<TableCell>{log.ssp}</TableCell>
+							<TableCell>{log.publisherName}</TableCell>
+							<TableCell>{log.ssp}</TableCell>
 								<TableCell>{log.feed}</TableCell>
 								<TableCell>{log.impression}</TableCell>
 								<TableCell>{log.click}</TableCell>
 								<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>
-							</TableRow>
-						);
-					})
-				) : (
+								</TableRow>
+								);
+							})
+							) : (
 					''
-				)}
+					)}
 			</TableBody>
-		</Table>
-	</TableContainer>
+			</Table>
+			</TableContainer>
 	<TablePagination
 		rowsPerPageOptions={[ 5, 10, 25, 100, 1000 ]}
 		component="div"
@@ -290,6 +336,18 @@ export default PublisherConsole;
 		page={page}
 		onChangePage={handleChangePage}
 		onChangeRowsPerPage={handleChangeRowsPerPage}
-	/>
-</Paper> */
+		/>
+		</Paper> */
 }
+
+// import {
+// 	Paper,
+// 	Table,
+// 	TableBody,
+// 	TablePagination,
+// 	TableCell,
+// 	TableContainer,
+// 	TableHead,
+// 	TableRow
+// } from '@material-ui/core';
+// import { orderSetter } from '../redux/actions/manageadsAction';

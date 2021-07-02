@@ -1183,7 +1183,33 @@ router.get('/publisherComplete2', adminauth, async (req, res) => {
 	let audio = await publisherwiseConsole.find({ type: 'audio' }).catch((err) => console.log(err));
 	let display = await publisherwiseConsole.find({ type: 'display' }).catch((err) => console.log(err));
 	let video = await publisherwiseConsole.find({ type: 'video' }).catch((err) => console.log(err));
-	res.json({ audio: audio, display: display, video: video });
+	var compo = {
+		impression: 0,
+		start: 0,
+		firstQuartile: 0,
+		midpoint: 0,
+		thirdQuartile: 0,
+		complete: 0
+	};
+	audio &&
+		audio.forEach((x) => {
+			compo.impression += x.impression;
+			compo.start += x.start;
+			compo.firstQuartile += x.firstQuartile;
+			compo.midpoint += x.midpoint;
+			compo.thirdQuartile += x.thirdQuartile;
+			compo.complete += x.complete;
+		});
+	video &&
+		video.forEach((x) => {
+			compo.impression += x.impression;
+			compo.start += x.start;
+			compo.firstQuartile += x.firstQuartile;
+			compo.midpoint += x.midpoint;
+			compo.thirdQuartile += x.thirdQuartile;
+			compo.complete += x.complete;
+		});
+	res.json({ audio: audio, display: display, video: video, complete: compo });
 });
 
 ///////////////////  new apis //////////////////////////////

@@ -253,7 +253,7 @@ export const CreativeBody = (report1) => {
 		];
 	});
 };
-export const ConsoleBody = (report1) => {
+export const ConsolePhoneBody = (report1) => {
 	return report1.map((log, index) => {
 		var ctr = log.ctr + '%';
 		return [
@@ -263,6 +263,21 @@ export const ConsoleBody = (report1) => {
 			{ value: log.impression ? log.impression : 0 },
 			{ value: log.click ? log.click : 0 },
 			{ value: ctr ? ctr : 0 + '%' }
+		];
+	});
+};
+export const QuartileBodyCon = (report1) => {
+	return report1.map((log, index) => {
+		log.ltr = (log.complete ? parseInt(log.complete) : 0) * 100 / (log.impressions ? parseInt(log.impressions) : 0);
+		return [
+			{ value: log.publisherName ? log.publisherName : '' },
+			{ value: log.impression ? log.impression : 0 },
+			{ value: log.start ? log.start : 0 },
+			{ value: log.firstQuartile ? log.firstQuartile : 0 },
+			{ value: log.midpoint ? log.midpoint : 0 },
+			{ value: log.thirdQuartile ? log.thirdQuartile : 0 },
+			{ value: log.complete ? log.complete : 0 },
+			{ value: log.ltr ? log.ltr + '%' : 0 }
 		];
 	});
 };

@@ -36,6 +36,7 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 				});
 				dataA.map((x) => {
 					x.ctr = x.click * 100 / x.impression;
+					x.ltr = x.complete * 100 / x.impression;
 					x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';
 				});
 				var dataD = result.display;
@@ -44,6 +45,7 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 				});
 				dataD.map((x) => {
 					x.ctr = x.click * 100 / x.impression;
+					x.ltr = x.complete * 100 / x.impression;
 					x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';
 				});
 				var dataV = result.video;
@@ -52,11 +54,13 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 				});
 				dataV.map((x) => {
 					x.ctr = x.click * 100 / x.impression;
+					x.ltr = x.complete * 100 / x.impression;
 					x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';
 				});
 				dispatch({
 					type: PUBLISHERDATA_LOADED,
 					payload: {
+						complete: result.complete,
 						audio: dataA,
 						display: dataD,
 						video: dataV
