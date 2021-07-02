@@ -17,6 +17,7 @@ import {
 const initialState = {
 	publisherDataLoading: true,
 	publisherDataFail: null,
+	CompletepublisherData: null,
 	audiopublisherData: null,
 	audiosearchedpublisherData: null,
 	audiopublisherDataordername: 'impression',
@@ -52,6 +53,7 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				publisherDataLoading: false,
+				CompletepublisherData: action.payload.complete,
 				audiopublisherData: action.payload.audio,
 				audiosearchedpublisherData: action.payload.audio,
 				displaypublisherData: action.payload.display,
