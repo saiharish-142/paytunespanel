@@ -76,6 +76,14 @@ export const CreativeHead = [
 	{ title: 'Clicks' },
 	{ title: 'CTR' }
 ];
+export const Consoleheaders = [
+	{ title: 'Publisher' },
+	{ title: 'SSP' },
+	{ title: 'Feed' },
+	{ title: 'Total Impressions Delivered till date' },
+	{ title: 'Total Clicks Delivered till date' },
+	{ title: 'CTR' }
+];
 export const PublishBody = (type, report1, spentfinder, report) => {
 	var spentOffline = report.audiospentOffline ? report.audiospentOffline : 0;
 	var spentOfflined = report.displayspentOffline ? report.displayspentOffline : 0;
@@ -242,6 +250,19 @@ export const CreativeBody = (report1) => {
 			{ value: impression ? impression : 0 },
 			{ value: clicks ? clicks : 0 },
 			{ value: ctr ? ctr : 0 }
+		];
+	});
+};
+export const ConsoleBody = (report1) => {
+	return report1.map((log, index) => {
+		var ctr = log.ctr + '%';
+		return [
+			{ value: log.publisherName ? log.publisherName : '' },
+			{ value: log.ssp ? log.ssp : '' },
+			{ value: log.feed ? log.feed : '' },
+			{ value: log.impression ? log.impression : 0 },
+			{ value: log.click ? log.click : 0 },
+			{ value: ctr ? ctr : 0 + '%' }
 		];
 	});
 };

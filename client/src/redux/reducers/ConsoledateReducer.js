@@ -3,21 +3,41 @@ import {
 	PUBLISHERDATA_LOADING,
 	PUBLISHERDATA_LOADED,
 	PUBLISHERDATA_CLEAR,
-	PUBLISHERDATA_PAGINATION,
-	PUBLISHERDATA_SEARCH,
-	PUBLISHERDATA_SORT
+	PUBLISHERDATA_PAGINATION_AUDIO,
+	PUBLISHERDATA_PAGINATION_DISPLAY,
+	PUBLISHERDATA_PAGINATION_VIDEO,
+	PUBLISHERDATA_SEARCH_AUDIO,
+	PUBLISHERDATA_SEARCH_DISPLAY,
+	PUBLISHERDATA_SEARCH_VIDEO,
+	PUBLISHERDATA_SORT_AUDIO,
+	PUBLISHERDATA_SORT_DISPLAY,
+	PUBLISHERDATA_SORT_VIDEO
 } from '../types.js';
 
 const initialState = {
-	publisherData: null,
-	searchedpublisherData: null,
 	publisherDataLoading: true,
-	publisherDataordername: 'impression',
-	publisherDataorderdir: 'desc',
-	publisherDataValue: '',
-	publisherDataPagination: 0,
-	publisherDataRPP: 5,
-	publisherDataFail: null
+	publisherDataFail: null,
+	audiopublisherData: null,
+	audiosearchedpublisherData: null,
+	audiopublisherDataordername: 'impression',
+	audiopublisherDataorderdir: 'desc',
+	audiopublisherDataValue: '',
+	audiopublisherDataPagination: 0,
+	audiopublisherDataRPP: 5,
+	displaypublisherData: null,
+	displaysearchedpublisherData: null,
+	displaypublisherDataordername: 'impression',
+	displaypublisherDataorderdir: 'desc',
+	displaypublisherDataValue: '',
+	displaypublisherDataPagination: 0,
+	displaypublisherDataRPP: 5,
+	videopublisherData: null,
+	videosearchedpublisherData: null,
+	videopublisherDataordername: 'impression',
+	videopublisherDataorderdir: 'desc',
+	videopublisherDataValue: '',
+	videopublisherDataPagination: 0,
+	videopublisherDataRPP: 5
 };
 
 export default function(state = initialState, action) {
@@ -32,8 +52,12 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				publisherDataLoading: false,
-				publisherData: action.payload,
-				searchedpublisherData: action.payload
+				audiopublisherData: action.payload.audio,
+				audiosearchedpublisherData: action.payload.audio,
+				displaypublisherData: action.payload.display,
+				displaysearchedpublisherData: action.payload.display,
+				videopublisherData: action.payload.video,
+				videosearchedpublisherData: action.payload.video
 			};
 		case PUBLISHERDATA_ERROR:
 			return {
@@ -43,27 +67,67 @@ export default function(state = initialState, action) {
 			};
 		case PUBLISHERDATA_CLEAR:
 			return {
-				publisherData: null,
-				searchedpublisherData: null,
+				audiopublisherData: null,
+				audiosearchedpublisherData: null,
+				displaypublisherData: null,
+				displaysearchedpublisherData: null,
+				videopublisherData: null,
+				videosearchedpublisherData: null,
 				publisherDataLoading: true
 			};
-		case PUBLISHERDATA_PAGINATION:
+		case PUBLISHERDATA_PAGINATION_AUDIO:
 			return {
 				...state,
-				publisherDataPagination: action.payload.pagination,
-				publisherDataRPP: action.payload.rowspp
+				audiopublisherDataPagination: action.payload.pagination,
+				audiopublisherDataRPP: action.payload.rowspp
 			};
-		case PUBLISHERDATA_SEARCH:
+		case PUBLISHERDATA_PAGINATION_DISPLAY:
 			return {
 				...state,
-				searchedpublisherData: action.payload.ads,
-				publisherDataValue: action.payload.value
+				displaypublisherDataPagination: action.payload.pagination,
+				displaypublisherDataRPP: action.payload.rowspp
 			};
-		case PUBLISHERDATA_SORT:
+		case PUBLISHERDATA_PAGINATION_VIDEO:
 			return {
 				...state,
-				publisherDataordername: action.payload.name,
-				publisherDataorderdir: action.payload.direction
+				videopublisherDataPagination: action.payload.pagination,
+				videopublisherDataRPP: action.payload.rowspp
+			};
+		case PUBLISHERDATA_SEARCH_AUDIO:
+			return {
+				...state,
+				audiosearchedpublisherData: action.payload.ads,
+				audiopublisherDataValue: action.payload.value
+			};
+		case PUBLISHERDATA_SEARCH_DISPLAY:
+			return {
+				...state,
+				displaysearchedpublisherData: action.payload.ads,
+				displaypublisherDataValue: action.payload.value
+			};
+		case PUBLISHERDATA_SEARCH_VIDEO:
+			return {
+				...state,
+				videosearchedpublisherData: action.payload.ads,
+				videopublisherDataValue: action.payload.value
+			};
+		case PUBLISHERDATA_SORT_AUDIO:
+			return {
+				...state,
+				audiopublisherDataordername: action.payload.name,
+				audiopublisherDataorderdir: action.payload.direction
+			};
+		case PUBLISHERDATA_SORT_DISPLAY:
+			return {
+				...state,
+				displaypublisherDataordername: action.payload.name,
+				displaypublisherDataorderdir: action.payload.direction
+			};
+		case PUBLISHERDATA_SORT_VIDEO:
+			return {
+				...state,
+				videopublisherDataordername: action.payload.name,
+				videopublisherDataorderdir: action.payload.direction
 			};
 		default:
 			return state;
