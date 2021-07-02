@@ -1446,6 +1446,122 @@ function arr_diff(a1, a2) {
 	// console.log(diff.length, diffa - daila, cou);
 	return diff;
 }
+const publisherwiseConsole = mongoose.model('publisherwiseConsole');
+
+async function PublisherConsoleLoaderTypeWise(array, type) {
+	array &&
+		array.forEach(async (publisherB) => {
+			// console.log(publisherB.PublisherSplit);
+			var publisherBit = publisherB;
+			publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
+			publisherBit.ssp = [ ...new Set(publisherBit.ssp) ];
+			var testappubid = publisherBit.apppubidpo;
+			var forda;
+			if (testappubid && testappubid.length)
+				for (var i = 0; i < testappubid.length; i++) {
+					if (testappubid && testappubid[i] && testappubid[i].publishername) {
+						forda = testappubid[i];
+						break;
+					}
+				}
+			publisherBit.apppubidpo = forda;
+			publisherBit.Publisher = publisherBit.Publisher[0];
+			publisherBit.ssp = publisherBit.ssp ? publisherBit.ssp[0] : '';
+			publisherBit.campaignId = publisherBit.campaignId[0];
+			const match = await publisherwiseConsole
+				.findOne({ apppubid: publisherBit.PublisherSplit, type: type })
+				.catch((err) => console.log(err));
+			if (!match) {
+				if (type === 'display') {
+					const newzip = new publisherwiseConsole({
+						apppubid: publisherBit.PublisherSplit,
+						campaignId: publisherBit.campaignId,
+						type: type,
+						publisherName: publisherBit.apppubidpo
+							? publisherBit.apppubidpo.publishername
+								? publisherBit.apppubidpo.publishername
+								: publisherBit.PublisherSplit
+							: publisherBit.PublisherSplit
+								? publisherBit.PublisherSplit
+								: publisherBit.Publisher.AppName,
+						ssp: publisherBit.ssp,
+						feed: publisherBit.feed !== undefined ? publisherBit.feed : null,
+						impression: publisherBit.impressions ? publisherBit.impressions : 0,
+						click: publisherBit.clicks
+							? publisherBit.clicks
+							: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+					});
+					var suc = await newzip.save().catch((err) => console.log(err));
+					console.log('created');
+				} else {
+					const newzip = new publisherwiseConsole({
+						apppubid: publisherBit.PublisherSplit,
+						campaignId: publisherBit.campaignId,
+						type: type,
+						publisherName: publisherBit.apppubidpo
+							? publisherBit.apppubidpo.publishername
+								? publisherBit.apppubidpo.publishername
+								: publisherBit.PublisherSplit
+							: publisherBit.PublisherSplit
+								? publisherBit.PublisherSplit
+								: publisherBit.Publisher.AppName,
+						ssp: publisherBit.ssp,
+						feed: publisherBit.feed !== undefined ? publisherBit.feed : null,
+						impression: publisherBit.impressions ? publisherBit.impressions : 0,
+						start: publisherBit.start ? publisherBit.start : 0,
+						firstQuartile: publisherBit.firstQuartile ? publisherBit.firstQuartile : 0,
+						midpoint: publisherBit.midpoint ? publisherBit.midpoint : 0,
+						thirdQuartile: publisherBit.thirdQuartile ? publisherBit.thirdQuartile : 0,
+						complete: publisherBit.complete ? publisherBit.complete : 0,
+						click: publisherBit.clicks
+							? publisherBit.clicks
+							: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+					});
+					var suc = await newzip.save().catch((err) => console.log(err));
+					console.log('created');
+				}
+			} else {
+				if (type === 'display') {
+					const updateddoc = await publisherwiseConsole
+						.findOneAndUpdate(
+							{ publisherBit: publisherBit.PublisherSplit, type: type },
+							{
+								$inc: {
+									impression: publisherBit.impressions,
+									click: publisherBit.clicks
+										? publisherBit.clicks
+										: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+								}
+							},
+							{ new: true }
+						)
+						.catch((err) => console.log(err));
+					console.log('updated');
+				} else {
+					const updateddoc = await publisherwiseConsole
+						.findOneAndUpdate(
+							{ publisherBit: publisherBit.PublisherSplit, type: type },
+							{
+								$inc: {
+									impression: publisherBit.impressions,
+									start: publisherBit.start,
+									firstQuartile: publisherBit.firstQuartile,
+									midpoint: publisherBit.midpoint,
+									thirdQuartile: publisherBit.thirdQuartile,
+									complete: publisherBit.complete,
+									click: publisherBit.clicks
+										? publisherBit.clicks
+										: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+								}
+							},
+							{ new: true }
+						)
+						.catch((err) => console.log(err));
+					console.log('updated');
+				}
+			}
+		});
+}
 
 // PublisherDataRefresher();
 async function PublisherDataRefresher() {
@@ -1508,8 +1624,13 @@ async function PublisherDataRefresher() {
 					ssp: '$ssp',
 					campaignId: '$campaignId',
 					impression: '$impression',
-					CompanionClickTracking: 1,
-					SovClickTracking: 1
+					CompanionClickTracking: '$CompanionClickTracking',
+					SovClickTracking: '$SovClickTracking',
+					start: '$start',
+					firstQuartile: '$firstQuartile',
+					midpoint: '$midpoint',
+					thirdQuartile: '$thirdQuartile',
+					complete: '$complete'
 				}
 			},
 			{ $match: { test: yesterday } },
@@ -1521,7 +1642,12 @@ async function PublisherDataRefresher() {
 					camp: { $push: '$campaignId' },
 					impressions: { $sum: '$impression' },
 					clicks: { $sum: '$CompanionClickTracking' },
-					clicks1: { $sum: '$SovClickTracking' }
+					clicks1: { $sum: '$SovClickTracking' },
+					start: { $sum: '$start' },
+					firstQuartile: { $sum: '$firstQuartile' },
+					midpoint: { $sum: '$midpoint' },
+					thirdQuartile: { $sum: '$thirdQuartile' },
+					complete: { $sum: '$complete' }
 				}
 			},
 			{
@@ -1535,6 +1661,11 @@ async function PublisherDataRefresher() {
 					impressions: '$impressions',
 					clicks: '$clicks',
 					clicks1: '$clicks1',
+					start: '$start',
+					firstQuartile: '$firstQuartile',
+					midpoint: '$midpoint',
+					thirdQuartile: '$thirdQuartile',
+					complete: '$complete',
 					_id: 0
 				}
 			},
@@ -1560,8 +1691,13 @@ async function PublisherDataRefresher() {
 					ssp: '$ssp',
 					campaignId: '$campaignId',
 					impression: '$impression',
-					CompanionClickTracking: 1,
-					SovClickTracking: 1
+					CompanionClickTracking: '$CompanionClickTracking',
+					SovClickTracking: '$SovClickTracking',
+					start: '$start',
+					firstQuartile: '$firstQuartile',
+					midpoint: '$midpoint',
+					thirdQuartile: '$thirdQuartile',
+					complete: '$complete'
 				}
 			},
 			{ $match: { test: yesterday } },
@@ -1573,7 +1709,12 @@ async function PublisherDataRefresher() {
 					camp: { $push: '$campaignId' },
 					impressions: { $sum: '$impression' },
 					clicks: { $sum: '$CompanionClickTracking' },
-					clicks1: { $sum: '$SovClickTracking' }
+					clicks1: { $sum: '$SovClickTracking' },
+					start: { $sum: '$start' },
+					firstQuartile: { $sum: '$firstQuartile' },
+					midpoint: { $sum: '$midpoint' },
+					thirdQuartile: { $sum: '$thirdQuartile' },
+					complete: { $sum: '$complete' }
 				}
 			},
 			{
@@ -1587,6 +1728,11 @@ async function PublisherDataRefresher() {
 					impressions: '$impressions',
 					clicks: '$clicks',
 					clicks1: '$clicks1',
+					start: '$start',
+					firstQuartile: '$firstQuartile',
+					midpoint: '$midpoint',
+					thirdQuartile: '$thirdQuartile',
+					complete: '$complete',
 					_id: 0
 				}
 			},
@@ -1612,8 +1758,13 @@ async function PublisherDataRefresher() {
 					ssp: '$ssp',
 					campaignId: '$campaignId',
 					impression: '$impression',
-					CompanionClickTracking: 1,
-					SovClickTracking: 1
+					CompanionClickTracking: '$CompanionClickTracking',
+					SovClickTracking: '$SovClickTracking',
+					start: '$start',
+					firstQuartile: '$firstQuartile',
+					midpoint: '$midpoint',
+					thirdQuartile: '$thirdQuartile',
+					complete: '$complete'
 				}
 			},
 			{ $match: { test: yesterday } },
@@ -1625,7 +1776,12 @@ async function PublisherDataRefresher() {
 					camp: { $push: '$campaignId' },
 					impressions: { $sum: '$impression' },
 					clicks: { $sum: '$CompanionClickTracking' },
-					clicks1: { $sum: '$SovClickTracking' }
+					clicks1: { $sum: '$SovClickTracking' },
+					start: { $sum: '$start' },
+					firstQuartile: { $sum: '$firstQuartile' },
+					midpoint: { $sum: '$midpoint' },
+					thirdQuartile: { $sum: '$thirdQuartile' },
+					complete: { $sum: '$complete' }
 				}
 			},
 			{
@@ -1639,6 +1795,11 @@ async function PublisherDataRefresher() {
 					impressions: '$impressions',
 					clicks: '$clicks',
 					clicks1: '$clicks1',
+					start: '$start',
+					firstQuartile: '$firstQuartile',
+					midpoint: '$midpoint',
+					thirdQuartile: '$thirdQuartile',
+					complete: '$complete',
 					_id: 0
 				}
 			},
@@ -1663,172 +1824,176 @@ async function PublisherDataRefresher() {
 		.catch((err) => console.log(err));
 	console.log('started');
 	console.log(publisherDataAudio.length, publisherDataDisplay.length, publisherDataVideo.length);
-	publisherDataAudio.forEach(async (publisherB) => {
-		// console.log(publisherB.PublisherSplit);
-		var publisherBit = publisherB;
-		publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
-		publisherBit.ssp = [ ...new Set(publisherBit.ssp) ];
-		var testappubid = publisherBit.apppubidpo;
-		var forda;
-		if (testappubid && testappubid.length)
-			for (var i = 0; i < testappubid.length; i++) {
-				if (testappubid && testappubid[i] && testappubid[i].publishername) {
-					forda = testappubid[i];
-					break;
-				}
-			}
-		publisherBit.apppubidpo = forda;
-		publisherBit.Publisher = publisherBit.Publisher[0];
-		publisherBit.ssp = publisherBit.ssp ? publisherBit.ssp[0] : '';
-		publisherBit.campaignId = publisherBit.campaignId[0];
-		const match = await publisherwiseConsole
-			.findOne({ apppubid: publisherBit.PublisherSplit, type: 'audio' })
-			.catch((err) => console.log(err));
-		if (!match) {
-			const newzip = new publisherwiseConsole({
-				apppubid: publisherBit.PublisherSplit,
-				campaignId: publisherBit.campaignId,
-				type: 'audio',
-				publisherName: publisherBit.apppubidpo
-					? publisherBit.apppubidpo.publishername
-						? publisherBit.apppubidpo.publishername
-						: publisherBit.PublisherSplit
-					: publisherBit.PublisherSplit ? publisherBit.PublisherSplit : publisherBit.Publisher.AppName,
-				ssp: publisherBit.ssp,
-				feed: publisherBit.feed !== undefined ? publisherBit.feed : null,
-				impression: publisherBit.impressions ? publisherBit.impressions : 0,
-				click: publisherBit.clicks ? publisherBit.clicks : 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
-			});
-			var suc = await newzip.save().catch((err) => console.log(err));
-			console.log('created');
-		} else {
-			const updateddoc = await publisherwiseConsole
-				.findOneAndUpdate(
-					{ publisherBit: publisherBit.PublisherSplit, type: 'audio' },
-					{
-						$inc: {
-							impression: publisherBit.impressions,
-							click: publisherBit.clicks
-								? publisherBit.clicks
-								: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
-						}
-					},
-					{ new: true }
-				)
-				.catch((err) => console.log(err));
-			console.log('updated');
-		}
-	});
-	publisherDataDisplay.forEach(async (publisherB) => {
-		// console.log(publisherB.PublisherSplit);
-		var publisherBit = publisherB;
-		publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
-		publisherBit.ssp = [ ...new Set(publisherBit.ssp) ];
-		var testappubid = publisherBit.apppubidpo;
-		var forda;
-		if (testappubid && testappubid.length)
-			for (var i = 0; i < testappubid.length; i++) {
-				if (testappubid && testappubid[i] && testappubid[i].publishername) {
-					forda = testappubid[i];
-					break;
-				}
-			}
-		publisherBit.apppubidpo = forda;
-		publisherBit.Publisher = publisherBit.Publisher[0];
-		publisherBit.ssp = publisherBit.ssp ? publisherBit.ssp[0] : '';
-		publisherBit.campaignId = publisherBit.campaignId[0];
-		const match = await publisherwiseConsole
-			.findOne({ apppubid: publisherBit.PublisherSplit, type: 'display' })
-			.catch((err) => console.log(err));
-		if (!match) {
-			const newzip = new publisherwiseConsole({
-				apppubid: publisherBit.PublisherSplit,
-				campaignId: publisherBit.campaignId,
-				type: 'display',
-				publisherName: publisherBit.apppubidpo
-					? publisherBit.apppubidpo.publishername
-						? publisherBit.apppubidpo.publishername
-						: publisherBit.PublisherSplit
-					: publisherBit.PublisherSplit ? publisherBit.PublisherSplit : publisherBit.Publisher.AppName,
-				ssp: publisherBit.ssp,
-				feed: publisherBit.feed !== undefined ? publisherBit.feed : null,
-				impression: publisherBit.impressions ? publisherBit.impressions : 0,
-				click: publisherBit.clicks ? publisherBit.clicks : 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
-			});
-			var suc = await newzip.save().catch((err) => console.log(err));
-			console.log('created');
-		} else {
-			const updateddoc = await publisherwiseConsole
-				.findOneAndUpdate(
-					{ publisherBit: publisherBit.PublisherSplit, type: 'display' },
-					{
-						$inc: {
-							impression: publisherBit.impressions,
-							click: publisherBit.clicks
-								? publisherBit.clicks
-								: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
-						}
-					},
-					{ new: true }
-				)
-				.catch((err) => console.log(err));
-			console.log('updated');
-		}
-	});
-	publisherDataVideo.forEach(async (publisherB) => {
-		// console.log(publisherB.PublisherSplit);
-		var publisherBit = publisherB;
-		publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
-		publisherBit.ssp = [ ...new Set(publisherBit.ssp) ];
-		var testappubid = publisherBit.apppubidpo;
-		var forda;
-		if (testappubid && testappubid.length)
-			for (var i = 0; i < testappubid.length; i++) {
-				if (testappubid && testappubid[i] && testappubid[i].publishername) {
-					forda = testappubid[i];
-					break;
-				}
-			}
-		publisherBit.apppubidpo = forda;
-		publisherBit.Publisher = publisherBit.Publisher[0];
-		publisherBit.ssp = publisherBit.ssp ? publisherBit.ssp[0] : '';
-		publisherBit.campaignId = publisherBit.campaignId[0];
-		const match = await publisherwiseConsole
-			.findOne({ apppubid: publisherBit.PublisherSplit, type: 'video' })
-			.catch((err) => console.log(err));
-		if (!match) {
-			const newzip = new publisherwiseConsole({
-				apppubid: publisherBit.PublisherSplit,
-				campaignId: publisherBit.campaignId,
-				type: 'video',
-				publisherName: publisherBit.apppubidpo
-					? publisherBit.apppubidpo.publishername
-						? publisherBit.apppubidpo.publishername
-						: publisherBit.PublisherSplit
-					: publisherBit.PublisherSplit ? publisherBit.PublisherSplit : publisherBit.Publisher.AppName,
-				ssp: publisherBit.ssp,
-				feed: publisherBit.feed !== undefined ? publisherBit.feed : null,
-				impression: publisherBit.impressions ? publisherBit.impressions : 0,
-				click: publisherBit.clicks ? publisherBit.clicks : 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
-			});
-			var suc = await newzip.save().catch((err) => console.log(err));
-			console.log('created');
-		} else {
-			const updateddoc = await publisherwiseConsole
-				.findOneAndUpdate(
-					{ publisherBit: publisherBit.PublisherSplit, type: 'video' },
-					{
-						$inc: {
-							impression: publisherBit.impressions,
-							click: publisherBit.clicks
-								? publisherBit.clicks
-								: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
-						}
-					},
-					{ new: true }
-				)
-				.catch((err) => console.log(err));
-			console.log('updated');
-		}
-	});
+	await PublisherConsoleLoaderTypeWise(publisherDataAudio, 'audio');
+	await PublisherConsoleLoaderTypeWise(publisherDataDisplay, 'display');
+	await PublisherConsoleLoaderTypeWise(publisherDataVideo, 'video');
 }
+
+// publisherDataAudio.forEach(async (publisherB) => {
+// 	// console.log(publisherB.PublisherSplit);
+// 	var publisherBit = publisherB;
+// 	publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
+// 	publisherBit.ssp = [ ...new Set(publisherBit.ssp) ];
+// 	var testappubid = publisherBit.apppubidpo;
+// 	var forda;
+// 	if (testappubid && testappubid.length)
+// 		for (var i = 0; i < testappubid.length; i++) {
+// 			if (testappubid && testappubid[i] && testappubid[i].publishername) {
+// 				forda = testappubid[i];
+// 				break;
+// 			}
+// 		}
+// 	publisherBit.apppubidpo = forda;
+// 	publisherBit.Publisher = publisherBit.Publisher[0];
+// 	publisherBit.ssp = publisherBit.ssp ? publisherBit.ssp[0] : '';
+// 	publisherBit.campaignId = publisherBit.campaignId[0];
+// 	const match = await publisherwiseConsole
+// 		.findOne({ apppubid: publisherBit.PublisherSplit, type: 'audio' })
+// 		.catch((err) => console.log(err));
+// 	if (!match) {
+// 		const newzip = new publisherwiseConsole({
+// 			apppubid: publisherBit.PublisherSplit,
+// 			campaignId: publisherBit.campaignId,
+// 			type: 'audio',
+// 			publisherName: publisherBit.apppubidpo
+// 				? publisherBit.apppubidpo.publishername
+// 					? publisherBit.apppubidpo.publishername
+// 					: publisherBit.PublisherSplit
+// 				: publisherBit.PublisherSplit ? publisherBit.PublisherSplit : publisherBit.Publisher.AppName,
+// 			ssp: publisherBit.ssp,
+// 			feed: publisherBit.feed !== undefined ? publisherBit.feed : null,
+// 			impression: publisherBit.impressions ? publisherBit.impressions : 0,
+// 			click: publisherBit.clicks ? publisherBit.clicks : 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+// 		});
+// 		var suc = await newzip.save().catch((err) => console.log(err));
+// 		console.log('created');
+// 	} else {
+// 		const updateddoc = await publisherwiseConsole
+// 			.findOneAndUpdate(
+// 				{ publisherBit: publisherBit.PublisherSplit, type: 'audio' },
+// 				{
+// 					$inc: {
+// 						impression: publisherBit.impressions,
+// 						click: publisherBit.clicks
+// 							? publisherBit.clicks
+// 							: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+// 					}
+// 				},
+// 				{ new: true }
+// 			)
+// 			.catch((err) => console.log(err));
+// 		console.log('updated');
+// 	}
+// });
+// publisherDataDisplay.forEach(async (publisherB) => {
+// 	// console.log(publisherB.PublisherSplit);
+// 	var publisherBit = publisherB;
+// 	publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
+// 	publisherBit.ssp = [ ...new Set(publisherBit.ssp) ];
+// 	var testappubid = publisherBit.apppubidpo;
+// 	var forda;
+// 	if (testappubid && testappubid.length)
+// 		for (var i = 0; i < testappubid.length; i++) {
+// 			if (testappubid && testappubid[i] && testappubid[i].publishername) {
+// 				forda = testappubid[i];
+// 				break;
+// 			}
+// 		}
+// 	publisherBit.apppubidpo = forda;
+// 	publisherBit.Publisher = publisherBit.Publisher[0];
+// 	publisherBit.ssp = publisherBit.ssp ? publisherBit.ssp[0] : '';
+// 	publisherBit.campaignId = publisherBit.campaignId[0];
+// 	const match = await publisherwiseConsole
+// 		.findOne({ apppubid: publisherBit.PublisherSplit, type: 'display' })
+// 		.catch((err) => console.log(err));
+// 	if (!match) {
+// 		const newzip = new publisherwiseConsole({
+// 			apppubid: publisherBit.PublisherSplit,
+// 			campaignId: publisherBit.campaignId,
+// 			type: 'display',
+// 			publisherName: publisherBit.apppubidpo
+// 				? publisherBit.apppubidpo.publishername
+// 					? publisherBit.apppubidpo.publishername
+// 					: publisherBit.PublisherSplit
+// 				: publisherBit.PublisherSplit ? publisherBit.PublisherSplit : publisherBit.Publisher.AppName,
+// 			ssp: publisherBit.ssp,
+// 			feed: publisherBit.feed !== undefined ? publisherBit.feed : null,
+// 			impression: publisherBit.impressions ? publisherBit.impressions : 0,
+// 			click: publisherBit.clicks ? publisherBit.clicks : 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+// 		});
+// 		var suc = await newzip.save().catch((err) => console.log(err));
+// 		console.log('created');
+// 	} else {
+// 		const updateddoc = await publisherwiseConsole
+// 			.findOneAndUpdate(
+// 				{ publisherBit: publisherBit.PublisherSplit, type: 'display' },
+// 				{
+// 					$inc: {
+// 						impression: publisherBit.impressions,
+// 						click: publisherBit.clicks
+// 							? publisherBit.clicks
+// 							: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+// 					}
+// 				},
+// 				{ new: true }
+// 			)
+// 			.catch((err) => console.log(err));
+// 		console.log('updated');
+// 	}
+// });
+// publisherDataVideo.forEach(async (publisherB) => {
+// 	// console.log(publisherB.PublisherSplit);
+// 	var publisherBit = publisherB;
+// 	publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
+// 	publisherBit.ssp = [ ...new Set(publisherBit.ssp) ];
+// 	var testappubid = publisherBit.apppubidpo;
+// 	var forda;
+// 	if (testappubid && testappubid.length)
+// 		for (var i = 0; i < testappubid.length; i++) {
+// 			if (testappubid && testappubid[i] && testappubid[i].publishername) {
+// 				forda = testappubid[i];
+// 				break;
+// 			}
+// 		}
+// 	publisherBit.apppubidpo = forda;
+// 	publisherBit.Publisher = publisherBit.Publisher[0];
+// 	publisherBit.ssp = publisherBit.ssp ? publisherBit.ssp[0] : '';
+// 	publisherBit.campaignId = publisherBit.campaignId[0];
+// 	const match = await publisherwiseConsole
+// 		.findOne({ apppubid: publisherBit.PublisherSplit, type: 'video' })
+// 		.catch((err) => console.log(err));
+// 	if (!match) {
+// 		const newzip = new publisherwiseConsole({
+// 			apppubid: publisherBit.PublisherSplit,
+// 			campaignId: publisherBit.campaignId,
+// 			type: 'video',
+// 			publisherName: publisherBit.apppubidpo
+// 				? publisherBit.apppubidpo.publishername
+// 					? publisherBit.apppubidpo.publishername
+// 					: publisherBit.PublisherSplit
+// 				: publisherBit.PublisherSplit ? publisherBit.PublisherSplit : publisherBit.Publisher.AppName,
+// 			ssp: publisherBit.ssp,
+// 			feed: publisherBit.feed !== undefined ? publisherBit.feed : null,
+// 			impression: publisherBit.impressions ? publisherBit.impressions : 0,
+// 			click: publisherBit.clicks ? publisherBit.clicks : 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+// 		});
+// 		var suc = await newzip.save().catch((err) => console.log(err));
+// 		console.log('created');
+// 	} else {
+// 		const updateddoc = await publisherwiseConsole
+// 			.findOneAndUpdate(
+// 				{ publisherBit: publisherBit.PublisherSplit, type: 'video' },
+// 				{
+// 					$inc: {
+// 						impression: publisherBit.impressions,
+// 						click: publisherBit.clicks
+// 							? publisherBit.clicks
+// 							: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
+// 					}
+// 				},
+// 				{ new: true }
+// 			)
+// 			.catch((err) => console.log(err));
+// 		console.log('updated');
+// 	}
+// });

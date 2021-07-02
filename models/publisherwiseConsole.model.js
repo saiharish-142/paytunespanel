@@ -9,6 +9,11 @@ var publisheriseConsoleSchema = new Schema({
 	type: String,
 	ssp: String,
 	impression: Number,
+	start: Number,
+	firstQuartile: Number,
+	midpoint: Number,
+	thirdQuartile: Number,
+	complete: Number,
 	feed: Number,
 	click: Number
 });
