@@ -1649,5 +1649,18 @@ router.post(
 	}
 )
 
+router.post(
+	'/categorydata_ondemand',
+	adminauth,
+	async(req,res)=>{
+		try{
+			const result=await CategoryReports2.find({feed:""})
+			res.status(200).json(result)
+		}catch(err){
+			console.log(err.message);
+		res.status(400).json({ error: err });
+		}
+	}
+)
 
 module.exports = router;
