@@ -1635,7 +1635,19 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 	}
 });
 
-
+router.post(
+	'/categorydata_podcast',
+	adminauth,
+	async(req,res)=>{
+		try{
+			const result=await CategoryReports2.find({feed:"3"})
+			res.status(200).json(result)
+		}catch(err){
+			console.log(err.message);
+		res.status(400).json({ error: err });
+		}
+	}
+)
 
 
 module.exports = router;

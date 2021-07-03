@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 	  }
 }));
 
-export default function PodcastCategorydata({rows}) {
+export default function PodcastCategorydata() {
 	const classes = useStyles();
 	const [open, setOpen] = React.useState(false);
 
@@ -55,7 +55,7 @@ export default function PodcastCategorydata({rows}) {
 	};
 	const [ error, seterror ] = useState('');
 	const [ success, setsuccess ] = useState('');
-	// const [ rows, setrows ] = useState([]);
+	const [ rows, setrows ] = useState([]);
 	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
 	const [ rowsPerPage, setRowsPerPage ] = useState(10);
 	const [ page, setPage ] = useState(0);
@@ -96,26 +96,26 @@ export default function PodcastCategorydata({rows}) {
 	// 		});
 	// };
 
-	// useEffect(() => {
-	// 	fetch('/subrepo/categorydata', {
-	// 		method: 'get',
-	// 		headers: {
-	// 			'Content-Type': 'application/json',
-	// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
-	// 		}
-	// 	})
-	// 		.then((data) => data.json())
-	// 		.then((dat) => {
-	// 			if (dat.error) {
-	// 				//seterror(dat.error)
-	// 				return console.log(dat.error);
-	// 			}
+	useEffect(() => {
+		fetch('/subrepo/categorydata_podcast', {
+			method: 'post',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('jwt')
+			}
+		})
+			.then((data) => data.json())
+			.then((dat) => {
+				if (dat.error) {
+					//seterror(dat.error)
+					return console.log(dat.error);
+				}
 
-	// 			// setsuccess(dat)
-	// 			setrows(dat);
-	// 			console.log(dat);
-	// 		});
-	// }, []);
+				// setsuccess(dat)
+				setrows(dat);
+				console.log(dat);
+			});
+	}, []);
 
 	const headers = [
 		{ key: 'category', label: 'Category' },

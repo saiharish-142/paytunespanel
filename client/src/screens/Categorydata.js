@@ -266,7 +266,7 @@ export default function Categorydata() {
 					onChangeRowsPerPage={handleChangeRowsPerPage}
 				/>
 
-				<PodcastCategorydata rows={rows}/>
+				<PodcastCategorydata />
 				{show ? (
 					<div>
 						<Modal
