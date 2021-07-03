@@ -44,16 +44,16 @@ export default function Episodedataform({ props, setShow, setsuccess, data1, set
 			});
 	}
 
-	function load() {
-		setMake_model(props.make_model);
-		setrelease(props.release);
-		setcompany(props.company);
-		setcost(props.cost);
-		setcumulative(props.cumulative);
-		setmodel(props.model);
-		settotal_percent(props.total_percent);
-		settype(props.type);
-	}
+	// function load() {
+	// 	setMake_model(props.make_model);
+	// 	setrelease(props.release);
+	// 	setcompany(props.company);
+	// 	setcost(props.cost);
+	// 	setcumulative(props.cumulative);
+	// 	setmodel(props.model);
+	// 	settotal_percent(props.total_percent);
+	// 	settype(props.type);
+	// }
 
 	return (
 		<div>
