@@ -243,7 +243,9 @@ router.post(
                         _id: "$episodename",
                         category: { $addToSet: "$category" },
                         publisher: { $addToSet: "$publisherid" },
-                        request: { $sum: "$requests" }
+                        request: { $sum: "$requests" },
+                        displayname:{$first:"$displayname"},
+                        hostPossibility:{$first:"$hostPossibility"}
                     }
                 },
                 {
@@ -260,7 +262,9 @@ router.post(
                         episodename: "$_id",
                         category: "$category",
                         publisher: { $setUnion: ["$publisher_details.publishername", []] },
-                        request: "$request"
+                        request: "$request",
+                        displayname:"$displayname",
+                        hostPossibility:"$hostPossibility"
                     }
                 }
             ])

@@ -244,7 +244,8 @@ export default function EpisodeTab(){
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('request')} className={getClassNamesFor('request')}> Request {arrowRetuner( sortconfig.key==='request'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('publisher')} className={getClassNamesFor('publisher')}> Publisher {arrowRetuner( sortconfig.key==='publisher'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('category')} className={getClassNamesFor('category')}> Category {arrowRetuner( sortconfig.key==='category'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('displayname')} className={getClassNamesFor('displayname')}> Display Name {arrowRetuner( sortconfig.key==='displayname'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('hostpossibility')} className={getClassNamesFor('hostpossibility')}> Host Possibility {arrowRetuner( sortconfig.key==='hostPossibilty'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell />}
 							</TableRow>
 						</TableHead>
@@ -257,6 +258,8 @@ export default function EpisodeTab(){
 									<TableCell>{row.request ? row.request : ''}</TableCell>
 									<TableCell>{row.publisher ? row.publisher: ''}</TableCell>
 									<TableCell>{row.category ? fetchcategory(row.category) : ''}</TableCell>
+									<TableCell>{row.category ? row.displayname : ''}</TableCell>
+									<TableCell>{row.category ? row.hostPossibility : ''}</TableCell>
 								</TableRow>
 							))}
 						</TableBody>
