@@ -324,7 +324,7 @@ router.post(
 
 
 
-                    const updated = await EpisodeModel.findOneAndUpdate({ _id }, { $set: updates }, { new: true });
+                    const updated = await EpisodeModel.findOneAndUpdate({ episodename }, { $set: updates }, { new: true });
                     if (!updated) {
                         return res.status(400).json({ error: "Couldn't Update !" });
                     }
