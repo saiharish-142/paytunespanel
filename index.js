@@ -648,7 +648,8 @@ async function CategoryRefresher() {
 				category: '$category',
 				impression: '$impression',
 				CompanionClickTracking: 1,
-				SovClickTracking: 1
+				SovClickTracking: 1,
+				feed:1
 			}
 		},
 		{ $match: { test: yesterday } },
@@ -657,7 +658,8 @@ async function CategoryRefresher() {
 				_id: { category: '$category' },
 				CompanionClickTracking: { $sum: '$CompanionClickTracking' },
 				SovClickTracking: { $sum: '$SovClickTracking' },
-				impressions: { $sum: '$impression' }
+				impressions: { $sum: '$impression' },
+				feeds:{$push:"$feed"}
 			}
 		}
 	]);
@@ -667,27 +669,56 @@ async function CategoryRefresher() {
 			$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ]
 		});
 		if (!match) {
-			const newzip = new Categoryreports2({
-				parent: '',
-				category: cat._id.category,
-				Name: '',
-				tier1: '',
-				tier2: '',
-				tier3: '',
-				tier4: '',
-				genderCategory: '',
-				AgeCategory: '',
-				new_taxonamy: '',
-				impression: cat.impressions,
-				click: cat.CompanionClickTracking + cat.SovClickTracking
-			});
-			await newzip.save();
+			cat.feeds.forEach(async feed=>{
+				const newzip = new Categoryreports2({
+					parent: '',
+					category: cat._id.category,
+					Name: '',
+					tier1: '',
+					tier2: '',
+					tier3: '',
+					tier4: '',
+					genderCategory: '',
+					AgeCategory: '',
+					new_taxonamy: '',
+					impression: cat.impressions,
+					click: cat.CompanionClickTracking + cat.SovClickTracking,
+					feed:feed
+				});
+				await newzip.save();
+			})
+			
 		} else {
-			const updateddoc = await Categoryreports2.findOneAndUpdate(
-				{ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ] },
-				{ $inc: { impression: cat.impressions, click: cat.CompanionClickTracking + cat.SovClickTracking } },
-				{ new: true }
+			const updateddoc = await Categoryreports2.updateMany(
+				{ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],feed:{$exists:false} },
+				{ $inc: { impression: cat.impressions, click: cat.CompanionClickTracking + cat.SovClickTracking },$set:{feed:""} }
 			);
+			cat.feeds.forEach(async feed=>{
+				const ismatch=await categoryreports2.findOne({ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],feed })
+				if(!ismatch){
+					const newzip = new Categoryreports2({
+						parent: '',
+						category: cat._id.category,
+						Name: '',
+						tier1: '',
+						tier2: '',
+						tier3: '',
+						tier4: '',
+						genderCategory: '',
+						AgeCategory: '',
+						new_taxonamy: '',
+						impression: cat.impressions,
+						click: cat.CompanionClickTracking + cat.SovClickTracking,
+						feed:feed
+					});
+					await newzip.save();
+				}else{
+					await categoryreports2.findOneAndUpdate({ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],feed },
+						 { $inc: { impression: cat.impressions, click: cat.CompanionClickTracking + cat.SovClickTracking }} )
+				}
+				
+			})
+
 			console.log('updated', updateddoc);
 		}
 	});

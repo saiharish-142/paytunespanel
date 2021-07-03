@@ -13,7 +13,8 @@ var categoryreportsSchema1 = new Schema({
 	AgeCategory: String,
 	new_taxonamy: String,
 	impression:Number,
-	click:Number
+	click:Number,
+	feed:String
 });
 categoryreportsSchema1.index({ category: 1 });
 
