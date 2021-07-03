@@ -1503,7 +1503,10 @@ router.put('/editzipdata', adminauth, async (req, res) => {
 
 router.get('/categorydata', adminauth, async (req, res) => {
 	try {
-		const result = await CategoryReports2.aggregate([ { $match: {} }, { $sort: { impression: -1 } } ]);
+		const result = await CategoryReports2.aggregate([ 
+			{ $match: {} }, 
+			{ $sort: { impression: -1 } } 
+		]);
 		res.status(200).json(result);
 	} catch (err) {
 		console.log(err.message);
@@ -1631,5 +1634,8 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 		res.status(400).json({ error: err });
 	}
 });
+
+
+
 
 module.exports = router;

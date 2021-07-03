@@ -5,7 +5,6 @@ import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 // import { useForm } from 'react-hook-form';
 import { CSVLink } from 'react-csv';
 import { Alert } from '@material-ui/lab';
-import PodcastCategorydata from './podcastcategory';
 import {
 	Table,
 	TableBody,
@@ -41,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 	  }
 }));
 
-export default function Categorydata() {
+export default function PodcastCategorydata({rows}) {
 	const classes = useStyles();
 	const [open, setOpen] = React.useState(false);
 
@@ -56,7 +55,7 @@ export default function Categorydata() {
 	};
 	const [ error, seterror ] = useState('');
 	const [ success, setsuccess ] = useState('');
-	const [ rows, setrows ] = useState([]);
+	// const [ rows, setrows ] = useState([]);
 	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
 	const [ rowsPerPage, setRowsPerPage ] = useState(10);
 	const [ page, setPage ] = useState(0);
@@ -76,47 +75,47 @@ export default function Categorydata() {
 	// };
 	//const [make_model,setmakemodel]=useState("")
 
-	const data = () => {
-		fetch('/subrepo/categorydata', {
-			method: 'get',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('jwt')
-			}
-		})
-			.then((data) => data.json())
-			.then((dat) => {
-				if (dat.error) {
-					//seterror(dat.error)
-					return console.log(dat.error);
-				}
+	// const data = () => {
+	// 	fetch('/subrepo/categorydata', {
+	// 		method: 'get',
+	// 		headers: {
+	// 			'Content-Type': 'application/json',
+	// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+	// 		}
+	// 	})
+	// 		.then((data) => data.json())
+	// 		.then((dat) => {
+	// 			if (dat.error) {
+	// 				//seterror(dat.error)
+	// 				return console.log(dat.error);
+	// 			}
 
-				// setsuccess(dat)
-				setrows(dat);
-				console.log(dat);
-			});
-	};
+	// 			// setsuccess(dat)
+	// 			setrows(dat);
+	// 			console.log(dat);
+	// 		});
+	// };
 
-	useEffect(() => {
-		fetch('/subrepo/categorydata', {
-			method: 'get',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('jwt')
-			}
-		})
-			.then((data) => data.json())
-			.then((dat) => {
-				if (dat.error) {
-					//seterror(dat.error)
-					return console.log(dat.error);
-				}
+	// useEffect(() => {
+	// 	fetch('/subrepo/categorydata', {
+	// 		method: 'get',
+	// 		headers: {
+	// 			'Content-Type': 'application/json',
+	// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+	// 		}
+	// 	})
+	// 		.then((data) => data.json())
+	// 		.then((dat) => {
+	// 			if (dat.error) {
+	// 				//seterror(dat.error)
+	// 				return console.log(dat.error);
+	// 			}
 
-				// setsuccess(dat)
-				setrows(dat);
-				console.log(dat);
-			});
-	}, []);
+	// 			// setsuccess(dat)
+	// 			setrows(dat);
+	// 			console.log(dat);
+	// 		});
+	// }, []);
 
 	const headers = [
 		{ key: 'category', label: 'Category' },
@@ -180,7 +179,7 @@ export default function Categorydata() {
 
 	return (
 		<div>
-			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Category data </h4>
+			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Category Podcast data </h4>
 			<div className={classes.root}>
 				{success ? (
 					<Alert
@@ -245,11 +244,11 @@ export default function Categorydata() {
 									<TableCell>{row.genderCategory ? row.genderCategory : ''}</TableCell>
 									<TableCell>{row.AgeCategory ? row.AgeCategory : ''}</TableCell>
 									<TableCell>{row.new_taxonamy ? row.new_taxonamy : ''}</TableCell>
-									<TableCell>
+									{/* <TableCell>
 										<button className="btn" onClick={() =>  handleOpen(row)}>
 											Edit{' '}
 										</button>
-									</TableCell>
+									</TableCell> */}
 								</TableRow>
 							))}
 						</TableBody>
@@ -265,9 +264,7 @@ export default function Categorydata() {
 					onChangePage={handleChangePage}
 					onChangeRowsPerPage={handleChangeRowsPerPage}
 				/>
-
-				<PodcastCategorydata rows={rows}/>
-				{show ? (
+				{/* {show ? (
 					<div>
 						<Modal
         open={open}
@@ -289,7 +286,7 @@ export default function Categorydata() {
 					</div>
 				) : (
 					<React.Fragment />
-				)}
+				)} */}
 			</Paper>
 		</div>
 	);
