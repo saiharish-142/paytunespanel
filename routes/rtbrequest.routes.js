@@ -244,8 +244,8 @@ router.post(
                         category: { $addToSet: "$category" },
                         publisher: { $addToSet: "$publisherid" },
                         request: { $sum: "$requests" },
-                        displayname:{$first:"$displayname"},
-                        hostPossibility:{$first:"$hostPossibility"}
+                        displayname: { $first: "$displayname" },
+                        hostPossibility: { $first: "$hostPossibility" }
                     }
                 },
                 {
@@ -263,8 +263,8 @@ router.post(
                         category: "$category",
                         publisher: { $setUnion: ["$publisher_details.publishername", []] },
                         request: "$request",
-                        displayname:"$displayname",
-                        hostPossibility:"$hostPossibility"
+                        displayname: "$displayname",
+                        hostPossibility: "$hostPossibility"
                     }
                 }
             ])
@@ -295,5 +295,45 @@ router.post(
         }
     }
 )
+
+router.post(
+    '/editepisodedata',
+    adminauth,
+    async (req, res) => {
+        try {
+           
+                    //data.make_model=data.make_model.toLowerCase()
+
+                    let {
+                        _id,
+                        publisher,
+                        episodename,
+                        category,
+                        requests,
+                        displayname,
+                        hostPossibility,
+                    } = req.body;
+                    let updates = {
+
+                        episodename,
+                        category,
+                        requests: parseInt(requests),
+                        displayname,
+                        hostPossibility,
+                    };
+
+
+
+                    const updated = await EpisodeModel.findOneAndUpdate({ _id }, { $set: updates }, { new: true });
+                    if (!updated) {
+                        return res.status(400).json({ error: "Couldn't Update !" });
+                    }
+
+                    res.status(200).json('Updated Successfuly!');
+                } catch (err) {
+                    res.status(400).json({ error: err.message });
+                }
+    
+            })
 
 module.exports = router

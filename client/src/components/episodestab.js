@@ -5,6 +5,7 @@ import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import { Alert } from '@material-ui/lab';
 import { CSVLink } from 'react-csv';
+import Episodedataform from '../screens/episodedataform';
 import {
 	Table,
 	TableBody,
@@ -44,9 +45,11 @@ export default function EpisodeTab(){
 
     const [rows,setrows]=useState([])
 	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
-	const [category_data,setcategorydata]=useState([])
+	const [ error, seterror ] = useState('');
+	const [ success, setsuccess ] = useState('');
 	const [ rowsPerPage, setRowsPerPage ] = useState(100);
 	const [ page, setPage ] = useState(0);
+	const [ tempdata, settempdata ] = useState({});
 	const classes=useStyles()
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
@@ -55,7 +58,17 @@ export default function EpisodeTab(){
 		setRowsPerPage(+event.target.value);
 		setPage(0);
 	};
-
+	const [open, setOpen] = React.useState(false);
+	const [ show, setShow ] = useState(false);
+	const handleOpen = (data) => {
+	  setOpen(true);
+	  setShow(true)
+	  settempdata(data);
+	};
+  
+	const handleClose = () => {
+	  setOpen(false);
+	};
 	const headers = [
 		{ key: 'episodename', label: 'Episode Name' },
 		{ key: 'request', label: 'Request' },
@@ -88,6 +101,27 @@ export default function EpisodeTab(){
 				console.log(dat);
 			});
 	}, []);
+
+	const data = () => {
+		fetch('/rtbreq/getepisodewise_report', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('jwt')
+			}
+		})
+			.then((data) => data.json())
+			.then((dat) => {
+				if (dat.error) {
+					//seterror(dat.error)
+					return console.log(dat.error);
+				}
+
+				// setsuccess(dat)
+				setrows(dat);
+				console.log(dat);
+			});
+	};
 
     React.useMemo(() => {
 		let sortedProducts = rows;
@@ -132,50 +166,6 @@ export default function EpisodeTab(){
 
 	 function fetchcategory(category){
 		let array=[]
-		// for (var i=0;i<category.length;i++){
-		// 	if(category[i].split(',').length>1 ){
-		// 		let categ=category[i].split(',')
-		// 		categ.map(cat1=>{
-		// 			fetch('/rtbreq/getcategory', {
-		// 				method: 'POST',
-		// 				headers: {
-		// 					'Content-Type': 'application/json',
-		// 					Authorization: 'Bearer ' + localStorage.getItem('jwt')
-		// 				},
-		// 				body:JSON.stringify({category:cat1})
-		// 			})
-		// 				.then((data) => data.json())
-		// 				.then((dat) => {
-		// 					if (dat.error) {
-		// 						//seterror(dat.error)
-		// 						return console.log(dat.error);
-		// 					}
-			
-		// 					// setsuccess(dat)
-		// 					array.push(dat.category)
-		// 				});
-		// 		})
-		// 	}else{
-		// 		fetch('/rtbreq/getcategory', {
-		// 			method: 'POST',
-		// 			headers: {
-		// 				'Content-Type': 'application/json',
-		// 				Authorization: 'Bearer ' + localStorage.getItem('jwt')
-		// 			},
-		// 			body:JSON.stringify({category:cat})
-		// 		})
-		// 			.then((data) => data.json())
-		// 			.then((dat) => {
-		// 				if (dat.error) {
-		// 					//seterror(dat.error)
-		// 					return console.log(dat.error);
-		// 				}
-		
-		// 				// setsuccess(dat)
-		// 				array.push(dat.category)
-		// 			});
-		// 	}
-		// }
 		category.map(cat=>{
 			if(cat.split(',').length>1 ){
 				let categ=cat.split(',')
@@ -232,6 +222,34 @@ export default function EpisodeTab(){
 			{/* <input placeholder="Search PhoneModel"  onChange={(e)=>setsearch(e.target.value)} style={{textAlign:'center',width:'20%',padding:'0.1%', border:'1px solid rgba(61, 61, 64, .25)', background:'#ffffff' }} />
 			<button className="btn" style={{marginLeft:'1%'}} onClick={ SearchData } >Search</button> */}
 			</div>
+			<div className={classes.root}>
+				{success ? (
+					<Alert
+						onClose={() => {
+							setsuccess('');
+						}}
+						style={{ margin: '1%' }}
+						severity="success"
+					>
+						{success}
+					</Alert>
+				) : (
+					<React.Fragment />
+				)}
+				{error ? (
+					<Alert
+						onClose={() => {
+							seterror('');
+						}}
+						style={{ margin: '1%' }}
+						severity="error"
+					>
+						{error}
+					</Alert>
+				) : (
+					''
+				)}
+			</div>
             <Paper>
 				<CSVLink {...csvReport} style={{padding:'10px',marginTop:'20px'}} >Download Table</CSVLink>
 			{/* {searchedData==='No Data Found!'? <h7>{searchedData}</h7>:   */}
@@ -245,7 +263,7 @@ export default function EpisodeTab(){
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('publisher')} className={getClassNamesFor('publisher')}> Publisher {arrowRetuner( sortconfig.key==='publisher'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('category')} className={getClassNamesFor('category')}> Category {arrowRetuner( sortconfig.key==='category'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('displayname')} className={getClassNamesFor('displayname')}> Display Name {arrowRetuner( sortconfig.key==='displayname'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('hostpossibility')} className={getClassNamesFor('hostpossibility')}> Host Possibility {arrowRetuner( sortconfig.key==='hostPossibilty'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('hostpossibility')} className={getClassNamesFor('hostpossibility')}> Host Possibility {arrowRetuner( sortconfig.key==='hostPossibility'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell />}
 							</TableRow>
 						</TableHead>
@@ -260,6 +278,11 @@ export default function EpisodeTab(){
 									<TableCell>{row.category ? fetchcategory(row.category) : ''}</TableCell>
 									<TableCell>{row.category ? row.displayname : ''}</TableCell>
 									<TableCell>{row.category ? row.hostPossibility : ''}</TableCell>
+									<TableCell>
+										<button className="btn" onClick={() => handleOpen(row)}>  
+											Edit{' '}
+										</button>
+									</TableCell>
 								</TableRow>
 							))}
 						</TableBody>
@@ -276,7 +299,7 @@ export default function EpisodeTab(){
 					onChangePage={handleChangePage}
 					onChangeRowsPerPage={handleChangeRowsPerPage}
 				/>
-				{/* {show ? (
+				{show ? (
 					<div>
 						 <Modal
         open={open}
@@ -285,8 +308,8 @@ export default function EpisodeTab(){
         aria-describedby="simple-modal-description"
       >
 		  <div style={{maxHeight:'100vh','overflow-y':'auto'}} className={classes.paper}>
-		  <h4>Edit Phone Data</h4>
-						<Phonedataform
+		  <h4>Edit Episode Data</h4>
+						<Episodedataform
 							props={tempdata}
 							setShow={setShow}
 							setsuccess={setsuccess}
@@ -300,7 +323,7 @@ export default function EpisodeTab(){
 					</div>
 				) : (
 					<React.Fragment />
-				)} */}
+				)}
 			</Paper>
         </div>
     )
