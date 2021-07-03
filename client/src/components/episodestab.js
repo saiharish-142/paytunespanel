@@ -221,8 +221,8 @@ export default function EpisodeTab(){
 			}
 		})
 		console.log(array)
-		setcategorydata(array)
-		return category_data
+		// setcategorydata(array)
+		return array
 	}
 
     return (
