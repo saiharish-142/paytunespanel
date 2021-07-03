@@ -92,7 +92,7 @@ export default function EpisodeTab(){
 			.then((data) => data.json())
 			.then((dat) => {
 				if (dat.error) {
-					//seterror(dat.error)
+					// seterror(dat.error)
 					return console.log(dat.error);
 				}
 

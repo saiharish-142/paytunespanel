@@ -314,17 +314,13 @@ router.post(
                         hostPossibility,
                     } = req.body;
                     let updates = {
-
-                        episodename,
-                        category,
-                        requests: parseInt(requests),
                         displayname,
                         hostPossibility,
                     };
 
 
 
-                    const updated = await EpisodeModel.findOneAndUpdate({ episodename }, { $set: updates }, { new: true });
+                    const updated = await EpisodeModel.updateMany({ episodename }, { $set: updates });
                     if (!updated) {
                         return res.status(400).json({ error: "Couldn't Update !" });
                     }
