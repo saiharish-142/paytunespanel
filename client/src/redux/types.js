@@ -45,6 +45,11 @@ export const RATIO_CLEAR = 'RATIO_CLEAR';
 export const RATIO_ERROR = 'RATIO_ERROR';
 export const RATIO_LOADING = 'RATIO_LOADING';
 
+//Quartile
+export const QUARTILE_LOADED = 'QUARTILE_LOADED';
+export const QUARTILE_LOADING = 'QUARTILE_LOADING';
+export const QUARTILE_ERROR = 'QUARTILE_ERROR';
+
 // consolidate reports
 export const PUBLISHERDATA_LOADED = 'PUBLISHERDATA_LOADED';
 export const PUBLISHERDATA_LOADING = 'PUBLISHERDATA_LOADING';

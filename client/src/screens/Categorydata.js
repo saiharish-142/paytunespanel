@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
-import OndemandCategorydata from './ondemandcategory';
 // import { useForm } from 'react-hook-form';
 import { CSVLink } from 'react-csv';
 import { Alert } from '@material-ui/lab';
-import PodcastCategorydata from './podcastcategory';
 import {
 	Table,
 	TableBody,
@@ -266,9 +264,6 @@ export default function Categorydata() {
 					onChangePage={handleChangePage}
 					onChangeRowsPerPage={handleChangeRowsPerPage}
 				/>
-
-				<PodcastCategorydata />
-				<OndemandCategorydata/>
 				{show ? (
 					<div>
 						<Modal

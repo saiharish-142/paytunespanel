@@ -1,5 +1,5 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import TablePagination from '@material-ui/core/TablePagination';
 // import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -16,8 +16,8 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
 	const [ sa, setsa ] = React.useState('impression');
-	const [ order, setorder ] = React.useState('desc');
-	const [ adss, setadss ] = React.useState(report);
+	const [ order, setorder ] = React.useState('asc');
+	const [ adss, setadss ] = React.useState([]);
 	const headers = [
 		{ key: 'publisherName', label: 'Publisher' },
 		{ key: 'impression', label: 'Total Impressions' },
@@ -26,7 +26,7 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 		{ key: 'midpoint', label: 'Second Quartile' },
 		{ key: 'thirdQuartile', label: 'Third Quartile' },
 		{ key: 'complete', label: 'Complete' },
-		{ key: 'ltr', label: 'LTR' }
+		{ key: 'lt', label: 'LTR' }
 	];
 	var csvReport = {
 		filename: `${title}_QuartileDataConsole.csv`,
@@ -35,14 +35,16 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 	};
 	useEffect(
 		() => {
+			console.log('ads;dsda');
 			if (report && report.length > 0) {
 				var data = report;
 				data.sort(function(a, b) {
 					return b.impression - a.impression;
 				});
 				data.map((x) => {
-					x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
+					x.lt = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 				});
+				console.log('complete');
 				setadss(data);
 			} else {
 				setadss(report);
@@ -50,12 +52,34 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 		},
 		[ report ]
 	);
-	useEffect(
-		() => {
-			console.log('started');
-		},
-		[ adss ]
-	);
+	// useEffect(
+	// 	() => {
+	// 		var repo = adss;
+	// 		if (repo && repo.length > 0) {
+	// 			var data = repo;
+	// 			data.sort(function(a, b) {
+	// 				return b.impression - a.impression;
+	// 			});
+	// 			data.map((x) => {
+	// 				x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
+	// 			});
+	// 			console.log('complete');
+	// 			setadss(data);
+	// 		} else {
+	// 			setadss(repo);
+	// 		}
+	// 	},
+	// 	[ adss ]
+	// );
+	// useEffect(
+	// 	() => {
+	// 		console.log(adss);
+	// 		if (adss && adss.length) {
+	// 			tablesorter('impression', 'number');
+	// 		}
+	// 	},
+	// 	[ adss ]
+	// );
 	const classes = useStyles();
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
@@ -71,14 +95,13 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 		var setData = orderSetter(orde, column, adss, type);
 		setadss(setData);
 	};
-	// console.log(adss && adss.length ? 'data' : 'no data')
 	return (
 		<Paper className="tableCont">
 			<TableContainer style={{ margin: '20px 0' }}>
 				<div style={{ margin: '5px', fontWeight: 'bolder' }}>
 					{title} Report {adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
 				</div>
-				{adss.length ? (
+				{adss && adss.length ? (
 					<Table className={classes.table} aria-label="simple table">
 						<TableHead>
 							<TableRow>
@@ -126,8 +149,8 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 								>
 									Complete {arrowRetuner(sa === 'complete' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell onClick={() => tablesorter('ltr', 'number')} style={{ cursor: 'pointer' }}>
-									LTR {arrowRetuner(sa === 'ltr' ? (order === 'asc' ? '1' : '2') : '3')}
+								<TableCell onClick={() => tablesorter('lt', 'number')} style={{ cursor: 'pointer' }}>
+									LTR {arrowRetuner(sa === 'lt' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 							</TableRow>
 						</TableHead>
@@ -142,7 +165,7 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 										<TableCell>{log.midpoint}</TableCell>
 										<TableCell>{log.thirdQuartile}</TableCell>
 										<TableCell>{log.complete}</TableCell>
-										<TableCell>{Math.round(log.ltr * 100) / 100}%</TableCell>
+										<TableCell>{Math.round(log.lt * 100) / 100}%</TableCell>
 									</TableRow>
 								);
 							})}
@@ -164,5 +187,4 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 		</Paper>
 	);
 }
-
 export default QuartilePublisherCon;

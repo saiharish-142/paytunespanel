@@ -8,6 +8,7 @@ import {
 	searchPublisherData,
 	storepaginationPublisherData
 } from '../redux/actions/ConsoledateActions';
+import { LoadQuartileData } from '../redux/actions/SeperateActions';
 import PreLoader from '../components/loaders/PreLoader';
 // import SearchCampagin from '../components/SearchCampagin';
 // import { CSVLink } from 'react-csv';
@@ -23,15 +24,16 @@ const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 function PublisherConsole() {
 	const dispatchRedux = useDispatch();
 	const consoledata = useSelector((state) => state.consoleDateReport);
+	const quartiledata = useSelector((state) => state.quartile);
 	// const [ searchval, setSearchval ] = useState('');
 	useEffect(() => {
 		if (
-			(consoledata && !consoledata.audiopublisherData) ||
-			!consoledata.displaypublisherData ||
-			!consoledata.videopublisherData
+			consoledata &&
+			(!consoledata.audiopublisherData || !consoledata.displaypublisherData || !consoledata.videopublisherData)
 		) {
 			dispatchRedux(PublisherLoading());
 			dispatchRedux(LoadPublisherData());
+			dispatchRedux(LoadQuartileData());
 		}
 		// if (consoledata && consoledata.publisherDataValue) {
 		// 	setSearchval(consoledata.publisherDataValue);
@@ -94,7 +96,13 @@ function PublisherConsole() {
 	// 	},
 	// 	[ consoledata ]
 	// );
-	if (consoledata.publisherDataLoading) {
+	// useEffect(
+	// 	() => {
+	// 		dispatchRedux(LTRLoad());
+	// 	},
+	// 	[ quartiledata ]
+	// );
+	if (consoledata.publisherDataLoading && quartiledata.publisherDataLoading) {
 		return (
 			<div className="dashboard">
 				<PreLoader />
@@ -174,21 +182,27 @@ function PublisherConsole() {
 		audio: [
 			{
 				columns: QuartileHead,
-				data: consoledata.audiopublisherData && QuartileBodyCon(consoledata.audiopublisherData)
+				data:
+					quartiledata.quartileaudiopublisherData && QuartileBodyCon(quartiledata.quartileaudiopublisherData)
 			}
 		],
 		video: [
 			{
 				columns: QuartileHead,
-				data: consoledata.videopublisherData && QuartileBodyCon(consoledata.videopublisherData)
+				data:
+					quartiledata.quartilevideopublisherData && QuartileBodyCon(quartiledata.quartilevideopublisherData)
 			}
 		]
 	};
-	// console.log(adss);
+	const quat = {
+		audio: quartiledata.quartileaudiopublisherData,
+		video: quartiledata.quartilevideopublisherData
+	};
+	console.log(quartiledata);
 	return (
 		<div>
 			<div className="heading">
-				Complete Wise Data<br />
+				Publisher Wise Data<br />
 				<ExeclDownload filename={`Complete Report Publisher wise`}>
 					<ExcelSheet dataSet={QuartileDown.audio} name="Complete Quartile Publisher Audio Wise" />
 					<ExcelSheet dataSet={QuartileDown.video} name="Complete Quartile Publisher Video Wise" />
@@ -197,12 +211,6 @@ function PublisherConsole() {
 					<ExcelSheet dataSet={PhonComp.video} name="Complete Publisher Video Wise" />
 				</ExeclDownload>
 			</div>
-			<div className="titleReport">Publisher Wise Data</div>
-			<ExeclDownload filename={`Complete Report Publisher wise`}>
-				<ExcelSheet dataSet={PhonComp.audio} name="Complete Publisher Audio Wise" />
-				<ExcelSheet dataSet={PhonComp.display} name="Complete Publisher Display Wise" />
-				<ExcelSheet dataSet={PhonComp.video} name="Complete Publisher Video Wise" />
-			</ExeclDownload>
 			<PublisherConsoleTable
 				title="Audio"
 				headers={headers}
@@ -262,8 +270,8 @@ function PublisherConsole() {
 					</TableBody>
 				</Table>
 			</TableContainer>
-			<QuartilePublisherCon title={'Audio'} report={consoledata.audiopublisherData} arrowRetuner={arrowRetuner} />
-			<QuartilePublisherCon title={'Video'} report={consoledata.videopublisherData} arrowRetuner={arrowRetuner} />
+			<QuartilePublisherCon title={'Audio'} report={quat.audio} arrowRetuner={arrowRetuner} />
+			<QuartilePublisherCon title={'Video'} report={quat.video} arrowRetuner={arrowRetuner} />
 		</div>
 	);
 }

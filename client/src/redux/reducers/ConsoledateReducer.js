@@ -18,6 +18,8 @@ const initialState = {
 	publisherDataLoading: true,
 	publisherDataFail: null,
 	CompletepublisherData: null,
+	quartileaudiopublisherData: null,
+	quartilevideopublisherData: null,
 	audiopublisherData: null,
 	audiosearchedpublisherData: null,
 	audiopublisherDataordername: 'impression',
@@ -54,6 +56,8 @@ export default function(state = initialState, action) {
 				...state,
 				publisherDataLoading: false,
 				CompletepublisherData: action.payload.complete,
+				quartileaudiopublisherData: action.payload.caudio,
+				quartilevideopublisherData: action.payload.cvideo,
 				audiopublisherData: action.payload.audio,
 				audiosearchedpublisherData: action.payload.audio,
 				displaypublisherData: action.payload.display,
@@ -114,6 +118,7 @@ export default function(state = initialState, action) {
 				videopublisherDataValue: action.payload.value
 			};
 		case PUBLISHERDATA_SORT_AUDIO:
+			console.log(state.quartileaudiopublisherData);
 			return {
 				...state,
 				audiopublisherDataordername: action.payload.name,

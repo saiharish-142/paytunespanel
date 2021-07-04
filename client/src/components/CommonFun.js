@@ -267,17 +267,21 @@ export const ConsolePhoneBody = (report1) => {
 	});
 };
 export const QuartileBodyCon = (report1) => {
-	return report1.map((log, index) => {
-		log.ltr = (log.complete ? parseInt(log.complete) : 0) * 100 / (log.impressions ? parseInt(log.impressions) : 0);
-		return [
-			{ value: log.publisherName ? log.publisherName : '' },
-			{ value: log.impression ? log.impression : 0 },
-			{ value: log.start ? log.start : 0 },
-			{ value: log.firstQuartile ? log.firstQuartile : 0 },
-			{ value: log.midpoint ? log.midpoint : 0 },
-			{ value: log.thirdQuartile ? log.thirdQuartile : 0 },
-			{ value: log.complete ? log.complete : 0 },
-			{ value: log.ltr ? log.ltr + '%' : 0 }
-		];
-	});
+	return (
+		report1 &&
+		report1.map((log, index) => {
+			log.ltr =
+				(log.complete ? parseInt(log.complete) : 0) * 100 / (log.impressions ? parseInt(log.impressions) : 0);
+			return [
+				{ value: log.publisherName ? log.publisherName : '' },
+				{ value: log.impression ? log.impression : 0 },
+				{ value: log.start ? log.start : 0 },
+				{ value: log.firstQuartile ? log.firstQuartile : 0 },
+				{ value: log.midpoint ? log.midpoint : 0 },
+				{ value: log.thirdQuartile ? log.thirdQuartile : 0 },
+				{ value: log.complete ? log.complete : 0 },
+				{ value: log.ltr ? log.ltr + '%' : 0 }
+			];
+		})
+	);
 };

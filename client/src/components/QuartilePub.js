@@ -1,7 +1,7 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import TablePagination from '@material-ui/core/TablePagination';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { orderSetter } from '../redux/actions/manageadsAction';
 import { CSVLink } from 'react-csv';
@@ -40,10 +40,10 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 				data.sort(function(a, b) {
 					return b.impressions - a.impressions;
 				});
-				data.map((x) => {
-					x.ltr =
-						(x.complete ? parseInt(x.complete) : 0) * 100 / (x.impressions ? parseInt(x.impressions) : 0);
-				});
+				// data.map((x) => {
+				// 	x.ltr =
+				// 		(x.complete ? parseInt(x.complete) : 0) * 100 / (x.impressions ? parseInt(x.impressions) : 0);
+				// });
 				setadss(data);
 			} else {
 				setadss(report);

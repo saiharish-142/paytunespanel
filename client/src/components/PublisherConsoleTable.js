@@ -5,6 +5,7 @@ import { orderSetter } from '../redux/actions/manageadsAction';
 import { CSVLink } from 'react-csv';
 import { useDispatch } from 'react-redux';
 import SearchCampagin from './SearchCampagin';
+import { LTRLoad } from '../redux/actions/SeperateActions';
 
 function PublisherConsoleTable({
 	title,
@@ -36,6 +37,7 @@ function PublisherConsoleTable({
 		setorder(orde);
 		setsa(column);
 		var setData = orderSetter(orde, column, adss, type);
+		dispatchRedux(LTRLoad());
 		dispatchRedux(orderManagerPublisherData(orde, column));
 		setadss(setData);
 	};
@@ -58,6 +60,17 @@ function PublisherConsoleTable({
 		[ consoledata ]
 	);
 	// console.log(adss && adss.length ? 'data' : 'no data')
+	// useEffect(
+	// 	() => {
+	// 		var data = adss;
+	// 		data &&
+	// 			data.map((x) => {
+	// 				x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';
+	// 			});
+	// 		setadss(data);
+	// 	},
+	// 	[ adss ]
+	// );
 	return (
 		<div>
 			<div style={{ margin: '5px', fontWeight: 'bolder' }}>
