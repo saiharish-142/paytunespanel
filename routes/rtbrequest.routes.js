@@ -270,7 +270,7 @@ router.post(
                 {
                     $group: {
                         _id: "$episodename",
-                        category: { $addToSet: "$extra_details" },
+                        category: { $addToSet: "$extra_details.category" },
                         publisher: { $addToSet: "$publisherid" },
                         request: { $sum: "$requests" },
                         displayname: { $first: "$displayname" },
