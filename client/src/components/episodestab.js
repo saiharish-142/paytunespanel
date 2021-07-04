@@ -275,7 +275,7 @@ export default function EpisodeTab(){
 									</TableCell>
 									<TableCell>{row.request ? row.request : ''}</TableCell>
 									<TableCell>{row.publisher ? row.publisher: ''}</TableCell>
-									<TableCell>{row.category ? row.category : ''}</TableCell>
+									<TableCell>{row.category ? row.category.toString() : ''}</TableCell>
 									<TableCell>{row.displayname ? row.displayname : ''}</TableCell>
 									<TableCell>{row.hostPossibility ? row.hostPossibility : ''}</TableCell>
 									<TableCell>
