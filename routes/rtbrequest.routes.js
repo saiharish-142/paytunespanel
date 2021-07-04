@@ -239,9 +239,38 @@ router.post(
         try {
             const result = await EpisodeModel.aggregate([
                 {
+                    $lookup: {
+                        from: 'categoryreports2',
+                        localField: 'category',
+                        foreignField: 'category',
+                        as: 'extra_details'
+                    }
+                },
+                { $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+                {
+                    $lookup: {
+                        from: 'categoryreports2',
+                        localField: 'category',
+                        foreignField: 'new_taxonamy',
+                        as: 'extra_details1'
+                    }
+                },
+                { $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+                {
+                    $project: {
+                        episodename: 1,
+                        category: 1,
+                        publisherid: 1,
+                        requests:1,
+                        displayname:1,
+                        hostPossibility:1,
+                        extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+                    }
+                },
+                {
                     $group: {
                         _id: "$episodename",
-                        category: { $addToSet: "$category" },
+                        category: { $addToSet: "$extra_details" },
                         publisher: { $addToSet: "$publisherid" },
                         request: { $sum: "$requests" },
                         displayname: { $first: "$displayname" },
