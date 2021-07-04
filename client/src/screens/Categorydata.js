@@ -5,6 +5,9 @@ import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 // import { useForm } from 'react-hook-form';
 import { CSVLink } from 'react-csv';
 import { Alert } from '@material-ui/lab';
+import PodcastCategorydata from '../screens/podcastcategory'
+import OndemandCategorydata from '../screens/ondemandcategory'
+
 import {
 	Table,
 	TableBody,
@@ -264,6 +267,8 @@ export default function Categorydata() {
 					onChangePage={handleChangePage}
 					onChangeRowsPerPage={handleChangeRowsPerPage}
 				/>
+				<PodcastCategorydata />
+				<OndemandCategorydata/>
 				{show ? (
 					<div>
 						<Modal
