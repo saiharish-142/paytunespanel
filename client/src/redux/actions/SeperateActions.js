@@ -1,4 +1,5 @@
 import { QUARTILE_LOADED, QUARTILE_ERROR } from '../types.js';
+import { FREQUENCY_ERROR, FREQUENCY_LOADING, FREQUENCY_LOADED } from '../types.js';
 import { tokenConfig } from './authAction.js';
 
 export const LoadQuartileData = () => (dispatch, getState) => {
@@ -65,5 +66,34 @@ export const LTRLoad = () => (dispatch, getState) => {
 			caudio: data,
 			cvideo: data2
 		}
+	});
+};
+
+export const LoadFrequencyData = () => (dispatch, getState) => {
+	if (tokenConfig(getState).headers.Authorization) {
+		fetch(`/subrepo/frequencyComplete`, {
+			method: 'get',
+			headers: tokenConfig(getState).headers
+		})
+			.then((res) => res.json())
+			.then((result) => {
+				console.log(result);
+				dispatch({
+					type: FREQUENCY_LOADED,
+					payload: result
+				});
+			})
+			.catch((err) => {
+				console.log(err);
+				dispatch({
+					type: FREQUENCY_ERROR
+				});
+			});
+	}
+};
+
+export const LoadFrequency = () => (dispatch, getState) => {
+	dispatch({
+		type: FREQUENCY_LOADING
 	});
 };

@@ -6,6 +6,7 @@ import ratioReducer from './currencyReducer';
 import reportReducer from './reportReducer';
 import consoleDatedReducer from './ConsoledateReducer';
 import quartileReducer from './ConsoleQuartileReducer';
+import freqReducer from './FrequencyReducer';
 
 export default combineReducers({
 	auth: authReducer,
@@ -14,5 +15,6 @@ export default combineReducers({
 	managebundles: manageBundlesReducer,
 	report: reportReducer,
 	quartile: quartileReducer,
+	freq: freqReducer,
 	consoleDateReport: consoleDatedReducer
 });
