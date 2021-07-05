@@ -18,6 +18,7 @@ const Campaignwisereports = mongoose.model('campaignwisereports');
 const CategoryReports = require('../models/categoryreports');
 const adminauth = require('../authenMiddleware/adminauth');
 const publisherwiseConsole = mongoose.model('publisherwiseConsole');
+const frequencyConsole = mongoose.model('frequencyConsole');
 
 router.get('/phonemake', adminauth, (req, res) => {
 	phonemakereports
@@ -1179,6 +1180,15 @@ router.get('/publisherComplete', adminauth, (req, res) => {
 		.catch((err) => console.log(err));
 });
 
+router.get('/frequencyComplete', adminauth, (req, res) => {
+	frequencyConsole
+		.find()
+		.then((result) => {
+			res.json(result);
+		})
+		.catch((err) => console.log(err));
+});
+
 router.get('/publisherComplete2', adminauth, async (req, res) => {
 	let audio = await publisherwiseConsole.find({ type: 'audio' }).catch((err) => console.log(err));
 	let display = await publisherwiseConsole.find({ type: 'display' }).catch((err) => console.log(err));
@@ -1503,10 +1513,7 @@ router.put('/editzipdata', adminauth, async (req, res) => {
 
 router.get('/categorydata', adminauth, async (req, res) => {
 	try {
-		const result = await CategoryReports2.aggregate([ 
-			{ $match: {} }, 
-			{ $sort: { impression: -1 } } 
-		]);
+		const result = await CategoryReports2.aggregate([ { $match: {} }, { $sort: { impression: -1 } } ]);
 		res.status(200).json(result);
 	} catch (err) {
 		console.log(err.message);
@@ -1635,32 +1642,24 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 	}
 });
 
-router.post(
-	'/categorydata_podcast',
-	adminauth,
-	async(req,res)=>{
-		try{
-			const result=await CategoryReports2.find({feed:"3"})
-			res.status(200).json(result)
-		}catch(err){
-			console.log(err.message);
+router.post('/categorydata_podcast', adminauth, async (req, res) => {
+	try {
+		const result = await CategoryReports2.find({ feed: '3' });
+		res.status(200).json(result);
+	} catch (err) {
+		console.log(err.message);
 		res.status(400).json({ error: err });
-		}
 	}
-)
+});
 
-router.post(
-	'/categorydata_ondemand',
-	adminauth,
-	async(req,res)=>{
-		try{
-			const result=await CategoryReports2.find({feed:""})
-			res.status(200).json(result)
-		}catch(err){
-			console.log(err.message);
+router.post('/categorydata_ondemand', adminauth, async (req, res) => {
+	try {
+		const result = await CategoryReports2.find({ feed: '' });
+		res.status(200).json(result);
+	} catch (err) {
+		console.log(err.message);
 		res.status(400).json({ error: err });
-		}
 	}
-)
+});
 
 module.exports = router;

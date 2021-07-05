@@ -61,6 +61,7 @@ require('./models/categoryreports');
 require('./models/categoryreports2');
 require('./models/apppublishers.model');
 require('./models/publisherwiseConsole.model');
+require('./models/frequencyConsole.model');
 
 app.use('/auth', require('./routes/user.routes'));
 app.use('/streamingads', require('./routes/streamingads.routes'));
@@ -649,7 +650,7 @@ async function CategoryRefresher() {
 				impression: '$impression',
 				CompanionClickTracking: 1,
 				SovClickTracking: 1,
-				feed:1
+				feed: 1
 			}
 		},
 		{ $match: { test: yesterday } },
@@ -659,7 +660,7 @@ async function CategoryRefresher() {
 				CompanionClickTracking: { $sum: '$CompanionClickTracking' },
 				SovClickTracking: { $sum: '$SovClickTracking' },
 				impressions: { $sum: '$impression' },
-				feeds:{$push:"$feed"}
+				feeds: { $push: '$feed' }
 			}
 		}
 	]);
@@ -669,7 +670,7 @@ async function CategoryRefresher() {
 			$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ]
 		});
 		if (!match) {
-			cat.feeds.forEach(async feed=>{
+			cat.feeds.forEach(async (feed) => {
 				const newzip = new Categoryreports2({
 					parent: '',
 					category: cat._id.category,
@@ -683,19 +684,27 @@ async function CategoryRefresher() {
 					new_taxonamy: '',
 					impression: cat.impressions,
 					click: cat.CompanionClickTracking + cat.SovClickTracking,
-					feed:feed
+					feed: feed
 				});
 				await newzip.save();
-			})
-			
+			});
 		} else {
 			const updateddoc = await Categoryreports2.updateMany(
-				{ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],feed:{$exists:false} },
-				{ $inc: { impression: cat.impressions, click: cat.CompanionClickTracking + cat.SovClickTracking },$set:{feed:""} }
+				{
+					$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],
+					feed: { $exists: false }
+				},
+				{
+					$inc: { impression: cat.impressions, click: cat.CompanionClickTracking + cat.SovClickTracking },
+					$set: { feed: '' }
+				}
 			);
-			cat.feeds.forEach(async feed=>{
-				const ismatch=await categoryreports2.findOne({ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],feed })
-				if(!ismatch){
+			cat.feeds.forEach(async (feed) => {
+				const ismatch = await categoryreports2.findOne({
+					$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],
+					feed
+				});
+				if (!ismatch) {
 					const newzip = new Categoryreports2({
 						parent: '',
 						category: cat._id.category,
@@ -709,15 +718,21 @@ async function CategoryRefresher() {
 						new_taxonamy: '',
 						impression: cat.impressions,
 						click: cat.CompanionClickTracking + cat.SovClickTracking,
-						feed:feed
+						feed: feed
 					});
 					await newzip.save();
-				}else{
-					await categoryreports2.findOneAndUpdate({ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],feed },
-						 { $inc: { impression: cat.impressions, click: cat.CompanionClickTracking + cat.SovClickTracking }} )
+				} else {
+					await categoryreports2.findOneAndUpdate(
+						{ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ], feed },
+						{
+							$inc: {
+								impression: cat.impressions,
+								click: cat.CompanionClickTracking + cat.SovClickTracking
+							}
+						}
+					);
 				}
-				
-			})
+			});
 
 			console.log('updated', updateddoc);
 		}
@@ -1443,6 +1458,10 @@ cron.schedule('40 00 * * *', function() {
 	PublisherDataRefresher();
 });
 
+cron.schedule('45 00 * * *', function() {
+	FrequencyDataRefresher();
+});
+
 function arrayincludefinder(array, id) {
 	var status = false;
 	array.map((x) => {
@@ -1477,7 +1496,10 @@ function arr_diff(a1, a2) {
 	// console.log(diff.length, diffa - daila, cou);
 	return diff;
 }
+
 const publisherwiseConsole = mongoose.model('publisherwiseConsole');
+const frequencyConsole = mongoose.model('frequencyConsole');
+const frequencyreports = mongoose.model('frequencyreports');
 
 async function PublisherConsoleLoaderTypeWise(array, type) {
 	array &&
@@ -1858,6 +1880,65 @@ async function PublisherDataRefresher() {
 	await PublisherConsoleLoaderTypeWise(publisherDataAudio, 'audio');
 	await PublisherConsoleLoaderTypeWise(publisherDataDisplay, 'display');
 	await PublisherConsoleLoaderTypeWise(publisherDataVideo, 'video');
+}
+
+// FrequencyDataRefresher();
+async function FrequencyDataRefresher() {
+	let date = new Date(new Date());
+	date.setDate(date.getDate() - 1);
+	date = new Date(date);
+	const year = date.getFullYear();
+	const month = `0${date.getMonth() + 1}`;
+	const date1 = date.getDate();
+	let yesterday = `${year}-${month}-${date1}`;
+	console.log('yesterday', yesterday);
+	// { $match: { test: yesterday } },
+	const frequency = await frequencyreports.aggregate([
+		{
+			$project: {
+				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+				frequency: '$frequency',
+				users: '$users',
+				impression: '$impression',
+				click: '$click'
+			}
+		},
+		{
+			$group: {
+				_id: '$frequency',
+				users: { $sum: '$users' },
+				impression: { $sum: '$impression' },
+				click: { $sum: '$click' }
+			}
+		}
+	]);
+	console.log(frequency.length);
+	frequency.forEach(async (frequenct) => {
+		const match = await frequencyConsole.findOne({ frequency: frequenct._id });
+		if (!match) {
+			const newzip = new frequencyConsole({
+				frequency: frequenct._id,
+				impression: frequenct.impression,
+				click: frequenct.click,
+				users: frequenct.users
+			});
+			await newzip.save().catch((err) => console.log(err));
+			console.log('created');
+		} else {
+			const updateddoc = await frequencyConsole
+				.findOneAndUpdate(
+					{ frequency: frequenct._id },
+					{
+						impression: frequenct.impressions,
+						click: frequenct.click,
+						users: frequenct.users
+					},
+					{ new: true }
+				)
+				.catch((err) => console.log(err));
+			console.log('updated');
+		}
+	});
 }
 
 // publisherDataAudio.forEach(async (publisherB) => {
