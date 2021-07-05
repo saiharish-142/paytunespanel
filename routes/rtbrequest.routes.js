@@ -269,12 +269,12 @@ router.post(
                 },
                 {
                     $group: {
-                        _id: "$episodename",
-                        category: { $addToSet: "$extra_details.category" },
+                        _id: {episodename:"$episodename",category:"$category"},
                         publisher: { $addToSet: "$publisherid" },
                         request: { $sum: "$requests" },
                         displayname: { $first: "$displayname" },
-                        hostPossibility: { $first: "$hostPossibility" }
+                        hostPossibility: { $first: "$hostPossibility" },
+                        category_details:{$addToSet:"$extra_details"}
                     }
                 },
                 {
@@ -288,12 +288,13 @@ router.post(
                 // {$unwind:"$publisher_details"},
                 {
                     $project: {
-                        episodename: "$_id",
-                        category: "$category",
+                        episodename: "$_id.episodename",
+                        category: "$_id.category",
                         publisher: { $setUnion: ["$publisher_details.publishername", []] },
                         request: "$request",
                         displayname: "$displayname",
-                        hostPossibility: "$hostPossibility"
+                        hostPossibility: "$hostPossibility",
+                        category_details:1
                     }
                 }
             ])

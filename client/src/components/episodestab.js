@@ -262,6 +262,7 @@ export default function EpisodeTab(){
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('request')} className={getClassNamesFor('request')}> Request {arrowRetuner( sortconfig.key==='request'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('publisher')} className={getClassNamesFor('publisher')}> Publisher {arrowRetuner( sortconfig.key==='publisher'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('category')} className={getClassNamesFor('category')}> Category {arrowRetuner( sortconfig.key==='category'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('category_details.tier1')} className={getClassNamesFor('category_details.tier1')}> Tier1 {arrowRetuner( sortconfig.key==='category_details.tier1'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('displayname')} className={getClassNamesFor('displayname')}> Display Name {arrowRetuner( sortconfig.key==='displayname'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('hostPossibility')} className={getClassNamesFor('hostPossibility')}> Host Possibility {arrowRetuner( sortconfig.key==='hostPossibility'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell />}
@@ -275,7 +276,8 @@ export default function EpisodeTab(){
 									</TableCell>
 									<TableCell>{row.request ? row.request : ''}</TableCell>
 									<TableCell>{row.publisher ? row.publisher: ''}</TableCell>
-									<TableCell>{row.category ? row.category.toString() : ''}</TableCell>
+									<TableCell>{row.category ? row.category : ''}</TableCell>
+									<TableCell>{row.category_details ? row.category_details.tier1 : ''}</TableCell>
 									<TableCell>{row.displayname ? row.displayname : ''}</TableCell>
 									<TableCell>{row.hostPossibility ? row.hostPossibility : ''}</TableCell>
 									<TableCell>
