@@ -62,8 +62,6 @@ function FrequencyConTab({ report }) {
 				});
 				csvReport.data = data;
 				setadss(data);
-				tablesorter('impression', 'number');
-				tablesorter('impression', 'number');
 			} else {
 				setadss(report);
 			}
@@ -79,7 +77,7 @@ function FrequencyConTab({ report }) {
 	};
 	// console.log(adss && adss.length ? 'data' : 'no data')
 	return (
-		<Paper>
+		<Paper className="tableCont">
 			<TableContainer style={{ margin: '20px 0' }}>
 				{/* <div style={{ margin: '5px', fontWeight: 'bolder' }}>Frequency Report</div> */}
 				{adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}

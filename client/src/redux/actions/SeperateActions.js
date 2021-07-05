@@ -78,9 +78,16 @@ export const LoadFrequencyData = () => (dispatch, getState) => {
 			.then((res) => res.json())
 			.then((result) => {
 				console.log(result);
+				var data = result;
+				data.sort(function(a, b) {
+					return parseInt(b.impression) - parseInt(a.impression);
+				});
+				data.map((ad) => {
+					ad.ctr = parseInt(ad.click) * 100 / parseInt(ad.impression);
+				});
 				dispatch({
 					type: FREQUENCY_LOADED,
-					payload: result
+					payload: data
 				});
 			})
 			.catch((err) => {
