@@ -97,6 +97,18 @@ export default function TemporaryDrawer() {
 					state.usertype === 'admin' && (
 						<React.Fragment>
 							<hr />
+							<ListItem className="dashmenu__item" onClick={() => history.push('/frequencydata')}>
+								<ListItemIcon>
+									<i className="material-icons">keyboard_arrow_right</i>
+								</ListItemIcon>
+								<ListItemText>Frequency Data</ListItemText>
+							</ListItem>
+						</React.Fragment>
+					)}
+					{state &&
+					state.usertype === 'admin' && (
+						<React.Fragment>
+							<hr />
 							<ListItem className="dashmenu__item" onClick={() => history.push('/biddata')}>
 								<ListItemIcon>
 									<i className="material-icons">keyboard_arrow_right</i>
