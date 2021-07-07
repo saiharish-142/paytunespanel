@@ -627,7 +627,7 @@ async function PhoneRefresher() {
 	});
 }
 
-cron.schedule('30 00 * * *', function() {
+cron.schedule('00 17 * * *', function() {
 	CategoryRefresher();
 });
 
@@ -669,7 +669,7 @@ async function CategoryRefresher() {
 		const match = await Categoryreports2.findOne({
 			$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ]
 		});
-		
+
 		if (!match) {
 			cat.feeds.forEach(async (feed) => {
 				const newzip = new Categoryreports2({
@@ -701,7 +701,7 @@ async function CategoryRefresher() {
 				}
 			);
 			cat.feeds.forEach(async (feed) => {
-				const ismatch = await categoryreports2.findOne({
+				const ismatch = await Categoryreports2.findOne({
 					$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],
 					feed
 				});
@@ -723,7 +723,7 @@ async function CategoryRefresher() {
 					});
 					await newzip.save();
 				} else {
-					await categoryreports2.findOneAndUpdate(
+					await Categoryreports2.findOneAndUpdate(
 						{ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ], feed },
 						{
 							$inc: {
