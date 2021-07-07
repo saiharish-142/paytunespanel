@@ -669,6 +669,7 @@ async function CategoryRefresher() {
 		const match = await Categoryreports2.findOne({
 			$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ]
 		});
+		
 		if (!match) {
 			cat.feeds.forEach(async (feed) => {
 				const newzip = new Categoryreports2({
