@@ -972,18 +972,18 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 	var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
 	var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
 	var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
-	const setdate='2021-07-01'
+	
 	try {
 		const resultaudio = await CategoryReports.aggregate([
 			{ $match: { campaignId: { $in: audio } } },
-			{$project:{
-				category:1,
-				impression:1,
-				CompanionClickTracking:1,
-				SovClickTracking:1,
-				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-			}},
-			{$match:{test:{$gt:setdate}}},
+			// {$project:{
+			// 	category:1,
+			// 	impression:1,
+			// 	CompanionClickTracking:1,
+			// 	SovClickTracking:1,
+			// 	test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+			// }},
+			// {$match:{test:{$gt:setdate}}},
 			{
 				$group: {
 					_id: { category: '$category' },
@@ -1521,8 +1521,12 @@ router.put('/editzipdata', adminauth, async (req, res) => {
 });
 
 router.get('/categorydata', adminauth, async (req, res) => {
+	const setdate='2021-07-01'
 	try {
-		const result = await CategoryReports2.aggregate([ { $match: {} }, { $sort: { impression: -1 } } ]);
+		const result = await CategoryReports2.aggregate([ 
+			{ $match: {} }, 
+			{ $sort: { impression: -1 } } 
+		]);
 		res.status(200).json(result);
 	} catch (err) {
 		console.log(err.message);
