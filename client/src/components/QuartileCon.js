@@ -106,11 +106,11 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 						<TableHead>
 							<TableRow>
 								<TableCell
-									onClick={() => tablesorter('publishername', 'string')}
+									onClick={() => tablesorter('publisherName', 'string')}
 									style={{ cursor: 'pointer' }}
 								>
 									Publisher
-									{arrowRetuner(sa === 'publishername' ? (order === 'asc' ? '1' : '2') : '3')}
+									{arrowRetuner(sa === 'publisherName' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
 									onClick={() => tablesorter('impression', 'number')}

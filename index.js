@@ -1617,6 +1617,9 @@ async function PublisherConsoleLoaderTypeWise(array, type) {
 		});
 }
 
+var fixDate = new Date('2021-07-01').toISOString();
+console.log(fixDate);
+
 // PublisherDataRefresher();
 async function PublisherDataRefresher() {
 	let date = new Date(new Date());
@@ -1687,7 +1690,7 @@ async function PublisherDataRefresher() {
 					complete: '$complete'
 				}
 			},
-			{ $match: { test: yesterday } },
+			{ $match: { test: { $gte: fixDate } } },
 			{
 				$group: {
 					_id: { appubid: '$apppubid', feed: '$feed' },
@@ -1754,7 +1757,7 @@ async function PublisherDataRefresher() {
 					complete: '$complete'
 				}
 			},
-			{ $match: { test: yesterday } },
+			{ $match: { test: { $gte: fixDate } } },
 			{
 				$group: {
 					_id: { appubid: '$apppubid', feed: '$feed' },
@@ -1821,7 +1824,7 @@ async function PublisherDataRefresher() {
 					complete: '$complete'
 				}
 			},
-			{ $match: { test: yesterday } },
+			{ $match: { test: { $gte: fixDate } } },
 			{
 				$group: {
 					_id: { appubid: '$apppubid', feed: '$feed' },
@@ -1904,6 +1907,7 @@ async function FrequencyDataRefresher() {
 				click: '$click'
 			}
 		},
+		{ $match: { test: { $gte: fixDate } } },
 		{
 			$group: {
 				_id: '$frequency',
