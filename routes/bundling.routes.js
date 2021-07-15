@@ -39,8 +39,9 @@ router.get('/:id', adminauth, (req, res) => {
 		.catch((err) => res.status(422).json({ error: 'Error occured....!', err }));
 });
 
-router.get('/bundlesClient', adminauth, (req, res) => {
-	if (req.user.usertype !== 'admin') {
+router.get('/bun/bundlesClient', adminauth, (req, res) => {
+	console.log(req.user);
+	if (req.user.usertype === 'admin') {
 		return res.status(401).json({ message: 'Not authorized' });
 	}
 	bindstreamingads
