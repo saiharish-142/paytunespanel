@@ -40,12 +40,12 @@ router.get('/:id', adminauth, (req, res) => {
 });
 
 router.get('/bun/bundlesClient', adminauth, (req, res) => {
-	console.log(req.user);
-	if (req.user.usertype === 'admin') {
+	console.log(res.locals.user);
+	if (res.locals.user.usertype === 'admin') {
 		return res.status(401).json({ message: 'Not authorized' });
 	}
 	bindstreamingads
-		.find({ _id: { $in: req.user.bundles } })
+		.find({ _id: { $in: res.locals.user.bundles } })
 		.populate('ids', '_id AdTitle Category Advertiser Pricing PricingModel startDate endDate')
 		.then(async (result) => {
 			res.json(result);
