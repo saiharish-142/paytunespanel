@@ -128,7 +128,7 @@ router.get('/id/:id', adminauth, (req, res) => {
 });
 
 router.get('/loggedUser', adminauth, (req, res, next) => {
-	var data = req.user;
+	var data = res.locals.user;
 	// console.log(data)
 	res.json(data);
 });
