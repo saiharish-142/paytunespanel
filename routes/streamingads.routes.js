@@ -544,16 +544,44 @@ router.put('/clientgroupedbyids', adminauth, (req, res) => {
 			data.forEach((ad) => {
 				var resCategory = [].concat.apply([], ad.Category);
 				resCategory = [ ...new Set(resCategory) ];
-				ad.Category = resCategory;
+				ad.Category = resCategory.length ? resCategory[0] : '';
 				var resAdvertiser = [].concat.apply([], ad.Advertiser);
 				resAdvertiser = [ ...new Set(resAdvertiser) ];
-				ad.Advertiser = resAdvertiser;
+				ad.Advertiser = resAdvertiser.length ? resAdvertiser[0] : '';
 				var resPricing = [].concat.apply([], ad.Pricing);
 				resPricing = [ ...new Set(resPricing) ];
-				ad.Pricing = resPricing;
+				ad.Pricing = resPricing.length ? resPricing[0] : '';
 				var resPricingModel = [].concat.apply([], ad.PricingModel);
 				resPricingModel = [ ...new Set(resPricingModel) ];
-				ad.PricingModel = resPricingModel;
+				ad.PricingModel = resPricingModel.length ? resPricingModel[0] : '';
+				var resEnddate =
+					ad.endDate && ad.endDate.length
+						? ad.endDate.sort(function(a, b) {
+								var da = new Date(a);
+								var db = new Date(b);
+								return db - da;
+							})
+						: '';
+				ad.endDate = resEnddate && resEnddate.length ? resEnddate[0] : '';
+				var resstartDate =
+					ad.startDate && ad.startDate.length
+						? ad.startDate.sort(function(a, b) {
+								var da = new Date(a);
+								var db = new Date(b);
+								return da - db;
+							})
+						: '';
+				ad.startDate = resstartDate && resstartDate.length ? resstartDate[0] : '';
+				var remainingdays = 0;
+				var d1 = new Date(ad.endDate);
+				var d2 = new Date(Date.now());
+				// console.log(d1,d2)
+				var show = d1.getTime() - d2.getTime();
+				remainingdays = show / (1000 * 3600 * 24);
+				if (remainingdays < 0) {
+					remainingdays = 'completed campaign';
+				}
+				ad.remainingDays = remainingdays;
 				return ad;
 			});
 			res.json(data);
