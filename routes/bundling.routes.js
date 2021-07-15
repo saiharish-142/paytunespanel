@@ -39,6 +39,22 @@ router.get('/:id', adminauth, (req, res) => {
 		.catch((err) => res.status(422).json({ error: 'Error occured....!', err }));
 });
 
+router.get('/bundlesClient', adminauth, (req, res) => {
+	if (req.user.usertype !== 'admin') {
+		return res.status(401).json({ message: 'Not authorized' });
+	}
+	bindstreamingads
+		.find({ _id: { $in: req.user.bundles } })
+		.populate('ids', '_id AdTitle Category Advertiser Pricing PricingModel startDate endDate')
+		.then(async (result) => {
+			res.json(result);
+		})
+		.catch((err) => {
+			console.log(err);
+			res.status(422).json({ error: 'Error occured....!', err });
+		});
+});
+
 function arr_diff(a1, a2) {
 	var a = [],
 		diff = [];

@@ -22,7 +22,7 @@ module.exports = (req, res, next) => {
 				if (!loggeduser) {
 					return res.status(422).json({ error: 'Try again by logging in again' });
 				}
-				res.locals.user = loggeduser;
+				req.user = loggeduser;
 				// console.log(res.locals.user);
 				next();
 			})
