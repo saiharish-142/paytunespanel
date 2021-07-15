@@ -452,7 +452,7 @@ router.put('/clientgrouped', adminauth, (req, res) => {
 
 router.put('/clientgroupedbyids', adminauth, (req, res) => {
 	const { campaignId } = req.body;
-	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : [];
+	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : campaignId;
 	StreamingAds.aggregate([
 		{ $match: { _id: { $in: ids } } },
 		{
