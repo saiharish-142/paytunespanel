@@ -29,12 +29,13 @@ export const loadUser = () => (dispatch, getState) => {
 	if (tokenConfig(getState).headers.Authorization) {
 		axios
 			.get(`/auth/loggedUser`, tokenConfig(getState))
-			.then((res) =>
+			.then((res) => {
+				console.log(res);
 				dispatch({
 					type: USER_LOADED,
 					payload: res.data
-				})
-			)
+				});
+			})
 			.catch((err) => {
 				//dispatch(returnErrors(err.response.data, err.response.status));
 				dispatch({
@@ -49,7 +50,7 @@ export const loadUser = () => (dispatch, getState) => {
 };
 
 export const loginUser = (user) => (dispatch) => {
-	// console.log(user)
+	// console.log(user);
 	fetch('/auth/signin', {
 		method: 'post',
 		headers: {

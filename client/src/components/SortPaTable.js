@@ -61,7 +61,9 @@ function SortPaTable(props) {
 										</TableCell>
 									);
 								})}
-								{props.tabletype !== 'campagins' && !props.clientview && <TableCell />}
+								{props.tabletype !== 'campagins' &&
+								!props.clientview &&
+								!props.clientdirect && <TableCell />}
 								<TableCell>
 									<CSVLink {...props.csvReport}>Download Data</CSVLink>
 								</TableCell>
@@ -88,7 +90,8 @@ function SortPaTable(props) {
 											)}
 										</TableCell>
 										{props.tabletype !== 'campagins' &&
-										!props.clientview && (
+										!props.clientview &&
+										!props.clientdirect && (
 											<TableCell
 												align="center"
 												className="mangeads__report"

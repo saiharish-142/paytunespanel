@@ -90,6 +90,44 @@ export const loadBundles = () => (dispatch, getState) => {
 	}
 };
 
+export const loadClientBundles = () => (dispatch, getState) => {
+	dispatch({
+		type: MANAGEBUNDLES_LOADING
+	});
+	if (tokenConfig(getState).headers.Authorization) {
+		axios
+			.get(`/bundles/bun/bundlesClient`, tokenConfig(getState))
+			.then((res) => {
+				var data = res.data;
+				console.log(res);
+				data.forEach((ad) => {
+					var remainingdays = 0;
+					var d1 = new Date(ad.endDate);
+					var d2 = new Date(Date.now());
+					// console.log(d1,d2)
+					var show = d1.getTime() - d2.getTime();
+					remainingdays = show / (1000 * 3600 * 24);
+					if (remainingdays < 0) {
+						remainingdays = 'completed campaign';
+					}
+					ad.remainingDays = remainingdays;
+				});
+				console.log(data);
+				dispatch({
+					type: MANAGEBUNDLES_LOADDED,
+					payload: data
+				});
+				dispatch(orderManagerBundles('asc', 'remainingDays', 'number'));
+			})
+			.catch((err) => {
+				dispatch({
+					type: MANAGEBUNDLES_LOAD_ERROR,
+					payload: err
+				});
+			});
+	}
+};
+
 export const orderManagerBundles = (order, name, type) => (dispatch, getState) => {
 	var ads = getState().managebundles.managebundles;
 	var searchads = getState().managebundles.searchedmanagebundles;
