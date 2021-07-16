@@ -2,23 +2,33 @@ import React, { useEffect, useState } from 'react';
 // import { useHistory } from 'react-router-dom'
 import SearchCampagin from '../components/SearchCampagin';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadAds, loadingAds, searchads, storepagination } from '../redux/actions/manageadsAction';
+import { loadAds, loadClientAds, loadingAds, searchads, storepagination } from '../redux/actions/manageadsAction';
 import PreLoader from '../components/loaders/PreLoader';
 import SortPaTable from '../components/SortPaTable';
 import { orderManager } from '../redux/actions/manageadsAction';
 
-function Dashboard({ clientview }) {
+function Dashboard({ clientview, clientdirect }) {
 	const dispatchRedux = useDispatch();
 	const manageads = useSelector((state) => state.manageads);
 	const user = useSelector((state) => state.auth);
 	const [ searchval, setSearchval ] = useState('');
 	useEffect(() => {
-		if (manageads && !manageads.manageads) {
-			dispatchRedux(loadingAds());
-			dispatchRedux(loadAds());
-		}
-		if (manageads && manageads.value) {
-			setSearchval(manageads.value);
+		if (clientdirect) {
+			if (manageads && !manageads.manageads) {
+				dispatchRedux(loadingAds());
+				dispatchRedux(loadClientAds());
+			}
+			if (manageads && manageads.value) {
+				setSearchval(manageads.value);
+			}
+		} else {
+			if (manageads && !manageads.manageads) {
+				dispatchRedux(loadingAds());
+				dispatchRedux(loadAds());
+			}
+			if (manageads && manageads.value) {
+				setSearchval(manageads.value);
+			}
 		}
 	}, []);
 	const onChangeRedux = (val) => {
@@ -57,6 +67,7 @@ function Dashboard({ clientview }) {
 					csvReport={csvReport}
 					orderManager={orderManager}
 					clientview={clientview}
+					clientdirect={clientdirect}
 					adss={manageads.searchedmanageads}
 					order={manageads.ordername}
 					direc={manageads.orderdir}

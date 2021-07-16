@@ -499,7 +499,7 @@ async function PincodeRefresher() {
 	let yesterday = `${year}-${month}-${date1}`;
 	console.log('yesterday', yesterday);
 
-	const setdate='2021-07-01'
+	const setdate = '2021-07-01';
 
 	const ZipModelReports = require('./models/zipreports');
 	const Zipreports2 = require('./models/zipdata2reports');
@@ -513,7 +513,7 @@ async function PincodeRefresher() {
 				SovClickTracking: 1
 			}
 		},
-		{ $match: { test: {$gt:setdate} } },
+		{ $match: { test: { $gt: setdate } } },
 		{
 			$group: {
 				_id: { zip: '$zip' },
@@ -575,7 +575,7 @@ async function PhoneRefresher() {
 	console.log('yesterday', yesterday);
 	const PhoneModelReports = require('./models/phonemodelreports');
 	const Phonereports2 = require('./models/phonemodel2reports');
-	const setdate='2021-07-01'
+	const setdate = '2021-07-01';
 	const phones = await PhoneModelReports.aggregate([
 		{
 			$project: {
@@ -586,7 +586,7 @@ async function PhoneRefresher() {
 				SovClickTracking: 1
 			}
 		},
-		{ $match: { test: {$gt:setdate} } },
+		{ $match: { test: { $gt: setdate } } },
 		{
 			$group: {
 				_id: { phone: '$phoneModel' },
@@ -645,7 +645,7 @@ async function CategoryRefresher() {
 	console.log('yesterday', yesterday);
 	const CategoryReports = require('./models/categoryreports');
 	const Categoryreports2 = require('./models/categoryreports2');
-	const setdate='2021-07-01'
+	const setdate = '2021-07-01';
 
 	const phones = await CategoryReports.aggregate([
 		{
@@ -658,7 +658,7 @@ async function CategoryRefresher() {
 				feed: 1
 			}
 		},
-		{ $match: { test: {$gt:setdate} } },
+		{ $match: { test: { $gt: setdate } } },
 		{
 			$group: {
 				_id: { category: '$category' },

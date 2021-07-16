@@ -8,7 +8,7 @@ import Dashboard from './screens/manageAds';
 import Home from './screens/Home';
 import Report from './screens/Report';
 import DetailedTable from './screens/detailedReport';
-import ClientManage from './screens/ClientManage';
+// import ClientManage from './screens/ClientManage';
 import ClientReport from './screens/ClientReport';
 import ManageUser from './screens/ManageUser';
 import CampaignBundle from './screens/CampaignBundle';
@@ -139,8 +139,8 @@ function App() {
 					<Navbar />
 					<Switch>
 						<Route path="/" exact render={() => (state ? <Home /> : <Redirect to="/login" />)} />
-						<Route path="/manageAds" exact render={() => <ClientManage />} />
-						<Route path="/manageBundles" exact render={() => <ClientManage />} />
+						<Route path="/manageAds" exact render={() => <Dashboard clientdirect={true} />} />
+						<Route path="/manageBundles" exact render={() => <DashboardBundle clientdirect={true} />} />
 						<Route path="/manageAds/:campname" exact render={() => <ClientReport />} />
 						<Route path="/manageBundles/:campname" exact render={() => <ClientReport />} />
 						<Redirect to="/" />

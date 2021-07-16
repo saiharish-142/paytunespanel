@@ -6,25 +6,36 @@ import SearchCampagin from '../components/SearchCampagin';
 import SortPaTable from '../components/SortPaTable';
 import {
 	loadBundles,
+	loadClientBundles,
 	loadingBundles,
 	orderManagerBundles,
 	searchBundles,
 	storepaginationBundles
 } from '../redux/actions/manageBundlesAction';
 
-function DashboardBundle({ clientview }) {
+function DashboardBundle({ clientview, clientdirect }) {
 	// const history = useHistory()
 	const dispatchRedux = useDispatch();
 	const user = useSelector((state) => state.auth);
 	const managebundles = useSelector((state) => state.managebundles);
 	const [ searchval, setSearchval ] = useState('');
 	useEffect(() => {
-		if (managebundles && !managebundles.managebundles) {
-			dispatchRedux(loadingBundles());
-			dispatchRedux(loadBundles());
-		}
-		if (managebundles && managebundles.value) {
-			setSearchval(managebundles.value);
+		if (clientdirect) {
+			if (managebundles && !managebundles.managebundles) {
+				dispatchRedux(loadingBundles());
+				dispatchRedux(loadClientBundles());
+			}
+			if (managebundles && managebundles.value) {
+				setSearchval(managebundles.value);
+			}
+		} else {
+			if (managebundles && !managebundles.managebundles) {
+				dispatchRedux(loadingBundles());
+				dispatchRedux(loadBundles());
+			}
+			if (managebundles && managebundles.value) {
+				setSearchval(managebundles.value);
+			}
 		}
 	}, []);
 	// const onChange = (val) => {
@@ -81,6 +92,7 @@ function DashboardBundle({ clientview }) {
 					csvReport={csvReport}
 					orderManager={orderManagerBundles}
 					clientview={clientview}
+					clientdirect={clientdirect}
 					adss={managebundles.searchedmanagebundles}
 					order={managebundles.ordername}
 					direc={managebundles.orderdir}

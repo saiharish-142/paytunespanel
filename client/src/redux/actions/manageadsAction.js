@@ -85,6 +85,46 @@ export const loadAds = () => (dispatch, getState) => {
 	}
 };
 
+export const loadClientAds = () => (dispatch, getState) => {
+	dispatch({
+		type: MANAGEADS_LOADING
+	});
+	const user = getState().auth.user;
+	console.log(user.campaigns);
+	if (tokenConfig(getState).headers.Authorization) {
+		fetch('/streamingads/clientgroupedbyids', {
+			method: 'put',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('jwt')
+			},
+			body: JSON.stringify({
+				campaignId: user.campaigns
+			})
+		})
+			.then((res) => res.json())
+			.then((res) => {
+				console.log(res);
+				dispatch({
+					type: MANAGEADS_LOADDED,
+					payload: res
+				});
+				dispatch(orderManager('asc', 'remainingDays', 'number'));
+			})
+			.catch((err) => {
+				dispatch({
+					type: MANAGEADS_LOAD_ERROR,
+					payload: err
+				});
+			});
+	} else {
+		dispatch({
+			type: MANAGEADS_LOAD_ERROR,
+			payload: 'login required'
+		});
+	}
+};
+
 export const orderManager = (order, name, type) => (dispatch, getState) => {
 	var ads = getState().manageads.manageads;
 	var searchads = getState().manageads.searchedmanageads;

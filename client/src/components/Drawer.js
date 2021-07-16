@@ -6,20 +6,30 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { useSelector } from 'react-redux';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import StarBorder from '@material-ui/icons/StarBorder';
+import Collapse from '@material-ui/core/Collapse';
+import List from '@material-ui/core/List';
 
-const useStyles = makeStyles({
-	list: {
-		width: 250
+const useStyles = makeStyles((theme) => ({
+	root: {
+		width: '100%',
+		maxWidth: 360,
+		backgroundColor: theme.palette.background.paper
 	},
-	fullList: {
-		width: 'auto'
+	nested: {
+		paddingLeft: theme.spacing(4),
+		cursor: 'pointer'
 	}
-});
+}));
 
 export default function TemporaryDrawer() {
 	const history = useHistory();
 	const classes = useStyles();
 	const [ open, setopen ] = React.useState(false);
+	const [ openManage, setopenManage ] = React.useState(false);
+	const [ openConsole, setopenConsole ] = React.useState(false);
 	const state = useSelector((state) => state.auth.user);
 	return (
 		<div>
@@ -29,154 +39,229 @@ export default function TemporaryDrawer() {
 				</i>
 			</div>
 			<Drawer anchor="left" open={open} onClose={() => setopen(false)}>
-				<div
-					className={classes.list}
-					role="presentation"
-					onClick={() => setopen(false)}
-					onKeyDown={() => setopen(false)}
-				>
-					<ListItem className="dashmenu__item">
+				<div className={classes.list} role="presentation" onKeyDown={() => setopen(false)}>
+					<ListItem className="dashmenu__item" onClick={() => setopen(false)}>
 						<ListItemIcon>
 							<i className="material-icons">equalizer</i>
 						</ListItemIcon>
 						<ListItemText>Dashboard</ListItemText>
 					</ListItem>
-					<hr />
-					<ListItem className="dashmenu__item" onClick={() => history.push('/manageAds')}>
+					<ListItem className="dashmenu__item" onClick={() => setopenManage(!openManage)}>
 						<ListItemIcon>
 							<i className="material-icons">keyboard_arrow_right</i>
 						</ListItemIcon>
-						<ListItemText>Manage Ad Campaigns</ListItemText>
+						<ListItemText>Manage</ListItemText>
+						{openManage ? <ExpandLess /> : <ExpandMore />}
 					</ListItem>
-					<hr />
-					<ListItem className="dashmenu__item" onClick={() => history.push('/manageBundles')}>
-						<ListItemIcon>
-							<i className="material-icons">keyboard_arrow_right</i>
-						</ListItemIcon>
-						<ListItemText>Manage Ad Bundles</ListItemText>
-					</ListItem>
-					<hr />
-					<ListItem className="dashmenu__item">
-						<ListItemIcon>
-							<i className="material-icons">keyboard_arrow_right</i>
-						</ListItemIcon>
-						<ListItemText>Manage Audio Creations</ListItemText>
-					</ListItem>
-					<hr />
-					<ListItem className="dashmenu__item">
-						<ListItemIcon>
-							<i className="material-icons">keyboard_arrow_right</i>
-						</ListItemIcon>
-						<ListItemText>Manage Banner Creatives</ListItemText>
-					</ListItem>
-					{state &&
-					state.usertype === 'admin' && (
-						<React.Fragment>
-							<hr />
-							<ListItem className="dashmenu__item" onClick={() => history.push('/manageusers')}>
+					<Collapse in={openManage} timeout="auto" unmountOnExit>
+						<List component="div" disablePadding>
+							<ListItem
+								className={classes.nested}
+								onClick={() => {
+									setopen(false);
+									history.push('/manageAds');
+								}}
+							>
 								<ListItemIcon>
 									<i className="material-icons">keyboard_arrow_right</i>
 								</ListItemIcon>
-								<ListItemText>Manage Users</ListItemText>
+								<ListItemText> Campaigns</ListItemText>
 							</ListItem>
-						</React.Fragment>
-					)}
-					{state &&
-					state.usertype === 'admin' && (
-						<React.Fragment>
-							<hr />
-							<ListItem className="dashmenu__item" onClick={() => history.push('/publisherdata')}>
+							<ListItem
+								className={classes.nested}
+								onClick={() => {
+									setopen(false);
+									history.push('/manageBundles');
+								}}
+							>
 								<ListItemIcon>
 									<i className="material-icons">keyboard_arrow_right</i>
 								</ListItemIcon>
-								<ListItemText>Publisher wise Data</ListItemText>
+								<ListItemText>Bundles</ListItemText>
 							</ListItem>
-						</React.Fragment>
-					)}
-					{state &&
-					state.usertype === 'admin' && (
-						<React.Fragment>
-							<hr />
-							<ListItem className="dashmenu__item" onClick={() => history.push('/frequencydata')}>
+							<ListItem className={classes.nested} onClick={() => setopen(false)}>
 								<ListItemIcon>
 									<i className="material-icons">keyboard_arrow_right</i>
 								</ListItemIcon>
-								<ListItemText>Frequency Data</ListItemText>
+								<ListItemText>Audio Creations</ListItemText>
 							</ListItem>
-						</React.Fragment>
-					)}
-					{state &&
-					state.usertype === 'admin' && (
-						<React.Fragment>
-							<hr />
-							<ListItem className="dashmenu__item" onClick={() => history.push('/biddata')}>
+							<ListItem className={classes.nested} onClick={() => setopen(false)}>
 								<ListItemIcon>
 									<i className="material-icons">keyboard_arrow_right</i>
 								</ListItemIcon>
-								<ListItemText>Bid Data</ListItemText>
+								<ListItemText>Banner Creations</ListItemText>
 							</ListItem>
-						</React.Fragment>
-					)}
+							{state &&
+							state.usertype === 'admin' && (
+								<React.Fragment>
+									<ListItem
+										className={classes.nested}
+										onClick={() => {
+											setopen(false);
+											history.push('/manageusers');
+										}}
+									>
+										<ListItemIcon>
+											<i className="material-icons">keyboard_arrow_right</i>
+										</ListItemIcon>
+										<ListItemText>Manage Users</ListItemText>
+									</ListItem>
+								</React.Fragment>
+							)}
+							{state &&
+							state.usertype === 'admin' && (
+								<React.Fragment>
+									<ListItem
+										className={classes.nested}
+										onClick={() => {
+											setopen(false);
+											history.push('/clientSideCamp');
+										}}
+									>
+										<ListItemIcon>
+											<i className="material-icons">keyboard_arrow_right</i>
+										</ListItemIcon>
+										<ListItemText>Client Reports</ListItemText>
+									</ListItem>
+								</React.Fragment>
+							)}
+						</List>
+					</Collapse>
 					{state &&
 					state.usertype === 'admin' && (
 						<React.Fragment>
-							<hr />
-							<ListItem className="dashmenu__item" onClick={() => history.push('/phonedata')}>
+							<ListItem className="dashmenu__item" onClick={() => setopenConsole(!openConsole)}>
 								<ListItemIcon>
 									<i className="material-icons">keyboard_arrow_right</i>
 								</ListItemIcon>
-								<ListItemText>Phone Data</ListItemText>
+								<ListItemText>Consolidated Reports</ListItemText>
+								{openConsole ? <ExpandLess /> : <ExpandMore />}
 							</ListItem>
 						</React.Fragment>
 					)}
-					{state &&
-					state.usertype === 'admin' && (
-						<React.Fragment>
-							<hr />
-							<ListItem className="dashmenu__item" onClick={() => history.push('/zipdata')}>
-								<ListItemIcon>
-									<i className="material-icons">keyboard_arrow_right</i>
-								</ListItemIcon>
-								<ListItemText>Pincode Data</ListItemText>
-							</ListItem>
-						</React.Fragment>
-					)}
-					{state &&
-					state.usertype === 'admin' && (
-						<React.Fragment>
-							<hr />
-							<ListItem className="dashmenu__item" onClick={() => history.push('/categorydata')}>
-								<ListItemIcon>
-									<i className="material-icons">keyboard_arrow_right</i>
-								</ListItemIcon>
-								<ListItemText>Category Data</ListItemText>
-							</ListItem>
-						</React.Fragment>
-					)}
-					{state &&
-					state.usertype === 'admin' && (
-						<React.Fragment>
-							<hr />
-							<ListItem className="dashmenu__item" onClick={() => history.push('/episodetabdata')}>
-								<ListItemIcon>
-									<i className="material-icons">keyboard_arrow_right</i>
-								</ListItemIcon>
-								<ListItemText>Episode Tab Data</ListItemText>
-							</ListItem>
-						</React.Fragment>
-					)}
-					{state &&
-					state.usertype === 'admin' && (
-						<React.Fragment>
-							<hr />
-							<ListItem className="dashmenu__item" onClick={() => history.push('/clientSideCamp')}>
-								<ListItemIcon>
-									<i className="material-icons">keyboard_arrow_right</i>
-								</ListItemIcon>
-								<ListItemText>Manage Client Reports</ListItemText>
-							</ListItem>
-						</React.Fragment>
-					)}
+					<Collapse in={openConsole} timeout="auto" unmountOnExit>
+						<List component="div" disablePadding>
+							{state &&
+							state.usertype === 'admin' && (
+								<React.Fragment>
+									<ListItem
+										className={classes.nested}
+										onClick={() => {
+											setopen(false);
+											history.push('/publisherdata');
+										}}
+									>
+										<ListItemIcon>
+											<i className="material-icons">keyboard_arrow_right</i>
+										</ListItemIcon>
+										<ListItemText>Publisher wise Data</ListItemText>
+									</ListItem>
+								</React.Fragment>
+							)}
+							{state &&
+							state.usertype === 'admin' && (
+								<React.Fragment>
+									<ListItem
+										className={classes.nested}
+										onClick={() => {
+											setopen(false);
+											history.push('/frequencydata');
+										}}
+									>
+										<ListItemIcon>
+											<i className="material-icons">keyboard_arrow_right</i>
+										</ListItemIcon>
+										<ListItemText>Frequency Data</ListItemText>
+									</ListItem>
+								</React.Fragment>
+							)}
+							{state &&
+							state.usertype === 'admin' && (
+								<React.Fragment>
+									<ListItem
+										className={classes.nested}
+										onClick={() => {
+											setopen(false);
+											history.push('/biddata');
+										}}
+									>
+										<ListItemIcon>
+											<i className="material-icons">keyboard_arrow_right</i>
+										</ListItemIcon>
+										<ListItemText>Bid Data</ListItemText>
+									</ListItem>
+								</React.Fragment>
+							)}
+							{state &&
+							state.usertype === 'admin' && (
+								<React.Fragment>
+									<ListItem
+										className={classes.nested}
+										onClick={() => {
+											setopen(false);
+											history.push('/phonedata');
+										}}
+									>
+										<ListItemIcon>
+											<i className="material-icons">keyboard_arrow_right</i>
+										</ListItemIcon>
+										<ListItemText>Phone Data</ListItemText>
+									</ListItem>
+								</React.Fragment>
+							)}
+							{state &&
+							state.usertype === 'admin' && (
+								<React.Fragment>
+									<ListItem
+										className={classes.nested}
+										onClick={() => {
+											setopen(false);
+											history.push('/zipdata');
+										}}
+									>
+										<ListItemIcon>
+											<i className="material-icons">keyboard_arrow_right</i>
+										</ListItemIcon>
+										<ListItemText>Pincode Data</ListItemText>
+									</ListItem>
+								</React.Fragment>
+							)}
+							{state &&
+							state.usertype === 'admin' && (
+								<React.Fragment>
+									<ListItem
+										className={classes.nested}
+										onClick={() => {
+											setopen(false);
+											history.push('/categorydata');
+										}}
+									>
+										<ListItemIcon>
+											<i className="material-icons">keyboard_arrow_right</i>
+										</ListItemIcon>
+										<ListItemText>Category Data</ListItemText>
+									</ListItem>
+								</React.Fragment>
+							)}
+							{state &&
+							state.usertype === 'admin' && (
+								<React.Fragment>
+									<ListItem
+										className={classes.nested}
+										onClick={() => {
+											setopen(false);
+											history.push('/episodetabdata');
+										}}
+									>
+										<ListItemIcon>
+											<i className="material-icons">keyboard_arrow_right</i>
+										</ListItemIcon>
+										<ListItemText>Episode Tab Data</ListItemText>
+									</ListItem>
+								</React.Fragment>
+							)}
+						</List>
+					</Collapse>
 				</div>
 			</Drawer>
 		</div>
