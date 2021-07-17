@@ -468,24 +468,6 @@ cron.schedule('10 00 * * *', function() {
 //Pincode
 
 cron.schedule('00 1 * * *', function() {
-	// var d = new Date()
-	// d.setDate(d.getDate());
-	// if(d.getDate() < 10){
-	//     if(d.getMonth()+1 > 10){
-	//     var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
-	//     else{
-	//     var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + '0' + d.getDate()}
-	// }else{
-	//     if(d.getMonth()+1 > 10){
-	//     var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()}
-	//     else{
-	//     var date = d.getFullYear() + '-' + '0' + (d.getMonth()+1) + '-' + d.getDate()}
-	// }
-	// var currentTime = new Date();
-	// var currentOffset = currentTime.getTimezoneOffset();
-	// var ISTOffset = 330;   // IST offset UTC +5:30
-	// var ISTTime = new Date(currentTime.getTime() + (ISTOffset*2 + currentOffset -5)*60000);
-	// console.log(ISTTime,date)
 	PincodeRefresher();
 });
 
@@ -513,7 +495,7 @@ async function PincodeRefresher() {
 				SovClickTracking: 1
 			}
 		},
-		{ $match: { test: { $gt: setdate } } },
+		{ $match: { test: yesterday } },
 		{
 			$group: {
 				_id: { zip: '$zip' },
@@ -521,10 +503,30 @@ async function PincodeRefresher() {
 				SovClickTracking: { $sum: '$SovClickTracking' },
 				impressions: { $sum: '$impression' }
 			}
+		},
+		{$addFields:{"new_zip":{$toString:"$_id.zip"}}},
+		{
+			$lookup:{
+				from: 'rtbrequests',
+				localField: 'new_zip',
+				foreignField: 'device.geo.zip',
+				as: 'ziprequest'
+			}
+		},
+		{
+			$project:{
+				zip:"$_id.zip",
+				CompanionClickTracking:   '$CompanionClickTracking' ,
+				SovClickTracking:  '$SovClickTracking' ,
+				impressions:  '$impressions' ,
+				requests:{$size:"$ziprequest"}
+			}
 		}
 	]);
+
+	console.log(pincodes)
 	pincodes.forEach(async (pincode) => {
-		console.log(pincode.zip);
+		
 		const match = await Zipreports2.findOne({ pincode: pincode._id.zip });
 		if (!match) {
 			const newzip = new Zipreports2({
@@ -541,7 +543,8 @@ async function PincodeRefresher() {
 				latitude: '',
 				longitude: '',
 				impression: pincode.impressions,
-				click: pincode.CompanionClickTracking + pincode.SovClickTracking
+				click: pincode.CompanionClickTracking + pincode.SovClickTracking,
+				requests:pincode.requests
 			});
 			await newzip.save();
 		} else {
@@ -550,7 +553,8 @@ async function PincodeRefresher() {
 				{
 					$inc: {
 						impression: pincode.impressions,
-						click: pincode.CompanionClickTracking + pincode.SovClickTracking
+						click: pincode.CompanionClickTracking + pincode.SovClickTracking,
+						requests:pincode.requests
 					}
 				},
 				{ new: true }
@@ -560,7 +564,7 @@ async function PincodeRefresher() {
 	});
 }
 
-cron.schedule('30 12 * * *', function() {
+cron.schedule('00 2 * * *', function() {
 	PhoneRefresher();
 });
 
@@ -630,7 +634,7 @@ async function PhoneRefresher() {
 	});
 }
 
-cron.schedule('00 17 * * *', function() {
+cron.schedule('00 3 * * *', function() {
 	CategoryRefresher();
 });
 

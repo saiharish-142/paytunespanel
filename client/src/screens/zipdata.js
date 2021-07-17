@@ -221,6 +221,7 @@ export default function Zipdata() {
 							<TableRow>
 								{/* <TableCell>{title}</TableCell> */}
 								{<TableCell onClick={() => requestSort('pincode')} className={getClassNamesFor('pincode')} style={{ cursor: 'pointer' }}> Pincode {arrowRetuner(sortconfig.key === 'pincode' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell onClick={() => requestSort('requests')} className={getClassNamesFor('requests')} style={{ cursor: 'pointer' }}> Requests {arrowRetuner(sortconfig.key === 'requests' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
 								{<TableCell onClick={() => requestSort('impression')} className={getClassNamesFor('impression')} style={{ cursor: 'pointer' }}> Impressions {arrowRetuner(sortconfig.key === 'impression' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
 								{<TableCell onClick={() => requestSort('click')} className={getClassNamesFor('click')} style={{ cursor: 'pointer' }}> Click {arrowRetuner(sortconfig.key === 'click' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
 								{<TableCell>CTR</TableCell>}
@@ -247,6 +248,7 @@ export default function Zipdata() {
 										<TableCell component="th" scope="row">
 											{row.pincode ? row.pincode : ''}
 										</TableCell>
+										<TableCell>{row.requests ? row.requests : ''}</TableCell>
 										<TableCell>{row.impression ? row.impression : ''}</TableCell>
 										<TableCell>{row.click ? row.click : ''}</TableCell>
 										<TableCell>{row.impression !== 0 ? Math.round(row.click / row.impression) : 0}%</TableCell>

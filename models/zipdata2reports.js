@@ -14,7 +14,8 @@ var zipreports2Schema = new Schema({
     latitude:String,
     longitude:String,
     impression:Number,
-    click:Number
+    click:Number,
+    requests:Number
 });
 zipreports2Schema.index({ zip: 1 });
 
