@@ -665,7 +665,7 @@ async function CategoryRefresher() {
 				CompanionClickTracking: { $sum: '$CompanionClickTracking' },
 				SovClickTracking: { $sum: '$SovClickTracking' },
 				impressions: { $sum: '$impression' },
-				feeds: { $push: '$feed' }
+				feeds: { $addToSet: '$feed' }
 			}
 		}
 	]);
