@@ -246,8 +246,7 @@ export default function Phonedata() {
 								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('company')} className={getClassNamesFor('company')}>  Company Name {arrowRetuner( sortconfig.key==='company'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>
 								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('model')} className={getClassNamesFor('model')}>  Model {arrowRetuner( sortconfig.key==='model'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('type')} className={getClassNamesFor('type')}> Type of Device {arrowRetuner( sortconfig.key==='type'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('total_percent')} className={getClassNamesFor('total_percent')}> % of Total {arrowRetuner( sortconfig.key==='total_percent'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('cumulative')}  className={getClassNamesFor('cumulative')}> Cumulative % {arrowRetuner( sortconfig.key==='cumulative'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								
 								{<TableCell />}
 							</TableRow>
 						</TableHead>
@@ -264,8 +263,6 @@ export default function Phonedata() {
 									<TableCell>{row.company ? row.company : ''}</TableCell>
 									<TableCell>{row.model ? row.model : ''}</TableCell>
 									<TableCell>{row.type ? row.type : ''}</TableCell>
-									<TableCell>{row.total_percent ? row.total_percent : ''}</TableCell>
-									<TableCell>{row.cumulative ? row.cumulative : ''}</TableCell>
 									<TableCell>
 										<button className="btn" onClick={() => handleOpen(row)}>  
 											Edit{' '}

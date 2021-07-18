@@ -6,6 +6,7 @@ const adminauth = require('../authenMiddleware/adminauth')
 const Reqreport = mongoose.model('reqreport')
 const Resreport = mongoose.model('resreport')
 const EpisodeModel = require('../models/episodemodel')
+const EpisodeModel2 =require('../models/episodemodel2')
 const CategoryReports2 = require('../models/categoryreports2')
 // const Campaignwisereports=require('../models/campaignwisereports.model')
 const SpentReport = mongoose.model('spentreports')
@@ -237,7 +238,7 @@ router.post(
     adminauth,
     async (req, res) => {
         try {
-            const result = await EpisodeModel.aggregate([
+            const result = await EpisodeModel2.aggregate([
                 {
                     $lookup: {
                         from: 'categoryreports2',

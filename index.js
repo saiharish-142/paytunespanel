@@ -749,6 +749,91 @@ async function CategoryRefresher() {
 	});
 }
 
+cron.schedule('30 1 * * *', function() {
+	PodcastEpisodeRefresher();
+});
+
+async function PodcastEpisodeRefresher(){
+	let date = new Date(new Date());
+	date.setDate(date.getDate() - 1);
+	date = new Date(date);
+	const year = date.getFullYear();
+	const month = `0${date.getMonth() + 1}`;
+	const date1 = date.getDate();
+	let yesterday = `${year}-${month}-${date1}`;
+	console.log('yesterday', yesterday);
+	const EpisodeModel =require('./models/episodemodel')
+	const EpisodeModel2=require('./models/episodemodel2')
+	const setdate = '2021-07-01';
+
+	const result = await EpisodeModel.aggregate([
+		{$project:{
+			test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+			episodename: 1,
+			category: 1,
+			publisherid: 1,
+			requests:1,
+			displayname:1,
+			hostPossibility:1,
+		}},
+		{$match:{test:{$gt:setdate}}},
+		
+		{
+			$project: {
+				episodename: 1,
+				category: 1,
+				publisherid: 1,
+				requests:1,
+				displayname:1,
+				hostPossibility:1,
+			}
+		},
+		{
+			$group: {
+				_id: {episodename:"$episodename",category:"$category"},
+				publisher: { $addToSet: "$publisherid" },
+				request: { $sum: "$requests" },
+				displayname: { $first: "$displayname" },
+				hostPossibility: { $first: "$hostPossibility" },
+			}
+		},
+		
+		{
+			$project: {
+				episodename: "$_id.episodename",
+				category: "$_id.category",
+				publisher:1,
+				request: "$request",
+				displayname: "$displayname",
+				hostPossibility: "$hostPossibility",
+			}
+		}
+	])
+
+	result.forEach(async(podcast)=>{
+		const ismatch=await EpisodeModel2.findOne({$and:[{episodename:podcast.episodename},{category:podcast.category}]})
+		if(!ismatch){
+			const episode=new EpisodeModel2({
+				publisherid: podcast.publisherid ,
+    			episodename: podcast.episodename ,
+    			category: podcast.category ,
+    			requests: podcast.request ,
+    			displayname:podcast.displayname ,
+    			hostPossibility:podcast.hostPossibility 
+			})
+			await episode.save()
+		}else{
+			await EpisodeModel2.findOneAndUpdate({$and:[{episodename:podcast.episodename},{category:podcast.category}]}, 
+				{
+					$inc: {
+						requests:podcast.request
+					}
+				})
+		}
+	})
+
+}
+
 async function uniqueMaker({ date }) {
 	let uniqueids = await trackinglogs
 		.distinct('campaignId', { date: date, type: 'impression' })
