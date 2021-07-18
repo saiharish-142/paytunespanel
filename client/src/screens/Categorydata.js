@@ -7,6 +7,7 @@ import { CSVLink } from 'react-csv';
 import { Alert } from '@material-ui/lab';
 import PodcastCategorydata from '../screens/podcastcategory'
 import OndemandCategorydata from '../screens/ondemandcategory'
+import VideoCategorydata from './videocategorydata';
 
 import {
 	Table,
@@ -269,6 +270,7 @@ export default function Categorydata() {
 				/>
 				<PodcastCategorydata />
 				<OndemandCategorydata/>
+				<VideoCategorydata/>
 				{show ? (
 					<div>
 						<Modal
