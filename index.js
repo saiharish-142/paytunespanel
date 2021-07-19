@@ -814,7 +814,7 @@ async function PodcastEpisodeRefresher(){
 		const ismatch=await EpisodeModel2.findOne({$and:[{episodename:podcast.episodename},{category:podcast.category}]})
 		if(!ismatch){
 			const episode=new EpisodeModel2({
-				publisherid: podcast.publisherid ,
+				publisherid: podcast.publisher ,
     			episodename: podcast.episodename ,
     			category: podcast.category ,
     			requests: podcast.request ,
