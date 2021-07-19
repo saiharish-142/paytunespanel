@@ -590,7 +590,7 @@ async function PhoneRefresher() {
 				SovClickTracking: 1
 			}
 		},
-		{ $match: { test: { $gt: setdate } } },
+		{ $match: { test: yesterday } },
 		{
 			$group: {
 				_id: { phone: '$phoneModel' },
@@ -662,7 +662,7 @@ async function CategoryRefresher() {
 				feed: 1
 			}
 		},
-		{ $match: { test: { $gt: setdate } } },
+		{ $match: { test: yesterday } },
 		{
 			$group: {
 				_id: { category: '$category' },
