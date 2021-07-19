@@ -212,4 +212,4 @@ const rtbrequestSchema = new mongoose.Schema({
     bidstatus:{type:Boolean}
 },{timestamps:true})
 
-mongoose.model("rtbrequests",rtbrequestSchema)
+module.exports=mongoose.model("rtbrequests",rtbrequestSchema)

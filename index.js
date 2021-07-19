@@ -504,24 +504,24 @@ async function PincodeRefresher() {
 				impressions: { $sum: '$impression' }
 			}
 		},
-		{$addFields:{"new_zip":{$toString:"$_id.zip"}}},
-		{
-			$lookup:{
-				from: 'rtbrequests',
-				localField: 'new_zip',
-				foreignField: 'device.geo.zip',
-				as: 'ziprequest'
-			}
-		},
-		{
-			$project:{
-				zip:"$_id.zip",
-				CompanionClickTracking:   '$CompanionClickTracking' ,
-				SovClickTracking:  '$SovClickTracking' ,
-				impressions:  '$impressions' ,
-				requests:{$size:"$ziprequest"}
-			}
-		}
+		// {$addFields:{"new_zip":{$toString:"$_id.zip"}}},
+		// {
+		// 	$lookup:{
+		// 		from: 'rtbrequests',
+		// 		localField: 'new_zip',
+		// 		foreignField: 'device.geo.zip',
+		// 		as: 'ziprequest'
+		// 	}
+		// },
+		// {
+		// 	$project:{
+		// 		zip:"$_id.zip",
+		// 		CompanionClickTracking:   '$CompanionClickTracking' ,
+		// 		SovClickTracking:  '$SovClickTracking' ,
+		// 		impressions:  '$impressions' ,
+		// 		requests:{$size:"$ziprequest"}
+		// 	}
+		// }
 	]);
 
 	console.log(pincodes)
@@ -544,7 +544,7 @@ async function PincodeRefresher() {
 				longitude: '',
 				impression: pincode.impressions,
 				click: pincode.CompanionClickTracking + pincode.SovClickTracking,
-				requests:pincode.requests
+				requests:0
 			});
 			await newzip.save();
 		} else {
@@ -554,6 +554,79 @@ async function PincodeRefresher() {
 					$inc: {
 						impression: pincode.impressions,
 						click: pincode.CompanionClickTracking + pincode.SovClickTracking,
+					}
+				},
+				{ new: true }
+			);
+			console.log('updated', updateddoc);
+		}
+	});
+}
+
+cron.schedule('30 1 * * *', function() {
+	PincodeRequestsRefresher();
+});
+
+async function PincodeRequestsRefresher() {
+	let date = new Date(new Date());
+	date.setDate(date.getDate() - 1);
+	date = new Date(date);
+	const year = date.getFullYear();
+	const month = `0${date.getMonth() + 1}`;
+	const date1 = date.getDate();
+	let yesterday = `${year}-${month}-${date1}`;
+	console.log('yesterday', yesterday);
+
+	const setdate = '2021-07-01';
+
+	const ZipModelReports = require('./models/zipreports');
+	const Zipreports2 = require('./models/zipdata2reports');
+	const Rtbrequest=require('./models/rtbrequests.model')
+	const pincodes = await Rtbrequest.aggregate([
+		{
+			$project: {
+				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+				zip: '$device.geo.zip',
+			}
+		},
+		{ $match: { test: yesterday } },
+		{
+			$group: {
+				_id: { zip: '$zip' },
+				requests:{$sum:1}
+			}
+		},
+		
+	]);
+
+	console.log(pincodes)
+	pincodes.forEach(async (pincode) => {
+		
+		const match = await Zipreports2.findOne({ pincode: parseInt(pincode._id.zip) });
+		if (!match) {
+			const newzip = new Zipreports2({
+				area: '',
+				pincode: parseInt(pincode._id.zip) ,
+				lowersubcity: '',
+				subcity: '',
+				city: '',
+				grandcity: '',
+				district: '',
+				comparison: '',
+				state: '',
+				grandstate: '',
+				latitude: '',
+				longitude: '',
+				impression: 0,
+				click: 0,
+				requests:pincode.requests
+			});
+			await newzip.save();
+		} else {
+			const updateddoc = await Zipreports2.findOneAndUpdate(
+				{ pincode: parseInt(pincode._id.zip)  },
+				{
+					$inc: {
 						requests:pincode.requests
 					}
 				},
@@ -662,78 +735,46 @@ async function CategoryRefresher() {
 				feed: 1
 			}
 		},
-		{ $match: { test: yesterday } },
+		{ $match: { test: {$gt:setdate} } },
 		{
 			$group: {
-				_id: { category: '$category' },
+				_id: { category: '$category',feed:"$feed" },
 				CompanionClickTracking: { $sum: '$CompanionClickTracking' },
 				SovClickTracking: { $sum: '$SovClickTracking' },
-				impressions: { $sum: '$impression' },
-				feeds: { $addToSet: '$feed' }
+				impressions: { $sum: '$impression' }
 			}
 		}
 	]);
 	console.log(phones);
 	phones.forEach(async (cat) => {
 		const match = await Categoryreports2.findOne({
-			$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ]
+			$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],
+			feed:cat._id.feed
 		});
 
 		if (!match) {
-			cat.feeds.forEach(async (feed) => {
+				const val=await Categoryreports2.findOne({$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ]})
 				const newzip = new Categoryreports2({
-					parent: '',
+					parent: val?val.parent:'',
 					category: cat._id.category,
-					Name: '',
-					tier1: '',
-					tier2: '',
-					tier3: '',
-					tier4: '',
-					genderCategory: '',
-					AgeCategory: '',
-					new_taxonamy: '',
+					Name: val?val.Name:'',
+					tier1: val?val.tier1:'',
+					tier2: val?val.tier2:'',
+					tier3: val?val.tier3:'',
+					tier4: val?val.tier4:'',
+					genderCategory: val?val.genderCategory:'',
+					AgeCategory: val?val.AgeCategory:'',
+					new_taxonamy: val?val.new_taxonamy:'',
 					impression: cat.impressions,
 					click: cat.CompanionClickTracking + cat.SovClickTracking,
-					feed: feed
+					feed: cat._id.feed
 				});
 				await newzip.save();
-			});
+			
 		} else {
-			const updateddoc = await Categoryreports2.updateMany(
-				{
-					$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],
-					feed: { $exists: false }
-				},
-				{
-					$inc: { impression: cat.impressions, click: cat.CompanionClickTracking + cat.SovClickTracking },
-					$set: { feed: '' }
-				}
-			);
-			cat.feeds.forEach(async (feed) => {
-				const ismatch = await Categoryreports2.findOne({
-					$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],
-					feed
-				});
-				if (!ismatch) {
-					const newzip = new Categoryreports2({
-						parent: '',
-						category: cat._id.category,
-						Name: '',
-						tier1: '',
-						tier2: '',
-						tier3: '',
-						tier4: '',
-						genderCategory: '',
-						AgeCategory: '',
-						new_taxonamy: '',
-						impression: cat.impressions,
-						click: cat.CompanionClickTracking + cat.SovClickTracking,
-						feed: feed
-					});
-					await newzip.save();
-				} else {
+			
 					await Categoryreports2.findOneAndUpdate(
-						{ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ], feed },
+						{ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ], feed:cat._id.feed },
 						{
 							$inc: {
 								impression: cat.impressions,
@@ -744,10 +785,9 @@ async function CategoryRefresher() {
 				}
 			});
 
-			console.log('updated', updateddoc);
-		}
-	});
+			// console.log('updated', updateddoc);
 }
+
 
 cron.schedule('30 1 * * *', function() {
 	PodcastEpisodeRefresher();

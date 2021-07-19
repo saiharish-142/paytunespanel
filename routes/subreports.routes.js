@@ -1521,11 +1521,22 @@ router.put('/editzipdata', adminauth, async (req, res) => {
 });
 
 router.get('/categorydata', adminauth, async (req, res) => {
-	const setdate='2021-07-01'
+	
 	try {
 		const result = await CategoryReports2.aggregate([ 
-			{ $match: {} }, 
-			{ $sort: { impression: -1 } } 
+			{$match:{impression:{$exists:true},click:{$exists:true}}},
+		// 	{$group:{_id:{category:"$category",feed:"$feed"},
+		// 	Name:{$first:"$Name"},
+		// 	tier1:{$first:"$tier1"},
+		// 	tier2:{$first:"$tier2"},
+		// 	tier3:{$first:"$tier3"},
+		// 	tier4:{$first:"$tier4"},
+		// 	genderCategory:{$first:"$gendercategory"},
+		// 	AgeCategory:{$first:"$AgeCategory"},
+		// 	new_taxonamy:{$first:"$new_taxonamy"},
+		// 	impression:{$sum:"$impression"},
+		// 	click:{$sum:"$click"}
+		// }}
 		]);
 		res.status(200).json(result);
 	} catch (err) {
