@@ -120,6 +120,7 @@ export default function Zipdata() {
 
 	const headers = [
 		{ key: 'pincode', label: 'Pincode' },
+		{ key: 'requests', label: 'Requests' },
 		{ key: 'impression', label: 'Impressions' },
 		{ key: 'click', label: 'Clicks' },
 		{ key: 'area', label: 'Area' },
