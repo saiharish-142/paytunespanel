@@ -1380,79 +1380,6 @@ router.get('/zipdata', adminauth, async (req, res) => {
 			{ $sort: { impression: -1 } }
 		]);
 
-		// const result = await zipreports.aggregate([
-		// 	{
-		// 		$lookup: {
-		// 			from: 'zipreports2',
-		// 			localField: 'zip',
-		// 			foreignField: 'pincode',
-		// 			as: 'extra_details'
-		// 		}
-		// 	},
-		// 	{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-		// 	{
-		// 		$project: {
-		// 			zip: 1,
-		// 			impression: 1,
-		// 			extra_details: {
-		// 				$ifNull: [
-		// 					'$extra_details',
-		// 					{
-		// 						area: '',
-		// 						pincode: '',
-		// 						lowersubcity: '',
-		// 						subcity: '',
-		// 						city: '',
-		// 						grandcity: '',
-		// 						district: '',
-		// 						comparison: '',
-		// 						state: '',
-		// 						grandstate: '',
-		// 						latitude: '',
-		// 						longitude: ''
-		// 					}
-		// 				]
-		// 			}
-		// 		}
-		// 	},
-		// 	{
-		// 		$match: {
-		// 			$or: [
-		// 				{ 'extra_details.area': '' },
-		// 				{ 'extra_details.pincode': '' },
-		// 				{ 'extra_details.city': '' },
-		// 				{ 'extra_details.district': '' },
-		// 				{ 'extra_details.state': '' },
-		// 				{ 'extra_details.latitude': '' },
-		// 				{ 'extra_details.longitude': '' }
-		// 			]
-		// 		}
-		// 	},
-		// 	{
-		// 		$group: {
-		// 			_id: { pincode: '$zip' },
-		// 			impressions: { $sum: '$impression' },
-		// 			extra: { $first: '$extra_details' }
-		// 			//_id:{$first:"$_id"}
-		// 		}
-		// 	},
-		// 	{
-		// 		$project: {
-		// 			impressions: 1,
-		// 			pincode: '$_id.pincode',
-		// 			area: '$extra.area',
-		// 			subcity: '$extra.subcity',
-		// 			city: '$extra.city',
-		// 			grandcity: '$extra.grandcity',
-		// 			district: '$extra.district',
-		// 			state: '$extra.state',
-		// 			grandstate: '$extra.grandstate',
-		// 			latitude: '$extra.latitude',
-		// 			longitude: '$extra.longitude'
-		// 		}
-		// 	},
-		// 	{ $sort: { impressions: -1 } }
-		// ]);
 
 		res.status(200).json(result);
 	} catch (err) {
@@ -1697,6 +1624,7 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 			SovClickTracking: { $sum: '$SovClickTracking' },
 			impressions: { $sum: '$impression' }
 		}},
+		
 		{
 			$lookup: {
 				from: 'categoryreports2',
@@ -1705,7 +1633,7 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 				as: 'extra_details'
 			}
 		},
-		{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+		// { $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
 		{
 			$lookup: {
 				from: 'categoryreports2',
@@ -1714,9 +1642,17 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 				as: 'extra_details1'
 			}
 		},
-		{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+		// { $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
 		{$project:{
-			
+			rtbType:"$_id.rtbType",
+			category:"$_id.category",
+			CompanionClickTracking:1,
+			SovClickTracking:1,
+			impressions:1,
+			extra_details:{$first:"$extra_details"},
+			extra_details1:{$first:"$extra_details1"},
+		}},
+		{$project:{
 			rtbType:"$_id.rtbType",
 			category:"$_id.category",
 			CompanionClickTracking:1,
@@ -1724,7 +1660,7 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 			impressions:1,
 			extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
 		}},
-		{$match:{rtbType:"video"}},
+		 {$match:{rtbType:"video"}},
 		])
 		res.status(200).json(result);
 	} catch (err) {
