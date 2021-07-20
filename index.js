@@ -830,8 +830,7 @@ async function PodcastEpisodeRefresher(){
 		},
 		{
 			$group: {
-				_id: {episodename:"$episodename",category:"$category"},
-				publisher: { $addToSet: "$publisherid" },
+				_id: {episodename:"$episodename",category:"$category",publisher:"$publisherid"},
 				request: { $sum: "$requests" },
 				displayname: { $first: "$displayname" },
 				hostPossibility: { $first: "$hostPossibility" },
@@ -842,7 +841,7 @@ async function PodcastEpisodeRefresher(){
 			$project: {
 				episodename: "$_id.episodename",
 				category: "$_id.category",
-				publisher:1,
+				publisher:"$_id.publisher",
 				request: "$request",
 				displayname: "$displayname",
 				hostPossibility: "$hostPossibility",
@@ -851,7 +850,7 @@ async function PodcastEpisodeRefresher(){
 	])
 
 	result.forEach(async(podcast)=>{
-		const ismatch=await EpisodeModel2.findOne({$and:[{episodename:podcast.episodename},{category:podcast.category}]})
+		const ismatch=await EpisodeModel2.findOne({$and:[{episodename:podcast.episodename},{category:podcast.category},{publisherid:podcast.publisher}]})
 		if(!ismatch){
 			const episode=new EpisodeModel2({
 				publisherid: podcast.publisher ,
