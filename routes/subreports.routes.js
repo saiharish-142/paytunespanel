@@ -17,6 +17,7 @@ const Campaignwisereports = mongoose.model('campaignwisereports');
 // const CategoryReports = mongoose.model('categoryreports');
 const CategoryReports = require('../models/categoryreports');
 const adminauth = require('../authenMiddleware/adminauth');
+const categoryreports = require('../models/categoryreports');
 const publisherwiseConsole = mongoose.model('publisherwiseConsole');
 const frequencyConsole = mongoose.model('frequencyConsole');
 
@@ -1688,7 +1689,39 @@ router.post('/categorydata_ondemand', adminauth, async (req, res) => {
 
 router.post('/categorydata_video', adminauth, async (req, res) => {
 	try {
-		// const result = await CategoryReports2.find({ feed: '' });
+		const result=await categoryreports.aggregate([
+			{$group:{_id:{category:"$category",rtbType:"$rtbType"},
+			CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+			SovClickTracking: { $sum: '$SovClickTracking' },
+			impressions: { $sum: '$impression' }
+		}},
+		{$match:{"$_id.rtbType":"video"}},
+		{
+			$lookup: {
+				from: 'categoryreports2',
+				localField: 'category',
+				foreignField: 'category',
+				as: 'extra_details'
+			}
+		},
+		{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+		{
+			$lookup: {
+				from: 'categoryreports2',
+				localField: 'category',
+				foreignField: 'new_taxonamy',
+				as: 'extra_details1'
+			}
+		},
+		{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+		{$project:{
+			
+			CompanionClickTracking:1,
+			SovClickTracking:1,
+			impressions:1,
+			extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+		}}
+		])
 		res.status(200).json(result);
 	} catch (err) {
 		console.log(err.message);

@@ -735,7 +735,7 @@ async function CategoryRefresher() {
 				feed: 1
 			}
 		},
-		{ $match: { test: {$gt:setdate} } },
+		{ $match: { test: yesterday } },
 		{
 			$group: {
 				_id: { category: '$category',feed:"$feed" },

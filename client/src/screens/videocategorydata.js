@@ -233,17 +233,17 @@ export default function VideoCategorydata() {
 							{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
 								<TableRow key={row.name}>
 									<TableCell component="th" scope="row">
-										{row.category ? row.category : ''}
+										{row._id.category ? row._id.category : ''}
 									</TableCell>
-									<TableCell>{row.impression ? row.impression : ''}</TableCell>
-									<TableCell>{row.click?row.click:''}</TableCell>
-									<TableCell>{row.tier1 ? row.tier1 : ''}</TableCell>
-									<TableCell>{row.tier2 ? row.tier2 : ''}</TableCell>
-									<TableCell>{row.tier3 ? row.tier3 : ''}</TableCell>
-									<TableCell>{row.tier4 ? row.tier4 : ''}</TableCell>
-									<TableCell>{row.genderCategory ? row.genderCategory : ''}</TableCell>
-									<TableCell>{row.AgeCategory ? row.AgeCategory : ''}</TableCell>
-									<TableCell>{row.new_taxonamy ? row.new_taxonamy : ''}</TableCell>
+									<TableCell>{row.impressions ? row.impressions : ''}</TableCell>
+									<TableCell>{row.CompanionClickTracking+row.SovClickTracking}</TableCell>
+									<TableCell>{row.extra_details.tier1 ? row.extra_details.tier1 : ''}</TableCell>
+									<TableCell>{row.extra_details.tier2 ? row.extra_details.tier2 : ''}</TableCell>
+									<TableCell>{row.extra_details.tier3 ? row.extra_details.tier3 : ''}</TableCell>
+									<TableCell>{row.extra_details.tier4 ? row.extra_details.tier4 : ''}</TableCell>
+									<TableCell>{row.extra_details.genderCategory ? row.extra_details.genderCategory : ''}</TableCell>
+									<TableCell>{row.extra_details.AgeCategory ? row.extra_details.AgeCategory : ''}</TableCell>
+									<TableCell>{row.extra_details.new_taxonamy ? row.extra_details.new_taxonamy : ''}</TableCell>
 									{/* <TableCell>
 										<button className="btn" onClick={() =>  handleOpen(row)}>
 											Edit{' '}
