@@ -1704,7 +1704,6 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 			SovClickTracking: { $sum: '$SovClickTracking' },
 			impressions: { $sum: '$impression' }
 		}},
-		{$match:{"$_id.rtbType":"video"}},
 		{
 			$lookup: {
 				from: 'categoryreports2',
@@ -1725,11 +1724,14 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 		{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
 		{$project:{
 			
+			rtbType:"$_id.rtbType",
+			category:"$_id.category",
 			CompanionClickTracking:1,
 			SovClickTracking:1,
 			impressions:1,
 			extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
-		}}
+		}},
+		{$match:{rtbType:"video"}},
 		])
 		res.status(200).json(result);
 	} catch (err) {
