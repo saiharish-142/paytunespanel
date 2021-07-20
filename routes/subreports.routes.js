@@ -1690,6 +1690,15 @@ router.post('/categorydata_ondemand', adminauth, async (req, res) => {
 router.post('/categorydata_video', adminauth, async (req, res) => {
 	try {
 		const result=await categoryreports.aggregate([
+			{$project:{
+				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+				category:1,
+				rtbType:1,
+				CompanionClickTracking:1,
+				SovClickTracking:1,
+				impression:1
+			}},
+			{$match:{test:{$gt:'2021-07-18'}}},
 			{$group:{_id:{category:"$category",rtbType:"$rtbType"},
 			CompanionClickTracking: { $sum: '$CompanionClickTracking' },
 			SovClickTracking: { $sum: '$SovClickTracking' },

@@ -7,6 +7,7 @@ var categoryreportsSchema = new Schema({
     category: String,
     requests: Number,
     ads: Number, ///AdServed
+    rtbType:String,
     servedAudioImpressions: Number,
     servedCompanionAds: Number,
     completedAudioImpressions: Number,
