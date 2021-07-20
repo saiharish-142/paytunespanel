@@ -1707,7 +1707,7 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 		{
 			$lookup: {
 				from: 'categoryreports2',
-				localField: 'category',
+				localField: '_id.category',
 				foreignField: 'category',
 				as: 'extra_details'
 			}
@@ -1716,7 +1716,7 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 		{
 			$lookup: {
 				from: 'categoryreports2',
-				localField: 'category',
+				localField: '_id.category',
 				foreignField: 'new_taxonamy',
 				as: 'extra_details1'
 			}
