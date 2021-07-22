@@ -1375,7 +1375,7 @@ router.get('/phonedata', adminauth, async (req, res) => {
 router.get('/zipdata', adminauth, async (req, res) => {
 	try {
 		let startdate=new Date();
-		startdate.setDate(22);
+		startdate.setDate(21);
 		startdate.setMonth(06);
 		startdate.setFullYear(2021);
 		
