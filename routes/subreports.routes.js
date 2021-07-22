@@ -1388,7 +1388,7 @@ router.get('/zipdata', adminauth, async (req, res) => {
 		const result = await Zipreports2.aggregate([
 
 			{ $match: { requests: { $exists: true } } },
-			{$addFields:{avgrequest:{$divide:["$request",days]}}},
+			{$addFields:{avgrequest:{$divide:["$requests",days]}}},
 			{ $sort: { impression: -1 } }
 		]);
 
