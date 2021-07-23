@@ -94,8 +94,8 @@ function PublisherConsoleTable({
 								<TableCell onClick={() => tablesorter('ssp', 'string')} style={{ cursor: 'pointer' }}>
 									SSP {arrowRetuner(sa === 'ssp' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell onClick={() => tablesorter('feed', 'string')} style={{ cursor: 'pointer' }}>
-									Feed {arrowRetuner(sa === 'feed' ? (order === 'asc' ? '1' : '2') : '3')}
+								<TableCell onClick={() => tablesorter('fede', 'string')} style={{ cursor: 'pointer' }}>
+									Feed {arrowRetuner(sa === 'fede' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
 									onClick={() => tablesorter('impression', 'number')}
@@ -120,7 +120,7 @@ function PublisherConsoleTable({
 										<TableRow key={i}>
 											<TableCell>{log.publisherName}</TableCell>
 											<TableCell>{log.ssp}</TableCell>
-											<TableCell>{log.feed}</TableCell>
+											<TableCell>{log.fede}</TableCell>
 											<TableCell>{log.impression}</TableCell>
 											<TableCell>{log.click}</TableCell>
 											<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>

@@ -52,14 +52,14 @@ export const LTRLoad = () => (dispatch, getState) => {
 		data[index].lt = parseInt(data[index].complete) * 100 / parseInt(data[index].impression);
 		data[index].ltr = parseInt(data[index].complete) * 100 / parseInt(data[index].impression);
 	}
-	data.map((x) => {
-		console.log(x.ltr);
-	});
-	console.log(data);
+	// data.map((x) => {
+	// 	console.log(x.ltr);
+	// });
+	// console.log(data);
 	data2.map((x) => {
 		x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 	});
-	console.log(data, data2);
+	// console.log(data, data2);
 	dispatch({
 		type: QUARTILE_LOADED,
 		payload: {

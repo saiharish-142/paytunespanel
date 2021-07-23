@@ -1,24 +1,12 @@
-import {
-	Button,
-	CircularProgress,
-	FormControl,
-	Input,
-	InputLabel,
-	Paper,
-	Select,
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableRow
-} from '@material-ui/core';
+import { Button, CircularProgress, FormControl, Input, InputLabel, Paper, Select } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-import EditIcon from '@material-ui/icons/Edit';
+// import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+// import EditIcon from '@material-ui/icons/Edit';
 import CancelIcon from '@material-ui/icons/Cancel';
 import M from 'materialize-css';
 import { useHistory, useParams } from 'react-router-dom';
+import PreLoader from '../components/loaders/PreLoader';
 
 function EditUser() {
 	const { id } = useParams();
@@ -27,7 +15,9 @@ function EditUser() {
 	const [ usertype, setusertype ] = useState('');
 	const [ username, setusername ] = useState('');
 	const [ loading, setloading ] = useState(true);
-	const [ user, setuser ] = useState({});
+	const [ campload, setcampload ] = useState(true);
+	const [ bundload, setbundload ] = useState(true);
+	const [ user, setuser ] = useState(null);
 	const [ selectedcampaigns, setselectedcampaigns ] = useState([]);
 	const [ searchedcampaigns, setsearchedcampaigns ] = useState([]);
 	const [ campaigns, setcampaigns ] = useState([]);
@@ -48,6 +38,7 @@ function EditUser() {
 				// console.log(uss)
 				setbundles(uss);
 				setsearchedbundles(uss);
+				setbundload(false);
 			})
 			.catch((err) => console.log(err));
 	}, []);
@@ -65,13 +56,14 @@ function EditUser() {
 				// console.log(uss)
 				setcampaigns(uss);
 				setsearchedcampaigns(uss);
+				setcampload(false);
 			})
 			.catch((err) => console.log(err));
 	}, []);
 	// updating User
 	useEffect(
 		() => {
-			fetch(`/auth/id/:id`, {
+			fetch(`/auth/id/${id}`, {
 				method: 'get',
 				headers: {
 					'Content-Type': 'application/json',
@@ -82,11 +74,27 @@ function EditUser() {
 				.then((user) => {
 					if (user) {
 						console.log(user);
+						setemail(user.email);
+						setusername(user.username);
+						setusertype(user.usertype);
 						setloading(false);
+						setuser(user);
 					}
 				});
 		},
 		[ id ]
+	);
+	// updating campaigns and bundles
+	useEffect(
+		() => {
+			if (user) {
+				console.log(user.bundles);
+				console.log(user.campaigns);
+				console.log(campaigns);
+				console.log(bundles);
+			}
+		},
+		[ user, loading, bundload, campload ]
 	);
 	// Edit User
 	function createUser() {
@@ -133,6 +141,9 @@ function EditUser() {
 				}
 			})
 			.catch((err) => console.log(err));
+	}
+	if (loading || bundload || campload) {
+		return <PreLoader />;
 	}
 	return (
 		<div>
