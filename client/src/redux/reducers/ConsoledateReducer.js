@@ -118,7 +118,6 @@ export default function(state = initialState, action) {
 				videopublisherDataValue: action.payload.value
 			};
 		case PUBLISHERDATA_SORT_AUDIO:
-			console.log(state.quartileaudiopublisherData);
 			return {
 				...state,
 				audiopublisherDataordername: action.payload.name,

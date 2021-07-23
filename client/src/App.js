@@ -118,7 +118,7 @@ function App() {
 							<Route path="/EditUser/:id" exact render={() => <EditUser />} />
 							<Route path="/biddata" exact render={() => <Biddata />} />
 							<Route path="/publisherdata" exact render={() => <PublisherConsole />} />
-							<Route path="/frequencydata" exact render={() => <FrequencyConsole />} />
+							{/* <Route path="/frequencydata" exact render={() => <FrequencyConsole />} /> */}
 							<Route path="/phonedata" exact render={() => <Phonedata />} />
 							<Route path="/categorydata" exact render={() => <Categorydata />} />
 							<Route path="/zipdata" exact render={() => <Zipdata />} />

@@ -29,7 +29,7 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 		})
 			.then((res) => res.json())
 			.then((result) => {
-				console.log(result);
+				// console.log(result);
 				var dataA = result.audio;
 				dataA.sort(function(a, b) {
 					return b.impression - a.impression;
@@ -37,6 +37,9 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 				dataA.map((x) => {
 					x.ctr = x.click * 100 / x.impression;
 					// x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
+					console.log(x.feed);
+					x.fede = x.feed === 3 ? 'Podcast' : 'Ondemand and Streaming';
+					console.log(x.fede);
 					x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';
 				});
 				var dataD = result.display;
@@ -45,6 +48,9 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 				});
 				dataD.map((x) => {
 					x.ctr = x.click * 100 / x.impression;
+					console.log(x.feed);
+					x.fede = x.feed === 3 ? 'Podcast' : 'Ondemand and Streaming';
+					console.log(x.fede);
 					// x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';
 				});
@@ -54,6 +60,9 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 				});
 				dataV.map((x) => {
 					x.ctr = x.click * 100 / x.impression;
+					console.log(x.feed);
+					x.fede = x.feed === 3 ? 'Podcast' : 'Ondemand and Streaming';
+					console.log(x.fede);
 					// x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';
 				});

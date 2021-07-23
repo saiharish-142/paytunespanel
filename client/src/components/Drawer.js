@@ -165,23 +165,6 @@ export default function TemporaryDrawer() {
 										className={classes.nested}
 										onClick={() => {
 											setopen(false);
-											history.push('/frequencydata');
-										}}
-									>
-										<ListItemIcon>
-											<i className="material-icons">keyboard_arrow_right</i>
-										</ListItemIcon>
-										<ListItemText>Frequency Data</ListItemText>
-									</ListItem>
-								</React.Fragment>
-							)}
-							{state &&
-							state.usertype === 'admin' && (
-								<React.Fragment>
-									<ListItem
-										className={classes.nested}
-										onClick={() => {
-											setopen(false);
 											history.push('/biddata');
 										}}
 									>

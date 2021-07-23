@@ -256,10 +256,11 @@ export const CreativeBody = (report1) => {
 export const ConsolePhoneBody = (report1) => {
 	return report1.map((log, index) => {
 		var ctr = log.ctr + '%';
+
 		return [
 			{ value: log.publisherName ? log.publisherName : '' },
 			{ value: log.ssp ? log.ssp : '' },
-			{ value: log.feed ? log.feed : '' },
+			{ value: log.fede ? log.fede : '' },
 			{ value: log.impression ? log.impression : 0 },
 			{ value: log.click ? log.click : 0 },
 			{ value: ctr ? ctr : 0 + '%' }
@@ -272,6 +273,9 @@ export const QuartileBodyCon = (report1) => {
 		report1.map((log, index) => {
 			log.ltr =
 				(log.complete ? parseInt(log.complete) : 0) * 100 / (log.impressions ? parseInt(log.impressions) : 0);
+			var ltr =
+				(log.complete ? parseInt(log.complete) : 0) * 100 / (log.impression ? parseInt(log.impression) : 0);
+			// console.log(ltr);
 			return [
 				{ value: log.publisherName ? log.publisherName : '' },
 				{ value: log.impression ? log.impression : 0 },
@@ -280,7 +284,7 @@ export const QuartileBodyCon = (report1) => {
 				{ value: log.midpoint ? log.midpoint : 0 },
 				{ value: log.thirdQuartile ? log.thirdQuartile : 0 },
 				{ value: log.complete ? log.complete : 0 },
-				{ value: log.ltr ? log.ltr + '%' : 0 }
+				{ value: ltr ? ltr + '%' : 0 }
 			];
 		})
 	);

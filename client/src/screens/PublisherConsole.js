@@ -51,7 +51,7 @@ function PublisherConsole() {
 	const headers = [
 		{ key: 'publisherName', label: 'Publisher' },
 		{ key: 'ssp', label: 'SSP' },
-		{ key: 'feed', label: 'Feed' },
+		{ key: 'fede', label: 'Feed' },
 		{ key: 'impression', label: 'Total Impressions Delivered till date' },
 		{ key: 'click', label: 'Total Clicks Delivered till date' },
 		{ key: 'ctr', label: 'CTR' }
@@ -204,11 +204,11 @@ function PublisherConsole() {
 			<div className="heading">
 				Publisher Wise Data<br />
 				<ExeclDownload filename={`Complete Report Publisher wise`}>
-					<ExcelSheet dataSet={QuartileDown.audio} name="Complete Quartile Publisher Audio Wise" />
-					<ExcelSheet dataSet={QuartileDown.video} name="Complete Quartile Publisher Video Wise" />
 					<ExcelSheet dataSet={PhonComp.audio} name="Complete Publisher Audio Wise" />
 					<ExcelSheet dataSet={PhonComp.display} name="Complete Publisher Display Wise" />
 					<ExcelSheet dataSet={PhonComp.video} name="Complete Publisher Video Wise" />
+					<ExcelSheet dataSet={QuartileDown.audio} name="Complete Quartile Publisher Audio Wise" />
+					<ExcelSheet dataSet={QuartileDown.video} name="Complete Quartile Publisher Video Wise" />
 				</ExeclDownload>
 			</div>
 			<PublisherConsoleTable
