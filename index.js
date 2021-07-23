@@ -816,7 +816,7 @@ async function PodcastEpisodeRefresher(){
 			displayname:1,
 			hostPossibility:1,
 		}},
-		{$match:{test:{$gt:setdate}}},
+		{$match:{test:yesterday}},
 		
 		{
 			$project: {

@@ -254,7 +254,8 @@ export default function Zipdata() {
 										<TableCell>{row.avgrequest ? row.avgrequest : ''}</TableCell>
 										<TableCell>{row.impression ? row.impression : ''}</TableCell>
 										<TableCell>{row.click ? row.click : 0}</TableCell>
-										<TableCell>{row.impression !== 0 ? Math.round(row.click / row.impression) : 0}%</TableCell>
+										<TableCell>{row.impression!==0 ? Math.round(((row.click/row.impression)*100))/100 : 0}%</TableCell>
+										
 										<TableCell>{row.area ? row.area : ''}</TableCell>
 										<TableCell>{row.lowersubcity ? row.lowersubcity : ''}</TableCell>
 										<TableCell>{row.subcity ? row.subcity : ''}</TableCell>
