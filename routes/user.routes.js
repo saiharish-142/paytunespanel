@@ -119,7 +119,7 @@ router.get('/id/:id', adminauth, (req, res) => {
 	//     return res.json({message:'You Should be an admin'})
 	// }
 	admin
-		.find({ _id: req.params.id })
+		.findOne({ _id: req.params.id })
 		.select('-password')
 		.then((erre) => {
 			res.json(erre);
