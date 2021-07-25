@@ -135,12 +135,14 @@ router.get('/loggedUser', adminauth, (req, res, next) => {
 
 router.put('/addbundleOrcampaigns', adminauth, (req, res) => {
 	const { id, campaigns, bundles } = req.body;
-	console.log(req.body);
+	// console.log(req.body);
 	admin
 		.findOne({ _id: id })
 		.then((user) => {
-			user.campaigns = [ ...new Set(campaigns) ];
-			user.bundles = [ ...new Set(bundles) ];
+			var setcamp = [ ...new Set(campaigns) ];
+			user.campaigns = setcamp;
+			var setbund = [ ...new Set(bundles) ];
+			user.bundles = setbund;
 			user
 				.save()
 				.then((respo) => {
