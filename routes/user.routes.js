@@ -135,6 +135,7 @@ router.get('/loggedUser', adminauth, (req, res, next) => {
 
 router.put('/addbundleOrcampaigns', adminauth, (req, res) => {
 	const { id, campaigns, bundles } = req.body;
+	console.log(req.body);
 	admin
 		.findOne({ _id: id })
 		.then((user) => {
