@@ -139,6 +139,7 @@ router.put('/addbundleOrcampaigns', adminauth, (req, res) => {
 	admin
 		.findOne({ _id: id })
 		.then((user) => {
+			console.log(user);
 			var setcamp = [ ...new Set(campaigns) ];
 			user.campaigns = setcamp;
 			var setbund = [ ...new Set(bundles) ];
