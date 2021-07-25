@@ -136,10 +136,16 @@ router.get('/loggedUser', adminauth, (req, res, next) => {
 router.put('/addbundleOrcampaigns', adminauth, (req, res) => {
 	const { id, campaigns, bundles } = req.body;
 	// console.log(req.body);
+	if (!id || !campaigns || !bundles) {
+		return res.status(422).json({ error: 'Enter all the required details' });
+	}
 	admin
 		.findOne({ _id: id })
 		.then((user) => {
-			console.log(user);
+			if (!user) {
+				return res.status(422).json({ error: 'USer Not found' });
+			}
+			// console.log(user);
 			var setcamp = [ ...new Set(campaigns) ];
 			user.campaigns = setcamp;
 			var setbund = [ ...new Set(bundles) ];
