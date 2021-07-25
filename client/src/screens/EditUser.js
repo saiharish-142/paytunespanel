@@ -17,6 +17,8 @@ function EditUser() {
 	const [ loading, setloading ] = useState(true);
 	const [ campload, setcampload ] = useState(true);
 	const [ bundload, setbundload ] = useState(true);
+	const [ comploadb, setcomploadb ] = useState(true);
+	const [ comploadc, setcomploadc ] = useState(true);
 	const [ user, setuser ] = useState(null);
 	const [ selectedcampaigns, setselectedcampaigns ] = useState([]);
 	const [ searchedcampaigns, setsearchedcampaigns ] = useState([]);
@@ -57,6 +59,7 @@ function EditUser() {
 				setcampaigns(uss);
 				setsearchedcampaigns(uss);
 				setcampload(false);
+				campsep();
 			})
 			.catch((err) => console.log(err));
 	}, []);
@@ -84,18 +87,81 @@ function EditUser() {
 		},
 		[ id ]
 	);
-	// updating campaigns and bundles
+	function bunsep() {
+		if (user) {
+			var exsitselect = user.bundles;
+			var current = bundles;
+			// console.log(user.bundles, bundles);
+			var dunk = [];
+			exsitselect.map((x) => {
+				current.map((y) => {
+					if (x === y._id.toString()) dunk.push(y);
+				});
+			});
+			setselectedbundles(dunk);
+			setcomploadb(false);
+		}
+	}
+	function campsep() {
+		if (user) {
+			var exsitselect = user.campaigns;
+			var current = campaigns;
+			var dunk = [];
+			// console.log(user.bundles, bundles);
+			exsitselect.map((x) => {
+				current.map((y) => {
+					if (x === y._id.toString()) dunk.push(y);
+				});
+			});
+			console.log(dunk);
+			setselectedcampaigns(dunk);
+			// console.log(user.campaigns, campaigns);
+			setcomploadc(false);
+		}
+	}
 	useEffect(
 		() => {
-			if (user) {
-				console.log(user.bundles);
-				console.log(user.campaigns);
-				console.log(campaigns);
-				console.log(bundles);
-			}
+			if (comploadb) bunsep();
 		},
-		[ user, loading, bundload, campload ]
+		[ user, bundles ]
 	);
+	useEffect(
+		() => {
+			if (comploadc) campsep();
+		},
+		[ user, campaigns ]
+	);
+	// load Updator
+	// useEffect(
+	// 	() => {
+	// 		console.log('0');
+	// 		if (user || loading || bundload || campload) {
+	// 			console.log('2');
+	// 			setcompload(true);
+	// 		}
+	// 	},
+	// 	[ user, loading, bundload, campload ]
+	// );
+	// updating campaigns and bundles
+	// useEffect(
+	// 	() => {
+	// 		if (user && compload) {
+	// 			console.log(user.bundles);
+	// 			console.log(user.campaigns);
+	// 			console.log(campaigns);
+	// 			console.log(bundles);
+	// 			var selectedBundlesList = [];
+	// 			bundles.map((x) => {
+	// 				user.bundles &&
+	// 					user.bundles.map((xa) => {
+	// 						console.log(x, xa);
+	// 					});
+	// 			});
+	// 			console.log(selectedBundlesList);
+	// 		}
+	// 	},
+	// 	[ compload ]
+	// );
 	// Edit User
 	function createUser() {
 		var bundleids = selectedbundles.map((bundle) => {
@@ -104,7 +170,7 @@ function EditUser() {
 		var campids = selectedcampaigns.map((camp) => {
 			return camp._id;
 		});
-		fetch('/auth/createUser', {
+		fetch('/auth/addbundleOrcampaigns', {
 			method: 'put',
 			headers: {
 				'Content-Type': 'application/json',
@@ -163,7 +229,8 @@ function EditUser() {
 							placeholder="Username"
 							required
 							value={username}
-							onChange={(e) => setusername(e.target.value)}
+							disabled
+							// onChange={(e) => setusername(e.target.value)}
 						/>
 						<FormControl variant="outlined" style={{ minWidth: '100%' }}>
 							<InputLabel htmlFor="outlined-age-native-simple">User Type</InputLabel>
@@ -171,7 +238,8 @@ function EditUser() {
 								required
 								native
 								value={usertype}
-								onChange={(e) => setusertype(e.target.value)}
+								disabled
+								// onChange={(e) => setusertype(e.target.value)}
 								label="USe Type"
 							>
 								<option arial-label="None" value="" />
@@ -179,6 +247,8 @@ function EditUser() {
 								<option value="client">Client</option>
 							</Select>
 						</FormControl>
+						{/* onChange={(e) => setemail(e.target.value)}  */}
+						<input placeholder="Email" required value={email} disabled />
 						<div className="title">Selected Bundles</div>
 						<div className="selectedList">
 							{selectedbundles.map((bundle, i) => {
@@ -295,7 +365,6 @@ function EditUser() {
 								);
 							})}
 						</div>
-						<input placeholder="Email" required value={email} onChange={(e) => setemail(e.target.value)} />
 						<Button type="submit" color="primary" variant="contained">
 							Create User
 						</Button>

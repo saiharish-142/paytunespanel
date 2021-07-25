@@ -134,11 +134,11 @@ router.get('/loggedUser', adminauth, (req, res, next) => {
 });
 
 router.put('/addbundleOrcampaigns', adminauth, (req, res) => {
-	const { id, campagins, bundles, username, email, usertype } = req.body;
+	const { id, campaigns, bundles } = req.body;
 	admin
 		.findOne({ _id: id })
 		.then((user) => {
-			user.campagins = [ ...new Set(campagins) ];
+			user.campaigns = [ ...new Set(campaigns) ];
 			user.bundles = [ ...new Set(bundles) ];
 			user
 				.save()
