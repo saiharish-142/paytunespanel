@@ -581,7 +581,7 @@ async function PincodeRequestsRefresher() {
 
 	const ZipModelReports = require('./models/zipreports');
 	const Zipreports2 = require('./models/zipdata2reports');
-	const Rtbrequest=require('./models/rtbrequests.model')
+	const Rtbrequest=require('./models/rtbrequestdate');
 	const pincodes = await Rtbrequest.aggregate([
 		{
 			$project: {
@@ -596,7 +596,6 @@ async function PincodeRequestsRefresher() {
 				requests:{$sum:1}
 			}
 		},
-		
 	]);
 
 	console.log(pincodes)
