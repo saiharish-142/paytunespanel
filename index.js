@@ -62,6 +62,7 @@ require('./models/categoryreports2');
 require('./models/apppublishers.model');
 require('./models/publisherwiseConsole.model');
 require('./models/frequencyConsole.model');
+require('./models/campaignsClientmanage');
 
 app.use('/auth', require('./routes/user.routes'));
 app.use('/streamingads', require('./routes/streamingads.routes'));
@@ -503,7 +504,7 @@ async function PincodeRefresher() {
 				SovClickTracking: { $sum: '$SovClickTracking' },
 				impressions: { $sum: '$impression' }
 			}
-		},
+		}
 		// {$addFields:{"new_zip":{$toString:"$_id.zip"}}},
 		// {
 		// 	$lookup:{
@@ -524,9 +525,8 @@ async function PincodeRefresher() {
 		// }
 	]);
 
-	console.log(pincodes)
+	console.log(pincodes);
 	pincodes.forEach(async (pincode) => {
-		
 		const match = await Zipreports2.findOne({ pincode: pincode._id.zip });
 		if (!match) {
 			const newzip = new Zipreports2({
@@ -544,7 +544,7 @@ async function PincodeRefresher() {
 				longitude: '',
 				impression: pincode.impressions,
 				click: pincode.CompanionClickTracking + pincode.SovClickTracking,
-				requests:0
+				requests: 0
 			});
 			await newzip.save();
 		} else {
@@ -553,7 +553,7 @@ async function PincodeRefresher() {
 				{
 					$inc: {
 						impression: pincode.impressions,
-						click: pincode.CompanionClickTracking + pincode.SovClickTracking,
+						click: pincode.CompanionClickTracking + pincode.SovClickTracking
 					}
 				},
 				{ new: true }
@@ -581,31 +581,30 @@ async function PincodeRequestsRefresher() {
 
 	const ZipModelReports = require('./models/zipreports');
 	const Zipreports2 = require('./models/zipdata2reports');
-	const Rtbrequest=require('./models/rtbrequestdate');
+	const Rtbrequest = require('./models/rtbrequestdate');
 	const pincodes = await Rtbrequest.aggregate([
 		{
 			$project: {
 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-				zip: '$device.geo.zip',
+				zip: '$device.geo.zip'
 			}
 		},
 		{ $match: { test: yesterday } },
 		{
 			$group: {
 				_id: { zip: '$zip' },
-				requests:{$sum:1}
+				requests: { $sum: 1 }
 			}
-		},
+		}
 	]);
 
-	console.log(pincodes)
+	console.log(pincodes);
 	pincodes.forEach(async (pincode) => {
-		
 		const match = await Zipreports2.findOne({ pincode: parseInt(pincode._id.zip) });
 		if (!match) {
 			const newzip = new Zipreports2({
 				area: '',
-				pincode: parseInt(pincode._id.zip) ,
+				pincode: parseInt(pincode._id.zip),
 				lowersubcity: '',
 				subcity: '',
 				city: '',
@@ -618,15 +617,15 @@ async function PincodeRequestsRefresher() {
 				longitude: '',
 				impression: 0,
 				click: 0,
-				requests:pincode.requests
+				requests: pincode.requests
 			});
 			await newzip.save();
 		} else {
 			const updateddoc = await Zipreports2.findOneAndUpdate(
-				{ pincode: parseInt(pincode._id.zip)  },
+				{ pincode: parseInt(pincode._id.zip) },
 				{
 					$inc: {
-						requests:pincode.requests
+						requests: pincode.requests
 					}
 				},
 				{ new: true }
@@ -737,7 +736,7 @@ async function CategoryRefresher() {
 		{ $match: { test: yesterday } },
 		{
 			$group: {
-				_id: { category: '$category',feed:"$feed" },
+				_id: { category: '$category', feed: '$feed' },
 				CompanionClickTracking: { $sum: '$CompanionClickTracking' },
 				SovClickTracking: { $sum: '$SovClickTracking' },
 				impressions: { $sum: '$impression' }
@@ -748,51 +747,50 @@ async function CategoryRefresher() {
 	phones.forEach(async (cat) => {
 		const match = await Categoryreports2.findOne({
 			$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],
-			feed:cat._id.feed
+			feed: cat._id.feed
 		});
 
 		if (!match) {
-				const val=await Categoryreports2.findOne({$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ]})
-				const newzip = new Categoryreports2({
-					parent: val?val.parent:'',
-					category: cat._id.category,
-					Name: val?val.Name:'',
-					tier1: val?val.tier1:'',
-					tier2: val?val.tier2:'',
-					tier3: val?val.tier3:'',
-					tier4: val?val.tier4:'',
-					genderCategory: val?val.genderCategory:'',
-					AgeCategory: val?val.AgeCategory:'',
-					new_taxonamy: val?val.new_taxonamy:'',
-					impression: cat.impressions,
-					click: cat.CompanionClickTracking + cat.SovClickTracking,
-					feed: cat._id.feed
-				});
-				await newzip.save();
-			
-		} else {
-			
-					await Categoryreports2.findOneAndUpdate(
-						{ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ], feed:cat._id.feed },
-						{
-							$inc: {
-								impression: cat.impressions,
-								click: cat.CompanionClickTracking + cat.SovClickTracking
-							}
-						}
-					);
-				}
+			const val = await Categoryreports2.findOne({
+				$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ]
 			});
+			const newzip = new Categoryreports2({
+				parent: val ? val.parent : '',
+				category: cat._id.category,
+				Name: val ? val.Name : '',
+				tier1: val ? val.tier1 : '',
+				tier2: val ? val.tier2 : '',
+				tier3: val ? val.tier3 : '',
+				tier4: val ? val.tier4 : '',
+				genderCategory: val ? val.genderCategory : '',
+				AgeCategory: val ? val.AgeCategory : '',
+				new_taxonamy: val ? val.new_taxonamy : '',
+				impression: cat.impressions,
+				click: cat.CompanionClickTracking + cat.SovClickTracking,
+				feed: cat._id.feed
+			});
+			await newzip.save();
+		} else {
+			await Categoryreports2.findOneAndUpdate(
+				{ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ], feed: cat._id.feed },
+				{
+					$inc: {
+						impression: cat.impressions,
+						click: cat.CompanionClickTracking + cat.SovClickTracking
+					}
+				}
+			);
+		}
+	});
 
-			// console.log('updated', updateddoc);
+	// console.log('updated', updateddoc);
 }
-
 
 cron.schedule('30 1 * * *', function() {
 	PodcastEpisodeRefresher();
 });
 
-async function PodcastEpisodeRefresher(){
+async function PodcastEpisodeRefresher() {
 	let date = new Date(new Date());
 	date.setDate(date.getDate() - 1);
 	date = new Date(date);
@@ -801,75 +799,84 @@ async function PodcastEpisodeRefresher(){
 	const date1 = date.getDate();
 	let yesterday = `${year}-${month}-${date1}`;
 	console.log('yesterday', yesterday);
-	const EpisodeModel =require('./models/episodemodel')
-	const EpisodeModel2=require('./models/episodemodel2')
+	const EpisodeModel = require('./models/episodemodel');
+	const EpisodeModel2 = require('./models/episodemodel2');
 	const setdate = '2021-07-01';
 
 	const result = await EpisodeModel.aggregate([
-		{$project:{
-			test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-			episodename: 1,
-			category: 1,
-			publisherid: 1,
-			requests:1,
-			displayname:1,
-			hostPossibility:1,
-		}},
-		{$match:{test:yesterday}},
-		
+		{
+			$project: {
+				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+				episodename: 1,
+				category: 1,
+				publisherid: 1,
+				requests: 1,
+				displayname: 1,
+				hostPossibility: 1
+			}
+		},
+		{ $match: { test: yesterday } },
+
 		{
 			$project: {
 				episodename: 1,
 				category: 1,
 				publisherid: 1,
-				requests:1,
-				displayname:1,
-				hostPossibility:1,
+				requests: 1,
+				displayname: 1,
+				hostPossibility: 1
 			}
 		},
 		{
 			$group: {
-				_id: {episodename:"$episodename",category:"$category",publisher:"$publisherid"},
-				request: { $sum: "$requests" },
-				displayname: { $first: "$displayname" },
-				hostPossibility: { $first: "$hostPossibility" },
+				_id: { episodename: '$episodename', category: '$category', publisher: '$publisherid' },
+				request: { $sum: '$requests' },
+				displayname: { $first: '$displayname' },
+				hostPossibility: { $first: '$hostPossibility' }
 			}
 		},
-		
+
 		{
 			$project: {
-				episodename: "$_id.episodename",
-				category: "$_id.category",
-				publisher:"$_id.publisher",
-				request: "$request",
-				displayname: "$displayname",
-				hostPossibility: "$hostPossibility",
+				episodename: '$_id.episodename',
+				category: '$_id.category',
+				publisher: '$_id.publisher',
+				request: '$request',
+				displayname: '$displayname',
+				hostPossibility: '$hostPossibility'
 			}
 		}
-	])
+	]);
 
-	result.forEach(async(podcast)=>{
-		const ismatch=await EpisodeModel2.findOne({$and:[{episodename:podcast.episodename},{category:podcast.category},{publisherid:podcast.publisher}]})
-		if(!ismatch){
-			const episode=new EpisodeModel2({
-				publisherid: podcast.publisher ,
-    			episodename: podcast.episodename ,
-    			category: podcast.category ,
-    			requests: podcast.request ,
-    			displayname:podcast.displayname ,
-    			hostPossibility:podcast.hostPossibility 
-			})
-			await episode.save()
-		}else{
-			await EpisodeModel2.findOneAndUpdate({$and:[{episodename:podcast.episodename},{category:podcast.category}]}, 
+	result.forEach(async (podcast) => {
+		const ismatch = await EpisodeModel2.findOne({
+			$and: [
+				{ episodename: podcast.episodename },
+				{ category: podcast.category },
+				{ publisherid: podcast.publisher }
+			]
+		});
+		if (!ismatch) {
+			const episode = new EpisodeModel2({
+				publisherid: podcast.publisher,
+				episodename: podcast.episodename,
+				category: podcast.category,
+				requests: podcast.request,
+				displayname: podcast.displayname,
+				hostPossibility: podcast.hostPossibility
+			});
+			await episode.save();
+		} else {
+			await EpisodeModel2.findOneAndUpdate(
+				{ $and: [ { episodename: podcast.episodename }, { category: podcast.category } ] },
 				{
 					$inc: {
-						requests:podcast.request
+						requests: podcast.request
 					}
-				})
+				}
+			);
 		}
-	})
-
+	});
 }
 
 async function uniqueMaker({ date }) {

@@ -340,6 +340,64 @@ router.get('/groupedMod1', adminauth, (req, res) => {
 		.catch((err) => console.log(err));
 });
 
+router.get('/groupedMangename', adminauth, (req, res) => {
+	StreamingAds.aggregate([
+		{
+			$project: {
+				AdTitle: { $toLower: '$AdTitle' },
+				createdOn: '$createdOn'
+			}
+		},
+		{
+			$project: {
+				AdTitle: { $split: [ '$AdTitle', '_' ] },
+				createdOn: '$createdOn'
+			}
+		},
+		{
+			$project: {
+				AdTitle: { $slice: [ '$AdTitle', 2 ] },
+				createdOn: { $substr: [ '$createdOn', 0, 10 ] }
+			}
+		},
+		{
+			$project: {
+				AdTitle: {
+					$reduce: {
+						input: '$AdTitle',
+						initialValue: '',
+						in: {
+							$concat: [ '$$value', { $cond: [ { $eq: [ '$$value', '' ] }, '', '_' ] }, '$$this' ]
+						}
+					}
+				},
+				createdOn: '$createdOn'
+			}
+		},
+		{ $sort: { createdOn: -1 } },
+		{
+			$group: {
+				_id: '$AdTitle',
+				createdOn: { $push: '$createdOn' }
+			}
+		},
+		{
+			$project: {
+				Adtitle: '$_id',
+				createdOn: { $arrayElemAt: [ '$createdOn', 0 ] }
+			}
+		},
+		{ $sort: { createdOn: -1 } }
+	])
+		.then((result) => {
+			res.json(result);
+		})
+		.catch((err) => {
+			console.log(err);
+			res.status(404).json({ error: 'something went wrong', err });
+		});
+});
+
 router.put('/clientgrouped', adminauth, (req, res) => {
 	const { Advertiser } = req.body;
 	StreamingAds.aggregate([
