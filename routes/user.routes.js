@@ -161,9 +161,7 @@ router.put('/createUser', adminauth, (req, res) => {
 					username,
 					password: hashpass,
 					email,
-					usertype,
-					bundles,
-					campaigns
+					usertype
 				});
 				adminU
 					.save()
