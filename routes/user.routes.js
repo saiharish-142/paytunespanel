@@ -144,7 +144,7 @@ router.delete('/deletecampaign', adminauth, (req, res) => {
 });
 
 router.put('/createUser', adminauth, (req, res) => {
-	const { username, password, email, usertype, bundles, campaigns } = req.body;
+	const { username, password, email, usertype } = req.body;
 	if (!username || !password || !email || !usertype) {
 		return res.status(422).json({ error: 'Enter the all required fields' });
 	}
