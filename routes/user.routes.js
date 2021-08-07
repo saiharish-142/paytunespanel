@@ -69,6 +69,14 @@ router.post('/signin', (req, res) => {
 		.catch((err) => console.log(err));
 });
 
+router.get('/campaigns/:id', adminauth, (req, res) => {
+	const { id } = req.params;
+	campaignClient.find({ userid: id }).then((result) => res.json(result)).catch((err) => {
+		console.log(err);
+		res.status(404).json({ error: 'somthing went wrong', err });
+	});
+});
+
 router.post('/addCampaign', adminauth, async (req, res) => {
 	const { userid, campaignName, audio, display, video, podcast, onDemand } = req.body;
 	if (!userid || !campaignName || !audio || !display || !video || !podcast || !onDemand) {
