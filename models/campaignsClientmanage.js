@@ -7,6 +7,7 @@ const ClientCampaignsetSchema = new mongoose.Schema({
 	audio: { type: String },
 	display: { type: String },
 	video: { type: String },
+	musicapps: { type: String },
 	podcast: { type: String },
 	onDemand: { type: String }
 });

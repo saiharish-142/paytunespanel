@@ -78,7 +78,7 @@ router.get('/campaigns/:id', adminauth, (req, res) => {
 });
 
 router.post('/addCampaign', adminauth, async (req, res) => {
-	const { userid, campaignName, audio, display, video, podcast, onDemand } = req.body;
+	const { userid, campaignName, audio, display, video, podcast, onDemand, musicapps } = req.body;
 	if (!userid || !campaignName || !audio || !display || !video || !podcast || !onDemand) {
 		res.status(422).json({ error: 'enter all the required fields' });
 	}
@@ -88,6 +88,7 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 		audio,
 		display,
 		video,
+		musicapps,
 		podcast,
 		onDemand
 	}).catch((err) => {
@@ -106,7 +107,7 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 });
 
 router.put('/editcampaign', adminauth, async (req, res) => {
-	const { userid, campaignName, audio, display, video, podcast, onDemand } = req.body;
+	const { userid, campaignName, audio, display, video, podcast, onDemand, musicapps } = req.body;
 	if (!campaignName || !userid) {
 		res.status(422).json({ error: 'enter all the required fields' });
 	}
@@ -122,6 +123,9 @@ router.put('/editcampaign', adminauth, async (req, res) => {
 	}
 	if (video) {
 		campaign.video = video;
+	}
+	if (musicapps) {
+		campaign.musicapps = musicapps;
 	}
 	if (podcast) {
 		campaign.podcast = podcast;
