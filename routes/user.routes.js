@@ -91,9 +91,6 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 		musicapps,
 		podcast,
 		onDemand
-	}).catch((err) => {
-		res.status(404).json({ error: 'something went wrong', err });
-		console.log(err);
 	});
 	let result = await campaign.save().catch((err) => {
 		res.status(404).json({ error: 'something went wrong', err });
