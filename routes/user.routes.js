@@ -82,6 +82,12 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 	if (!userid || !campaignName || !audio || !display || !video || !podcast || !onDemand) {
 		res.status(422).json({ error: 'enter all the required fields' });
 	}
+	let existCamp = await campaignClient
+		.find({ userid: userid, campaignName: campaignName })
+		.catch((err) => console.log(err));
+	if (existCamp && existCamp.length > 0) {
+		return res.status(422).json({ error: 'Campaign already exists to this client' });
+	}
 	const campaign = new campaignClient({
 		userid: userid,
 		campaignName: campaignName,
