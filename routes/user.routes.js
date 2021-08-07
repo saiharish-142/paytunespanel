@@ -97,7 +97,7 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 		console.log(err);
 	});
 	if (result) {
-		res.json({ message: 'Campaign successfully added' });
+		res.json({ message: 'Campaign successfully added', result });
 	} else {
 		res.status(404).json({ error: 'something went wrong' });
 	}
