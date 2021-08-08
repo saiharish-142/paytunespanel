@@ -193,7 +193,9 @@ router.get(
                         impressions: 1
                     }
                 },
-                { $sort: { impressions: -1 } }
+                { $sort: { impressions: -1 } },
+                {$match:{"_id.Date":{$gt:"2021-06-30"}}}
+                
             ])
             res.status(200).json(result)
 
