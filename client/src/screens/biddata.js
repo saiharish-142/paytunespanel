@@ -285,21 +285,20 @@ export default function Biddata() {
 						<TableRow>
 							<TableCell>Date</TableCell>
 							<TableCell>SSP</TableCell>
-							<TableCell>Requests</TableCell>
+							
 							<TableCell>Bids Responded</TableCell>
 							<TableCell>Bids Won</TableCell>
 							<TableCell>Total Spent</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+						{bids.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
 							<TableRow key={row.name}>
 								<TableCell component="th" scope="row">
 									{row._id.Date}
 								</TableCell>
 								<TableCell>Triton</TableCell>
 								<TableCell>{row.requests}</TableCell>
-								<TableCell>{findbids(row._id.Date, 'tri')}</TableCell>
 								<TableCell>{findbidwons(row._id.Date, 'Triton')}</TableCell>
 								<TableCell>{findspentdata(row._id.Date, 'Triton')}</TableCell>
 							</TableRow>
@@ -326,21 +325,19 @@ export default function Biddata() {
 						<TableRow>
 							<TableCell>Date</TableCell>
 							<TableCell>SSP</TableCell>
-							<TableCell>Requests</TableCell>
 							<TableCell>Bids Responded</TableCell>
 							<TableCell>Bids Won</TableCell>
 							<TableCell>Total Spent</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{rows1.slice(page1 * rowsPerPage1, page1 * rowsPerPage1 + rowsPerPage1).map((row) => (
+						{bids1.slice(page1 * rowsPerPage1, page1 * rowsPerPage1 + rowsPerPage1).map((row) => (
 							<TableRow key={row.name}>
 								<TableCell component="th" scope="row">
 									{row._id.Date}
 								</TableCell>
 								<TableCell>Rubicon</TableCell>
 								<TableCell>{row.requests}</TableCell>
-								<TableCell>{findbids(row._id.Date, 'Rub')}</TableCell>
 								<TableCell>{findbidwons(row._id.Date, 'Rubicon')}</TableCell>
 								<TableCell>{findspentdata(row._id.Date, 'Rubicon')}</TableCell>
 							</TableRow>

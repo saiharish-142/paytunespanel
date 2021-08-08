@@ -28,7 +28,7 @@ const streamingadsSchema = new mongoose.Schema({
     City:[{type:String}],
     State:[{type:String}],
     Age:{type:Boolean},
-    Companion:[{
+    Companion:[{  // banner details
         Title:{type:String},
         Url:{type:String},
         StaticResource:{type:String},

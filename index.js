@@ -504,24 +504,7 @@ async function PincodeRefresher() {
 				impressions: { $sum: '$impression' }
 			}
 		},
-		// {$addFields:{"new_zip":{$toString:"$_id.zip"}}},
-		// {
-		// 	$lookup:{
-		// 		from: 'rtbrequests',
-		// 		localField: 'new_zip',
-		// 		foreignField: 'device.geo.zip',
-		// 		as: 'ziprequest'
-		// 	}
-		// },
-		// {
-		// 	$project:{
-		// 		zip:"$_id.zip",
-		// 		CompanionClickTracking:   '$CompanionClickTracking' ,
-		// 		SovClickTracking:  '$SovClickTracking' ,
-		// 		impressions:  '$impressions' ,
-		// 		requests:{$size:"$ziprequest"}
-		// 	}
-		// }
+		
 	]);
 
 	console.log(pincodes)
