@@ -15,7 +15,7 @@ import React, { useState } from 'react';
 import { useEffect } from 'react';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import EditIcon from '@material-ui/icons/Edit';
-import CancelIcon from '@material-ui/icons/Cancel';
+// import CancelIcon from '@material-ui/icons/Cancel';
 import M from 'materialize-css';
 import { useHistory } from 'react-router-dom';
 
@@ -26,12 +26,12 @@ function ManageUser() {
 	const [ usertype, setusertype ] = useState('');
 	const [ username, setusername ] = useState('');
 	const [ users, setusers ] = useState([]);
-	const [ selectedcampaigns, setselectedcampaigns ] = useState([]);
-	const [ searchedcampaigns, setsearchedcampaigns ] = useState([]);
-	const [ campaigns, setcampaigns ] = useState([]);
-	const [ selectedbundles, setselectedbundles ] = useState([]);
-	const [ searchedbundles, setsearchedbundles ] = useState([]);
-	const [ bundles, setbundles ] = useState([]);
+	// const [ selectedcampaigns, setselectedcampaigns ] = useState([]);
+	// const [ searchedcampaigns, setsearchedcampaigns ] = useState([]);
+	// const [ campaigns, setcampaigns ] = useState([]);
+	// const [ selectedbundles, setselectedbundles ] = useState([]);
+	// const [ searchedbundles, setsearchedbundles ] = useState([]);
+	// const [ bundles, setbundles ] = useState([]);
 	// Get users
 	useEffect(() => {
 		fetch('/auth/users', {
@@ -49,39 +49,39 @@ function ManageUser() {
 			.catch((err) => console.log(err));
 	}, []);
 	// Get bundles
-	useEffect(() => {
-		fetch('/bundles/names', {
-			method: 'get',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('jwt')
-			}
-		})
-			.then((res) => res.json())
-			.then((uss) => {
-				// console.log(uss)
-				setbundles(uss);
-				setsearchedbundles(uss);
-			})
-			.catch((err) => console.log(err));
-	}, []);
+	// useEffect(() => {
+	// 	fetch('/bundles/names', {
+	// 		method: 'get',
+	// 		headers: {
+	// 			'Content-Type': 'application/json',
+	// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+	// 		}
+	// 	})
+	// 		.then((res) => res.json())
+	// 		.then((uss) => {
+	// 			// console.log(uss)
+	// 			setbundles(uss);
+	// 			setsearchedbundles(uss);
+	// 		})
+	// 		.catch((err) => console.log(err));
+	// }, []);
 	// Get Campaigns
-	useEffect(() => {
-		fetch('/streamingads/names', {
-			method: 'get',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('jwt')
-			}
-		})
-			.then((res) => res.json())
-			.then((uss) => {
-				// console.log(uss)
-				setcampaigns(uss);
-				setsearchedcampaigns(uss);
-			})
-			.catch((err) => console.log(err));
-	}, []);
+	// useEffect(() => {
+	// 	fetch('/streamingads/groupedMangename', {
+	// 		method: 'get',
+	// 		headers: {
+	// 			'Content-Type': 'application/json',
+	// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+	// 		}
+	// 	})
+	// 		.then((res) => res.json())
+	// 		.then((uss) => {
+	// 			console.log(uss);
+	// 			setcampaigns(uss);
+	// 			setsearchedcampaigns(uss);
+	// 		})
+	// 		.catch((err) => console.log(err));
+	// }, []);
 	useEffect(
 		() => {
 			console.log('users updated');
@@ -89,12 +89,12 @@ function ManageUser() {
 		[ users ]
 	);
 	function createUser() {
-		var bundleids = selectedbundles.map((bundle) => {
-			return bundle._id;
-		});
-		var campids = selectedcampaigns.map((camp) => {
-			return camp._id;
-		});
+		// var bundleids = selectedbundles.map((bundle) => {
+		// 	return bundle._id;
+		// });
+		// var campids = selectedcampaigns.map((camp) => {
+		// 	return camp._id;
+		// });
 		fetch('/auth/createUser', {
 			method: 'put',
 			headers: {
@@ -105,9 +105,7 @@ function ManageUser() {
 				username,
 				password,
 				email,
-				usertype,
-				bundles: bundleids,
-				campaigns: campids
+				usertype
 			})
 		})
 			.then((res) => res.json())
@@ -116,7 +114,7 @@ function ManageUser() {
 					M.toast({ html: result.error, classes: '#ff5252 red accent-2' });
 				} else {
 					var data = users;
-					data.push({ username: username, usertype: usertype, email: email });
+					data.push({ _id: result._id, username: username, usertype: usertype, email: email });
 					// console.log(data)
 					M.toast({ html: result.message, classes: '#69f0ae green accent-2' });
 					setusers(data);
@@ -124,17 +122,18 @@ function ManageUser() {
 					setpassword('');
 					setusertype('');
 					setusername('');
-					var campsel = selectedcampaigns;
-					var bundsel = selectedbundles;
-					var bundlen = bundles;
-					var campn = campaigns;
-					bundlen.concat(bundsel);
-					campn.concat(campsel);
-					setselectedbundles([]);
-					setselectedcampaigns([]);
-					setcampaigns(campn);
-					setbundles(bundlen);
 					history.push('/manageusers');
+					// window.location.reload();
+					// var campsel = selectedcampaigns;
+					// var bundsel = selectedbundles;
+					// var bundlen = bundles;
+					// var campn = campaigns;
+					// bundlen.concat(bundsel);
+					// campn.concat(campsel);
+					// setselectedbundles([]);
+					// setselectedcampaigns([]);
+					// setcampaigns(campn);
+					// setbundles(bundlen);
 				}
 			})
 			.catch((err) => console.log(err));
@@ -191,7 +190,69 @@ function ManageUser() {
 							<option value="client">Client</option>
 						</Select>
 					</FormControl>
-					<div className="title">Selected Bundles</div>
+					<input placeholder="Email" required value={email} onChange={(e) => setemail(e.target.value)} />
+					<input
+						type="password"
+						placeholder="Password"
+						required
+						value={password}
+						onChange={(e) => setpassword(e.target.value)}
+					/>
+					<Button type="submit" color="primary" variant="contained">
+						Create User
+					</Button>
+				</form>
+			</Paper>
+			<Paper style={{ width: '50%', margin: '0 auto 20px auto', padding: '20px' }}>
+				<b style={{ fontSize: '20px' }}>Users List</b>
+				<Table>
+					<TableHead>
+						<TableRow>
+							<TableCell align="center">Username</TableCell>
+							<TableCell align="center">Email</TableCell>
+							<TableCell align="center">User Type</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{users &&
+							users.map((data, i) => {
+								return (
+									<TableRow key={i}>
+										<TableCell align="center">{data.username}</TableCell>
+										<TableCell align="center">{data.email}</TableCell>
+										<TableCell align="center">{data.usertype}</TableCell>
+										{data.usertype !== 'admin' && (
+											<TableCell
+												align="center"
+												onClick={() => deleteUSer(data.username)}
+												style={{ cursor: 'pointer' }}
+											>
+												<DeleteOutlinedIcon />
+											</TableCell>
+										)}
+										{data.usertype !== 'admin' && (
+											<TableCell
+												align="center"
+												onClick={() => history.push(`/EditUser/${data._id}`)}
+												style={{ cursor: 'pointer' }}
+											>
+												<EditIcon />
+											</TableCell>
+										)}
+									</TableRow>
+								);
+							})}
+					</TableBody>
+				</Table>
+			</Paper>
+		</React.Fragment>
+	);
+}
+
+export default ManageUser;
+
+{
+	/* <div className="title">Selected Bundles</div>
 					<div className="selectedList">
 						{selectedbundles.map((bundle, i) => {
 							return (
@@ -302,68 +363,9 @@ function ManageUser() {
 										setcampaigns(campaignsnew);
 									}}
 								>
-									{camp.AdTitle}
+									{camp.Adtitle}
 								</div>
 							);
 						})}
-					</div>
-					<input placeholder="Email" required value={email} onChange={(e) => setemail(e.target.value)} />
-					<input
-						type="password"
-						placeholder="Password"
-						required
-						value={password}
-						onChange={(e) => setpassword(e.target.value)}
-					/>
-					<Button type="submit" color="primary" variant="contained">
-						Create User
-					</Button>
-				</form>
-			</Paper>
-			<Paper style={{ width: '50%', margin: '0 auto 20px auto', padding: '20px' }}>
-				<b style={{ fontSize: '20px' }}>Users List</b>
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableCell align="center">Username</TableCell>
-							<TableCell align="center">Email</TableCell>
-							<TableCell align="center">User Type</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{users &&
-							users.map((data, i) => {
-								return (
-									<TableRow key={i}>
-										<TableCell align="center">{data.username}</TableCell>
-										<TableCell align="center">{data.email}</TableCell>
-										<TableCell align="center">{data.usertype}</TableCell>
-										{data.usertype !== 'admin' && (
-											<TableCell
-												align="center"
-												onClick={() => deleteUSer(data.username)}
-												style={{ cursor: 'pointer' }}
-											>
-												<DeleteOutlinedIcon />
-											</TableCell>
-										)}
-										{data.usertype !== 'admin' && (
-											<TableCell
-												align="center"
-												onClick={() => history.push(`/EditUser/${data._id}`)}
-												style={{ cursor: 'pointer' }}
-											>
-												<EditIcon />
-											</TableCell>
-										)}
-									</TableRow>
-								);
-							})}
-					</TableBody>
-				</Table>
-			</Paper>
-		</React.Fragment>
-	);
+					</div> */
 }
-
-export default ManageUser;

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const admin = mongoose.model('admin');
+const campaignClient = mongoose.model('campaignClient');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config/keys');
@@ -68,8 +69,97 @@ router.post('/signin', (req, res) => {
 		.catch((err) => console.log(err));
 });
 
+router.get('/campaigns/:id', adminauth, (req, res) => {
+	const { id } = req.params;
+	campaignClient.find({ userid: id }).then((result) => res.json(result)).catch((err) => {
+		console.log(err);
+		res.status(404).json({ error: 'somthing went wrong', err });
+	});
+});
+
+router.post('/addCampaign', adminauth, async (req, res) => {
+	const { userid, campaignName, audio, display, video, podcast, onDemand, musicapps } = req.body;
+	if (!userid || !campaignName || !audio || !display || !video || !podcast || !onDemand) {
+		res.status(422).json({ error: 'enter all the required fields' });
+	}
+	let existCamp = await campaignClient
+		.find({ userid: userid, campaignName: campaignName })
+		.catch((err) => console.log(err));
+	if (existCamp && existCamp.length > 0) {
+		return res.status(422).json({ error: 'Campaign already exists to this client' });
+	}
+	const campaign = new campaignClient({
+		userid: userid,
+		campaignName: campaignName,
+		audio,
+		display,
+		video,
+		musicapps,
+		podcast,
+		onDemand
+	});
+	let result = await campaign.save().catch((err) => {
+		res.status(404).json({ error: 'something went wrong', err });
+		console.log(err);
+	});
+	if (result) {
+		res.json({ message: 'Campaign successfully added', result });
+	} else {
+		res.status(404).json({ error: 'something went wrong' });
+	}
+});
+
+router.put('/editcampaign', adminauth, async (req, res) => {
+	const { userid, campaignName, audio, display, video, podcast, onDemand, musicapps } = req.body;
+	if (!campaignName || !userid) {
+		res.status(422).json({ error: 'enter all the required fields' });
+	}
+	let campaign = await campaignClient.findOne({ userid: userid, campaignName: campaignName }).catch((err) => {
+		res.status(404).json({ error: 'something went wrong', err });
+		console.log(err);
+	});
+	if (audio) {
+		campaign.audio = audio;
+	}
+	if (display) {
+		campaign.display = display;
+	}
+	if (video) {
+		campaign.video = video;
+	}
+	if (musicapps) {
+		campaign.musicapps = musicapps;
+	}
+	if (podcast) {
+		campaign.podcast = podcast;
+	}
+	if (onDemand) {
+		campaign.onDemand = onDemand;
+	}
+	campaign
+		.save()
+		.then((result) => {
+			res.json({ message: 'campaign successfully updated' });
+		})
+		.catch((err) => {
+			res.status(404).json({ error: 'something went wrong', err });
+			console.log(err);
+		});
+});
+
+router.delete('/deletecampaign', adminauth, (req, res) => {
+	const { id } = req.body;
+	campaignClient
+		.findByIdAndDelete(id)
+		.then((resu) => res.json({ message: 'campagin deleted successfully' }))
+		.catch((err) => {
+			res.status(404).json({ error: 'something went wrong', err });
+			console.log(err);
+		});
+});
+
 router.put('/createUser', adminauth, (req, res) => {
-	const { username, password, email, usertype, bundles, campaigns } = req.body;
+	const { username, password, email, usertype } = req.body;
 	if (!username || !password || !email || !usertype) {
 		return res.status(422).json({ error: 'Enter the all required fields' });
 	}
@@ -86,9 +176,7 @@ router.put('/createUser', adminauth, (req, res) => {
 					username,
 					password: hashpass,
 					email,
-					usertype,
-					bundles,
-					campaigns
+					usertype
 				});
 				adminU
 					.save()

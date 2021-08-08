@@ -178,6 +178,64 @@
   margin: 0 auto;
 }
 
+.edituser{
+  min-width: 80vw;
+}
+
+.ineditables{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.editineditinput{
+  min-width: 100px;
+  width: fit-content !important;
+  margin: 5px !important;
+}
+
+.editineditinput select{
+  min-width: 100px;
+}
+
+.options{
+  display: flex !important;
+  flex-wrap: wrap !important;
+  flex-direction: row  !important;
+}
+
+.MuiTypography-root{
+  color: black;
+}
+
+.titleing{
+  width:50% !important;
+}
+
+.semiselectcont{
+  margin-top: 10px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.semiselecttit{
+  margin-right: 30px;
+}
+
+.selectedcamp{
+  width: 60% !important;
+  margin: 0 auto;
+}
+
+#cellselect{
+  padding: 0 !important;
+}
+
+.selectedcamphead{
+  width: 80% !important;
+}
+
 @media screen and (max-width: 700px){
   .navbar{
     height: 10vh;

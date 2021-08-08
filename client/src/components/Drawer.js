@@ -39,7 +39,12 @@ export default function TemporaryDrawer() {
 				</i>
 			</div>
 			<Drawer anchor="left" open={open} onClose={() => setopen(false)}>
-				<div className={classes.list} role="presentation" onKeyDown={() => setopen(false)}>
+				<div
+					style={{ minWidth: '15vw' }}
+					className={classes.list}
+					role="presentation"
+					onKeyDown={() => setopen(false)}
+				>
 					<ListItem className="dashmenu__item" onClick={() => setopen(false)}>
 						<ListItemIcon>
 							<i className="material-icons">equalizer</i>
