@@ -309,7 +309,7 @@ export default function Biddata() {
 			<TablePagination
 				rowsPerPageOptions={[ 7, 100, 1000, 10000 ]}
 				component="div"
-				count={rows ? rows.length : 0}
+				count={bids ? bids.length : 0}
 				rowsPerPage={rowsPerPage}
 				//style={{float:'left'}}
 				page={page}
@@ -348,7 +348,7 @@ export default function Biddata() {
 			<TablePagination
 				rowsPerPageOptions={[ 7, 10, 25, 100, 1000, 10000 ]}
 				component="div"
-				count={rows1 ? rows1.length : 0}
+				count={bids1 ? bids1.length : 0}
 				rowsPerPage={rowsPerPage1}
 				//style={{float:'right'}}
 				page={page1}
