@@ -100,7 +100,8 @@ router.post(
                         }
                     }
                 },
-                {$sort:{"_id.Date":-1}}
+                {$sort:{"_id.Date":-1}},
+                {$match:{"_id.Date":{$gt:"2021-06-30"}}}
                 // {$project:{
                 //     rtbType:1,
                 //     ads:"$requests",
@@ -131,8 +132,11 @@ router.get(
                                 $group: {
                                     _id: { Date: "$date" },
                                     impressions: { $sum: "$impression" }
-                                }
-                            }],
+                                },
+                                
+                            },
+                            {$match:{"_id.Date":{$gt:"2021-06-30"}}}
+                        ],
                         "Rubicon_Data": [
                             { $match: { ssp: "Rubicon" } },
                             {
@@ -140,9 +144,13 @@ router.get(
                                     _id: { Date: "$date" },
                                     impressions: { $sum: "$impression" }
                                 }
-                            }]
+                            },
+                            {$match:{"_id.Date":{$gt:"2021-06-30"}}}
+                        ]
                     }
-                }
+                },
+                
+
                 //     {$group:{_id:{Date:"$date"},
                 //     impressions:{$sum:"$impression"}
                 // }}
