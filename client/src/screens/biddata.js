@@ -283,7 +283,7 @@ export default function Biddata() {
 				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
-							<TableCell>Date</TableCell>
+							<TableCell >Date</TableCell>
 							<TableCell>SSP</TableCell>
 							
 							<TableCell>Bids Responded</TableCell>
