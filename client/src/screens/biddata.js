@@ -292,8 +292,8 @@ export default function Biddata() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{bids.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-							<TableRow key={row.name}>
+						{bids.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,i) => (
+							<TableRow key={i}>
 								<TableCell component="th" scope="row">
 									{row._id.Date}
 								</TableCell>
@@ -331,8 +331,8 @@ export default function Biddata() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{bids1.slice(page1 * rowsPerPage1, page1 * rowsPerPage1 + rowsPerPage1).map((row) => (
-							<TableRow key={row.name}>
+						{bids1.slice(page1 * rowsPerPage1, page1 * rowsPerPage1 + rowsPerPage1).map((row,i) => (
+							<TableRow key={i}>
 								<TableCell component="th" scope="row">
 									{row._id.Date}
 								</TableCell>
