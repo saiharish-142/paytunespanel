@@ -1001,7 +1001,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					as: 'extra_details'
 				}
 			},
-			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+			// { $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
 			{
 				$lookup: {
 					from: 'categoryreports2',
@@ -1010,7 +1010,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					as: 'extra_details1'
 				}
 			},
-			{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+			// { $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
 			{ $sort: { impressions: -1 } },
 			{
 				$project: {
@@ -1025,9 +1025,17 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: ['$extra_details', {}] }
+					extra_details: { $ifNull: ['$extra_details', []] }
 				}
-			}
+			},
+			// {
+			// 	$project: {
+			// 		impressions: 1,
+			// 		CompanionClickTracking: 1,
+			// 		SovClickTracking: 1,
+			// 		extra_details: { $ifNull: ['$extra_details', []] }
+			// 	}
+			// }
 		]).allowDiskUse(true);
 		const resultdisplay = await CategoryReports.aggregate([
 			{ $match: { campaignId: { $in: display } } },
