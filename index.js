@@ -477,8 +477,17 @@ async function PincodeRefresher() {
 	date.setDate(date.getDate() - 1);
 	date = new Date(date);
 	const year = date.getFullYear();
-	const month = `0${date.getMonth() + 1}`;
-	const date1 = date.getDate();
+	let month;
+	if(date.getMonth()+1>=10){
+		month=`${date.getMonth()+1}`
+	}else{
+		month=`0${date.getMonth() + 1}`
+	}
+	
+	let date1 = date.getDate();
+	if(date1<10){
+		date1=`0${date1}`
+	}
 	let yesterday = `${year}-${month}-${date1}`;
 	console.log('yesterday', yesterday);
 
@@ -554,8 +563,16 @@ async function PincodeRequestsRefresher() {
 	date.setDate(date.getDate() - 1);
 	date = new Date(date);
 	const year = date.getFullYear();
-	const month = `0${date.getMonth() + 1}`;
-	const date1 = date.getDate();
+	let month;
+	if(date.getMonth()+1>=10){
+		month=`${date.getMonth()+1}`
+	}else{
+		month=`0${date.getMonth() + 1}`
+	}
+	let date1 = date.getDate();
+	if(date1<10){
+		date1=`0${date1}`
+	}
 	let yesterday = `${year}-${month}-${date1}`;
 	console.log('yesterday', yesterday);
 
@@ -626,8 +643,16 @@ async function PhoneRefresher() {
 	date.setDate(date.getDate() - 1);
 	date = new Date(date);
 	const year = date.getFullYear();
-	const month = `0${date.getMonth() + 1}`;
-	const date1 = date.getDate();
+	let month;
+	if(date.getMonth()+1>=10){
+		month=`${date.getMonth()+1}`
+	}else{
+		month=`0${date.getMonth() + 1}`
+	}
+	let date1 = date.getDate();
+	if(date1<10){
+		date1=`0${date1}`
+	}
 	let yesterday = `${year}-${month}-${date1}`;
 	console.log('yesterday', yesterday);
 	const PhoneModelReports = require('./models/phonemodelreports');
@@ -643,7 +668,7 @@ async function PhoneRefresher() {
 				SovClickTracking: 1
 			}
 		},
-		{ $match: { test: yesterday } },
+		{ $match: { test: {$gt:setdate} } },
 		{
 			$group: {
 				_id: { phone: '$phoneModel' },
@@ -696,8 +721,16 @@ async function CategoryRefresher() {
 	date.setDate(date.getDate() - 1);
 	date = new Date(date);
 	const year = date.getFullYear();
-	const month = `0${date.getMonth() + 1}`;
-	const date1 = date.getDate();
+	let month;
+	if(date.getMonth()+1>=10){
+		month=`${date.getMonth()+1}`
+	}else{
+		month=`0${date.getMonth() + 1}`
+	}
+	let date1 = date.getDate();
+	if(date1<10){
+		date1=`0${date1}`
+	}
 	let yesterday = `${year}-${month}-${date1}`;
 	console.log('yesterday', yesterday);
 	const CategoryReports = require('./models/categoryreports');
@@ -715,7 +748,7 @@ async function CategoryRefresher() {
 				feed: 1
 			}
 		},
-		{ $match: { test: yesterday } },
+		{ $match: { test: {$gt:setdate} } },
 		{
 			$group: {
 				_id: { category: '$category', feed: '$feed' },
@@ -777,8 +810,16 @@ async function PodcastEpisodeRefresher() {
 	date.setDate(date.getDate() - 1);
 	date = new Date(date);
 	const year = date.getFullYear();
-	const month = `0${date.getMonth() + 1}`;
-	const date1 = date.getDate();
+	let month;
+	if(date.getMonth()+1>=10){
+		month=`${date.getMonth()+1}`
+	}else{
+		month=`0${date.getMonth() + 1}`
+	}
+	let date1 = date.getDate();
+	if(date1<10){
+		date1=`0${date1}`
+	}
 	let yesterday = `${year}-${month}-${date1}`;
 	console.log('yesterday', yesterday);
 	const EpisodeModel = require('./models/episodemodel');
