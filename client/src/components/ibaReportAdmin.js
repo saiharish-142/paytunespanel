@@ -53,13 +53,13 @@ function IbaReportAdmin({ title, report, state1, arrowRetuner }) {
 				});
 				data.map((row) => {
 					row.category = row._id.category ? row._id.category : '';
-					row.Name = row.extra_details ? row.extra_details[0].Name : '';
-					row.tier1 = row.extra_details ? row.extra_details[0].tier1 : '';
-					row.tier2 = row.extra_details ? row.extra_details[0].tier2 : '';
-					row.tier3 = row.extra_details ? row.extra_details[0].tier3 : '';
-					row.tier4 = row.extra_details ? row.extra_details[0].tier4 : '';
-					row.genderCategory = row.extra_details ? row.extra_details[0].genderCategory : '';
-					row.AgeCategory = row.extra_details ? row.extra_details[0].AgeCategory : '';
+					row.Name = row.extra_details.length!==0 ? row.extra_details[0].Name : '';
+					row.tier1 = row.extra_details.length!==0 ? row.extra_details[0].tier1 : '';
+					row.tier2 = row.extra_details.length!==0 ? row.extra_details[0].tier2 : '';
+					row.tier3 = row.extra_details.length!==0 ? row.extra_details[0].tier3 : '';
+					row.tier4 = row.extra_details.length!==0 ? row.extra_details[0].tier4 : '';
+					row.genderCategory = row.extra_details.length!==0 ? row.extra_details[0].genderCategory : '';
+					row.AgeCategory = row.extra_details.length!==0 ? row.extra_details[0].AgeCategory : '';
 					row.impression = row.impressions ? row.impressions : 0;
 					row.clicks = parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
 					row.ctr =
