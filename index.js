@@ -505,7 +505,7 @@ async function PincodeRefresher() {
 				SovClickTracking: 1
 			}
 		},
-		{ $match: { test: yesterday } },
+		{ $match: { test: {$gt:setdate} } },
 		{
 			$group: {
 				_id: { zip: '$zip' },
@@ -554,85 +554,85 @@ async function PincodeRefresher() {
 	});
 }
 
-cron.schedule('30 1 * * *', function() {
-	PincodeRequestsRefresher();
-});
+// cron.schedule('30 1 * * *', function() {
+// 	PincodeRequestsRefresher();
+// });
 
-async function PincodeRequestsRefresher() {
-	let date = new Date(new Date());
-	date.setDate(date.getDate() - 1);
-	date = new Date(date);
-	const year = date.getFullYear();
-	let month;
-	if(date.getMonth()+1>=10){
-		month=`${date.getMonth()+1}`
-	}else{
-		month=`0${date.getMonth() + 1}`
-	}
-	let date1 = date.getDate();
-	if(date1<10){
-		date1=`0${date1}`
-	}
-	let yesterday = `${year}-${month}-${date1}`;
-	console.log('yesterday', yesterday);
+// async function PincodeRequestsRefresher() {
+// 	let date = new Date(new Date());
+// 	date.setDate(date.getDate() - 1);
+// 	date = new Date(date);
+// 	const year = date.getFullYear();
+// 	let month;
+// 	if(date.getMonth()+1>=10){
+// 		month=`${date.getMonth()+1}`
+// 	}else{
+// 		month=`0${date.getMonth() + 1}`
+// 	}
+// 	let date1 = date.getDate();
+// 	if(date1<10){
+// 		date1=`0${date1}`
+// 	}
+// 	let yesterday = `${year}-${month}-${date1}`;
+// 	console.log('yesterday', yesterday);
 
-	const setdate = '2021-07-01';
+// 	const setdate = '2021-07-01';
 
-	const ZipModelReports = require('./models/zipreports');
-	const Zipreports2 = require('./models/zipdata2reports');
-	const Rtbrequest = require('./models/rtbrequestdate');
-	const pincodes = await Rtbrequest.aggregate([
-		{
-			$project: {
-				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-				zip: '$device.geo.zip'
-			}
-		},
-		{ $match: { test: yesterday } },
-		{
-			$group: {
-				_id: { zip: '$zip' },
-				requests: { $sum: 1 }
-			}
-		}
-	]);
+// 	const ZipModelReports = require('./models/zipreports');
+// 	const Zipreports2 = require('./models/zipdata2reports');
+// 	const Rtbrequest = require('./models/rtbrequestdate');
+// 	const pincodes = await Rtbrequest.aggregate([
+// 		{
+// 			$project: {
+// 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+// 				zip: '$device.geo.zip'
+// 			}
+// 		},
+// 		{ $match: { test: yesterday } },
+// 		{
+// 			$group: {
+// 				_id: { zip: '$zip' },
+// 				requests: { $sum: 1 }
+// 			}
+// 		}
+// 	]);
 
-	console.log(pincodes);
-	pincodes.forEach(async (pincode) => {
-		const match = await Zipreports2.findOne({ pincode: parseInt(pincode._id.zip) });
-		if (!match) {
-			const newzip = new Zipreports2({
-				area: '',
-				pincode: parseInt(pincode._id.zip),
-				lowersubcity: '',
-				subcity: '',
-				city: '',
-				grandcity: '',
-				district: '',
-				comparison: '',
-				state: '',
-				grandstate: '',
-				latitude: '',
-				longitude: '',
-				impression: 0,
-				click: 0,
-				requests: pincode.requests
-			});
-			await newzip.save();
-		} else {
-			const updateddoc = await Zipreports2.findOneAndUpdate(
-				{ pincode: parseInt(pincode._id.zip) },
-				{
-					$inc: {
-						requests: pincode.requests
-					}
-				},
-				{ new: true }
-			);
-			console.log('updated', updateddoc);
-		}
-	});
-}
+// 	console.log(pincodes);
+// 	pincodes.forEach(async (pincode) => {
+// 		const match = await Zipreports2.findOne({ pincode: parseInt(pincode._id.zip) });
+// 		if (!match) {
+// 			const newzip = new Zipreports2({
+// 				area: '',
+// 				pincode: parseInt(pincode._id.zip),
+// 				lowersubcity: '',
+// 				subcity: '',
+// 				city: '',
+// 				grandcity: '',
+// 				district: '',
+// 				comparison: '',
+// 				state: '',
+// 				grandstate: '',
+// 				latitude: '',
+// 				longitude: '',
+// 				impression: 0,
+// 				click: 0,
+// 				requests: pincode.requests
+// 			});
+// 			await newzip.save();
+// 		} else {
+// 			const updateddoc = await Zipreports2.findOneAndUpdate(
+// 				{ pincode: parseInt(pincode._id.zip) },
+// 				{
+// 					$inc: {
+// 						requests: pincode.requests
+// 					}
+// 				},
+// 				{ new: true }
+// 			);
+// 			console.log('updated', updateddoc);
+// 		}
+// 	});
+// }
 
 cron.schedule('00 2 * * *', function() {
 	PhoneRefresher();
@@ -668,7 +668,7 @@ async function PhoneRefresher() {
 				SovClickTracking: 1
 			}
 		},
-		{ $match: { test: {$gt:setdate} } },
+		{ $match: { test: yesterday } },
 		{
 			$group: {
 				_id: { phone: '$phoneModel' },
@@ -748,7 +748,7 @@ async function CategoryRefresher() {
 				feed: 1
 			}
 		},
-		{ $match: { test: {$gt:setdate} } },
+		{ $match: { test: yesterday } },
 		{
 			$group: {
 				_id: { category: '$category', feed: '$feed' },
