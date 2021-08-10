@@ -1383,8 +1383,8 @@ router.get('/phonedata', adminauth, async (req, res) => {
 router.get('/zipdata', adminauth, async (req, res) => {
 	try {
 		let startdate=new Date();
-		startdate.setDate(20);
-		startdate.setMonth(06);
+		startdate.setDate(10);
+		startdate.setMonth(08);
 		startdate.setFullYear(2021);
 		
 
