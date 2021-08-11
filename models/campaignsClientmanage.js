@@ -3,7 +3,9 @@ const { ObjectId } = mongoose.Schema.Types;
 
 const ClientCampaignsetSchema = new mongoose.Schema({
 	userid: { type: ObjectId, ref: 'admin', required: true },
-	campaignName: { type: String },
+	campaignName: { type: String, required: true },
+	searchName: { type: String, required: true },
+	type: { type: String, required: true },
 	audio: { type: String },
 	display: { type: String },
 	video: { type: String },
