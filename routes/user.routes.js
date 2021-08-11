@@ -78,8 +78,35 @@ router.get('/campaigns/:id', adminauth, (req, res) => {
 });
 
 router.post('/addCampaign', adminauth, async (req, res) => {
-	const { userid, searchName, type, campaignName, audio, display, video, podcast, onDemand, musicapps } = req.body;
-	if (!userid || !searchName || !type || !campaignName || !audio || !display || !video || !podcast || !onDemand) {
+	const {
+		userid,
+		searchName,
+		endDate,
+		PricingModel,
+		startDate,
+		type,
+		campaignName,
+		audio,
+		display,
+		video,
+		podcast,
+		onDemand,
+		musicapps
+	} = req.body;
+	if (
+		!userid ||
+		!searchName ||
+		!endDate ||
+		!startDate ||
+		!PricingModel ||
+		!type ||
+		!campaignName ||
+		!audio ||
+		!display ||
+		!video ||
+		!podcast ||
+		!onDemand
+	) {
 		res.status(422).json({ error: 'enter all the required fields' });
 	}
 	let existCamp = await campaignClient
@@ -93,6 +120,9 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 		campaignName: campaignName,
 		searchName: searchName,
 		type: type,
+		startDate,
+		endDate,
+		PricingModel,
 		audio,
 		display,
 		video,
@@ -112,7 +142,20 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 });
 
 router.put('/editcampaign', adminauth, async (req, res) => {
-	const { userid, searchName, campaignName, audio, display, video, podcast, onDemand, musicapps } = req.body;
+	const {
+		userid,
+		searchName,
+		campaignName,
+		endDate,
+		PricingModel,
+		startDate,
+		audio,
+		display,
+		video,
+		podcast,
+		onDemand,
+		musicapps
+	} = req.body;
 	if (!searchName || !userid) {
 		res.status(422).json({ error: 'enter all the required fields' });
 	}
@@ -122,6 +165,15 @@ router.put('/editcampaign', adminauth, async (req, res) => {
 	});
 	if (campaignName) {
 		campaign.campaignName = campaignName;
+	}
+	if (endDate) {
+		campaign.endDate = endDate;
+	}
+	if (startDate) {
+		campaign.startDate = startDate;
+	}
+	if (PricingModel) {
+		campaign.PricingModel = PricingModel;
 	}
 	if (audio) {
 		campaign.audio = audio;

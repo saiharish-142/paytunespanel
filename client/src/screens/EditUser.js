@@ -33,6 +33,9 @@ import Snackbar from '@material-ui/core/Snackbar';
 // import Slide from '@material-ui/core/Slide';
 import { Alert } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/Edit';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadAds, loadingAds } from '../redux/actions/manageadsAction';
+import { loadBundles, loadingBundles } from '../redux/actions/manageBundlesAction';
 
 // function rand() {
 // 	return Math.round(Math.random() * 20) - 10;
@@ -59,6 +62,9 @@ function getModalStyle() {
 function EditUser() {
 	const { id } = useParams();
 	const history = useHistory();
+	const dispatchRedux = useDispatch();
+	const manageads = useSelector((state) => state.manageads);
+	const managebundles = useSelector((state) => state.managebundles);
 	const [ modalStyle ] = React.useState(getModalStyle);
 	const [ email, setemail ] = useState('');
 	const [ usertype, setusertype ] = useState('');
@@ -80,8 +86,17 @@ function EditUser() {
 		onDemand: false
 	});
 	const [ selectedsemicampaigns, setselectedsemicampaigns ] = useState({
+		_id: '',
+		userid: '',
+		title: '',
+		searchName: '',
 		adtitle: '',
 		titles: [],
+		type: '',
+		endDate: null,
+		startDate: null,
+		PricingModel: null,
+		audio: null,
 		audio: null,
 		display: null,
 		video: null,
@@ -96,49 +111,78 @@ function EditUser() {
 	const [ searchedbundles, setsearchedbundles ] = useState([]);
 	const [ bundles, setbundles ] = useState([]);
 	const [ loadingsubmit, setloadingsubmit ] = React.useState(false);
+	const [ loadingeditset, setloadingeditset ] = React.useState(false);
 	const [ loadingdelete, setloadingdelete ] = React.useState({ status: false, id: '' });
 	const [ open, setOpen ] = React.useState(false);
 	const [ openEdit, setOpenEdit ] = React.useState(false);
 	const [ openError, setOpenError ] = React.useState({ status: false, message: '' });
 	const [ openSuccess, setOpenSuccess ] = React.useState({ status: false, message: '' });
 	// Get bundles
-	useEffect(() => {
-		setbundload(false);
-		fetch('/bundles/names', {
-			method: 'get',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('jwt')
+	useEffect(
+		() => {
+			if (managebundles && managebundles.managebundles) {
+				console.log(managebundles.managebundles);
+				setbundles(managebundles.managebundles);
+				setsearchedbundles(managebundles.managebundles);
 			}
-		})
-			.then((res) => res.json())
-			.then((uss) => {
-				// console.log(uss)
-				setbundles(uss);
-				setsearchedbundles(uss);
-				setbundload(false);
-			})
-			.catch((err) => console.log(err));
+			// setbundload(false);
+			// fetch('/bundles/names', {
+			// 	method: 'get',
+			// 	headers: {
+			// 		'Content-Type': 'application/json',
+			// 		Authorization: 'Bearer ' + localStorage.getItem('jwt')
+			// 	}
+			// })
+			// 	.then((res) => res.json())
+			// 	.then((uss) => {
+			// 		// console.log(uss)
+			// 		setbundles(uss);
+			// 		setsearchedbundles(uss);
+			// 		setbundload(false);
+			// 	})
+			// 	.catch((err) => console.log(err));
+		},
+		[ managebundles ]
+	);
+	// redux state upadator
+	useEffect(() => {
+		if (manageads && !manageads.manageads) {
+			dispatchRedux(loadingAds());
+			dispatchRedux(loadAds());
+		}
+		if (managebundles && !managebundles.managebundles) {
+			dispatchRedux(loadingBundles());
+			dispatchRedux(loadBundles());
+		}
 	}, []);
 	// Get Campaigns
-	useEffect(() => {
-		fetch('/streamingads/groupedMangename', {
-			method: 'get',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('jwt')
+	useEffect(
+		() => {
+			if (manageads && manageads.manageads) {
+				// console.log(manageads.manageads);
+				setcampaigns(manageads.manageads);
+				setsearchedcampaigns(manageads.manageads);
+				// setcampload(false);
 			}
-		})
-			.then((res) => res.json())
-			.then((uss) => {
-				// console.log(uss);
-				setcampaigns(uss);
-				setsearchedcampaigns(uss);
-				setcampload(false);
-				// campsep();
-			})
-			.catch((err) => console.log(err));
-	}, []);
+			// fetch('/streamingads/groupedMod1', {
+			// 	method: 'get',
+			// 	headers: {
+			// 		'Content-Type': 'application/json',
+			// 		Authorization: 'Bearer ' + localStorage.getItem('jwt')
+			// 	}
+			// })
+			// 	.then((res) => res.json())
+			// 	.then((uss) => {
+			// 		console.log(uss);
+			// 		setcampaigns(uss);
+			// 		setsearchedcampaigns(uss);
+			// 		setcampload(false);
+			// 		// campsep();
+			// 	})
+			// 	.catch((err) => console.log(err));
+		},
+		[ manageads ]
+	);
 	// updating User
 	useEffect(
 		() => {
@@ -296,7 +340,66 @@ function EditUser() {
 				console.log(del);
 			});
 	}
-	if (loading || bundload || campload) {
+	// to setup the edit data
+	function handleEditSetUp(camp) {
+		console.log(camp);
+		var titlesH = [];
+		var titlesF = [];
+		var data = {
+			_id: '',
+			userid: '',
+			adtitle: '',
+			titles: [],
+			audio: null,
+			display: null,
+			video: null,
+			musicapps: null,
+			onDemand: null,
+			podcast: null
+		};
+		for (const [ y, z ] of Object.entries(camp)) {
+			// console.log(y, z);
+			if (y === '_id') {
+				data[y] = camp[y];
+				data._id = z;
+			} else if (y === 'userid') {
+				data.userid = z;
+				data[y] = camp[y];
+			} else if (y === 'campaignName') {
+				data['adtitle'] = camp[y];
+				data.adtitle = z;
+			} else if (y === '__v') {
+			} else {
+				data[y] = camp[y];
+				titlesH.push(z);
+			}
+		}
+		titlesH = [ ...new Set(titlesH) ];
+		titlesH.map((x) => {
+			console.log(x);
+			var temp = {
+				title: '',
+				audio: false,
+				display: false,
+				musicapps: false,
+				video: false,
+				podcast: false,
+				onDemand: false
+			};
+			temp.title = x;
+			if (camp.audio === x) temp.audio = true;
+			if (camp.display === x) temp.display = true;
+			if (camp.video === x) temp.video = true;
+			if (camp.musicapps === x) temp.musicapps = true;
+			if (camp.podcast === x) temp.podcast = true;
+			if (camp.onDemand === x) temp.onDemand = true;
+			titlesF.push(temp);
+		});
+		data.titles = titlesF;
+		console.log(data, titlesH, titlesF);
+		setselectedsemicampaigns(data);
+	}
+	if (loading || managebundles.isLoading || manageads.isLoading) {
 		return <PreLoader />;
 	}
 	return (
@@ -384,7 +487,13 @@ function EditUser() {
 														align="right"
 														className="selectedcampval"
 													>
-														<IconButton aria-label="edit">
+														<IconButton
+															aria-label="edit"
+															onClick={() => {
+																setOpenEdit(true);
+																handleEditSetUp(x);
+															}}
+														>
 															<EditIcon />
 														</IconButton>
 													</TableCell>
@@ -433,21 +542,52 @@ function EditUser() {
 											onClick={() => {
 												setselectedsemicampaigns({
 													...selectedsemicampaigns,
-													adtitle: camp.Adtitle
+													searchName: camp.Adtitle,
+													adtitle: camp.Adtitle,
+													type: 'campaign',
+													PricingModel: camp.PricingModel,
+													endDate: camp.endDate,
+													startDate: camp.startDate
 												});
 												setOpen(true);
-												// var campaignsnew = campaigns.filter((x) => x.AdTitle !== camp.AdTitle);
-												// var searchedcampaignsnew = searchedcampaigns.filter(
-												// 	(x) => x.AdTitle !== camp.AdTitle
-												// );
-												// var selectedcamp = selectedcampaigns;
-												// selectedcamp.push(camp);
-												// setselectedcampaigns(selectedcamp);
-												// setsearchedcampaigns(searchedcampaignsnew);
-												// setcampaigns(campaignsnew);
 											}}
 										>
 											{camp.Adtitle}
+										</div>
+									);
+								})}
+							</div>
+						</div>
+						<div>
+							<Input
+								placeholder="search Bundles"
+								onChange={(e) => {
+									var campaignsdata = bundles.filter((x) =>
+										x.bundleadtitle.toLowerCase().includes(e.target.value.toLowerCase())
+									);
+									setsearchedbundles(campaignsdata);
+								}}
+							/>
+							<div className="List">
+								{searchedbundles.map((camp, i) => {
+									return (
+										<div
+											key={i}
+											className="ListItem"
+											onClick={() => {
+												setselectedsemicampaigns({
+													...selectedsemicampaigns,
+													adtitle: camp.bundleadtitle,
+													searchName: camp._id,
+													type: 'bundle',
+													PricingModel: camp.PricingModel,
+													endDate: camp.endDate,
+													startDate: camp.startDate
+												});
+												setOpen(true);
+											}}
+										>
+											{camp.bundleadtitle}
 										</div>
 									);
 								})}
@@ -473,6 +613,20 @@ function EditUser() {
 						>
 							<Paper style={modalStyle}>
 								<div>{selectedsemicampaigns && selectedsemicampaigns.adtitle}</div>
+								<div className="editcamptitledis">
+									<div>Title to be displayed :</div>
+									<input
+										placeholder="Campaign or bundle title"
+										required
+										className="titleing"
+										value={selectedsemicampaigns.title}
+										onChange={(e) =>
+											setselectedsemicampaigns({
+												...selectedsemicampaigns,
+												title: e.target.value
+											})}
+									/>
+								</div>
 								<div>
 									{selectedsemicampaigns.titles && selectedsemicampaigns.titles.length ? (
 										<div>
@@ -905,7 +1059,7 @@ function EditUser() {
 												handleAddCampagin();
 											}}
 										>
-											Add Campaign
+											update Campaign
 										</Button>
 									) : (
 										<CircularProgress />
