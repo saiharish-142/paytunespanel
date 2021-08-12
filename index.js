@@ -505,7 +505,7 @@ async function PincodeRefresher() {
 				SovClickTracking: 1
 			}
 		},
-		{ $match: { test: {$gt:setdate} } },
+		{ $match: { test: yesterday } },
 		{
 			$group: {
 				_id: { zip: '$zip' },
