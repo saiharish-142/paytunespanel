@@ -4,6 +4,7 @@ const router = express.Router();
 const StreamingAds = mongoose.model('streamingads');
 const adsetting = mongoose.model('adsetting');
 const adminauth = require('../authenMiddleware/adminauth');
+const campaignClient = mongoose.model('campaignClient');
 
 router.get('/', adminauth, (req, res) => {
 	StreamingAds.find()
@@ -396,6 +397,13 @@ router.get('/groupedMangename', adminauth, (req, res) => {
 			console.log(err);
 			res.status(404).json({ error: 'something went wrong', err });
 		});
+});
+
+router.get('/clientcamps', adminauth, (req, res) => {
+	campaignClient.find({ userid: res.locals.user._id }).then((result) => res.json(result)).catch((err) => {
+		console.log(err);
+		res.status(400).json({ err, error: 'Something went wrong' });
+	});
 });
 
 router.put('/clientgrouped', adminauth, (req, res) => {
