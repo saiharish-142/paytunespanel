@@ -107,7 +107,7 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 		!podcast ||
 		!onDemand
 	) {
-		res.status(422).json({ error: 'enter all the required fields' });
+		return res.status(422).json({ error: 'enter all the required fields' });
 	}
 	let existCamp = await campaignClient
 		.find({ userid: userid, searchName: searchName })
@@ -157,7 +157,7 @@ router.put('/editcampaign', adminauth, async (req, res) => {
 		musicapps
 	} = req.body;
 	if (!searchName || !userid) {
-		res.status(422).json({ error: 'enter all the required fields' });
+		return res.status(422).json({ error: 'enter all the required fields' });
 	}
 	let campaign = await campaignClient.findOne({ userid: userid, searchName: searchName }).catch((err) => {
 		res.status(404).json({ error: 'something went wrong', err });
@@ -206,6 +206,9 @@ router.put('/editcampaign', adminauth, async (req, res) => {
 
 router.delete('/deletecampaign', adminauth, (req, res) => {
 	const { id } = req.body;
+	if (!id) {
+		return res.status(422).json({ error: 'enter all the required fields' });
+	}
 	campaignClient
 		.findByIdAndDelete(id)
 		.then((resu) => res.json({ message: 'campagin deleted successfully' }))
