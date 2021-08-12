@@ -78,12 +78,39 @@ router.get('/campaigns/:id', adminauth, (req, res) => {
 });
 
 router.post('/addCampaign', adminauth, async (req, res) => {
-	const { userid, campaignName, audio, display, video, podcast, onDemand, musicapps } = req.body;
-	if (!userid || !campaignName || !audio || !display || !video || !podcast || !onDemand) {
-		res.status(422).json({ error: 'enter all the required fields' });
+	const {
+		userid,
+		searchName,
+		endDate,
+		PricingModel,
+		startDate,
+		type,
+		campaignName,
+		audio,
+		display,
+		video,
+		podcast,
+		onDemand,
+		musicapps
+	} = req.body;
+	if (
+		!userid ||
+		!searchName ||
+		!endDate ||
+		!startDate ||
+		!PricingModel ||
+		!type ||
+		!campaignName ||
+		!audio ||
+		!display ||
+		!video ||
+		!podcast ||
+		!onDemand
+	) {
+		return res.status(422).json({ error: 'enter all the required fields' });
 	}
 	let existCamp = await campaignClient
-		.find({ userid: userid, campaignName: campaignName })
+		.find({ userid: userid, searchName: searchName })
 		.catch((err) => console.log(err));
 	if (existCamp && existCamp.length > 0) {
 		return res.status(422).json({ error: 'Campaign already exists to this client' });
@@ -91,6 +118,11 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 	const campaign = new campaignClient({
 		userid: userid,
 		campaignName: campaignName,
+		searchName: searchName,
+		type: type,
+		startDate,
+		endDate,
+		PricingModel,
 		audio,
 		display,
 		video,
@@ -110,14 +142,39 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 });
 
 router.put('/editcampaign', adminauth, async (req, res) => {
-	const { userid, campaignName, audio, display, video, podcast, onDemand, musicapps } = req.body;
-	if (!campaignName || !userid) {
-		res.status(422).json({ error: 'enter all the required fields' });
+	const {
+		userid,
+		searchName,
+		campaignName,
+		endDate,
+		PricingModel,
+		startDate,
+		audio,
+		display,
+		video,
+		podcast,
+		onDemand,
+		musicapps
+	} = req.body;
+	if (!searchName || !userid) {
+		return res.status(422).json({ error: 'enter all the required fields' });
 	}
-	let campaign = await campaignClient.findOne({ userid: userid, campaignName: campaignName }).catch((err) => {
+	let campaign = await campaignClient.findOne({ userid: userid, searchName: searchName }).catch((err) => {
 		res.status(404).json({ error: 'something went wrong', err });
 		console.log(err);
 	});
+	if (campaignName) {
+		campaign.campaignName = campaignName;
+	}
+	if (endDate) {
+		campaign.endDate = endDate;
+	}
+	if (startDate) {
+		campaign.startDate = startDate;
+	}
+	if (PricingModel) {
+		campaign.PricingModel = PricingModel;
+	}
 	if (audio) {
 		campaign.audio = audio;
 	}
@@ -139,7 +196,7 @@ router.put('/editcampaign', adminauth, async (req, res) => {
 	campaign
 		.save()
 		.then((result) => {
-			res.json({ message: 'campaign successfully updated' });
+			res.json({ message: 'campaign successfully updated', result });
 		})
 		.catch((err) => {
 			res.status(404).json({ error: 'something went wrong', err });
@@ -149,6 +206,9 @@ router.put('/editcampaign', adminauth, async (req, res) => {
 
 router.delete('/deletecampaign', adminauth, (req, res) => {
 	const { id } = req.body;
+	if (!id) {
+		return res.status(422).json({ error: 'enter all the required fields' });
+	}
 	campaignClient
 		.findByIdAndDelete(id)
 		.then((resu) => res.json({ message: 'campagin deleted successfully' }))

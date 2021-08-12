@@ -236,6 +236,13 @@
   width: 80% !important;
 }
 
+.editcamptitledis{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+}
+
 @media screen and (max-width: 700px){
   .navbar{
     height: 10vh;
