@@ -101,11 +101,9 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 		!PricingModel ||
 		!type ||
 		!campaignName ||
-		!audio ||
 		!display ||
 		!video ||
-		!podcast ||
-		!onDemand
+		!(audio || (musicapps && podcast && onDemand))
 	) {
 		return res.status(422).json({ error: 'enter all the required fields' });
 	}
@@ -175,14 +173,14 @@ router.put('/editcampaign', adminauth, async (req, res) => {
 	if (PricingModel) {
 		campaign.PricingModel = PricingModel;
 	}
-	if (audio) {
-		campaign.audio = audio;
-	}
 	if (display) {
 		campaign.display = display;
 	}
 	if (video) {
 		campaign.video = video;
+	}
+	if (audio) {
+		campaign.audio = audio;
 	}
 	if (musicapps) {
 		campaign.musicapps = musicapps;
