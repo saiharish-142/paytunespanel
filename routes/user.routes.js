@@ -140,21 +140,15 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 });
 
 router.put('/editcampaign', adminauth, async (req, res) => {
-	const {
-		userid,
-		searchName,
-		campaignName,
-		endDate,
-		PricingModel,
-		startDate,
-		audio,
-		display,
-		video,
-		podcast,
-		onDemand,
-		musicapps
-	} = req.body;
-	if (!searchName || !userid) {
+	const { _id, userid, searchName, campaignName, audio, display, video, podcast, onDemand, musicapps } = req.body;
+	if (
+		!searchName ||
+		!userid ||
+		!campaignName ||
+		!display ||
+		!video ||
+		!(audio || (musicapps && podcast && onDemand))
+	) {
 		return res.status(422).json({ error: 'enter all the required fields' });
 	}
 	let campaign = await campaignClient.findOne({ userid: userid, searchName: searchName }).catch((err) => {
