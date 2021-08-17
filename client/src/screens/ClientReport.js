@@ -23,7 +23,7 @@ function ClientReport() {
 	useEffect(
 		() => {
 			if (campname) {
-				fetch(`/bundles/grp/${campname}`, {
+				fetch(`/auth/campdetails/${campname}`, {
 					method: 'get',
 					headers: {
 						'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ function ClientReport() {
 					.then((res) => res.json())
 					.then((result) => {
 						setsinglead(result);
-						settitle(result.bundleadtitle);
+						settitle(result.campaignName);
 						console.log(result);
 					})
 					.catch((err) => {

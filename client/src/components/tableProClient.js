@@ -63,13 +63,6 @@ function TableProClient() {
 		},
 		[ stateratio ]
 	);
-	// spentdata refresher
-	useEffect(
-		() => {
-			console.log(spentdata);
-		},
-		[ spentdata ]
-	);
 	// data puller effect
 	useEffect(
 		() => {

@@ -30,7 +30,7 @@ export const loadUser = () => (dispatch, getState) => {
 		axios
 			.get(`/auth/loggedUser`, tokenConfig(getState))
 			.then((res) => {
-				console.log(res);
+				// console.log(res);
 				dispatch({
 					type: USER_LOADED,
 					payload: res.data
@@ -64,6 +64,11 @@ export const loginUser = (user) => (dispatch) => {
 		.then((res) => res.json())
 		.then((res) => {
 			// console.log(res)
+			if (res.error) {
+				return dispatch({
+					type: LOAD_USER_FAIL
+				});
+			}
 			dispatch({
 				type: LOGIN_SUCCESS,
 				payload: res

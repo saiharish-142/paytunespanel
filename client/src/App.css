@@ -243,6 +243,21 @@
   text-align: center;
 }
 
+.bothlist{
+  display: flex;
+}
+
+.listcomp{
+  width: 50%;
+}
+
+.liscomp{
+  display: flex;
+  align-items: center;
+  width: 60%;
+  justify-content: space-between;
+}
+
 @media screen and (max-width: 700px){
   .navbar{
     height: 10vh;

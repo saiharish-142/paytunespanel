@@ -64,7 +64,7 @@ export const loadAds = () => (dispatch, getState) => {
 		axios
 			.get(`/streamingads/groupedMod1`, tokenConfig(getState))
 			.then((res) => {
-				console.log(res.data);
+				// console.log(res.data);
 				dispatch({
 					type: MANAGEADS_LOADDED,
 					payload: res.data
@@ -90,21 +90,32 @@ export const loadClientAds = () => (dispatch, getState) => {
 		type: MANAGEADS_LOADING
 	});
 	const user = getState().auth.user;
-	console.log(user.campaigns);
+	// console.log(user.campaigns);
 	if (tokenConfig(getState).headers.Authorization) {
-		fetch('/streamingads/clientgroupedbyids', {
-			method: 'put',
+		fetch('/streamingads/clientcamps', {
+			method: 'get',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + localStorage.getItem('jwt')
-			},
-			body: JSON.stringify({
-				campaignId: user.campaigns
-			})
+			}
 		})
 			.then((res) => res.json())
 			.then((res) => {
-				console.log(res);
+				// console.log(res);
+				var con = res;
+				con.map((ad) => {
+					var remainingdays = 0;
+					var d1 = new Date(ad.endDate);
+					var d2 = new Date(Date.now());
+					// console.log(d1,d2)
+					var show = d1.getTime() - d2.getTime();
+					remainingdays = show / (1000 * 3600 * 24);
+					if (remainingdays < 0) {
+						remainingdays = 'completed campaign';
+					}
+					ad.remainingDays = remainingdays;
+					return ad;
+				});
 				dispatch({
 					type: MANAGEADS_LOADDED,
 					payload: res

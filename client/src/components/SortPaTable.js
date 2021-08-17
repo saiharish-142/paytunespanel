@@ -42,6 +42,9 @@ function SortPaTable(props) {
 						<TableHead>
 							<TableRow>
 								{props.headers.map((ad) => {
+									if (props.clientdirect && ad.key === 'createdOn') {
+										return null;
+									}
 									return (
 										<TableCell
 											key={ad.key}
@@ -73,18 +76,22 @@ function SortPaTable(props) {
 							{props.adss.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
 								return (
 									<TableRow key={row._id}>
-										{props.tabletype === 'campagins' ? (
+										{!props.clientdirect ? props.tabletype === 'campagins' ? (
 											<TableCell>{row.Adtitle}</TableCell>
 										) : (
 											<TableCell>{row.bundleadtitle}</TableCell>
+										) : (
+											<TableCell>{row.campaignName}</TableCell>
 										)}
 										<TableCell>{row.PricingModel}</TableCell>
-										<TableCell>{dateformatchanger(row.createdOn.substring(0, 10))}</TableCell>
+										{!props.clientdirect && (
+											<TableCell>{dateformatchanger(row.createdOn.substring(0, 10))}</TableCell>
+										)}
 										<TableCell>{dateformatchanger(row.startDate.substring(0, 10))}</TableCell>
 										<TableCell>{dateformatchanger(row.endDate.substring(0, 10))}</TableCell>
 										<TableCell>
 											{typeof row.remainingDays === 'number' ? (
-												Math.round(row.remainingDays * 1) / 1
+												Math.ceil(row.remainingDays * 1)
 											) : (
 												row.remainingDays
 											)}

@@ -93,6 +93,7 @@ function App() {
 			</div>
 		);
 	}
+	// console.log(user);
 	if (user && user.user.usertype === 'admin') {
 		// console.log(user.user.usertype);
 		return (
@@ -140,9 +141,9 @@ function App() {
 					<Switch>
 						<Route path="/" exact render={() => (state ? <Home /> : <Redirect to="/login" />)} />
 						<Route path="/manageAds" exact render={() => <Dashboard clientdirect={true} />} />
-						<Route path="/manageBundles" exact render={() => <DashboardBundle clientdirect={true} />} />
+						{/* <Route path="/manageBundles" exact render={() => <DashboardBundle clientdirect={true} />} /> */}
 						<Route path="/manageAds/:campname" exact render={() => <ClientReport />} />
-						<Route path="/manageBundles/:campname" exact render={() => <ClientReport />} />
+						{/* <Route path="/manageBundles/:campname" exact render={() => <ClientReport />} /> */}
 						<Redirect to="/" />
 					</Switch>
 				</BrowserRouter>
