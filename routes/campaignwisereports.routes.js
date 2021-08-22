@@ -1017,6 +1017,50 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 		.catch((err) => console.log(err));
 });
 
+router.put('/sumreportofcamallClient', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	// var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
+	var audio = campaignId && campaignId.map((id) => mongoose.Types.ObjectId(id));
+	// var resu = [];
+	campaignwisereports
+		.aggregate([
+			{
+				$match: {
+					campaignId: { $in: audio }
+				}
+			},
+			{
+				$group: {
+					_id: null,
+					updatedAt: { $push: '$createdOn' },
+					impressions: { $sum: '$impression' },
+					complete: { $sum: '$complete' },
+					clicks: { $sum: '$CompanionClickTracking' },
+					clicks1: { $sum: '$SovClickTracking' },
+					thirdQuartile: { $sum: '$thirdQuartile' },
+					start: { $sum: '$start' },
+					firstQuartile: { $sum: '$firstQuartile' },
+					midpoint: { $sum: '$midpoint' }
+				}
+			}
+		])
+		.then(async (reports) => {
+			if (reports.length) {
+				var response = reports[0];
+				response.updatedAt = [ ...new Set(response.updatedAt) ];
+				response.updatedAt.sort(function(a, b) {
+					return new Date(b) - new Date(a);
+				});
+				response.updatedAt = response.updatedAt[0];
+				response.clicks = response.clicks + response.clicks1;
+				res.json(response);
+			} else {
+				res.json({ message: 'No report found' });
+			}
+		})
+		.catch((err) => console.log(err));
+});
+
 // db.getCollection('campaignwisereports').find({campaignId:ObjectId("60c175048473711b21db0804")}).sort({_id:-1})
 
 router.put('/reportbycamp', adminauth, (req, res) => {

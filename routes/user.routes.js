@@ -7,6 +7,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config/keys');
 const adminauth = require('../authenMiddleware/adminauth');
+const adsetting = mongoose.model('adsetting');
+const StreamingAds = mongoose.model('streamingads');
 
 router.post('/signup', (req, res) => {
 	const { username, password, email, usertype } = req.body;
@@ -79,10 +81,118 @@ router.get('/campaigns/:id', adminauth, (req, res) => {
 
 router.get('/campdetails/:id', adminauth, (req, res) => {
 	const { id } = req.params;
-	campaignClient.findById(id).then((result) => res.json(result)).catch((err) => {
-		console.log(err);
-		res.status(404).json({ error: 'somthing went wrong', err });
-	});
+	campaignClient
+		.findById(id)
+		.then(async (result) => {
+			if (result) {
+				var title = { title: result.campaignName, type: result.type };
+				if (title.type === 'campaign') {
+					let idsDiv = await StreamingAds.aggregate([
+						{
+							$project: {
+								id: '$_id',
+								AdTitle: { $toLower: '$AdTitle' },
+								startDate: '$startDate',
+								endDate: '$endDate',
+								TargetImpressions: '$TargetImpressions',
+								createdOn: '$createdOn'
+							}
+						},
+						{
+							$match: {
+								AdTitle: { $regex: title.title.toLowerCase() }
+							}
+						},
+						{
+							$project: {
+								id: '$id',
+								AdTitle: { $split: [ '$AdTitle', '_' ] },
+								startDate: '$startDate',
+								endDate: '$endDate',
+								TargetImpressions: '$TargetImpressions',
+								createdOn: '$createdOn'
+							}
+						},
+						{
+							$project: {
+								id: '$id',
+								AdTitle: { $slice: [ '$AdTitle', 2 ] },
+								startDate: '$startDate',
+								endDate: '$endDate',
+								TargetImpressions: '$TargetImpressions',
+								createdOn: { $substr: [ '$createdOn', 0, 10 ] }
+							}
+						},
+						{
+							$project: {
+								id: '$id',
+								AdTitle: {
+									$reduce: {
+										input: '$AdTitle',
+										initialValue: '',
+										in: {
+											$concat: [
+												'$$value',
+												{ $cond: [ { $eq: [ '$$value', '' ] }, '', '_' ] },
+												'$$this'
+											]
+										}
+									}
+								},
+								startDate: '$startDate',
+								endDate: '$endDate',
+								TargetImpressions: '$TargetImpressions',
+								createdOn: '$createdOn'
+							}
+						},
+						{ $sort: { createdOn: -1 } },
+						{
+							$group: {
+								id: { $push: '$id' },
+								_id: '$AdTitle',
+								startDate: { $push: '$startDate' },
+								endDate: { $push: '$endDate' },
+								TargetImpressions: { $push: { TR: '$TargetImpressions', id: '$id' } },
+								createdOn: { $push: '$createdOn' }
+							}
+						},
+						{
+							$project: {
+								id: '$id',
+								Adtitle: '$_id',
+								startDate: '$startDate',
+								endDate: '$endDate',
+								TargetImpressions: '$TargetImpressions',
+								createdOn: { $arrayElemAt: [ '$createdOn', 0 ] }
+							}
+						},
+						{ $sort: { createdOn: -1 } }
+					]).catch((err) => {
+						console.log(err);
+						res.status(400).json({ error: 'somthing went wrong', err });
+					});
+					var data;
+					data = idsDiv.length && idsDiv[0];
+					if (data) {
+						var ids =
+							typeof campaignId !== 'undefined' &&
+							typeof campaignId !== 'string' &&
+							typeof campaignId !== 'object'
+								? data.id.map((id) => mongoose.Types.ObjectId(id))
+								: data.id;
+						let id_spliter = await adsetting
+							.find({ campaignId: { $in: ids } }, { campaignId: 1, type: 1, targetImpression: 1 })
+							.catch((err) => console.log(err));
+					}
+				} else {
+				}
+				res.json(result);
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+			res.status(404).json({ error: 'somthing went wrong', err });
+		});
 });
 
 router.post('/addCampaign', adminauth, async (req, res) => {
