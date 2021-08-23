@@ -79,6 +79,14 @@ router.get('/campaigns/:id', adminauth, (req, res) => {
 	});
 });
 
+router.get('/Acampaigns', adminauth, (req, res) => {
+	const { id } = req.params;
+	campaignClient.find({}).then((result) => res.json(result)).catch((err) => {
+		console.log(err);
+		res.status(404).json({ error: 'somthing went wrong', err });
+	});
+});
+
 router.get('/campdetails/:id', adminauth, (req, res) => {
 	const { id } = req.params;
 	campaignClient
