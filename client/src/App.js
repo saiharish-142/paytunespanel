@@ -124,7 +124,7 @@ function App() {
 							<Route path="/categorydata" exact render={() => <Categorydata />} />
 							<Route path="/zipdata" exact render={() => <Zipdata />} />
 							<Route path="/episodetabdata" exact render={() => <EpisodeTab />} />
-							<Route path="/clientSideCamp" exact render={() => <DashboardBundle clientview={true} />} />
+							<Route path="/clientSideCamp" exact render={() => <Dashboard clientview={true} />} />
 							<Route
 								path="/clientSideCamp/:campname"
 								exact

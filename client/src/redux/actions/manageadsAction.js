@@ -136,6 +136,57 @@ export const loadClientAds = () => (dispatch, getState) => {
 	}
 };
 
+export const loadClientAAds = () => (dispatch, getState) => {
+	dispatch({
+		type: MANAGEADS_LOADING
+	});
+	const user = getState().auth.user;
+	// console.log(user.campaigns);
+	if (tokenConfig(getState).headers.Authorization) {
+		fetch('/streamingads/Acampaigns', {
+			method: 'get',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('jwt')
+			}
+		})
+			.then((res) => res.json())
+			.then((res) => {
+				// console.log(res);
+				var con = res;
+				con.map((ad) => {
+					var remainingdays = 0;
+					var d1 = new Date(ad.endDate);
+					var d2 = new Date(Date.now());
+					// console.log(d1,d2)
+					var show = d1.getTime() - d2.getTime();
+					remainingdays = show / (1000 * 3600 * 24);
+					if (remainingdays < 0) {
+						remainingdays = 'completed campaign';
+					}
+					ad.remainingDays = remainingdays;
+					return ad;
+				});
+				dispatch({
+					type: MANAGEADS_LOADDED,
+					payload: res
+				});
+				dispatch(orderManager('asc', 'remainingDays', 'number'));
+			})
+			.catch((err) => {
+				dispatch({
+					type: MANAGEADS_LOAD_ERROR,
+					payload: err
+				});
+			});
+	} else {
+		dispatch({
+			type: MANAGEADS_LOAD_ERROR,
+			payload: 'login required'
+		});
+	}
+};
+
 export const orderManager = (order, name, type) => (dispatch, getState) => {
 	var ads = getState().manageads.manageads;
 	var searchads = getState().manageads.searchedmanageads;

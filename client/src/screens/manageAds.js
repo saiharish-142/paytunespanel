@@ -2,7 +2,14 @@ import React, { useEffect, useState } from 'react';
 // import { useHistory } from 'react-router-dom'
 import SearchCampagin from '../components/SearchCampagin';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadAds, loadClientAds, loadingAds, searchads, storepagination } from '../redux/actions/manageadsAction';
+import {
+	loadAds,
+	loadClientAds,
+	loadingAds,
+	loadClientAAds,
+	searchads,
+	storepagination
+} from '../redux/actions/manageadsAction';
 import PreLoader from '../components/loaders/PreLoader';
 import SortPaTable from '../components/SortPaTable';
 import { orderManager } from '../redux/actions/manageadsAction';
@@ -17,6 +24,14 @@ function Dashboard({ clientview, clientdirect }) {
 			if (manageads && !manageads.manageads) {
 				dispatchRedux(loadingAds());
 				dispatchRedux(loadClientAds());
+			}
+			if (manageads && manageads.value) {
+				setSearchval(manageads.value);
+			}
+		} else if (clientview) {
+			if (manageads && !manageads.manageads) {
+				dispatchRedux(loadingAds());
+				dispatchRedux(loadClientAAds());
 			}
 			if (manageads && manageads.value) {
 				setSearchval(manageads.value);

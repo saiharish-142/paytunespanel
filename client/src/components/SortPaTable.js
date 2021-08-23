@@ -76,7 +76,7 @@ function SortPaTable(props) {
 							{props.adss.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
 								return (
 									<TableRow key={row._id}>
-										{!props.clientdirect ? props.tabletype === 'campagins' ? (
+										{!props.clientdirect || !props.clientview ? props.tabletype === 'campagins' ? (
 											<TableCell>{row.Adtitle}</TableCell>
 										) : (
 											<TableCell>{row.bundleadtitle}</TableCell>
@@ -84,7 +84,8 @@ function SortPaTable(props) {
 											<TableCell>{row.campaignName}</TableCell>
 										)}
 										<TableCell>{row.PricingModel}</TableCell>
-										{!props.clientdirect && (
+										{!props.clientdirect &&
+										!props.clientview && (
 											<TableCell>{dateformatchanger(row.createdOn.substring(0, 10))}</TableCell>
 										)}
 										<TableCell>{dateformatchanger(row.startDate.substring(0, 10))}</TableCell>
