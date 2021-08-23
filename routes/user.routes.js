@@ -276,15 +276,6 @@ router.put('/editcampaign', adminauth, async (req, res) => {
 	if (campaignName) {
 		campaign.campaignName = campaignName;
 	}
-	if (endDate) {
-		campaign.endDate = endDate;
-	}
-	if (startDate) {
-		campaign.startDate = startDate;
-	}
-	if (PricingModel) {
-		campaign.PricingModel = PricingModel;
-	}
 	if (display) {
 		campaign.display = display;
 	}
