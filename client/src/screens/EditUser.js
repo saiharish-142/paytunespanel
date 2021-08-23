@@ -330,7 +330,7 @@ function EditUser() {
 	function handleEditCampagin() {
 		var filled = false;
 		const { audio, display, video, musicapps, podcast, onDemand } = selectedsemicampaigns;
-		if (audio && display && video && musicapps && podcast && onDemand) {
+		if ((audio || (musicapps && podcast && onDemand)) && display && video) {
 			filled = true;
 		}
 		if (!filled) {

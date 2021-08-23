@@ -125,7 +125,11 @@ function App() {
 							<Route path="/zipdata" exact render={() => <Zipdata />} />
 							<Route path="/episodetabdata" exact render={() => <EpisodeTab />} />
 							<Route path="/clientSideCamp" exact render={() => <DashboardBundle clientview={true} />} />
-							<Route path="/clientSideCamp/:campname" exact render={() => <ClientReport />} />
+							<Route
+								path="/clientSideCamp/:campname"
+								exact
+								render={() => <ClientReport adminView={true} />}
+							/>
 							<Redirect to="/" />
 						</Switch>
 					</BrowserRouter>

@@ -1,21 +1,20 @@
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import { IdContext } from '../App';
-import IconBreadcrumbs from './breadBreed';
+// import IconBreadcrumbs from './breadBreed';
 import Auditable from './auditable.js';
+import { useSelector } from 'react-redux';
+import ReactExport from 'react-data-export';
 
 const useStyles = makeStyles({
 	table: {
 		minWidth: 650
 	}
 });
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 
 export default function BasicTable({ singlead, title }) {
 	const { state1 } = useContext(IdContext);
@@ -39,6 +38,7 @@ export default function BasicTable({ singlead, title }) {
 	const [ imprev, setimprev ] = useState(0);
 	const [ clickv, setclickv ] = useState(0);
 	const classes = useStyles();
+	const report = useSelector((state) => state.report);
 	// console.log(singlead)
 	useEffect(
 		() => {
@@ -127,12 +127,15 @@ export default function BasicTable({ singlead, title }) {
 		s = s.split('/');
 		return s[1] + '/' + s[0] + '/' + s[2];
 	};
-	const SummaryTable = (title, report, target, ent) => {
-		// console.log(report)
+	const SummaryTable = (title, reportsub, target) => {
+		console.log(reportsub, target);
+		if (reportsub && reportsub.message) {
+			return;
+		}
 		return (
 			<TableContainer style={{ margin: '20px 0' }} elevation={3} component={Paper}>
 				<div style={{ margin: '5px', fontWeight: 'bolder' }}>{title} Report</div>
-				{singlead._id && report && ids && (report.impressions > 0 || report.clicks > 0) ? (
+				{report.req_id && reportsub && report.ids ? (
 					<Table className={classes.table} aria-label="simple table">
 						<TableHead>
 							<TableRow>
@@ -149,21 +152,21 @@ export default function BasicTable({ singlead, title }) {
 							<TableRow
 								style={{
 									background: colorfinder(
-										timefinder(singlead.endDate, singlead.startDate),
-										timefinder(Date.now(), singlead.startDate),
+										timefinder(report.endDate, report.startDate),
+										timefinder(Date.now(), report.startDate),
 										target,
-										report.impressions
+										reportsub.impressions
 									)
 								}}
 							>
-								<TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
-								<TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
-								<TableCell>{timefinder(singlead.endDate, singlead.startDate)} days</TableCell>
+								<TableCell>{dateformatchanger(report.startDate)}</TableCell>
+								<TableCell>{dateformatchanger(report.endDate)}</TableCell>
+								<TableCell>{timefinder(report.endDate, report.startDate)} days</TableCell>
 								<TableCell>{target}</TableCell>
-								<TableCell>{report.impressions}</TableCell>
-								<TableCell>{report.clicks}</TableCell>
+								<TableCell>{reportsub.impressions}</TableCell>
+								<TableCell>{reportsub.clicks}</TableCell>
 								<TableCell>
-									{Math.round(report.clicks * 100 / report.impressions * 100) / 100}%
+									{Math.round(reportsub.clicks * 100 / reportsub.impressions * 100) / 100}%
 								</TableCell>
 							</TableRow>
 						</TableBody>
@@ -174,35 +177,44 @@ export default function BasicTable({ singlead, title }) {
 			</TableContainer>
 		);
 	};
+	function ExeclDownload(props) {
+		// console.log(props);
+		const data = React.Children.map(props.children, (child) => {
+			// console.log(child);
+			if (child.props.dataSet && child.props.dataSet[0].data) {
+				return child;
+			}
+		});
+		// console.log(data);
+		// console.log(data);
+		return (
+			<ExcelFile
+				filename={props.filename}
+				element={
+					<Button variant="outlined" color="primary">
+						Download Tables
+					</Button>
+				}
+			>
+				{data.map((child) => {
+					return child;
+				})}
+			</ExcelFile>
+		);
+	}
 	return (
 		<React.Fragment>
-			<IconBreadcrumbs />
-			<div
-				style={{
-					margin: '10px auto',
-					fontSize: 'larger',
-					width: 'fit-content',
-					fontWeight: '500',
-					borderBottom: '1px solid black'
-				}}
-			>
-				{title && title.toUpperCase()} Campaign
-			</div>
-			<div
-				style={{
-					margin: '10px auto',
-					fontSize: 'larger',
-					width: 'fit-content',
-					fontWeight: '500',
-					borderBottom: '1px solid black'
-				}}
-			>
-				Summary Report
-			</div>
+			{/* <IconBreadcrumbs /> */}
+			<div className="titleReport">{title && title.toUpperCase()} Campaign</div>
+			<div className="titleReport">Overall Summary Report</div>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-			{SummaryTable('Audio', audioReport, ids && ids.audimpression)}
+			{report.sets &&
+				report.sets.map((x) => {
+					return <div>{SummaryTable(x, report.report[x], report.grp_ids[`${x}target`])}</div>;
+				})}
+			{/* {SummaryTable('Audio', audioReport, ids && ids.audimpression)}
 			{SummaryTable('Display', displayReport, ids && ids.disimpression)}
-			{SummaryTable('Video', videoReport, ids && ids.vidimpression)}
+			{SummaryTable('Video', videoReport, ids && ids.vidimpression)} */}
 			<div
 				style={{
 					margin: '10px auto',
