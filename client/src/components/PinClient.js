@@ -90,9 +90,9 @@ function PinClient({ report, title, head, impression, clicks, state1 }) {
 		setRowsPerPage(+event.target.value);
 		setPage(0);
 	};
-	if (adssload) {
-		return <div />;
-	}
+	// if (adssload) {
+	// 	return <div />;
+	// }
 	if (adss && adss.length) {
 		return (
 			<Paper>

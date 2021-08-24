@@ -252,22 +252,24 @@ export default function BasicTable({ title, id }) {
 			{report.sets &&
 				report.sets.map((x) => {
 					if (report.grp_ids[x].length) {
-						return (
-							<PinClient
-								report={pincodeData[x]}
-								head={x}
-								title={title && title.toUpperCase()}
-								state1={id}
-								impression={report.report.complete.impressions}
-								clicks={report.report.complete.clicks + report.report.complete.clicks1}
-							/>
-						);
-					} else {
-						return (
-							<Paper>
-								<CircularProgress />
-							</Paper>
-						);
+						if (pincodeData[x]) {
+							return (
+								<PinClient
+									report={pincodeData[x]}
+									head={x}
+									title={title && title.toUpperCase()}
+									state1={id}
+									impression={report.report.complete.impressions}
+									clicks={report.report.complete.clicks + report.report.complete.clicks1}
+								/>
+							);
+						} else {
+							return (
+								<Paper>
+									<CircularProgress />
+								</Paper>
+							);
+						}
 					}
 				})}
 		</React.Fragment>
