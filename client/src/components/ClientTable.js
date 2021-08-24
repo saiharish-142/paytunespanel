@@ -1,4 +1,14 @@
-import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+import {
+	Button,
+	CircularProgress,
+	Paper,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow
+} from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { IdContext } from '../App';
@@ -6,6 +16,7 @@ import { IdContext } from '../App';
 import Auditable from './auditable.js';
 import { useSelector } from 'react-redux';
 import ReactExport from 'react-data-export';
+import PinClient from './PinClient';
 
 const useStyles = makeStyles({
 	table: {
@@ -16,13 +27,13 @@ const useStyles = makeStyles({
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 
-export default function BasicTable({ singlead, title }) {
+export default function BasicTable({ title, id }) {
 	const { state1 } = useContext(IdContext);
 	// const [logs, setlogs] = useState([])
 	const [ ids, setids ] = useState({});
-	const [ audioReport, setaudioReport ] = useState({});
-	const [ displayReport, setdisplayReport ] = useState({});
-	const [ videoReport, setvideoReport ] = useState({});
+	// const [ audioReport, setaudioReport ] = useState({});
+	// const [ displayReport, setdisplayReport ] = useState({});
+	// const [ videoReport, setvideoReport ] = useState({});
 	const [ lastUpdated, setlastUpdated ] = useState('');
 	// const [audiologs, setaudiologs] = useState([])
 	// const [displaylogs, setdisplaylogs] = useState([])
@@ -37,55 +48,51 @@ export default function BasicTable({ singlead, title }) {
 	const [ clickd, setclickd ] = useState(0);
 	const [ imprev, setimprev ] = useState(0);
 	const [ clickv, setclickv ] = useState(0);
+	const [ pincodeData, setpincodeData ] = useState({});
+	const [ pincodeDataload, setpincodeDataload ] = useState(true);
+	const [ pincodeDataerr, setpincodeDataerr ] = useState(false);
 	const classes = useStyles();
 	const report = useSelector((state) => state.report);
-	// console.log(singlead)
 	useEffect(
 		() => {
-			if (singlead && singlead.id_final) {
-				setids(singlead.id_final);
-				logsPuller(singlead.id_final);
+			if (report && report.report && report.report.complete) {
+				setlastUpdated(report.report.complete.updatedAt);
+				PincodeSetter();
 			}
 		},
-		[ singlead ]
+		[ report ]
 	);
-	// logs puller
-	const logsPuller = (idData) => {
-		console.log(idData);
-		fetch('/offreport/sumreportofcamall', {
-			method: 'put',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('jwt')
-			},
-			body: JSON.stringify({
-				campaignId: idData
-			})
-		})
-			.then((res) => res.json())
-			.then((resulta) => {
-				var result = resulta;
-				console.log(result);
-				setlastUpdated(result.allrecentupdate);
-				setaudioReport(result.audioCompleteReport);
-				setdisplayReport(result.displayCompleteReport);
-				setvideoReport(result.videoCompleteReport);
-				setimpre(result.audioCompleteReport.impressions);
-				setimpred(result.displayCompleteReport.impressions);
-				setimprev(result.videoCompleteReport.impressions);
-				setclick(result.audioCompleteReport.clicks);
-				setclickd(result.displayCompleteReport.clicks);
-				setclickv(result.videoCompleteReport.clicks);
-				// setcomplete(result.audioCompleteReport.complete)
-				// setfq(result.audioCompleteReport.firstQuartile)
-				// setsq(result.audioCompleteReport.midpoint)
-				// settq(result.audioCompleteReport.thirdQuartile)
-				// setaudiologs(result.audio)
-				// setdisplaylogs(result.display)
-				// setvideologs(result.video)
-			})
-			.catch((err) => console.log(err));
-	};
+	async function PincodeSetter() {
+		var sets = report.sets;
+		var ids = report.grp_ids;
+		var data = {};
+		// console.log(sets.length);
+		for (var i = 0; i < sets.length; i++) {
+			if (ids[sets[i]].length) {
+				console.log(ids[sets[i]]);
+				await fetch('/subrepo/zipbycampids', {
+					method: 'put',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + localStorage.getItem('jwt')
+					},
+					body: JSON.stringify({
+						campaignId: ids[sets[i]]
+					})
+				})
+					.then((res) => res.json())
+					.then((result) => {
+						console.log(result);
+						data[sets[i]] = result;
+					})
+					.catch((err) => {
+						setpincodeDataerr(true);
+						console.log(err);
+					});
+			}
+		}
+		setpincodeData(data);
+	}
 	const timefinder = (da1, da2) => {
 		var d1 = new Date(da1);
 		var d2 = new Date(da2);
@@ -128,7 +135,7 @@ export default function BasicTable({ singlead, title }) {
 		return s[1] + '/' + s[0] + '/' + s[2];
 	};
 	const SummaryTable = (title, reportsub, target) => {
-		console.log(reportsub, target);
+		// console.log(reportsub, target);
 		if (reportsub && reportsub.message) {
 			return;
 		}
@@ -164,9 +171,11 @@ export default function BasicTable({ singlead, title }) {
 								<TableCell>{timefinder(report.endDate, report.startDate)} days</TableCell>
 								<TableCell>{target}</TableCell>
 								<TableCell>{reportsub.impressions}</TableCell>
-								<TableCell>{reportsub.clicks}</TableCell>
+								<TableCell>{reportsub.clicks + reportsub.clicks1}</TableCell>
 								<TableCell>
-									{Math.round(reportsub.clicks * 100 / reportsub.impressions * 100) / 100}%
+									{Math.round(
+										(reportsub.clicks + reportsub.clicks1) * 100 / reportsub.impressions * 100
+									) / 100}%
 								</TableCell>
 							</TableRow>
 						</TableBody>
@@ -208,6 +217,7 @@ export default function BasicTable({ singlead, title }) {
 			<div className="titleReport">{title && title.toUpperCase()} Campaign</div>
 			<div className="titleReport">Overall Summary Report</div>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+			{SummaryTable('Over All Summary', report.report['complete'], report.report.complete[`target`])}
 			{report.sets &&
 				report.sets.map((x) => {
 					return <div>{SummaryTable(x, report.report[x], report.grp_ids[`${x}target`])}</div>;
@@ -224,64 +234,12 @@ export default function BasicTable({ singlead, title }) {
 					borderBottom: '1px solid black'
 				}}
 			>
-				Platform Wise Summary Report
-			</div>
-			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-			<Auditable
-				adtype="Audio"
-				state1={state1}
-				streamingads={singlead}
-				title="Platform"
-				regtitle="phonePlatform"
-				jsotitle="platformType"
-				ids={ids && ids.audio}
-				click={click}
-				impression={impre}
-				client={true}
-				url="platformTypebycampids"
-			/>
-			<Auditable
-				adtype="Display"
-				state1={state1}
-				streamingads={singlead}
-				title="Platform"
-				regtitle="phonePlatform"
-				jsotitle="platformType"
-				ids={ids && ids.display}
-				click={clickd}
-				impression={impred}
-				client={true}
-				url="platformTypebycampids"
-			/>
-			<Auditable
-				adtype="Video"
-				state1={state1}
-				streamingads={singlead}
-				title="Platform"
-				regtitle="phonePlatform"
-				jsotitle="platformType"
-				ids={ids && ids.video}
-				click={clickv}
-				impression={imprev}
-				client={true}
-				url="platformTypebycampids"
-			/>
-			<div
-				style={{
-					margin: '10px auto',
-					fontSize: 'larger',
-					width: 'fit-content',
-					fontWeight: '500',
-					borderBottom: '1px solid black'
-				}}
-			>
 				Pincode Wise Summary Report
 			</div>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-			<Auditable
+			{/* <Auditable
 				adtype="Audio"
 				state1={state1}
-				streamingads={singlead}
 				title="Pincode"
 				regtitle="pincode"
 				jsotitle="zip"
@@ -290,58 +248,76 @@ export default function BasicTable({ singlead, title }) {
 				impression={impre}
 				client={true}
 				url="zipbycampids"
-			/>
-			<div
-				style={{
-					margin: '10px auto',
-					fontSize: 'larger',
-					width: 'fit-content',
-					fontWeight: '500',
-					borderBottom: '1px solid black'
-				}}
-			>
-				Device Wise Summary Report
-			</div>
-			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-			<Auditable
-				adtype="Audio"
-				state1={state1}
-				streamingads={singlead}
-				title="Device"
-				regtitle="deviceModel"
-				jsotitle="pptype"
-				ids={ids && ids.audio}
-				click={click}
-				impression={impre}
-				client={true}
-				url="pptypebycampids"
-			/>
-			<Auditable
-				adtype="Display"
-				state1={state1}
-				streamingads={singlead}
-				title="Device"
-				regtitle="deviceModel"
-				jsotitle="pptype"
-				ids={ids && ids.display}
-				click={clickd}
-				impression={impred}
-				client={true}
-				url="pptypebycampids"
-			/>
-			<Auditable
-				adtype="Video"
-				state1={state1}
-				streamingads={singlead}
-				title="Device"
-				regtitle="deviceModel"
-				jsotitle="pptype"
-				ids={ids && ids.video}
-				click={clickv}
-				impression={imprev}
-				client={true}
-				url="pptypebycampids"
-			/>
+			/> */}
+			{report.sets &&
+				report.sets.map((x) => {
+					if (report.grp_ids[x].length) {
+						return (
+							<PinClient
+								report={pincodeData[x]}
+								head={x}
+								title={title && title.toUpperCase()}
+								state1={id}
+								impression={report.report.complete.impressions}
+								clicks={report.report.complete.clicks + report.report.complete.clicks1}
+							/>
+						);
+					} else {
+						return (
+							<Paper>
+								<CircularProgress />
+							</Paper>
+						);
+					}
+				})}
 		</React.Fragment>
 	);
 }
+
+// console.log(singlead)
+// useEffect(
+// 	() => {
+// 		if (singlead && singlead.id_final) {
+// 			setids(singlead.id_final);
+// 			// logsPuller(singlead.id_final);
+// 		}
+// 	},
+// 	[ singlead ]
+// );
+// logs puller
+// const logsPuller = (idData) => {
+// 	console.log(idData);
+// 	fetch('/offreport/sumreportofcamall', {
+// 		method: 'put',
+// 		headers: {
+// 			'Content-Type': 'application/json',
+// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+// 		},
+// 		body: JSON.stringify({
+// 			campaignId: idData
+// 		})
+// 	})
+// 		.then((res) => res.json())
+// 		.then((resulta) => {
+// 			var result = resulta;
+// 			console.log(result);
+// 			setlastUpdated(result.allrecentupdate);
+// 			setaudioReport(result.audioCompleteReport);
+// 			setdisplayReport(result.displayCompleteReport);
+// 			setvideoReport(result.videoCompleteReport);
+// 			setimpre(result.audioCompleteReport.impressions);
+// 			setimpred(result.displayCompleteReport.impressions);
+// 			setimprev(result.videoCompleteReport.impressions);
+// 			setclick(result.audioCompleteReport.clicks);
+// 			setclickd(result.displayCompleteReport.clicks);
+// 			setclickv(result.videoCompleteReport.clicks);
+// 			// setcomplete(result.audioCompleteReport.complete)
+// 			// setfq(result.audioCompleteReport.firstQuartile)
+// 			// setsq(result.audioCompleteReport.midpoint)
+// 			// settq(result.audioCompleteReport.thirdQuartile)
+// 			// setaudiologs(result.audio)
+// 			// setdisplaylogs(result.display)
+// 			// setvideologs(result.video)
+// 		})
+// 		.catch((err) => console.log(err));
+// };

@@ -5,13 +5,25 @@ import {
 	MANAGEADS_SEARCH,
 	MANAGEADS_PAGINATION,
 	MANAGEADS_LOAD_ERROR,
-	MANAGEADS_SORT_NAME
+	MANAGEADS_SORT_NAME,
+	CLIENT_MANAGEADS_LOADING,
+	CLIENT_MANAGEADS_LOADDED,
+	CLIENT_MANAGEADS_LOAD_ERROR,
+	CLIENT_MANAGEADS_SEARCH,
+	CLIENT_MANAGEADS_PAGINATION,
+	CLIENT_MANAGEADS_SORT_NAME
 } from '../types.js';
 import { tokenConfig } from './authAction.js';
 
 export const loadingAds = () => (dispatch, getState) => {
 	dispatch({
 		type: MANAGEADS_LOADING
+	});
+};
+
+export const ClientloadingAds = () => (dispatch, getState) => {
+	dispatch({
+		type: CLIENT_MANAGEADS_LOADING
 	});
 };
 
@@ -22,6 +34,20 @@ export const storepagination = (pagination, rpp) => (dispatch, getState) => {
 	// });
 	dispatch({
 		type: MANAGEADS_PAGINATION,
+		payload: {
+			pagination: pagination,
+			rowspp: rpp
+		}
+	});
+};
+
+export const clientstorepagination = (pagination, rpp) => (dispatch, getState) => {
+	// console.log({
+	// 	pagination: pagination,
+	// 	rowspp: rpp
+	// });
+	dispatch({
+		type: CLIENT_MANAGEADS_PAGINATION,
 		payload: {
 			pagination: pagination,
 			rowspp: rpp
@@ -56,6 +82,33 @@ export const searchads = (val) => (dispatch, getState) => {
 	}
 };
 
+export const searchclientads = (val) => (dispatch, getState) => {
+	var match = [];
+	var mads = getState().clientmanageads.manageads;
+	if (val) {
+		mads.map((ads) => {
+			if (ads.Adtitle.toLowerCase().indexOf(val.toLowerCase()) > -1) {
+				match.push(ads);
+			}
+		});
+		dispatch({
+			type: CLIENT_MANAGEADS_SEARCH,
+			payload: {
+				ads: match,
+				value: val
+			}
+		});
+	} else {
+		dispatch({
+			type: CLIENT_MANAGEADS_SEARCH,
+			payload: {
+				ads: mads,
+				value: val
+			}
+		});
+	}
+};
+
 export const loadAds = () => (dispatch, getState) => {
 	dispatch({
 		type: MANAGEADS_LOADING
@@ -64,7 +117,7 @@ export const loadAds = () => (dispatch, getState) => {
 		axios
 			.get(`/streamingads/groupedMod1`, tokenConfig(getState))
 			.then((res) => {
-				// console.log(res.data);
+				console.log(res.data);
 				dispatch({
 					type: MANAGEADS_LOADDED,
 					payload: res.data
@@ -87,7 +140,7 @@ export const loadAds = () => (dispatch, getState) => {
 
 export const loadClientAds = () => (dispatch, getState) => {
 	dispatch({
-		type: MANAGEADS_LOADING
+		type: CLIENT_MANAGEADS_LOADING
 	});
 	const user = getState().auth.user;
 	// console.log(user.campaigns);
@@ -117,20 +170,20 @@ export const loadClientAds = () => (dispatch, getState) => {
 					return ad;
 				});
 				dispatch({
-					type: MANAGEADS_LOADDED,
+					type: CLIENT_MANAGEADS_LOADDED,
 					payload: res
 				});
-				dispatch(orderManager('asc', 'remainingDays', 'number'));
+				dispatch(clientorderManager('asc', 'remainingDays', 'number'));
 			})
 			.catch((err) => {
 				dispatch({
-					type: MANAGEADS_LOAD_ERROR,
+					type: CLIENT_MANAGEADS_LOAD_ERROR,
 					payload: err
 				});
 			});
 	} else {
 		dispatch({
-			type: MANAGEADS_LOAD_ERROR,
+			type: CLIENT_MANAGEADS_LOAD_ERROR,
 			payload: 'login required'
 		});
 	}
@@ -138,7 +191,7 @@ export const loadClientAds = () => (dispatch, getState) => {
 
 export const loadClientAAds = () => (dispatch, getState) => {
 	dispatch({
-		type: MANAGEADS_LOADING
+		type: CLIENT_MANAGEADS_LOADING
 	});
 	const user = getState().auth.user;
 	// console.log(user.campaigns);
@@ -168,20 +221,20 @@ export const loadClientAAds = () => (dispatch, getState) => {
 					return ad;
 				});
 				dispatch({
-					type: MANAGEADS_LOADDED,
+					type: CLIENT_MANAGEADS_LOADDED,
 					payload: res
 				});
-				dispatch(orderManager('asc', 'remainingDays', 'number'));
+				dispatch(clientorderManager('asc', 'remainingDays', 'number'));
 			})
 			.catch((err) => {
 				dispatch({
-					type: MANAGEADS_LOAD_ERROR,
+					type: CLIENT_MANAGEADS_LOAD_ERROR,
 					payload: err
 				});
 			});
 	} else {
 		dispatch({
-			type: MANAGEADS_LOAD_ERROR,
+			type: CLIENT_MANAGEADS_LOAD_ERROR,
 			payload: 'login required'
 		});
 	}
@@ -194,6 +247,22 @@ export const orderManager = (order, name, type) => (dispatch, getState) => {
 	searchads = searchads && orderSetter(order, name, searchads, type);
 	dispatch({
 		type: MANAGEADS_SORT_NAME,
+		payload: {
+			name: name,
+			direction: order,
+			adss: ads,
+			searchadss: searchads
+		}
+	});
+};
+
+export const clientorderManager = (order, name, type) => (dispatch, getState) => {
+	var ads = getState().clientmanageads.manageads;
+	var searchads = getState().clientmanageads.searchedmanageads;
+	ads = ads && orderSetter(order, name, ads, type);
+	searchads = searchads && orderSetter(order, name, searchads, type);
+	dispatch({
+		type: CLIENT_MANAGEADS_SORT_NAME,
 		payload: {
 			name: name,
 			direction: order,

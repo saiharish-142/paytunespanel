@@ -9,7 +9,7 @@ import { clientReportBase, idStorer } from '../redux/actions/reportActions';
 import { Breadcrumbs } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
-function ClientReport() {
+function ClientReport({ adminView }) {
 	const { campname } = useParams();
 	const dispatchRedux = useDispatch();
 	const report = useSelector((state) => state.report);
@@ -39,7 +39,13 @@ function ClientReport() {
 		<div style={{ padding: '20px' }}>
 			<div style={{ minWidth: '60vw', display: 'flex', alignItems: 'center' }}>
 				<button
-					onClick={() => history.push(`/manageAds`)}
+					onClick={() => {
+						if (adminView) {
+							history.push(`/clientSideCamp`);
+						} else {
+							history.push(`/manageAds`);
+						}
+					}}
 					className="btn #424242 grey darken-3"
 					style={{ margin: '20px', textAlign: 'left' }}
 				>
@@ -55,17 +61,17 @@ function ClientReport() {
 					}}
 					aria-label="breadcrumb"
 				>
-					<Link style={{ color: 'black' }} to="/manageBundles">
+					<Link style={{ color: 'black' }} to="/clientSideCamp">
 						Manage Ads
 					</Link>
-					<Link style={{ color: 'black' }} href={`/manageBundles/${report.req_id}`}>
+					<Link style={{ color: 'black' }} href={`/clientSideCamp/${report.req_id}`}>
 						{report.title}
 					</Link>
 				</Breadcrumbs>
 			</div>
 			{/* <TitlRname title={title} settitle={settitle} submit={submitTitle} setloading={setloading} loading={loading} /> */}
 			{/* <div style={{margin:'0 auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div> */}
-			<EnhancedTable title={report.title} />
+			<EnhancedTable title={report.title} id={campname} />
 		</div>
 	);
 }
