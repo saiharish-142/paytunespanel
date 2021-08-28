@@ -959,6 +959,78 @@ router.put('/spentallrepobyid2', adminauth, (req, res) => {
 		.catch((err) => res.status(422).json(err));
 });
 
+router.put('/categorywiseids', adminauth, async (req, res) => {
+	const { campaignId } = req.body;
+	try {
+		var audio = campaignId.map((id) => mongoose.Types.ObjectId(id));
+		const resultaudio = await CategoryReports.aggregate([
+			{ $match: { campaignId: { $in: audio } } },
+			// {$project:{
+			// 	category:1,
+			// 	impression:1,
+			// 	CompanionClickTracking:1,
+			// 	SovClickTracking:1,
+			// 	test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+			// }},
+			// {$match:{test:{$gt:setdate}}},
+			{
+				$group: {
+					_id: { category: '$category' },
+					impressions: { $sum: '$impression' },
+					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+					SovClickTracking: { $sum: '$SovClickTracking' }
+				}
+			},
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'category',
+					as: 'extra_details'
+				}
+			},
+			// { $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'new_taxonamy',
+					as: 'extra_details1'
+				}
+			},
+			// { $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+			{ $sort: { impressions: -1 } },
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+				}
+			},
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', [] ] }
+				}
+			}
+			// {
+			// 	$project: {
+			// 		impressions: 1,
+			// 		CompanionClickTracking: 1,
+			// 		SovClickTracking: 1,
+			// 		extra_details: { $ifNull: ['$extra_details', []] }
+			// 	}
+			// }
+		]).allowDiskUse(true);
+		res.status(200).json(resultaudio);
+	} catch (err) {
+		res.status(400).json({ error: err.message });
+	}
+});
+
 router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 	const { campaignId } = req.body;
 	var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
