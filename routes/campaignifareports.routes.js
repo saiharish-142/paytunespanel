@@ -18,30 +18,19 @@ router.get('/reports', adminauth, (req, res) => {
 
 router.put('/frequency', adminauth, (req, res) => {
 	const { campaignId } = req.body;
-	var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
-	var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
-	var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
+	var audio = campaignId.map((id) => mongoose.Types.ObjectId(id));
 	campaignifareports
 		.aggregate([
+			{ $match: { campaignId: { $in: audio } } },
 			{
-				$facet: {
-					audio: [
-						{ $match: { campaignId: { $in: audio } } },
-						{ $group: { _id: '$impression', count: { $sum: 1 } } }
-					],
-					display: [
-						{ $match: { campaignId: { $in: display } } },
-						{ $group: { _id: '$impression', count: { $sum: 1 } } }
-					],
-					video: [
-						{ $match: { campaignId: { $in: video } } },
-						{ $group: { _id: '$impression', count: { $sum: 1 } } }
-					]
+				$group: {
+					_id: null,
+					users: { $sum: '$users' }
 				}
 			}
 		])
 		.then((respo) => {
-			res.json(respo[0]);
+			res.json(respo);
 		})
 		.catch((err) => console.log(err));
 });
