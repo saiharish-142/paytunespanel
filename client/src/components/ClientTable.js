@@ -13,10 +13,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { IdContext } from '../App';
 // import IconBreadcrumbs from './breadBreed';
-import Auditable from './auditable.js';
+// import Auditable from './auditable.js';
 import { useSelector } from 'react-redux';
 import ReactExport from 'react-data-export';
 import PinClient from './PinClient';
+import CategoryClinet from './CategoryClinet';
+import Creative_Report from './creative_report';
+import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
+import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 
 const useStyles = makeStyles({
 	table: {
@@ -48,6 +52,13 @@ export default function BasicTable({ title, id }) {
 	const [ clickd, setclickd ] = useState(0);
 	const [ imprev, setimprev ] = useState(0);
 	const [ clickv, setclickv ] = useState(0);
+	const [ uniqueData, setuniqueData ] = useState({});
+	const [ categoryData, setcategoryData ] = useState({});
+	const [ categoryDataload, setcategoryDataload ] = useState(true);
+	const [ categoryDataerr, setcategoryDataerr ] = useState(false);
+	const [ creativeData, setcreativeData ] = useState([]);
+	const [ creativeDataload, setcreativeDataload ] = useState(true);
+	const [ creativeDataerr, setcreativeDataerr ] = useState(false);
 	const [ pincodeData, setpincodeData ] = useState({});
 	const [ pincodeDataload, setpincodeDataload ] = useState(true);
 	const [ pincodeDataerr, setpincodeDataerr ] = useState(false);
@@ -56,8 +67,11 @@ export default function BasicTable({ title, id }) {
 	useEffect(
 		() => {
 			if (report && report.report && report.report.complete) {
+				uniqueSetter();
 				setlastUpdated(report.report.complete.updatedAt);
 				PincodeSetter();
+				Creativedata();
+				CategorySetter();
 			}
 		},
 		[ report ]
@@ -83,6 +97,7 @@ export default function BasicTable({ title, id }) {
 					.then((res) => res.json())
 					.then((result) => {
 						console.log(result);
+						// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
 						data[sets[i]] = result;
 					})
 					.catch((err) => {
@@ -93,6 +108,96 @@ export default function BasicTable({ title, id }) {
 		}
 		setpincodeData(data);
 	}
+	async function CategorySetter() {
+		var sets = report.sets;
+		var ids = report.grp_ids;
+		var data = {};
+		// console.log(report);
+		for (var i = 0; i < sets.length; i++) {
+			if (ids[sets[i]].length) {
+				console.log(ids[sets[i]]);
+				await fetch('/subrepo/categorywiseids', {
+					method: 'put',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + localStorage.getItem('jwt')
+					},
+					body: JSON.stringify({
+						campaignId: ids[sets[i]]
+					})
+				})
+					.then((res) => res.json())
+					.then((result) => {
+						console.log(result);
+						// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
+						data[sets[i]] = result;
+					})
+					.catch((err) => {
+						setpincodeDataerr(true);
+						console.log(err);
+					});
+			}
+		}
+		setcategoryData(data);
+		setcategoryDataload(false);
+	}
+	async function uniqueSetter() {
+		var sets = report.sets;
+		var ids = report.grp_ids;
+		var data = {};
+		// console.log(report);
+		for (var i = 0; i < sets.length; i++) {
+			if (ids[sets[i]].length) {
+				console.log(ids[sets[i]]);
+				await fetch('/ifas/frequency', {
+					method: 'put',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + localStorage.getItem('jwt')
+					},
+					body: JSON.stringify({
+						campaignId: ids[sets[i]]
+					})
+				})
+					.then((res) => res.json())
+					.then((result) => {
+						console.log(result);
+						// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
+						data[sets[i]] = result;
+					})
+					.catch((err) => {
+						setpincodeDataerr(true);
+						console.log(err);
+					});
+			}
+		}
+		console.log(data);
+		setuniqueData(data);
+		// setcategoryDataload(false);
+	}
+	const Creativedata = () => {
+		var idsa = report.ids.combined;
+		console.log(idsa);
+		if (idsa) {
+			fetch('/subrepo/creativewisereports', {
+				method: 'put',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: 'Bearer ' + localStorage.getItem('jwt')
+				},
+				body: JSON.stringify({
+					campaignId: idsa
+				})
+			})
+				.then((res) => res.json())
+				.then((result) => {
+					console.log(result);
+					setcreativeData(result);
+					setcreativeDataload(false);
+				})
+				.catch((err) => console.log(err));
+		}
+	};
 	const timefinder = (da1, da2) => {
 		var d1 = new Date(da1);
 		var d2 = new Date(da2);
@@ -149,6 +254,7 @@ export default function BasicTable({ title, id }) {
 								<TableCell>Campaign Start Date</TableCell>
 								<TableCell>Campaign End Date</TableCell>
 								<TableCell>Total Days of Campaign</TableCell>
+								{/* <TableCell>unique User</TableCell> */}
 								<TableCell>Total Impressions to be delivered</TableCell>
 								<TableCell>Total Impressions Delivered till date</TableCell>
 								<TableCell>Total Clicks Delivered till date</TableCell>
@@ -211,6 +317,15 @@ export default function BasicTable({ title, id }) {
 			</ExcelFile>
 		);
 	}
+	const arrowRetuner = (mode) => {
+		if (mode === '1') {
+			return <ArrowUpwardRoundedIcon fontSize="small" />;
+		} else if (mode === '2') {
+			return <ArrowDownwardRoundedIcon fontSize="small" />;
+		} else {
+			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
+		}
+	};
 	return (
 		<React.Fragment>
 			{/* <IconBreadcrumbs /> */}
@@ -225,18 +340,6 @@ export default function BasicTable({ title, id }) {
 			{/* {SummaryTable('Audio', audioReport, ids && ids.audimpression)}
 			{SummaryTable('Display', displayReport, ids && ids.disimpression)}
 			{SummaryTable('Video', videoReport, ids && ids.vidimpression)} */}
-			<div
-				style={{
-					margin: '10px auto',
-					fontSize: 'larger',
-					width: 'fit-content',
-					fontWeight: '500',
-					borderBottom: '1px solid black'
-				}}
-			>
-				Pincode Wise Summary Report
-			</div>
-			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
 			{/* <Auditable
 				adtype="Audio"
 				state1={state1}
@@ -249,6 +352,8 @@ export default function BasicTable({ title, id }) {
 				client={true}
 				url="zipbycampids"
 			/> */}
+			<div className="titleReport">Pincode Wise Summary Report</div>
+			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
 			{report.sets &&
 				report.sets.map((x) => {
 					if (report.grp_ids[x].length) {
@@ -272,6 +377,48 @@ export default function BasicTable({ title, id }) {
 						}
 					}
 				})}
+			<div className="titleReport">Category Wise Summary Report</div>
+			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+			{report.sets &&
+				report.sets.map((x) => {
+					if (report.grp_ids[x].length) {
+						if (categoryData[x]) {
+							return (
+								<CategoryClinet
+									report={categoryData[x]}
+									head={x}
+									title={title && title.toUpperCase()}
+									state1={id}
+									impression={report.report.complete.impressions}
+									clicks={report.report.complete.clicks + report.report.complete.clicks1}
+								/>
+							);
+						} else {
+							return (
+								<Paper>
+									<CircularProgress />
+								</Paper>
+							);
+						}
+					}
+				})}
+			{creativeData.length ? (
+				<div>
+					<div className="titleReport">Creative Wise Summary Report</div>
+					<div>
+						last updated at -{' '}
+						{report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
+					</div>
+					<Creative_Report
+						// title="Audio"
+						state1={report.req_id}
+						arrowRetuner={arrowRetuner}
+						report={creativeData}
+					/>
+				</div>
+			) : (
+				''
+			)}
 		</React.Fragment>
 	);
 }

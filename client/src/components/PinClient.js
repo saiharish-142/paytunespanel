@@ -8,7 +8,7 @@ import { CSVLink } from 'react-csv';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 
-function PinClient({ report, title, head, impression, clicks, state1 }) {
+function PinClient({ report, title, head, impression, clicks }) {
 	const history = useHistory();
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
@@ -50,7 +50,7 @@ function PinClient({ report, title, head, impression, clicks, state1 }) {
 		{ key: 'ctr', label: 'CTR' }
 	];
 	var csvReport = {
-		filename: `${title}_${head}_PincodeData.csv`,
+		filename: `${head}_${title}_PincodeData.csv`,
 		headers: headers,
 		data: adss
 	};
@@ -68,9 +68,9 @@ function PinClient({ report, title, head, impression, clicks, state1 }) {
 					closk += row.clicks;
 				});
 				data.map((row) => {
-					var impre = row.impression * impression / imoop;
+					var impre = Math.round(row.impression * impression / imoop);
 					row.impression = impre;
-					var cliol = row.clicks * clicks / closk;
+					var cliol = Math.round(row.clicks * clicks / closk);
 					row.clicks = parseInt(cliol);
 					row.ctr = parseInt(cliol) * 100 / parseInt(impre);
 				});
@@ -97,7 +97,7 @@ function PinClient({ report, title, head, impression, clicks, state1 }) {
 		return (
 			<Paper>
 				<TableContainer style={{ margin: '20px 0' }}>
-					<div style={{ margin: '5px', fontWeight: 'bolder' }}>{title} Report</div>
+					<div style={{ margin: '5px', fontWeight: 'bolder' }}>{head} Report</div>
 					{adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
 					{adss && adss.length > 0 ? (
 						<Table aria-label="simple table">

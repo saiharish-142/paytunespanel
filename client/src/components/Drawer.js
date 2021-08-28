@@ -64,7 +64,7 @@ export default function TemporaryDrawer() {
 								className={classes.nested}
 								onClick={() => {
 									setopen(false);
-									history.push('/manageAds');
+									history.push('/manageAds?red=home');
 								}}
 							>
 								<ListItemIcon>
@@ -123,7 +123,7 @@ export default function TemporaryDrawer() {
 										className={classes.nested}
 										onClick={() => {
 											setopen(false);
-											history.push('/clientSideCamp');
+											history.push('/clientSideCamp?red=home');
 										}}
 									>
 										<ListItemIcon>

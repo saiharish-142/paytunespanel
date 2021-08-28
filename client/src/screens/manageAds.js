@@ -17,34 +17,55 @@ import {
 } from '../redux/actions/manageadsAction';
 import PreLoader from '../components/loaders/PreLoader';
 import SortPaTable from '../components/SortPaTable';
+import { useHistory } from 'react-router-dom';
 // import { orderManager } from '../redux/actions/manageadsAction';
 
 function Dashboard({ clientview, clientdirect }) {
+	const history = useHistory();
 	const dispatchRedux = useDispatch();
+	const dataT = new URLSearchParams(window.location.search).get('red');
 	const manageads = useSelector((state) => state.manageads);
 	const clientmanageads = useSelector((state) => state.clientmanageads);
 	const user = useSelector((state) => state.auth);
 	const [ searchval, setSearchval ] = useState('');
-	useEffect(() => {
-		if (clientview || clientdirect) {
-			if (clientmanageads && !clientmanageads.manageads) {
-				dispatchRedux(ClientloadingAds());
-				clientdirect && dispatchRedux(loadClientAds());
-				clientview && dispatchRedux(loadClientAAds());
-			}
-			if (clientmanageads && clientmanageads.value) {
-				setSearchval(clientmanageads.value);
-			}
+	const [ statechecker ] = useState(clientview || clientdirect);
+	// console.log(dataT);
+	if (dataT) {
+		if (clientview) {
+			history.push('/?red=client');
 		} else {
-			if (manageads && !manageads.manageads) {
-				dispatchRedux(loadingAds());
-				dispatchRedux(loadAds());
-			}
-			if (manageads && manageads.value) {
-				setSearchval(manageads.value);
-			}
+			history.push('/?red=manage');
 		}
-	}, []);
+	}
+	useEffect(
+		() => {
+			// console.log(clientview || clientdirect);
+			// console.log(clientmanageads);
+			if (clientview || clientdirect) {
+				// console.log(clientmanageads.manageads);
+				if (clientmanageads && !clientmanageads.manageads) {
+					// alert('crazy');
+					dispatchRedux(ClientloadingAds());
+					clientdirect && dispatchRedux(loadClientAds());
+					clientview && dispatchRedux(loadClientAAds());
+				}
+				if (clientmanageads && clientmanageads.value) {
+					setSearchval(clientmanageads.value);
+				}
+			} else {
+				console.log(manageads.manageads);
+				if (manageads && !manageads.manageads) {
+					// alert('crazy');
+					dispatchRedux(loadingAds());
+					dispatchRedux(loadAds());
+				}
+				if (manageads && manageads.value) {
+					setSearchval(manageads.value);
+				}
+			}
+		},
+		[ statechecker ]
+	);
 	const onChangeRedux = (val) => {
 		dispatchRedux(searchads(val));
 		setSearchval(val);
