@@ -1042,6 +1042,7 @@ router.put('/groupedsingleClient', adminauth, (req, res) => {
 					video: [],
 					vidimpression: 0
 				};
+				data.ids['combined'] = ids;
 				// data.TargetImpressions = [ ...new Set(data.TargetImpressions) ];
 				id_spliter = remove_duplicates_arrayobject(id_spliter, 'campaignId');
 				var ids_cam = [];
