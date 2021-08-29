@@ -1,15 +1,26 @@
+import {
+	Button,
+	CircularProgress,
+	Paper,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow
+} from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import { IdContext } from '../App';
-import IconBreadcrumbs from './breadBreed';
-import Auditable from './auditable.js';
+// import IconBreadcrumbs from './breadBreed';
+// import Auditable from './auditable.js';
+import { useSelector } from 'react-redux';
+import ReactExport from 'react-data-export';
+import PinClient from './PinClient';
+import CategoryClinet from './CategoryClinet';
+import Creative_Report from './creative_report';
+import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
+import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 
 const useStyles = makeStyles({
 	table: {
@@ -17,13 +28,16 @@ const useStyles = makeStyles({
 	}
 });
 
-export default function BasicTable({ singlead, title }) {
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+
+export default function BasicTable({ title, id }) {
 	const { state1 } = useContext(IdContext);
 	// const [logs, setlogs] = useState([])
 	const [ ids, setids ] = useState({});
-	const [ audioReport, setaudioReport ] = useState({});
-	const [ displayReport, setdisplayReport ] = useState({});
-	const [ videoReport, setvideoReport ] = useState({});
+	// const [ audioReport, setaudioReport ] = useState({});
+	// const [ displayReport, setdisplayReport ] = useState({});
+	// const [ videoReport, setvideoReport ] = useState({});
 	const [ lastUpdated, setlastUpdated ] = useState('');
 	// const [audiologs, setaudiologs] = useState([])
 	// const [displaylogs, setdisplaylogs] = useState([])
@@ -38,53 +52,151 @@ export default function BasicTable({ singlead, title }) {
 	const [ clickd, setclickd ] = useState(0);
 	const [ imprev, setimprev ] = useState(0);
 	const [ clickv, setclickv ] = useState(0);
+	const [ uniqueData, setuniqueData ] = useState({});
+	const [ categoryData, setcategoryData ] = useState({});
+	const [ categoryDataload, setcategoryDataload ] = useState(true);
+	const [ categoryDataerr, setcategoryDataerr ] = useState(false);
+	const [ creativeData, setcreativeData ] = useState([]);
+	const [ creativeDataload, setcreativeDataload ] = useState(true);
+	const [ creativeDataerr, setcreativeDataerr ] = useState(false);
+	const [ pincodeData, setpincodeData ] = useState({});
+	const [ pincodeDataload, setpincodeDataload ] = useState(true);
+	const [ pincodeDataerr, setpincodeDataerr ] = useState(false);
 	const classes = useStyles();
-	// console.log(singlead)
+	const report = useSelector((state) => state.report);
 	useEffect(
 		() => {
-			if (singlead && singlead.id_final) {
-				setids(singlead.id_final);
-				logsPuller(singlead.id_final);
+			if (report && report.report && report.report.complete) {
+				uniqueSetter();
+				setlastUpdated(report.report.complete.updatedAt);
+				PincodeSetter();
+				Creativedata();
+				CategorySetter();
 			}
 		},
-		[ singlead ]
+		[ report ]
 	);
-	// logs puller
-	const logsPuller = (idData) => {
-		console.log(idData);
-		fetch('/offreport/sumreportofcamall', {
-			method: 'put',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('jwt')
-			},
-			body: JSON.stringify({
-				campaignId: idData
+	async function PincodeSetter() {
+		var sets = report.sets;
+		var ids = report.grp_ids;
+		var data = {};
+		// console.log(sets.length);
+		for (var i = 0; i < sets.length; i++) {
+			if (ids[sets[i]].length) {
+				console.log(ids[sets[i]]);
+				await fetch('/subrepo/zipbycampids', {
+					method: 'put',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + localStorage.getItem('jwt')
+					},
+					body: JSON.stringify({
+						campaignId: ids[sets[i]]
+					})
+				})
+					.then((res) => res.json())
+					.then((result) => {
+						console.log(result);
+						// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
+						data[sets[i]] = result;
+					})
+					.catch((err) => {
+						setpincodeDataerr(true);
+						console.log(err);
+					});
+			}
+		}
+		setpincodeData(data);
+	}
+	async function CategorySetter() {
+		var sets = report.sets;
+		var ids = report.grp_ids;
+		var data = {};
+		// console.log(report);
+		for (var i = 0; i < sets.length; i++) {
+			if (ids[sets[i]].length) {
+				console.log(ids[sets[i]]);
+				await fetch('/subrepo/categorywiseids', {
+					method: 'put',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + localStorage.getItem('jwt')
+					},
+					body: JSON.stringify({
+						campaignId: ids[sets[i]]
+					})
+				})
+					.then((res) => res.json())
+					.then((result) => {
+						console.log(result);
+						// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
+						data[sets[i]] = result;
+					})
+					.catch((err) => {
+						setpincodeDataerr(true);
+						console.log(err);
+					});
+			}
+		}
+		setcategoryData(data);
+		setcategoryDataload(false);
+	}
+	async function uniqueSetter() {
+		var sets = report.sets;
+		var ids = report.grp_ids;
+		var data = {};
+		// console.log(report);
+		for (var i = 0; i < sets.length; i++) {
+			if (ids[sets[i]].length) {
+				console.log(ids[sets[i]]);
+				await fetch('/ifas/frequency', {
+					method: 'put',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + localStorage.getItem('jwt')
+					},
+					body: JSON.stringify({
+						campaignId: ids[sets[i]]
+					})
+				})
+					.then((res) => res.json())
+					.then((result) => {
+						console.log(result);
+						// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
+						data[sets[i]] = result;
+					})
+					.catch((err) => {
+						setpincodeDataerr(true);
+						console.log(err);
+					});
+			}
+		}
+		console.log(data);
+		setuniqueData(data);
+		// setcategoryDataload(false);
+	}
+	const Creativedata = () => {
+		var idsa = report.ids.combined;
+		console.log(idsa);
+		if (idsa) {
+			fetch('/subrepo/creativewisereports', {
+				method: 'put',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: 'Bearer ' + localStorage.getItem('jwt')
+				},
+				body: JSON.stringify({
+					campaignId: idsa
+				})
 			})
-		})
-			.then((res) => res.json())
-			.then((resulta) => {
-				var result = resulta;
-				console.log(result);
-				setlastUpdated(result.allrecentupdate);
-				setaudioReport(result.audioCompleteReport);
-				setdisplayReport(result.displayCompleteReport);
-				setvideoReport(result.videoCompleteReport);
-				setimpre(result.audioCompleteReport.impressions);
-				setimpred(result.displayCompleteReport.impressions);
-				setimprev(result.videoCompleteReport.impressions);
-				setclick(result.audioCompleteReport.clicks);
-				setclickd(result.displayCompleteReport.clicks);
-				setclickv(result.videoCompleteReport.clicks);
-				// setcomplete(result.audioCompleteReport.complete)
-				// setfq(result.audioCompleteReport.firstQuartile)
-				// setsq(result.audioCompleteReport.midpoint)
-				// settq(result.audioCompleteReport.thirdQuartile)
-				// setaudiologs(result.audio)
-				// setdisplaylogs(result.display)
-				// setvideologs(result.video)
-			})
-			.catch((err) => console.log(err));
+				.then((res) => res.json())
+				.then((result) => {
+					console.log(result);
+					setcreativeData(result);
+					setcreativeDataload(false);
+				})
+				.catch((err) => console.log(err));
+		}
 	};
 	const timefinder = (da1, da2) => {
 		var d1 = new Date(da1);
@@ -127,18 +239,22 @@ export default function BasicTable({ singlead, title }) {
 		s = s.split('/');
 		return s[1] + '/' + s[0] + '/' + s[2];
 	};
-	const SummaryTable = (title, report, target, ent) => {
-		// console.log(report)
+	const SummaryTable = (title, reportsub, target) => {
+		// console.log(reportsub, target);
+		if (reportsub && reportsub.message) {
+			return;
+		}
 		return (
 			<TableContainer style={{ margin: '20px 0' }} elevation={3} component={Paper}>
 				<div style={{ margin: '5px', fontWeight: 'bolder' }}>{title} Report</div>
-				{singlead._id && report && ids && (report.impressions > 0 || report.clicks > 0) ? (
+				{report.req_id && reportsub && report.ids ? (
 					<Table className={classes.table} aria-label="simple table">
 						<TableHead>
 							<TableRow>
 								<TableCell>Campaign Start Date</TableCell>
 								<TableCell>Campaign End Date</TableCell>
 								<TableCell>Total Days of Campaign</TableCell>
+								{/* <TableCell>unique User</TableCell> */}
 								<TableCell>Total Impressions to be delivered</TableCell>
 								<TableCell>Total Impressions Delivered till date</TableCell>
 								<TableCell>Total Clicks Delivered till date</TableCell>
@@ -149,21 +265,23 @@ export default function BasicTable({ singlead, title }) {
 							<TableRow
 								style={{
 									background: colorfinder(
-										timefinder(singlead.endDate, singlead.startDate),
-										timefinder(Date.now(), singlead.startDate),
+										timefinder(report.endDate, report.startDate),
+										timefinder(Date.now(), report.startDate),
 										target,
-										report.impressions
+										reportsub.impressions
 									)
 								}}
 							>
-								<TableCell>{dateformatchanger(singlead.startDate)}</TableCell>
-								<TableCell>{dateformatchanger(singlead.endDate)}</TableCell>
-								<TableCell>{timefinder(singlead.endDate, singlead.startDate)} days</TableCell>
+								<TableCell>{dateformatchanger(report.startDate)}</TableCell>
+								<TableCell>{dateformatchanger(report.endDate)}</TableCell>
+								<TableCell>{timefinder(report.endDate, report.startDate)} days</TableCell>
 								<TableCell>{target}</TableCell>
-								<TableCell>{report.impressions}</TableCell>
-								<TableCell>{report.clicks}</TableCell>
+								<TableCell>{reportsub.impressions}</TableCell>
+								<TableCell>{reportsub.clicks + reportsub.clicks1}</TableCell>
 								<TableCell>
-									{Math.round(report.clicks * 100 / report.impressions * 100) / 100}%
+									{Math.round(
+										(reportsub.clicks + reportsub.clicks1) * 100 / reportsub.impressions * 100
+									) / 100}%
 								</TableCell>
 							</TableRow>
 						</TableBody>
@@ -174,102 +292,57 @@ export default function BasicTable({ singlead, title }) {
 			</TableContainer>
 		);
 	};
+	function ExeclDownload(props) {
+		// console.log(props);
+		const data = React.Children.map(props.children, (child) => {
+			// console.log(child);
+			if (child.props.dataSet && child.props.dataSet[0].data) {
+				return child;
+			}
+		});
+		// console.log(data);
+		// console.log(data);
+		return (
+			<ExcelFile
+				filename={props.filename}
+				element={
+					<Button variant="outlined" color="primary">
+						Download Tables
+					</Button>
+				}
+			>
+				{data.map((child) => {
+					return child;
+				})}
+			</ExcelFile>
+		);
+	}
+	const arrowRetuner = (mode) => {
+		if (mode === '1') {
+			return <ArrowUpwardRoundedIcon fontSize="small" />;
+		} else if (mode === '2') {
+			return <ArrowDownwardRoundedIcon fontSize="small" />;
+		} else {
+			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
+		}
+	};
 	return (
 		<React.Fragment>
-			<IconBreadcrumbs />
-			<div
-				style={{
-					margin: '10px auto',
-					fontSize: 'larger',
-					width: 'fit-content',
-					fontWeight: '500',
-					borderBottom: '1px solid black'
-				}}
-			>
-				{title && title.toUpperCase()} Campaign
-			</div>
-			<div
-				style={{
-					margin: '10px auto',
-					fontSize: 'larger',
-					width: 'fit-content',
-					fontWeight: '500',
-					borderBottom: '1px solid black'
-				}}
-			>
-				Summary Report
-			</div>
+			{/* <IconBreadcrumbs /> */}
+			<div className="titleReport">{title && title.toUpperCase()} Campaign</div>
+			<div className="titleReport">Overall Summary Report</div>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-			{SummaryTable('Audio', audioReport, ids && ids.audimpression)}
+			{SummaryTable('Over All Summary', report.report['complete'], report.report.complete[`target`])}
+			{report.sets &&
+				report.sets.map((x) => {
+					return <div>{SummaryTable(x, report.report[x], report.grp_ids[`${x}target`])}</div>;
+				})}
+			{/* {SummaryTable('Audio', audioReport, ids && ids.audimpression)}
 			{SummaryTable('Display', displayReport, ids && ids.disimpression)}
-			{SummaryTable('Video', videoReport, ids && ids.vidimpression)}
-			<div
-				style={{
-					margin: '10px auto',
-					fontSize: 'larger',
-					width: 'fit-content',
-					fontWeight: '500',
-					borderBottom: '1px solid black'
-				}}
-			>
-				Platform Wise Summary Report
-			</div>
-			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-			<Auditable
+			{SummaryTable('Video', videoReport, ids && ids.vidimpression)} */}
+			{/* <Auditable
 				adtype="Audio"
 				state1={state1}
-				streamingads={singlead}
-				title="Platform"
-				regtitle="phonePlatform"
-				jsotitle="platformType"
-				ids={ids && ids.audio}
-				click={click}
-				impression={impre}
-				client={true}
-				url="platformTypebycampids"
-			/>
-			<Auditable
-				adtype="Display"
-				state1={state1}
-				streamingads={singlead}
-				title="Platform"
-				regtitle="phonePlatform"
-				jsotitle="platformType"
-				ids={ids && ids.display}
-				click={clickd}
-				impression={impred}
-				client={true}
-				url="platformTypebycampids"
-			/>
-			<Auditable
-				adtype="Video"
-				state1={state1}
-				streamingads={singlead}
-				title="Platform"
-				regtitle="phonePlatform"
-				jsotitle="platformType"
-				ids={ids && ids.video}
-				click={clickv}
-				impression={imprev}
-				client={true}
-				url="platformTypebycampids"
-			/>
-			<div
-				style={{
-					margin: '10px auto',
-					fontSize: 'larger',
-					width: 'fit-content',
-					fontWeight: '500',
-					borderBottom: '1px solid black'
-				}}
-			>
-				Pincode Wise Summary Report
-			</div>
-			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-			<Auditable
-				adtype="Audio"
-				state1={state1}
-				streamingads={singlead}
 				title="Pincode"
 				regtitle="pincode"
 				jsotitle="zip"
@@ -278,58 +351,122 @@ export default function BasicTable({ singlead, title }) {
 				impression={impre}
 				client={true}
 				url="zipbycampids"
-			/>
-			<div
-				style={{
-					margin: '10px auto',
-					fontSize: 'larger',
-					width: 'fit-content',
-					fontWeight: '500',
-					borderBottom: '1px solid black'
-				}}
-			>
-				Device Wise Summary Report
-			</div>
+			/> */}
+			<div className="titleReport">Pincode Wise Summary Report</div>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-			<Auditable
-				adtype="Audio"
-				state1={state1}
-				streamingads={singlead}
-				title="Device"
-				regtitle="deviceModel"
-				jsotitle="pptype"
-				ids={ids && ids.audio}
-				click={click}
-				impression={impre}
-				client={true}
-				url="pptypebycampids"
-			/>
-			<Auditable
-				adtype="Display"
-				state1={state1}
-				streamingads={singlead}
-				title="Device"
-				regtitle="deviceModel"
-				jsotitle="pptype"
-				ids={ids && ids.display}
-				click={clickd}
-				impression={impred}
-				client={true}
-				url="pptypebycampids"
-			/>
-			<Auditable
-				adtype="Video"
-				state1={state1}
-				streamingads={singlead}
-				title="Device"
-				regtitle="deviceModel"
-				jsotitle="pptype"
-				ids={ids && ids.video}
-				click={clickv}
-				impression={imprev}
-				client={true}
-				url="pptypebycampids"
-			/>
+			{report.sets &&
+				report.sets.map((x) => {
+					if (report.grp_ids[x].length) {
+						if (pincodeData[x]) {
+							return (
+								<PinClient
+									report={pincodeData[x]}
+									head={x}
+									title={title && title.toUpperCase()}
+									state1={id}
+									impression={report.report.complete.impressions}
+									clicks={report.report.complete.clicks + report.report.complete.clicks1}
+								/>
+							);
+						} else {
+							return (
+								<Paper>
+									<CircularProgress />
+								</Paper>
+							);
+						}
+					}
+				})}
+			<div className="titleReport">Category Wise Summary Report</div>
+			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+			{report.sets &&
+				report.sets.map((x) => {
+					if (report.grp_ids[x].length) {
+						if (categoryData[x]) {
+							return (
+								<CategoryClinet
+									report={categoryData[x]}
+									head={x}
+									title={title && title.toUpperCase()}
+									state1={id}
+									impression={report.report.complete.impressions}
+									clicks={report.report.complete.clicks + report.report.complete.clicks1}
+								/>
+							);
+						} else {
+							return (
+								<Paper>
+									<CircularProgress />
+								</Paper>
+							);
+						}
+					}
+				})}
+			{creativeData.length ? (
+				<div>
+					<div className="titleReport">Creative Wise Summary Report</div>
+					<div>
+						last updated at -{' '}
+						{report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
+					</div>
+					<Creative_Report
+						// title="Audio"
+						state1={report.req_id}
+						arrowRetuner={arrowRetuner}
+						report={creativeData}
+					/>
+				</div>
+			) : (
+				''
+			)}
 		</React.Fragment>
 	);
 }
+
+// console.log(singlead)
+// useEffect(
+// 	() => {
+// 		if (singlead && singlead.id_final) {
+// 			setids(singlead.id_final);
+// 			// logsPuller(singlead.id_final);
+// 		}
+// 	},
+// 	[ singlead ]
+// );
+// logs puller
+// const logsPuller = (idData) => {
+// 	console.log(idData);
+// 	fetch('/offreport/sumreportofcamall', {
+// 		method: 'put',
+// 		headers: {
+// 			'Content-Type': 'application/json',
+// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+// 		},
+// 		body: JSON.stringify({
+// 			campaignId: idData
+// 		})
+// 	})
+// 		.then((res) => res.json())
+// 		.then((resulta) => {
+// 			var result = resulta;
+// 			console.log(result);
+// 			setlastUpdated(result.allrecentupdate);
+// 			setaudioReport(result.audioCompleteReport);
+// 			setdisplayReport(result.displayCompleteReport);
+// 			setvideoReport(result.videoCompleteReport);
+// 			setimpre(result.audioCompleteReport.impressions);
+// 			setimpred(result.displayCompleteReport.impressions);
+// 			setimprev(result.videoCompleteReport.impressions);
+// 			setclick(result.audioCompleteReport.clicks);
+// 			setclickd(result.displayCompleteReport.clicks);
+// 			setclickv(result.videoCompleteReport.clicks);
+// 			// setcomplete(result.audioCompleteReport.complete)
+// 			// setfq(result.audioCompleteReport.firstQuartile)
+// 			// setsq(result.audioCompleteReport.midpoint)
+// 			// settq(result.audioCompleteReport.thirdQuartile)
+// 			// setaudiologs(result.audio)
+// 			// setdisplaylogs(result.display)
+// 			// setvideologs(result.video)
+// 		})
+// 		.catch((err) => console.log(err));
+// };

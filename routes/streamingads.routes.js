@@ -5,6 +5,8 @@ const StreamingAds = mongoose.model('streamingads');
 const adsetting = mongoose.model('adsetting');
 const adminauth = require('../authenMiddleware/adminauth');
 const campaignClient = mongoose.model('campaignClient');
+const campaignwisereports = mongoose.model('campaignwisereports');
+const publisherapps = mongoose.model('publisherapps');
 
 router.get('/', adminauth, (req, res) => {
 	StreamingAds.find()
@@ -425,6 +427,32 @@ router.get('/clientcamps', adminauth, (req, res) => {
 		});
 });
 
+router.get('/Acampaigns', adminauth, (req, res) => {
+	campaignClient
+		.find({})
+		.then((result) => {
+			var sao = result;
+			sao.map((ad) => {
+				var remainingdays = 0;
+				var d1 = new Date(ad.endDate);
+				var d2 = new Date(Date.now());
+				// console.log(d1,d2)
+				var show = d1.getTime() - d2.getTime();
+				remainingdays = show / (1000 * 3600 * 24);
+				if (remainingdays < 0) {
+					remainingdays = 'completed campaign';
+				}
+				ad.remainingDays = remainingdays;
+				return ad;
+			});
+			res.json(sao);
+		})
+		.catch((err) => {
+			console.log(err);
+			res.status(400).json({ err, error: 'Something went wrong' });
+		});
+});
+
 router.put('/clientgrouped', adminauth, (req, res) => {
 	const { Advertiser } = req.body;
 	StreamingAds.aggregate([
@@ -684,8 +712,6 @@ function arr_diff(a1, a2) {
 	for (var i = 0; i < a2.length; i++) {
 		if (a[a2[i]]) {
 			delete a[a2[i]];
-		} else {
-			a[a2[i]] = true;
 		}
 	}
 	for (var k in a) {
@@ -893,6 +919,201 @@ router.put('/groupedsingle', adminauth, (req, res) => {
 				var resendDate = [].concat.apply([], data.endDate);
 				resendDate = [ ...new Set(resendDate) ];
 				data.endDate = resendDate;
+				// data.splendid = id_spliter
+				// var tottar = 0;
+				// data.TargetImpressions.forEach(num=> tottar += parseInt(num))
+				// data.TargetImpressions = tottar
+				res.json(data);
+			} else {
+				res.status(422).json({ error: 'somthing went wrong try again' });
+			}
+		})
+		.catch((err) => console.log(err));
+});
+
+const musicids = [
+	'13698',
+	'18880',
+	'18878',
+	'22308',
+	'22310',
+	'11726',
+	'5efac6f9aeeeb92b8a1ee056',
+	'5a1e46beeb993dc67979412e',
+	'5b2210af504f3097e73e0d8b',
+	'5adeeb79cf7a7e3e5d822106',
+	'5d10c405844dd970bf41e2af'
+];
+
+function idmatchCheker(id, arr) {
+	for (var i = 0; i < arr.length; i++) {
+		if (arr[i].toString() === id.toString()) {
+			return true;
+		}
+	}
+	return false;
+}
+
+async function idsreturnspliter(ids) {
+	var dads = { dem: [], pod: [], mus: [] };
+	var audio = ids && ids.length ? ids.map((id) => mongoose.Types.ObjectId(id)) : [];
+	var music = [];
+	var podca = [];
+	var onDem = [];
+	let depo = await campaignwisereports
+		.aggregate([
+			{ $match: { campaignId: { $in: audio }, feed: { $in: [ '3', 3 ] } } },
+			{
+				$group: {
+					_id: null,
+					campaignId: { $push: '$campaignId' }
+				}
+			}
+		])
+		.catch((err) => console.log(err));
+	depo[0].campaignId.map((x) => podca.push(x));
+	audio = arr_diff(audio, podca);
+	podca = removeDuplicates(podca);
+	audio = audio && audio.length ? audio.map((id) => mongoose.Types.ObjectId(id)) : [];
+	let som = await campaignwisereports
+		.aggregate([
+			{ $match: { apppubid: { $in: musicids }, campaignId: { $in: audio } } },
+			{ $group: { _id: null, campaignId: { $push: '$campaignId' } } }
+		])
+		.catch((err) => console.log(err));
+	som = som[0] && som[0].campaignId;
+	som = removeDuplicates(som);
+	som.map((x) => music.push(x));
+	audio = arr_diff(audio, som);
+	audio.map((x) => onDem.push(x));
+	music = removeDuplicates(music);
+	podca = removeDuplicates(podca);
+	onDem = removeDuplicates(onDem);
+	dads.pod = podca;
+	dads.dem = onDem;
+	dads.mus = music;
+	return dads;
+}
+
+router.put('/groupedsingleClient', adminauth, (req, res) => {
+	const { adtitle, onDemand, podcast, audio, display, video, musicapps } = req.body;
+	StreamingAds.aggregate([
+		{
+			$project: {
+				id: '$_id',
+				AdTitle: { $toLower: '$AdTitle' }
+			}
+		},
+		{
+			$match: {
+				AdTitle: { $regex: adtitle.toLowerCase() }
+			}
+		},
+		{
+			$group: {
+				_id: null,
+				id: { $push: '$id' },
+				Adtitle: { $push: '$AdTitle' }
+			}
+		}
+	])
+		.then(async (respo) => {
+			var data;
+			data = respo.length && respo[0];
+			if (data) {
+				var ids =
+					typeof campaignId !== 'undefined' &&
+					typeof campaignId !== 'string' &&
+					typeof campaignId !== 'object'
+						? data.id.map((id) => mongoose.Types.ObjectId(id))
+						: data.id;
+				let id_spliter = await adsetting
+					.find({ campaignId: { $in: ids } }, { campaignId: 1, type: 1, targetImpression: 1 })
+					.catch((err) => console.log(err));
+				data.ids = {
+					onDemand: [],
+					podcast: [],
+					musicapps: [],
+					audio: [],
+					subimpression: { dem: 0, mus: 0, pod: 0 },
+					audimpression: 0,
+					display: [],
+					disimpression: 0,
+					video: [],
+					vidimpression: 0
+				};
+				data.ids['combined'] = ids;
+				// data.TargetImpressions = [ ...new Set(data.TargetImpressions) ];
+				id_spliter = remove_duplicates_arrayobject(id_spliter, 'campaignId');
+				var ids_cam = [];
+				id_spliter.map((x) => {
+					if (x.campaignId) ids_cam.push(x.campaignId.toString());
+				});
+				var left_cam = arr_diff(data.id, ids_cam);
+				if (left_cam && left_cam.length) {
+					await left_cam.map((id) => data.ids.audio.push(id));
+					// data.ids.audio = [ ...new Set(data.ids.audio) ];
+					data.ids.audio = removeDuplicates(data.ids.audio);
+					// data.ids.audio = [ ...new Set(data.ids.audio) ];
+				}
+				if (id_spliter.length) {
+					var audioids = id_spliter.filter((x) => x.type === 'audio');
+					audioids.map((x) => {
+						data.ids.audio.push(x.campaignId.toString());
+						data.ids.audimpression += parseInt(x.targetImpression);
+					});
+					data.ids.audio = [ ...new Set(data.ids.audio) ];
+					if (!(onDemand === podcast && onDemand === musicapps)) {
+						// var dads = { onDemand: [], podcast: [], musicapps: [] };
+						const outcome = await idsreturnspliter(data.ids.audio);
+						data.ids.onDemand = outcome.dem;
+						data.ids.podcast = outcome.pod;
+						data.ids['musicapps'] = outcome.mus;
+						if (data.ids.onDemand.length) {
+							var dataonDem = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.onDemand));
+							dataonDem.map((im) => {
+								data.ids.subimpression.dem += parseInt(im.targetImpression);
+							});
+						}
+						if (data.ids.podcast.length) {
+							var datapodcast = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.podcast));
+							datapodcast.map((im) => {
+								data.ids.subimpression.pod += parseInt(im.targetImpression);
+							});
+						}
+						if (data.ids.musicapps.length) {
+							var datamusic = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.musicapps));
+							datamusic.map((im) => {
+								data.ids.subimpression.mus += parseInt(im.targetImpression);
+							});
+						}
+						// data.ids['new'] = outcome;
+					}
+					var displayids = id_spliter.filter((x) => x.type === 'display');
+					displayids.map((x) => {
+						data.ids.display.push(x.campaignId.toString());
+						data.ids.disimpression += parseInt(x.targetImpression);
+					});
+					data.ids.display = [ ...new Set(data.ids.display) ];
+					var videoids = id_spliter.filter((x) => x.type === 'video');
+					videoids.map((x) => {
+						data.ids.video.push(x.campaignId.toString());
+						data.ids.vidimpression += parseInt(x.targetImpression);
+					});
+					data.ids.video = [ ...new Set(data.ids.video) ];
+				} else {
+					data.ids.audio = ids;
+					var dattarget = data.TargetImpressions;
+					dattarget.map((ar) => {
+						data.ids.audimpression += parseInt(ar.TR);
+					});
+				}
+				// var resstartDate = [].concat.apply([], data.startDate);
+				// resstartDate = [ ...new Set(resstartDate) ];
+				// data.startDate = resstartDate;
+				// var resendDate = [].concat.apply([], data.endDate);
+				// resendDate = [ ...new Set(resendDate) ];
+				// data.endDate = resendDate;
 				// data.splendid = id_spliter
 				// var tottar = 0;
 				// data.TargetImpressions.forEach(num=> tottar += parseInt(num))

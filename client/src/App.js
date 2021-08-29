@@ -93,6 +93,7 @@ function App() {
 			</div>
 		);
 	}
+	// console.log(user);
 	if (user && user.user.usertype === 'admin') {
 		// console.log(user.user.usertype);
 		return (
@@ -123,8 +124,12 @@ function App() {
 							<Route path="/categorydata" exact render={() => <Categorydata />} />
 							<Route path="/zipdata" exact render={() => <Zipdata />} />
 							<Route path="/episodetabdata" exact render={() => <EpisodeTab />} />
-							<Route path="/clientSideCamp" exact render={() => <DashboardBundle clientview={true} />} />
-							<Route path="/clientSideCamp/:campname" exact render={() => <ClientReport />} />
+							<Route path="/clientSideCamp" exact render={() => <Dashboard clientview={true} />} />
+							<Route
+								path="/clientSideCamp/:campname"
+								exact
+								render={() => <ClientReport adminView={true} />}
+							/>
 							<Redirect to="/" />
 						</Switch>
 					</BrowserRouter>
@@ -140,9 +145,9 @@ function App() {
 					<Switch>
 						<Route path="/" exact render={() => (state ? <Home /> : <Redirect to="/login" />)} />
 						<Route path="/manageAds" exact render={() => <Dashboard clientdirect={true} />} />
-						<Route path="/manageBundles" exact render={() => <DashboardBundle clientdirect={true} />} />
+						{/* <Route path="/manageBundles" exact render={() => <DashboardBundle clientdirect={true} />} /> */}
 						<Route path="/manageAds/:campname" exact render={() => <ClientReport />} />
-						<Route path="/manageBundles/:campname" exact render={() => <ClientReport />} />
+						{/* <Route path="/manageBundles/:campname" exact render={() => <ClientReport />} /> */}
 						<Redirect to="/" />
 					</Switch>
 				</BrowserRouter>

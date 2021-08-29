@@ -40,7 +40,7 @@ export default function TemporaryDrawer() {
 			</div>
 			<Drawer anchor="left" open={open} onClose={() => setopen(false)}>
 				<div
-					style={{ minWidth: '15vw' }}
+					style={{ minWidth: '250px' }}
 					className={classes.list}
 					role="presentation"
 					onKeyDown={() => setopen(false)}
@@ -64,7 +64,7 @@ export default function TemporaryDrawer() {
 								className={classes.nested}
 								onClick={() => {
 									setopen(false);
-									history.push('/manageAds');
+									history.push('/manageAds?red=home');
 								}}
 							>
 								<ListItemIcon>
@@ -72,18 +72,21 @@ export default function TemporaryDrawer() {
 								</ListItemIcon>
 								<ListItemText> Campaigns</ListItemText>
 							</ListItem>
-							<ListItem
-								className={classes.nested}
-								onClick={() => {
-									setopen(false);
-									history.push('/manageBundles');
-								}}
-							>
-								<ListItemIcon>
-									<i className="material-icons">keyboard_arrow_right</i>
-								</ListItemIcon>
-								<ListItemText>Bundles</ListItemText>
-							</ListItem>
+							{state &&
+							state.usertype === 'admin' && (
+								<ListItem
+									className={classes.nested}
+									onClick={() => {
+										setopen(false);
+										history.push('/manageBundles');
+									}}
+								>
+									<ListItemIcon>
+										<i className="material-icons">keyboard_arrow_right</i>
+									</ListItemIcon>
+									<ListItemText>Bundles</ListItemText>
+								</ListItem>
+							)}
 							<ListItem className={classes.nested} onClick={() => setopen(false)}>
 								<ListItemIcon>
 									<i className="material-icons">keyboard_arrow_right</i>
@@ -120,7 +123,7 @@ export default function TemporaryDrawer() {
 										className={classes.nested}
 										onClick={() => {
 											setopen(false);
-											history.push('/clientSideCamp');
+											history.push('/clientSideCamp?red=home');
 										}}
 									>
 										<ListItemIcon>

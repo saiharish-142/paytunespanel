@@ -2,6 +2,8 @@ import {
 	REPORT_LOADING,
 	REPORT_BASE_LOADED,
 	REPORT_LOADED,
+	REPORT_LOADED_CLIENT,
+	REPORT_BASE_LOADED_CLIENT,
 	REPORT_ERROR,
 	REPORT_ID_,
 	REPORT_SPENT_LOADED,
@@ -49,6 +51,23 @@ export default function(state = initialState, action) {
 				title: action.payload.title,
 				startDate: action.payload.startDate,
 				endDate: action.payload.endDate
+			};
+		case REPORT_BASE_LOADED_CLIENT:
+			return {
+				...state,
+				data: action.payload.main,
+				ids: action.payload.ids,
+				title: action.payload.title,
+				startDate: action.payload.startDate,
+				endDate: action.payload.endDate
+			};
+		case REPORT_LOADED_CLIENT:
+			return {
+				...state,
+				sets: action.payload.mains,
+				grp_ids: action.payload.ids,
+				isLoading: false,
+				report: action.payload.report
 			};
 		case REPORT_LOADED:
 			return {

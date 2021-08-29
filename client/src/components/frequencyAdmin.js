@@ -83,7 +83,7 @@ function FrequencyAdmin({ title, report, state1, arrowRetuner }) {
 									Total Impressions Delivered till date{arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell onClick={() => tablesorter('users', 'number')} style={{ cursor: 'pointer' }}>
-									Distinct Users{arrowRetuner(sa === 'users' ? (order === 'asc' ? '1' : '2') : '3')}
+									Unique Users{arrowRetuner(sa === 'users' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell onClick={() => tablesorter('click', 'number')} style={{ cursor: 'pointer' }}>
 									Total Clicks Delivered till date{arrowRetuner(sa === 'click' ? (order === 'asc' ? '1' : '2') : '3')}

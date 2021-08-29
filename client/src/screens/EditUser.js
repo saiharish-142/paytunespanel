@@ -70,10 +70,10 @@ function EditUser() {
 	const [ usertype, setusertype ] = useState('');
 	const [ username, setusername ] = useState('');
 	const [ loading, setloading ] = useState(true);
-	const [ campload, setcampload ] = useState(true);
-	const [ bundload, setbundload ] = useState(true);
-	const [ comploadb, setcomploadb ] = useState(true);
-	const [ comploadc, setcomploadc ] = useState(true);
+	// const [ campload, setcampload ] = useState(true);
+	// const [ bundload, setbundload ] = useState(true);
+	// const [ comploadb, setcomploadb ] = useState(true);
+	// const [ comploadc, setcomploadc ] = useState(true);
 	const [ texterror, settexterror ] = useState(false);
 	// const [ user, setuser ] = useState(0);
 	const [ titlesadding, settitlesadding ] = useState({
@@ -87,6 +87,7 @@ function EditUser() {
 	});
 	const [ selectedsemicampaigns, setselectedsemicampaigns ] = useState({
 		_id: '',
+		submitType: '',
 		userid: '',
 		title: '',
 		searchName: '',
@@ -107,21 +108,21 @@ function EditUser() {
 	const [ selectedcampaigns, setselectedcampaigns ] = useState([]);
 	const [ searchedcampaigns, setsearchedcampaigns ] = useState([]);
 	const [ campaigns, setcampaigns ] = useState([]);
-	const [ selectedbundles, setselectedbundles ] = useState([]);
+	// const [ selectedbundles, setselectedbundles ] = useState([]);
 	const [ searchedbundles, setsearchedbundles ] = useState([]);
 	const [ bundles, setbundles ] = useState([]);
 	const [ loadingsubmit, setloadingsubmit ] = React.useState(false);
 	const [ loadingeditset, setloadingeditset ] = React.useState(false);
 	const [ loadingdelete, setloadingdelete ] = React.useState({ status: false, id: '' });
 	const [ open, setOpen ] = React.useState(false);
-	const [ openEdit, setOpenEdit ] = React.useState(false);
+	// const [ openEdit, setOpenEdit ] = React.useState(false);
 	const [ openError, setOpenError ] = React.useState({ status: false, message: '' });
 	const [ openSuccess, setOpenSuccess ] = React.useState({ status: false, message: '' });
 	// Get bundles
 	useEffect(
 		() => {
 			if (managebundles && managebundles.managebundles) {
-				console.log(managebundles.managebundles);
+				// console.log(managebundles.managebundles);
 				setbundles(managebundles.managebundles);
 				setsearchedbundles(managebundles.managebundles);
 			}
@@ -267,7 +268,12 @@ function EditUser() {
 			},
 			body: JSON.stringify({
 				userid: id,
-				campaignName: selectedsemicampaigns.adtitle,
+				searchName: selectedsemicampaigns.searchName,
+				startDate: selectedsemicampaigns.startDate,
+				endDate: selectedsemicampaigns.endDate,
+				PricingModel: selectedsemicampaigns.PricingModel,
+				type: selectedsemicampaigns.type,
+				campaignName: selectedsemicampaigns.title,
 				audio: selectedsemicampaigns.audio,
 				display: selectedsemicampaigns.display,
 				video: selectedsemicampaigns.video,
@@ -290,8 +296,94 @@ function EditUser() {
 				setOpen(false);
 				setloadingsubmit(false);
 				setselectedsemicampaigns({
+					_id: '',
+					userid: '',
+					title: '',
+					searchName: '',
 					adtitle: '',
 					titles: [],
+					type: '',
+					endDate: null,
+					startDate: null,
+					PricingModel: null,
+					audio: null,
+					audio: null,
+					display: null,
+					video: null,
+					musicapps: null,
+					onDemand: null,
+					podcast: null
+				});
+				settitlesadding({
+					title: '',
+					audio: false,
+					display: false,
+					musicapps: false,
+					video: false,
+					podcast: false,
+					onDemand: false
+				});
+			})
+			.catch((err) => console.log(err));
+	}
+	// to edit the campagin to a user
+	function handleEditCampagin() {
+		var filled = false;
+		const { audio, display, video, musicapps, podcast, onDemand } = selectedsemicampaigns;
+		if ((audio || (musicapps && podcast && onDemand)) && display && video) {
+			filled = true;
+		}
+		if (!filled) {
+			console.log('error');
+		}
+		fetch('/auth/editcampaign', {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('jwt')
+			},
+			body: JSON.stringify({
+				_id: selectedsemicampaigns._id,
+				userid: id,
+				searchName: selectedsemicampaigns.searchName,
+				startDate: selectedsemicampaigns.startDate,
+				endDate: selectedsemicampaigns.endDate,
+				PricingModel: selectedsemicampaigns.PricingModel,
+				type: selectedsemicampaigns.type,
+				campaignName: selectedsemicampaigns.title,
+				audio: selectedsemicampaigns.audio,
+				display: selectedsemicampaigns.display,
+				video: selectedsemicampaigns.video,
+				musicapps: selectedsemicampaigns.musicapps,
+				podcast: selectedsemicampaigns.podcast,
+				onDemand: selectedsemicampaigns.onDemand
+			})
+		})
+			.then((res) => res.json())
+			.then((result) => {
+				console.log(result);
+				if (result.error) {
+					setloadingsubmit(false);
+					return setOpenError({ status: true, message: result.error });
+				}
+				setOpenSuccess({ status: true, message: result.message });
+				var sel = selectedcampaigns.filter((x) => x._id != selectedsemicampaigns._id);
+				sel.push(result.result);
+				setselectedcampaigns(sel);
+				setOpen(false);
+				setloadingsubmit(false);
+				setselectedsemicampaigns({
+					_id: '',
+					userid: '',
+					title: '',
+					searchName: '',
+					adtitle: '',
+					titles: [],
+					type: '',
+					endDate: null,
+					startDate: null,
+					PricingModel: null,
+					audio: null,
 					audio: null,
 					display: null,
 					video: null,
@@ -348,8 +440,16 @@ function EditUser() {
 		var data = {
 			_id: '',
 			userid: '',
+			submitType: 'edit',
+			title: '',
+			searchName: '',
 			adtitle: '',
 			titles: [],
+			type: '',
+			endDate: null,
+			startDate: null,
+			PricingModel: null,
+			audio: null,
 			audio: null,
 			display: null,
 			video: null,
@@ -359,41 +459,46 @@ function EditUser() {
 		};
 		for (const [ y, z ] of Object.entries(camp)) {
 			// console.log(y, z);
-			if (y === '_id') {
-				data[y] = camp[y];
-				data._id = z;
-			} else if (y === 'userid') {
-				data.userid = z;
-				data[y] = camp[y];
-			} else if (y === 'campaignName') {
-				data['adtitle'] = camp[y];
+			if (y === 'campaignName') {
+				data['title'] = camp[y];
 				data.adtitle = z;
 			} else if (y === '__v') {
 			} else {
 				data[y] = camp[y];
+			}
+			if (
+				y == 'audio' ||
+				y == 'display' ||
+				y == 'video' ||
+				y == 'musicapps' ||
+				y == 'podcast' ||
+				y == 'onDemand'
+			) {
 				titlesH.push(z);
 			}
 		}
 		titlesH = [ ...new Set(titlesH) ];
 		titlesH.map((x) => {
-			console.log(x);
-			var temp = {
-				title: '',
-				audio: false,
-				display: false,
-				musicapps: false,
-				video: false,
-				podcast: false,
-				onDemand: false
-			};
-			temp.title = x;
-			if (camp.audio === x) temp.audio = true;
-			if (camp.display === x) temp.display = true;
-			if (camp.video === x) temp.video = true;
-			if (camp.musicapps === x) temp.musicapps = true;
-			if (camp.podcast === x) temp.podcast = true;
-			if (camp.onDemand === x) temp.onDemand = true;
-			titlesF.push(temp);
+			if (x != undefined || x != null) {
+				console.log(x);
+				var temp = {
+					title: '',
+					audio: false,
+					display: false,
+					musicapps: false,
+					video: false,
+					podcast: false,
+					onDemand: false
+				};
+				temp.title = x;
+				if (camp.audio === x) temp.audio = true;
+				if (camp.display === x) temp.display = true;
+				if (camp.video === x) temp.video = true;
+				if (camp.musicapps === x) temp.musicapps = true;
+				if (camp.podcast === x) temp.podcast = true;
+				if (camp.onDemand === x) temp.onDemand = true;
+				titlesF.push(temp);
+			}
 		});
 		data.titles = titlesF;
 		console.log(data, titlesH, titlesF);
@@ -413,7 +518,7 @@ function EditUser() {
 						<Snackbar
 							open={openError.status}
 							anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-							key={'top' + 'right'}
+							key={'top' + 'right' + 'error'}
 							autoHideDuration={6000}
 							onClose={() => setOpenError((prev) => ({ ...prev, status: false }))}
 						>
@@ -428,7 +533,7 @@ function EditUser() {
 							open={openSuccess.status}
 							autoHideDuration={6000}
 							anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-							key={'top' + 'right'}
+							key={'top' + 'right' + 'success'}
 							onClose={() => setOpenSuccess((prev) => ({ ...prev, status: false }))}
 						>
 							<Alert
@@ -470,8 +575,14 @@ function EditUser() {
 								<Table className="selectedcamp">
 									<TableHead>
 										<TableRow>
-											<TableCell id="cellselect" className="selectedcamphead">
+											<TableCell id="cellselect" align="center">
 												Title
+											</TableCell>
+											<TableCell id="cellselect" align="center">
+												Type
+											</TableCell>
+											<TableCell id="cellselect" align="center">
+												Pricing Model
 											</TableCell>
 											<TableCell id="cellselect" />
 											<TableCell id="cellselect" />
@@ -481,16 +592,20 @@ function EditUser() {
 										{selectedcampaigns.map((x, i) => {
 											return (
 												<TableRow key={i}>
-													<TableCell id="cellselect">{x.campaignName}</TableCell>
-													<TableCell
-														id="cellselect"
-														align="right"
-														className="selectedcampval"
-													>
+													<TableCell id="cellselect" align="center">
+														{x.campaignName}
+													</TableCell>
+													<TableCell id="cellselect" align="center">
+														{x.type}
+													</TableCell>
+													<TableCell id="cellselect" align="center">
+														{x.PricingModel}
+													</TableCell>
+													<TableCell id="cellselect" align="right">
 														<IconButton
 															aria-label="edit"
 															onClick={() => {
-																setOpenEdit(true);
+																setOpen(true);
 																handleEditSetUp(x);
 															}}
 														>
@@ -523,74 +638,80 @@ function EditUser() {
 						) : (
 							''
 						)}
-						<div>
-							<Input
-								placeholder="search campaigns"
-								onChange={(e) => {
-									var campaignsdata = campaigns.filter((x) =>
-										x.Adtitle.toLowerCase().includes(e.target.value.toLowerCase())
-									);
-									setsearchedcampaigns(campaignsdata);
-								}}
-							/>
-							<div className="List">
-								{searchedcampaigns.map((camp, i) => {
-									return (
-										<div
-											key={i}
-											className="ListItem"
-											onClick={() => {
-												setselectedsemicampaigns({
-													...selectedsemicampaigns,
-													searchName: camp.Adtitle,
-													adtitle: camp.Adtitle,
-													type: 'campaign',
-													PricingModel: camp.PricingModel,
-													endDate: camp.endDate,
-													startDate: camp.startDate
-												});
-												setOpen(true);
-											}}
-										>
-											{camp.Adtitle}
-										</div>
-									);
-								})}
+						<div className="bothlist">
+							<div className="listcomp">
+								<Input
+									placeholder="search campaigns"
+									onChange={(e) => {
+										var campaignsdata = campaigns.filter((x) =>
+											x.Adtitle.toLowerCase().includes(e.target.value.toLowerCase())
+										);
+										setsearchedcampaigns(campaignsdata);
+									}}
+								/>
+								<div className="List">
+									{searchedcampaigns.map((camp, i) => {
+										return (
+											<div
+												key={i}
+												className="ListItem"
+												onClick={() => {
+													setselectedsemicampaigns({
+														...selectedsemicampaigns,
+														searchName: camp.Adtitle,
+														adtitle: camp.Adtitle,
+														title: camp.Adtitle,
+														type: 'campaign',
+														submitType: 'create',
+														PricingModel: camp.PricingModel,
+														endDate: camp.endDate,
+														startDate: camp.startDate
+													});
+													setOpen(true);
+												}}
+											>
+												{camp.Adtitle}
+											</div>
+										);
+									})}
+								</div>
 							</div>
-						</div>
-						<div>
-							<Input
-								placeholder="search Bundles"
-								onChange={(e) => {
-									var campaignsdata = bundles.filter((x) =>
-										x.bundleadtitle.toLowerCase().includes(e.target.value.toLowerCase())
-									);
-									setsearchedbundles(campaignsdata);
-								}}
-							/>
-							<div className="List">
-								{searchedbundles.map((camp, i) => {
-									return (
-										<div
-											key={i}
-											className="ListItem"
-											onClick={() => {
-												setselectedsemicampaigns({
-													...selectedsemicampaigns,
-													adtitle: camp.bundleadtitle,
-													searchName: camp._id,
-													type: 'bundle',
-													PricingModel: camp.PricingModel,
-													endDate: camp.endDate,
-													startDate: camp.startDate
-												});
-												setOpen(true);
-											}}
-										>
-											{camp.bundleadtitle}
-										</div>
-									);
-								})}
+							<div className="listcomp">
+								<Input
+									placeholder="search Bundles"
+									onChange={(e) => {
+										var campaignsdata = bundles.filter((x) =>
+											x.bundleadtitle.toLowerCase().includes(e.target.value.toLowerCase())
+										);
+										setsearchedbundles(campaignsdata);
+									}}
+								/>
+								<div className="List">
+									{searchedbundles.map((camp, i) => {
+										return (
+											<div
+												key={i}
+												className="ListItem"
+												onClick={() => {
+													setselectedsemicampaigns({
+														...selectedsemicampaigns,
+														adtitle: camp.bundleadtitle,
+														title: camp.bundleadtitle,
+														searchName: camp._id,
+														type: 'bundle',
+														submitType: 'create',
+														PricingModel: camp.PricingModel,
+														endDate: camp.endDate,
+														startDate: camp.startDate
+													});
+													setOpen(true);
+												}}
+											>
+												{camp.bundleadtitle}
+											</div>
+										);
+									})}
+								</div>
 							</div>
 						</div>
 						<Modal
@@ -598,8 +719,18 @@ function EditUser() {
 							onClose={() => {
 								setOpen(false);
 								setselectedsemicampaigns({
+									_id: '',
+									submitType: '',
+									userid: '',
+									title: '',
+									searchName: '',
 									adtitle: '',
 									titles: [],
+									type: '',
+									endDate: null,
+									startDate: null,
+									PricingModel: null,
+									audio: null,
 									audio: null,
 									display: null,
 									video: null,
@@ -612,20 +743,28 @@ function EditUser() {
 							aria-describedby="simple-modal-description"
 						>
 							<Paper style={modalStyle}>
-								<div>{selectedsemicampaigns && selectedsemicampaigns.adtitle}</div>
+								<b>
+									{selectedsemicampaigns && selectedsemicampaigns.submitType === 'create' ? (
+										selectedsemicampaigns.adtitle
+									) : (
+										selectedsemicampaigns.title
+									)}
+								</b>
 								<div className="editcamptitledis">
-									<div>Title to be displayed :</div>
-									<input
-										placeholder="Campaign or bundle title"
-										required
-										className="titleing"
-										value={selectedsemicampaigns.title}
-										onChange={(e) =>
-											setselectedsemicampaigns({
-												...selectedsemicampaigns,
-												title: e.target.value
-											})}
-									/>
+									<div className="liscomp">
+										<div>Title to be displayed :</div>
+										<input
+											placeholder="Campaign or bundle title"
+											required
+											className="titleing"
+											value={selectedsemicampaigns.title}
+											onChange={(e) =>
+												setselectedsemicampaigns({
+													...selectedsemicampaigns,
+													title: e.target.value
+												})}
+										/>
+									</div>
 								</div>
 								<div>
 									{selectedsemicampaigns.titles && selectedsemicampaigns.titles.length ? (
@@ -718,20 +857,100 @@ function EditUser() {
 											<FormLabel component="legend">Managing Merge</FormLabel>
 											<FormGroup className="options">
 												<FormControlLabel
-													disabled={selectedsemicampaigns.audio ? true : false}
+													disabled={
+														selectedsemicampaigns.audio ||
+														selectedsemicampaigns.musicapps ||
+														selectedsemicampaigns.podcast ||
+														selectedsemicampaigns.onDemand ? (
+															true
+														) : (
+															false
+														)
+													}
 													control={
 														<Checkbox
 															checked={titlesadding.audio}
 															onChange={(e) =>
 																settitlesadding({
 																	...titlesadding,
-																	audio: e.target.checked
+																	audio: e.target.checked,
+																	musicapps: e.target.checked,
+																	podcast: e.target.checked,
+																	onDemand: e.target.checked
 																})}
 															name="audio"
 															color="primary"
 														/>
 													}
 													label="Audio"
+												/>
+												<FormControlLabel
+													disabled={
+														selectedsemicampaigns.audio ||
+														selectedsemicampaigns.musicapps ? (
+															true
+														) : (
+															false
+														)
+													}
+													control={
+														<Checkbox
+															checked={titlesadding.musicapps}
+															onChange={(e) =>
+																settitlesadding({
+																	...titlesadding,
+																	musicapps: e.target.checked
+																})}
+															name="musicapps"
+															color="primary"
+														/>
+													}
+													label="Musicapps(Audio)"
+												/>
+												<FormControlLabel
+													disabled={
+														selectedsemicampaigns.audio || selectedsemicampaigns.podcast ? (
+															true
+														) : (
+															false
+														)
+													}
+													control={
+														<Checkbox
+															checked={titlesadding.podcast}
+															onChange={(e) =>
+																settitlesadding({
+																	...titlesadding,
+																	podcast: e.target.checked
+																})}
+															name="podcast"
+															color="primary"
+														/>
+													}
+													label="Podcast(Audio)"
+												/>
+												<FormControlLabel
+													disabled={
+														selectedsemicampaigns.audio ||
+														selectedsemicampaigns.onDemand ? (
+															true
+														) : (
+															false
+														)
+													}
+													control={
+														<Checkbox
+															checked={titlesadding.onDemand}
+															onChange={(e) =>
+																settitlesadding({
+																	...titlesadding,
+																	onDemand: e.target.checked
+																})}
+															name="onDemand"
+															color="primary"
+														/>
+													}
+													label="onDemand(Audio)"
 												/>
 												<FormControlLabel
 													disabled={selectedsemicampaigns.display ? true : false}
@@ -765,54 +984,6 @@ function EditUser() {
 													}
 													label="Video"
 												/>
-												<FormControlLabel
-													disabled={selectedsemicampaigns.musicapps ? true : false}
-													control={
-														<Checkbox
-															checked={titlesadding.musicapps}
-															onChange={(e) =>
-																settitlesadding({
-																	...titlesadding,
-																	musicapps: e.target.checked
-																})}
-															name="musicapps"
-															color="primary"
-														/>
-													}
-													label="Musicapps"
-												/>
-												<FormControlLabel
-													disabled={selectedsemicampaigns.podcast ? true : false}
-													control={
-														<Checkbox
-															checked={titlesadding.podcast}
-															onChange={(e) =>
-																settitlesadding({
-																	...titlesadding,
-																	podcast: e.target.checked
-																})}
-															name="podcast"
-															color="primary"
-														/>
-													}
-													label="Podcast"
-												/>
-												<FormControlLabel
-													disabled={selectedsemicampaigns.onDemand ? true : false}
-													control={
-														<Checkbox
-															checked={titlesadding.onDemand}
-															onChange={(e) =>
-																settitlesadding({
-																	...titlesadding,
-																	onDemand: e.target.checked
-																})}
-															name="onDemand"
-															color="primary"
-														/>
-													}
-													label="onDemand"
-												/>
 											</FormGroup>
 											<FormHelperText>{texterror ? 'Enter the unique title' : ''}</FormHelperText>
 										</FormControl>
@@ -826,240 +997,15 @@ function EditUser() {
 											variant="contained"
 											onClick={() => {
 												setloadingsubmit(true);
-												handleAddCampagin();
+												if (selectedsemicampaigns.submitType === 'create') handleAddCampagin();
+												else handleEditCampagin();
 											}}
 										>
-											Add Campaign
-										</Button>
-									) : (
-										<CircularProgress />
-									)}
-								</div>
-							</Paper>
-						</Modal>
-						<Modal
-							open={openEdit}
-							onClose={() => {
-								setOpenEdit(false);
-								setselectedsemicampaigns({
-									adtitle: '',
-									titles: [],
-									audio: null,
-									display: null,
-									video: null,
-									musicapps: null,
-									onDemand: null,
-									podcast: null
-								});
-							}}
-							aria-labelledby="simple-modal-title"
-							aria-describedby="simple-modal-description"
-						>
-							<Paper style={modalStyle}>
-								<div>{selectedsemicampaigns && selectedsemicampaigns.adtitle}</div>
-								<div>
-									{selectedsemicampaigns.titles && selectedsemicampaigns.titles.length ? (
-										<div>
-											<Table>
-												<TableHead>
-													<TableRow>
-														<TableCell align="center">Title</TableCell>
-														<TableCell align="center">values</TableCell>
-														<TableCell align="center" />
-													</TableRow>
-												</TableHead>
-												<TableBody>
-													{selectedsemicampaigns.titles.map((x, i) => {
-														var su = [];
-														x.audio && su.push('audio');
-														x.display && su.push('display');
-														x.video && su.push('video');
-														x.musicapps && su.push('musicapps');
-														x.podcast && su.push('podcast');
-														x.onDemand && su.push('onDemand');
-														return (
-															<TableRow key={i} className="semiselectcont">
-																<TableCell align="center" className="semiselecttit">
-																	{x.title}
-																</TableCell>
-																<TableCell align="center" className="semiselectval">
-																	{su.map((x) => x + ' ,')}
-																</TableCell>
-																<TableCell
-																	style={{ cursor: 'pointer' }}
-																	align="center"
-																	onClick={() => handledelete(x.title, su)}
-																>
-																	<DeleteIcon />
-																</TableCell>
-															</TableRow>
-														);
-													})}
-												</TableBody>
-											</Table>
-										</div>
-									) : (
-										''
-									)}
-								</div>
-								<div>
-									<form
-										onSubmit={(e) => {
-											e.preventDefault();
-											var temp = selectedsemicampaigns;
-											var datacheck = temp.titles.filter(
-												(x) => x.title.toLowerCase() === titlesadding.title.toLowerCase()
-											);
-											console.log(datacheck);
-											if (datacheck.length === 0) {
-												settexterror(false);
-												temp.titles.push(titlesadding);
-												if (titlesadding.audio) temp.audio = titlesadding.title;
-												if (titlesadding.display) temp.display = titlesadding.title;
-												if (titlesadding.video) temp.video = titlesadding.title;
-												if (titlesadding.musicapps) temp.musicapps = titlesadding.title;
-												if (titlesadding.podcast) temp.podcast = titlesadding.title;
-												if (titlesadding.onDemand) temp.onDemand = titlesadding.title;
-												setselectedsemicampaigns(temp);
-												settitlesadding({
-													title: '',
-													audio: false,
-													display: false,
-													musicapps: false,
-													video: false,
-													podcast: false,
-													onDemand: false
-												});
-												console.log(temp);
-											} else {
-												settexterror(true);
-											}
-										}}
-									>
-										<input
-											placeholder="Title"
-											required
-											className="titleing"
-											value={titlesadding.title}
-											onChange={(e) =>
-												settitlesadding({ ...titlesadding, title: e.target.value })}
-										/>
-										<FormControl error={texterror} component="fieldset">
-											<FormLabel component="legend">Managing Merge</FormLabel>
-											<FormGroup className="options">
-												<FormControlLabel
-													disabled={selectedsemicampaigns.audio ? true : false}
-													control={
-														<Checkbox
-															checked={titlesadding.audio}
-															onChange={(e) =>
-																settitlesadding({
-																	...titlesadding,
-																	audio: e.target.checked
-																})}
-															name="audio"
-															color="primary"
-														/>
-													}
-													label="Audio"
-												/>
-												<FormControlLabel
-													disabled={selectedsemicampaigns.display ? true : false}
-													control={
-														<Checkbox
-															checked={titlesadding.display}
-															onChange={(e) =>
-																settitlesadding({
-																	...titlesadding,
-																	display: e.target.checked
-																})}
-															name="display"
-															color="primary"
-														/>
-													}
-													label="Display"
-												/>
-												<FormControlLabel
-													disabled={selectedsemicampaigns.video ? true : false}
-													control={
-														<Checkbox
-															checked={titlesadding.video}
-															onChange={(e) =>
-																settitlesadding({
-																	...titlesadding,
-																	video: e.target.checked
-																})}
-															name="video"
-															color="primary"
-														/>
-													}
-													label="Video"
-												/>
-												<FormControlLabel
-													disabled={selectedsemicampaigns.musicapps ? true : false}
-													control={
-														<Checkbox
-															checked={titlesadding.musicapps}
-															onChange={(e) =>
-																settitlesadding({
-																	...titlesadding,
-																	musicapps: e.target.checked
-																})}
-															name="musicapps"
-															color="primary"
-														/>
-													}
-													label="Musicapps"
-												/>
-												<FormControlLabel
-													disabled={selectedsemicampaigns.podcast ? true : false}
-													control={
-														<Checkbox
-															checked={titlesadding.podcast}
-															onChange={(e) =>
-																settitlesadding({
-																	...titlesadding,
-																	podcast: e.target.checked
-																})}
-															name="podcast"
-															color="primary"
-														/>
-													}
-													label="Podcast"
-												/>
-												<FormControlLabel
-													disabled={selectedsemicampaigns.onDemand ? true : false}
-													control={
-														<Checkbox
-															checked={titlesadding.onDemand}
-															onChange={(e) =>
-																settitlesadding({
-																	...titlesadding,
-																	onDemand: e.target.checked
-																})}
-															name="onDemand"
-															color="primary"
-														/>
-													}
-													label="onDemand"
-												/>
-											</FormGroup>
-											<FormHelperText>{texterror ? 'Enter the unique title' : ''}</FormHelperText>
-										</FormControl>
-										<Button className="button" variant="contained" color="secondary" type="submit">
-											Add
-										</Button>
-									</form>
-									{!loadingsubmit ? (
-										<Button
-											color="secondary"
-											variant="contained"
-											onClick={() => {
-												setloadingsubmit(true);
-												handleAddCampagin();
-											}}
-										>
-											update Campaign
+											{selectedsemicampaigns.submitType === 'create' ? (
+												'Add Campaign'
+											) : (
+												'Update Campaign'
+											)}
 										</Button>
 									) : (
 										<CircularProgress />

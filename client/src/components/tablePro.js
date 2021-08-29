@@ -492,7 +492,10 @@ function TablePro() {
 		audio: [
 			{
 				columns: PublishHead,
-				data: report.report.audio.length ? PublishBody('Audio', report.report.audio, spentfinder, report) : null
+				data:
+					report.report && report.report.audio.length
+						? PublishBody('Audio', report.report.audio, spentfinder, report)
+						: null
 			}
 		],
 		display: [

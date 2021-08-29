@@ -2,41 +2,85 @@ import React, { useEffect, useState } from 'react';
 // import { useHistory } from 'react-router-dom'
 import SearchCampagin from '../components/SearchCampagin';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadAds, loadClientAds, loadingAds, searchads, storepagination } from '../redux/actions/manageadsAction';
+import {
+	loadingAds,
+	ClientloadingAds,
+	loadAds,
+	loadClientAds,
+	loadClientAAds,
+	searchclientads,
+	searchads,
+	clientorderManager,
+	orderManager,
+	clientstorepagination,
+	storepagination
+} from '../redux/actions/manageadsAction';
 import PreLoader from '../components/loaders/PreLoader';
 import SortPaTable from '../components/SortPaTable';
-import { orderManager } from '../redux/actions/manageadsAction';
+import { useHistory } from 'react-router-dom';
+// import { orderManager } from '../redux/actions/manageadsAction';
 
 function Dashboard({ clientview, clientdirect }) {
+	const history = useHistory();
 	const dispatchRedux = useDispatch();
+	const dataT = new URLSearchParams(window.location.search).get('red');
 	const manageads = useSelector((state) => state.manageads);
+	const clientmanageads = useSelector((state) => state.clientmanageads);
 	const user = useSelector((state) => state.auth);
 	const [ searchval, setSearchval ] = useState('');
-	useEffect(() => {
-		if (clientdirect) {
-			if (manageads && !manageads.manageads) {
-				dispatchRedux(loadingAds());
-				dispatchRedux(loadClientAds());
-			}
-			if (manageads && manageads.value) {
-				setSearchval(manageads.value);
-			}
+	const [ statechecker ] = useState(clientview || clientdirect);
+	// console.log(dataT);
+	if (dataT) {
+		if (clientview) {
+			history.push('/?red=client');
 		} else {
-			if (manageads && !manageads.manageads) {
-				dispatchRedux(loadingAds());
-				dispatchRedux(loadAds());
-			}
-			if (manageads && manageads.value) {
-				setSearchval(manageads.value);
-			}
+			history.push('/?red=manage');
 		}
-	}, []);
+	}
+	useEffect(
+		() => {
+			// console.log(clientview || clientdirect);
+			// console.log(clientmanageads);
+			if (clientview || clientdirect) {
+				// console.log(clientmanageads.manageads);
+				if (clientmanageads && !clientmanageads.manageads) {
+					// alert('crazy');
+					dispatchRedux(ClientloadingAds());
+					clientdirect && dispatchRedux(loadClientAds());
+					clientview && dispatchRedux(loadClientAAds());
+				}
+				if (clientmanageads && clientmanageads.value) {
+					setSearchval(clientmanageads.value);
+				}
+			} else {
+				console.log(manageads.manageads);
+				if (manageads && !manageads.manageads) {
+					// alert('crazy');
+					dispatchRedux(loadingAds());
+					dispatchRedux(loadAds());
+				}
+				if (manageads && manageads.value) {
+					setSearchval(manageads.value);
+				}
+			}
+		},
+		[ statechecker ]
+	);
 	const onChangeRedux = (val) => {
 		dispatchRedux(searchads(val));
 		setSearchval(val);
 	};
-
-	if (manageads && manageads.isLoading) {
+	const onChangeReduxclient = (val) => {
+		dispatchRedux(searchclientads(val));
+		setSearchval(val);
+	};
+	console.log((clientdirect || clientview) && clientmanageads.isLoading);
+	console.log(!(clientdirect || clientview) && manageads && manageads.isLoading);
+	// console.log(clientmanageads);
+	if (
+		(!(clientdirect || clientview) && manageads && manageads.isLoading) ||
+		((clientdirect || clientview) && clientmanageads.isLoading)
+	) {
 		return (
 			<div className="dashboard">
 				<PreLoader />
@@ -51,8 +95,15 @@ function Dashboard({ clientview, clientdirect }) {
 		{ type: 'date', key: 'endDate', label: 'End Date' },
 		{ type: 'number', key: 'remainingDays', label: 'Remaining Days' }
 	];
+	const headersClient = [
+		{ type: 'string', key: 'campaignName', label: 'Name' },
+		{ type: 'string', key: 'PricingModel', label: 'Pricing Model' },
+		{ type: 'date', key: 'startDate', label: 'Start Date' },
+		{ type: 'date', key: 'endDate', label: 'End Date' },
+		{ type: 'number', key: 'remainingDays', label: 'Remaining Days' }
+	];
 	// console.log(manageads);
-	if (manageads && manageads.searchedmanageads) {
+	if (!(clientdirect || clientview) && manageads && manageads.searchedmanageads) {
 		const csvReport = {
 			filename: 'ManageAds.csv',
 			headers: headers,
@@ -74,6 +125,32 @@ function Dashboard({ clientview, clientdirect }) {
 					actionToSet={storepagination}
 					pagination={manageads.pagination}
 					rpp={manageads.rowspp}
+				/>
+			</div>
+		);
+	}
+	if ((clientdirect || clientview) && clientmanageads && clientmanageads.searchedmanageads) {
+		const csvReport = {
+			filename: 'ManageAds.csv',
+			headers: headersClient,
+			data: clientmanageads.searchedmanageads
+		};
+		return (
+			<div className="dashboard">
+				<SearchCampagin state={user && user.user.usertype} inval={searchval} setInval={onChangeReduxclient} />
+				<SortPaTable
+					tabletype="campagins"
+					headers={headersClient}
+					csvReport={csvReport}
+					orderManager={clientorderManager}
+					clientview={clientview}
+					clientdirect={clientdirect}
+					adss={clientmanageads.searchedmanageads}
+					order={clientmanageads.ordername}
+					direc={clientmanageads.orderdir}
+					actionToSet={clientstorepagination}
+					pagination={clientmanageads.pagination}
+					rpp={clientmanageads.rowspp}
 				/>
 			</div>
 		);
