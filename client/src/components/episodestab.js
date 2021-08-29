@@ -72,6 +72,7 @@ export default function EpisodeTab(){
 	const headers = [
 		{ key: 'episodename', label: 'Episode Name' },
 		{ key: 'request', label: 'Request' },
+		{ key: 'avgrequest', label: 'Avg Requests' },
 		{ key: 'publisher', label: 'Publisher Name' },
 		{ key: 'category', label: 'Category' }
 	];
@@ -260,6 +261,7 @@ export default function EpisodeTab(){
 								{/* <TableCell>{title}</TableCell> */}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('episodename')} className={getClassNamesFor('episodename')}>  Episode Name {arrowRetuner( sortconfig.key==='episodename'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('request')} className={getClassNamesFor('request')}> Request {arrowRetuner( sortconfig.key==='request'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('avgrequest')} className={getClassNamesFor('avgrequest')}> Request {arrowRetuner( sortconfig.key==='avgrequest'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('publisher')} className={getClassNamesFor('publisher')}> Publisher {arrowRetuner( sortconfig.key==='publisher'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('category')} className={getClassNamesFor('category')}> Category {arrowRetuner( sortconfig.key==='category'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('category_details.tier1')} className={getClassNamesFor('category_details.tier1')}> Tier1 {arrowRetuner( sortconfig.key==='category_details.tier1'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
@@ -277,6 +279,7 @@ export default function EpisodeTab(){
 										{row.episodename ? row.episodename : ''}
 									</TableCell>
 									<TableCell>{row.request ? row.request : ''}</TableCell>
+									<TableCell>{row.avgrequest ? Math.round(row.avgrequest)  : ''}</TableCell>
 									<TableCell>{row.publisher ? row.publisher: ''}</TableCell>
 									<TableCell>{row.category==="#N/A" ? row.category_details[0].new_taxonamy : row.category}</TableCell>
 									<TableCell>{row.category_details.length ? row.category_details[0].tier1 : ''}</TableCell>

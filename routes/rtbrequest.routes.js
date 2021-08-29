@@ -6,7 +6,7 @@ const adminauth = require('../authenMiddleware/adminauth')
 const Reqreport = mongoose.model('reqreport')
 const Resreport = mongoose.model('resreport')
 const EpisodeModel = require('../models/episodemodel')
-const EpisodeModel2 =require('../models/episodemodel2')
+const EpisodeModel2 = require('../models/episodemodel2')
 const CategoryReports2 = require('../models/categoryreports2')
 // const Campaignwisereports=require('../models/campaignwisereports.model')
 const SpentReport = mongoose.model('spentreports')
@@ -100,8 +100,8 @@ router.post(
                         }
                     }
                 },
-                {$sort:{"_id.Date":-1}},
-                {$match:{"_id.Date":{$gt:"2021-06-30"}}}
+                { $sort: { "_id.Date": -1 } },
+                { $match: { "_id.Date": { $gt: "2021-06-30" } } }
                 // {$project:{
                 //     rtbType:1,
                 //     ads:"$requests",
@@ -133,9 +133,9 @@ router.get(
                                     _id: { Date: "$date" },
                                     impressions: { $sum: "$impression" }
                                 },
-                                
+
                             },
-                            {$match:{"_id.Date":{$gt:"2021-06-30"}}}
+                            { $match: { "_id.Date": { $gt: "2021-06-30" } } }
                         ],
                         "Rubicon_Data": [
                             { $match: { ssp: "Rubicon" } },
@@ -145,11 +145,11 @@ router.get(
                                     impressions: { $sum: "$impression" }
                                 }
                             },
-                            {$match:{"_id.Date":{$gt:"2021-06-30"}}}
+                            { $match: { "_id.Date": { $gt: "2021-06-30" } } }
                         ]
                     }
                 },
-                
+
 
                 //     {$group:{_id:{Date:"$date"},
                 //     impressions:{$sum:"$impression"}
@@ -194,8 +194,8 @@ router.get(
                     }
                 },
                 { $sort: { impressions: -1 } },
-                {$match:{"_id.Date":{$gt:"2021-06-30"}}}
-                
+                { $match: { "_id.Date": { $gt: "2021-06-30" } } }
+
             ])
             res.status(200).json(result)
 
@@ -249,6 +249,18 @@ router.post(
     adminauth,
     async (req, res) => {
         try {
+
+            let startdate = new Date();
+            startdate.setDate(10);
+            startdate.setMonth(07);
+            startdate.setFullYear(2021);
+
+            let date = new Date();
+            let days = Math.round((date.getTime() - startdate.getTime()) / 86400000);
+            if (days === 0) {
+                days = 1;
+            }
+
             const result = await EpisodeModel2.aggregate([
                 {
                     $lookup: {
@@ -273,20 +285,20 @@ router.post(
                         episodename: 1,
                         category: 1,
                         publisherid: 1,
-                        requests:1,
-                        displayname:1,
-                        hostPossibility:1,
-                        extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+                        requests: 1,
+                        displayname: 1,
+                        hostPossibility: 1,
+                        extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
                     }
                 },
                 {
                     $group: {
-                        _id: {episodename:"$episodename",category:"$extra_details.category"},
+                        _id: { episodename: "$episodename", category: "$extra_details.category" },
                         publisher: { $addToSet: "$publisherid" },
                         request: { $sum: "$requests" },
                         displayname: { $first: "$displayname" },
                         hostPossibility: { $first: "$hostPossibility" },
-                        category_details:{$addToSet:"$extra_details"}
+                        category_details: { $addToSet: "$extra_details" }
                     }
                 },
                 {
@@ -297,16 +309,18 @@ router.post(
                         as: 'publisher_details'
                     }
                 },
-                // {$unwind:"$publisher_details"},
+                { $addFields: { avgrequest: { $divide: [ '$request', days ] } } },
                 {
                     $project: {
                         episodename: "$_id.episodename",
                         category: "$_id.category",
                         publisher: { $setUnion: ["$publisher_details.publishername", []] },
                         request: "$request",
+                        avgrequest:"$avgrequest",
                         displayname: "$displayname",
                         hostPossibility: "$hostPossibility",
-                        category_details:1
+                        category_details: 1,
+                        
                     }
                 }
             ])
@@ -343,32 +357,32 @@ router.post(
     adminauth,
     async (req, res) => {
         try {
-           
-                    //data.make_model=data.make_model.toLowerCase()
 
-                    let {
-                        _id,
-                        publisher,
-                        episodename,
-                        category,
-                        requests,
-                        displayname,
-                        hostPossibility,
-                    } = req.body;
-                    let updates = {
-                        displayname,
-                        hostPossibility,
-                    };
-                    const updated = await EpisodeModel2.updateMany({ episodename }, { $set: updates });
-                    if (!updated) {
-                        return res.status(400).json({ error: "Couldn't Update !" });
-                    }
+            //data.make_model=data.make_model.toLowerCase()
 
-                    res.status(200).json('Updated Successfuly!');
-                } catch (err) {
-                    res.status(400).json({ error: err.message });
-                }
-    
-            })
+            let {
+                _id,
+                publisher,
+                episodename,
+                category,
+                requests,
+                displayname,
+                hostPossibility,
+            } = req.body;
+            let updates = {
+                displayname,
+                hostPossibility,
+            };
+            const updated = await EpisodeModel2.updateMany({ episodename }, { $set: updates });
+            if (!updated) {
+                return res.status(400).json({ error: "Couldn't Update !" });
+            }
+
+            res.status(200).json('Updated Successfuly!');
+        } catch (err) {
+            res.status(400).json({ error: err.message });
+        }
+
+    })
 
 module.exports = router

@@ -121,7 +121,9 @@ export default function Zipdata() {
 	const headers = [
 		{ key: 'pincode', label: 'Pincode' },
 		{ key: 'requests', label: 'Requests' },
+		{ key: 'avgrequest', label: 'Avg Requests' },
 		{ key: 'impression', label: 'Impressions' },
+		{ key: 'avgimpression', label: 'Avg Impressions' },
 		{ key: 'click', label: 'Clicks' },
 		{ key: 'area', label: 'Area' },
 		{ key: 'lowersubcity', label: 'Lower Sub City' },
@@ -225,6 +227,7 @@ export default function Zipdata() {
 								{<TableCell onClick={() => requestSort('requests')} className={getClassNamesFor('requests')} style={{ cursor: 'pointer' }}> Requests {arrowRetuner(sortconfig.key === 'requests' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
 								{<TableCell onClick={() => requestSort('avgrequest')} className={getClassNamesFor('avgrequest')} style={{ cursor: 'pointer' }}> Avg Requests {arrowRetuner(sortconfig.key === 'avgrequest' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
 								{<TableCell onClick={() => requestSort('impression')} className={getClassNamesFor('impression')} style={{ cursor: 'pointer' }}> Impressions {arrowRetuner(sortconfig.key === 'impression' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell onClick={() => requestSort('avgimpression')} className={getClassNamesFor('avgimpression')} style={{ cursor: 'pointer' }}>Avg Impressions {arrowRetuner(sortconfig.key === 'avgimpression' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
 								{<TableCell onClick={() => requestSort('click')} className={getClassNamesFor('click')} style={{ cursor: 'pointer' }}> Click {arrowRetuner(sortconfig.key === 'click' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
 								{<TableCell>CTR</TableCell>}
 								{<TableCell onClick={() => requestSort('area')} className={getClassNamesFor('area')} style={{ cursor: 'pointer' }}> Urban/Rural {arrowRetuner(sortconfig.key === 'area' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
@@ -253,6 +256,7 @@ export default function Zipdata() {
 										<TableCell>{row.requests ? row.requests : ''}</TableCell>
 										<TableCell>{row.avgrequest ? Math.round(row.avgrequest)  : ''}</TableCell>
 										<TableCell>{row.impression ? row.impression : ''}</TableCell>
+										<TableCell>{row.impression ? Math.round(row.avgimpression)  : ''}</TableCell>
 										<TableCell>{row.click ? row.click : 0}</TableCell>
 										<TableCell>{row.impression!==0 ? Math.round(((row.click/row.impression)*100))/100 : 0}%</TableCell>
 										

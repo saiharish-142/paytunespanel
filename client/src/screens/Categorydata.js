@@ -124,6 +124,7 @@ export default function Categorydata() {
 	const headers = [
 		{ key: 'category', label: 'Category' },
 		{ key: 'impression', label: 'Impressions' },
+		{ key: 'avgimpression', label: 'Avg Impressions' },
 		{ key: 'click', label: 'Clicks' },
 		{ key: 'tier1', label: 'Tier1' },
 		{ key: 'tier2', label: 'Tier2' },
@@ -222,6 +223,7 @@ export default function Categorydata() {
 								{/* <TableCell>{title}</TableCell> */}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('category')} className={getClassNamesFor('category')}>Category {arrowRetuner( sortconfig.key==='category'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('impression')} className={getClassNamesFor('impression')}>Impressions {arrowRetuner( sortconfig.key==='impression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('avgimpression')} className={getClassNamesFor('avgimpression')}>Avg Impressions {arrowRetuner( sortconfig.key==='avgimpression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('click')} className={getClassNamesFor('click')}>Clicks {arrowRetuner( sortconfig.key==='click'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
 								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier1')} className={getClassNamesFor('tier1')}>Tier1 {arrowRetuner( sortconfig.key==='tier1'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
 								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier2')} className={getClassNamesFor('tier2')}>Tier2 {arrowRetuner( sortconfig.key==='tier2'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
@@ -240,6 +242,7 @@ export default function Categorydata() {
 										{row.category ? row.category : ''}
 									</TableCell>
 									<TableCell>{row.impression ? row.impression : ''}</TableCell>
+									<TableCell>{row.impression ? Math.round(row.avgimpression)  : ''}</TableCell>
 									<TableCell>{row.click?row.click:''}</TableCell>
 									<TableCell>{row.tier1 ? row.tier1 : ''}</TableCell>
 									<TableCell>{row.tier2 ? row.tier2 : ''}</TableCell>

@@ -124,6 +124,7 @@ export default function Phonedata() {
 	const headers = [
 		{ key: 'make_model', label: 'Make_Model' },
 		{ key: 'impression', label: 'Impressions' },
+		{ key: 'avgimpression', label: 'Avg Impressions' },
 		{ key: 'click', label: 'Clicks' },
 		{ key: 'release', label: 'Release Month and Year' },
 		{ key: 'cost', label: 'Release Cost or Mrp' },
@@ -258,7 +259,7 @@ export default function Phonedata() {
 										{row.make_model ? row.make_model : ''}
 									</TableCell>
 									<TableCell>{row.impression ? row.impression : ''}</TableCell>
-									<TableCell>{row.avgimpression ? row.avgimpression : ''}</TableCell>
+									<TableCell>  {row.avgimpression ? Math.round(row.avgimpression)  : ''}</TableCell>
 									<TableCell>{row.click ? row.click : ''}</TableCell>
 									<TableCell>{row.release ? row.release : ''}</TableCell>
 									<TableCell>{row.cost ? row.cost : ''}</TableCell>
