@@ -240,6 +240,7 @@ export default function Phonedata() {
 								{/* <TableCell>{title}</TableCell> */}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('make_model')} className={getClassNamesFor('make_model')}>  Make_And_Model {arrowRetuner( sortconfig.key==='make_model'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('impression')} className={getClassNamesFor('impression')}> Impressions {arrowRetuner( sortconfig.key==='impression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('avgimpression')} className={getClassNamesFor('avgimpression')}> Avg Impressions {arrowRetuner( sortconfig.key==='avgimpression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('click')} className={getClassNamesFor('click')}> Clicks {arrowRetuner( sortconfig.key==='click'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('release')} className={getClassNamesFor('release')}> Release Month And Year {arrowRetuner( sortconfig.key==='release'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('cost')} className={getClassNamesFor('cost')}>  Release Cost or MRP {arrowRetuner( sortconfig.key==='cost'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>
@@ -257,6 +258,7 @@ export default function Phonedata() {
 										{row.make_model ? row.make_model : ''}
 									</TableCell>
 									<TableCell>{row.impression ? row.impression : ''}</TableCell>
+									<TableCell>{row.avgimpression ? row.avgimpression : ''}</TableCell>
 									<TableCell>{row.click ? row.click : ''}</TableCell>
 									<TableCell>{row.release ? row.release : ''}</TableCell>
 									<TableCell>{row.cost ? row.cost : ''}</TableCell>

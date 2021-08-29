@@ -1301,89 +1301,9 @@ router.put('/editphonedata', adminauth, async (req, res) => {
 
 router.get('/phonedata', adminauth, async (req, res) => {
 	try {
-		const phone = await phonemodel2.aggregate([{ $sort: { impression: -1 } }]);
 
-		// const phone = await phonemodelreports.aggregate([
-		// 	{
-		// 		$lookup: {
-		// 			from: 'phonemodel2reports',
-		// 			localField: 'phoneModel',
-		// 			foreignField: 'make_model',
-		// 			as: 'extra_details'
-		// 		}
-		// 	},
-		// 	{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-		// 	{
-		// 		$project: {
-		// 			phoneModel: 1,
-		// 			impression: 1,
-		// 			extra_details: {
-		// 				$ifNull: [
-		// 					'$extra_details',
-		// 					{
-		// 						make_model: '',
-		// 						cost: '',
-		// 						cumulative: '',
-		// 						release: '',
-		// 						company: '',
-		// 						type: '',
-		// 						total_percent: '',
-		// 						model: '',
-		// 						combined_make_model: ''
-		// 					}
-		// 				]
-		// 			}
-		// 		}
-		// 	},
-		// 	{
-		// 		$match: {
-		// 			$or: [
-		// 				{ 'extra_details.make_model': '' },
-		// 				{ 'extra_details.cumulative': '' },
-		// 				{ 'extra_details.release': '' },
-		// 				{ 'extra_details.company': '' },
-		// 				{ 'extra_details.type': '' },
-		// 				{ 'extra_details.total_percent': '' },
-		// 				{ 'extra_details.model': '' },
-		// 				{ 'extra_details.cost': '' }
-		// 			]
-		// 		}
-		// 	},
-		// 	{
-		// 		$group: {
-		// 			_id: { make_model: '$phoneModel' },
-		// 			impressions: { $sum: '$impression' },
-		// 			extra: { $first: '$extra_details' }
-		// 		}
-		// 	},
-		// 	{
-		// 		$project: {
-		// 			impressions: 1,
-		// 			make_model: '$_id.make_model',
-		// 			cost: '$extra.cost',
-		// 			cumulative: '$extra.cumulative',
-		// 			release: '$extra.release',
-		// 			company: '$extra.company',
-		// 			type: '$extra.type',
-		// 			model: '$extra.model',
-		// 			total_percent: '$extra.total_percent',
-		// 			combined_make_and_model: '$extra.combined_make_model'
-		// 		}
-		// 	},
-		// 	{ $sort: { impressions: -1 } }
-		//]);
-
-		res.status(200).json(phone);
-	} catch (err) {
-		console.log(err.message);
-		res.status(400).json({ error: err });
-	}
-});
-
-router.get('/zipdata', adminauth, async (req, res) => {
-	try {
 		let startdate=new Date();
-		startdate.setDate(10);
+		startdate.setDate(01);
 		startdate.setMonth(07);
 		startdate.setFullYear(2021);
 		
@@ -1393,10 +1313,35 @@ router.get('/zipdata', adminauth, async (req, res) => {
 		if(days===0){
 			days=1;
 		}
+
+		const phone = await phonemodel2.aggregate([
+			{ $sort: { impression: -1 } },
+			{ $addFields: { avgimpression: { $divide: ["$impression", days] } } },
+		]);
+		res.status(200).json(phone);
+	} catch (err) {
+		console.log(err.message);
+		res.status(400).json({ error: err });
+	}
+});
+
+router.get('/zipdata', adminauth, async (req, res) => {
+	try {
+		let startdate = new Date();
+		startdate.setDate(10);
+		startdate.setMonth(07);
+		startdate.setFullYear(2021);
+
+
+		let date = new Date();
+		let days = Math.round((date.getTime() - startdate.getTime()) / 86400000)
+		if (days === 0) {
+			days = 1;
+		}
 		const result = await Zipreports2.aggregate([
 
 			{ $match: { requests: { $exists: true } } },
-			{$addFields:{avgrequest:{$divide:["$requests",days]}}},
+			{ $addFields: { avgrequest: { $divide: ["$requests", days] } } },
 			{ $sort: { impression: -1 } }
 		]);
 
