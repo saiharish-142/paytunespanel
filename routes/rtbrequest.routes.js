@@ -252,7 +252,7 @@ router.post(
 
             let startdate = new Date();
             startdate.setDate(01);
-            startdate.setMonth(07);
+            startdate.setMonth(06);
             startdate.setFullYear(2021);
 
             let date = new Date();
