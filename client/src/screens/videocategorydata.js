@@ -120,6 +120,7 @@ export default function VideoCategorydata() {
 	const headers = [
 		{ key: 'category', label: 'Category' },
 		{ key: 'impression', label: 'Impressions' },
+		{ key: 'avgimpression', label: 'Avg Impressions' },
 		{ key: 'click', label: 'Clicks' },
 		{ key: 'tier1', label: 'Tier1' },
 		{ key: 'tier2', label: 'Tier2' },
@@ -218,6 +219,7 @@ export default function VideoCategorydata() {
 								{/* <TableCell>{title}</TableCell> */}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('_id.category')} className={getClassNamesFor('_id.category')}>Category {arrowRetuner( sortconfig.key==='_id.category'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('impressions')} className={getClassNamesFor('impressions')}>Impressions {arrowRetuner( sortconfig.key==='impression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('avgimpression')} className={getClassNamesFor('avgimpression')}>Avg Impressions {arrowRetuner( sortconfig.key==='avgimpression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('click')} className={getClassNamesFor('click')}>Clicks {arrowRetuner( sortconfig.key==='click'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
 								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('extra_details.tier1')} className={getClassNamesFor('extra_details.tier1')}>Tier1 {arrowRetuner( sortconfig.key==='extra_details.tier1'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
 								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('extra_details.tier2')} className={getClassNamesFor('extra_details.tier2')}>Tier2 {arrowRetuner( sortconfig.key==='extra_details.tier2'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
@@ -236,6 +238,7 @@ export default function VideoCategorydata() {
 										{row._id.category ? row._id.category : ''}
 									</TableCell>
 									<TableCell>{row.impressions ? row.impressions : ''}</TableCell>
+									<TableCell>{row.avgimpression ? row.avgimpression : ''}</TableCell>
 									<TableCell>{row.CompanionClickTracking+row.SovClickTracking}</TableCell>
 									<TableCell>{row.extra_details.tier1 ? row.extra_details.tier1 : ''}</TableCell>
 									<TableCell>{row.extra_details.tier2 ? row.extra_details.tier2 : ''}</TableCell>

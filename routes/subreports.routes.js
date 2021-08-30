@@ -188,7 +188,7 @@ router.put('/zipbycampids', adminauth, (req, res) => {
 					zip: '$_id.zip',
 					campaignId: '$_id.campaignId',
 					impression: 1,
-					clicks: { $sum: [ '$CompanionClickTracking', '$SovClickTracking' ] },
+					clicks: { $sum: ['$CompanionClickTracking', '$SovClickTracking'] },
 					createdOn: 1,
 					_id: 0,
 					area: '$extra.area',
@@ -930,7 +930,7 @@ router.put('/uniqueusersbycampids2', adminauth, (req, res) => {
 	const dumd = [];
 	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
 	uniqueuserreports
-		.aggregate([ { $match: { campaignId: { $in: ids } } } ])
+		.aggregate([{ $match: { campaignId: { $in: ids } } }])
 		.then((result) => res.json(result))
 		.catch((err) => res.status(422).json(err));
 });
@@ -1005,7 +1005,7 @@ router.put('/categorywiseids', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
 				}
 			},
 			{
@@ -1013,7 +1013,7 @@ router.put('/categorywiseids', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', [] ] }
+					extra_details: { $ifNull: ['$extra_details', []] }
 				}
 			}
 			// {
@@ -1080,7 +1080,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
 				}
 			},
 			{
@@ -1088,7 +1088,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', [] ] }
+					extra_details: { $ifNull: ['$extra_details', []] }
 				}
 			}
 			// {
@@ -1134,7 +1134,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
 				}
 			},
 			{
@@ -1142,7 +1142,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', [] ] }
+					extra_details: { $ifNull: ['$extra_details', []] }
 				}
 			}
 		]).allowDiskUse(true);
@@ -1180,7 +1180,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
 				}
 			},
 			{
@@ -1188,7 +1188,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', [] ] }
+					extra_details: { $ifNull: ['$extra_details', []] }
 				}
 			}
 		]).allowDiskUse(true);
@@ -1364,18 +1364,18 @@ router.put('/editphonedata', adminauth, async (req, res) => {
 
 router.get('/phonedata', adminauth, async (req, res) => {
 	try {
-		
 
-		let startdate=new Date();
+
+		let startdate = new Date();
 		startdate.setDate(01);
 		startdate.setMonth(06); // 1 july
 		startdate.setFullYear(2021);
-		
+
 
 		let date = new Date();
-		let days= Math.round((date.getTime()-startdate.getTime())/86400000)
-		if(days===0){
-			days=1;
+		let days = Math.round((date.getTime() - startdate.getTime()) / 86400000)
+		if (days === 0) {
+			days = 1;
 		}
 
 		const phone = await phonemodel2.aggregate([
@@ -1403,8 +1403,8 @@ router.get('/zipdata', adminauth, async (req, res) => {
 		}
 		const result = await Zipreports2.aggregate([
 			{ $match: { requests: { $exists: true } } },
-			{ $addFields: { avgrequest: { $divide: [ '$requests', days ] } } },
-			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
+			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
 			{ $sort: { impression: -1 } }
 		]);
 
@@ -1484,7 +1484,7 @@ router.get('/categorydata', adminauth, async (req, res) => {
 
 		const result = await CategoryReports2.aggregate([
 			{ $match: { impression: { $exists: true }, click: { $exists: true } } },
-			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } }
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } }
 		]);
 		res.status(200).json(result);
 	} catch (err) {
@@ -1539,7 +1539,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 			{ $match: { campaignId: { $in: ids } } },
 			{
 				$project: {
-					creativeid: { $ifNull: [ '$creativesetId', null ] },
+					creativeid: { $ifNull: ['$creativesetId', null] },
 					campaignId: 1,
 					impression: 1,
 					CompanionClickTracking: 1,
@@ -1553,7 +1553,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 			},
 			{
 				$project: {
-					creative_id: { $cond: [ { $eq: [ '$creativeid', '' ] }, null, '$creativeid' ] },
+					creative_id: { $cond: [{ $eq: ['$creativeid', ''] }, null, '$creativeid'] },
 					campaignId: 1,
 					impression: 1,
 					CompanionClickTracking: 1,
@@ -1567,7 +1567,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 			},
 			{
 				$project: {
-					creativeids: { $cond: [ { $eq: [ '$creative_id', 'null' ] }, null, '$creative_id' ] },
+					creativeids: { $cond: [{ $eq: ['$creative_id', 'null'] }, null, '$creative_id'] },
 					campaignId: 1,
 					impression: 1,
 					CompanionClickTracking: 1,
@@ -1616,7 +1616,36 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 
 router.post('/categorydata_podcast', adminauth, async (req, res) => {
 	try {
-		const result = await CategoryReports2.find({ feed: '3' });
+		let startdate = new Date();
+		startdate.setDate(01);
+		startdate.setMonth(06);
+		startdate.setFullYear(2021);
+
+		let date = new Date();
+		let days = Math.round((date.getTime() - startdate.getTime()) / 86400000);
+		if (days === 0) {
+			days = 1;
+		}
+		const result = await CategoryReports2.aggregate([
+			{
+				$project: {
+					impression: "$impression",
+					click:"$click",
+					category:"$category",
+					Name:"$Name",
+					tier1:"$tier1",
+					tier2:"$tier2",
+					tier3:"$tier3",
+					tier4:"$tier4",
+					genderCategory:"$genderCategory",
+					AgeCategory:"$AgeCategory",
+					feed:"$feed",
+					new_taxonamy:"$new_taxonamy"
+				}
+			},
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{$match:{feed:"3"}}
+		])
 		res.status(200).json(result);
 	} catch (err) {
 		console.log(err.message);
@@ -1626,7 +1655,36 @@ router.post('/categorydata_podcast', adminauth, async (req, res) => {
 
 router.post('/categorydata_ondemand', adminauth, async (req, res) => {
 	try {
-		const result = await CategoryReports2.find({ feed: '' });
+		let startdate = new Date();
+		startdate.setDate(01);
+		startdate.setMonth(06);
+		startdate.setFullYear(2021);
+
+		let date = new Date();
+		let days = Math.round((date.getTime() - startdate.getTime()) / 86400000);
+		if (days === 0) {
+			days = 1;
+		}
+		const result = await CategoryReports2.aggregate([
+			{
+				$project: {
+					impression: "$impression",
+					click:"$click",
+					category:"$category",
+					Name:"$Name",
+					tier1:"$tier1",
+					tier2:"$tier2",
+					tier3:"$tier3",
+					tier4:"$tier4",
+					genderCategory:"$genderCategory",
+					AgeCategory:"$AgeCategory",
+					feed:"$feed",
+					new_taxonamy:"$new_taxonamy"
+				}
+			},
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{$match:{feed:""}}
+		])
 		res.status(200).json(result);
 	} catch (err) {
 		console.log(err.message);
@@ -1636,6 +1694,16 @@ router.post('/categorydata_ondemand', adminauth, async (req, res) => {
 
 router.post('/categorydata_video', adminauth, async (req, res) => {
 	try {
+		let startdate = new Date();
+		startdate.setDate(18);
+		startdate.setMonth(06);
+		startdate.setFullYear(2021);
+
+		let date = new Date();
+		let days = Math.round((date.getTime() - startdate.getTime()) / 86400000);
+		if (days === 0) {
+			days = 1;
+		}
 		const result = await categoryreports.aggregate([
 			{
 				$project: {
@@ -1686,6 +1754,7 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 					extra_details1: { $first: '$extra_details1' }
 				}
 			},
+			{ $addFields: { avgimpression: { $divide: ['$impressions', days] } } },
 			{
 				$project: {
 					rtbType: '$_id.rtbType',
@@ -1693,7 +1762,8 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
 					impressions: 1,
-					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+					avgimpression: 1,
+					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
 				}
 			},
 			{ $match: { rtbType: 'video' } }
