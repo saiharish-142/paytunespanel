@@ -322,7 +322,8 @@ router.post(
                         category_details: 1,
                         
                     }
-                }
+                },
+                {$sort:{avgrequest:-1}}
             ])
             res.status(200).json(result)
         } catch (err) {
@@ -373,7 +374,7 @@ router.post(
                 displayname,
                 hostPossibility,
             };
-            const updated = await EpisodeModel2.updateMany({ episodename }, { $set: updates });
+            const updated = await EpisodeModel2.findOneAndUpdate({ episodename,category }, { $set: updates });
             if (!updated) {
                 return res.status(400).json({ error: "Couldn't Update !" });
             }
