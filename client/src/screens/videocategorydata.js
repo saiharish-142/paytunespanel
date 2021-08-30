@@ -238,7 +238,7 @@ export default function VideoCategorydata() {
 										{row._id.category ? row._id.category : ''}
 									</TableCell>
 									<TableCell>{row.impressions ? row.impressions : ''}</TableCell>
-									<TableCell>{row.avgimpression ? row.avgimpression : ''}</TableCell>
+									<TableCell>{row.avgimpression ? Math.round(row.avgimpression) : ''}</TableCell>
 									<TableCell>{row.CompanionClickTracking+row.SovClickTracking}</TableCell>
 									<TableCell>{row.extra_details.tier1 ? row.extra_details.tier1 : ''}</TableCell>
 									<TableCell>{row.extra_details.tier2 ? row.extra_details.tier2 : ''}</TableCell>

@@ -238,7 +238,7 @@ export default function OndemandCategorydata() {
 										{row.category ? row.category : ''}
 									</TableCell>
 									<TableCell>{row.impression ? row.impression : ''}</TableCell>
-									<TableCell>{row.avgimpression ? row.avgimpression : ''}</TableCell>
+									<TableCell>{row.avgimpression ? Math.round(row.avgimpression)  : ''}</TableCell>
 									<TableCell>{row.click?row.click:''}</TableCell>
 									<TableCell>{row.tier1 ? row.tier1 : ''}</TableCell>
 									<TableCell>{row.tier2 ? row.tier2 : ''}</TableCell>
