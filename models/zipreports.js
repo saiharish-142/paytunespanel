@@ -5,6 +5,7 @@ var zipreportsSchema = new Schema({
     appId: String,
     zip: Number,
     requests: Number,
+    rtbType:String,
     ads: Number, ///AdServed
     servedAudioImpressions: Number,
     servedCompanionAds: Number,

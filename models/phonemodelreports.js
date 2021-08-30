@@ -5,6 +5,7 @@ var phonemodelreportsSchema = new Schema({
     appId: String,
     phoneModel: String,
     requests: Number,
+    rtbType: String,
     ads: Number, ///AdServed
     servedAudioImpressions: Number,
     servedCompanionAds: Number,

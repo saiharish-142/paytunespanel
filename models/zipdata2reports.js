@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 var zipreports2Schema = new Schema({
     area:String, //urban/rural
     pincode: Number,
+    rtbType:String,
     lowersubcity:String,
     subcity:String,
     city:String,

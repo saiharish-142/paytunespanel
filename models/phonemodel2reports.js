@@ -5,6 +5,7 @@ var phonemodel2reportsSchema = new Schema({
     make_model:String, 
     cumulative:String,
     release:String,
+    rtbType:String,
     company:String,
     type:String,
     total_percent:String,
