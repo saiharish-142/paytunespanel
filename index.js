@@ -514,7 +514,7 @@ const TempJob = async () => {
 	], { allowDiskUse: true })
 
 	pincodes.forEach(async (pincode) => {
-		let val = await Zipreports2.findOne({ make_model: pincode._id, rtbType: { $exists: false } })
+		let val = await Zipreports2.findOne({ pincode: pincode._id, rtbType: { $exists: false } })
 		let updates = {
 			area: val ? val.area : '',
 			lowersubcity: val ? val.lowersubcity : '',
@@ -528,10 +528,8 @@ const TempJob = async () => {
 			latitude: val ? val.latitude : '',
 			longitude: val ? val.longitude : '',
 		}
-		await Zipreports2.updateMany({ make_model: pincode._id, rtbType: { $exists: true } }, { $set: updates })
+		await Zipreports2.updateMany({ pincode: pincode._id, rtbType: { $exists: true } }, { $set: updates })
 	})
-
-
 
 }
 
@@ -588,23 +586,24 @@ async function PincodeRefresher() {
 	pincodes.forEach(async (pincode) => {
 		const match = await Zipreports2.findOne({ pincode: pincode._id.zip, rtbType: pincode._id.rtbType });
 		if (!match) {
+			let val = await Zipreports2.findOne({ pincode: parseInt(pincode._id.zip), rtbType: { $exists: false } })
 			const newzip = new Zipreports2({
-				area: '',
-				pincode: pincode._id.zip,
+				area: val ? val.area : '',
+				pincode: parseInt(pincode._id.zip),
 				rtbType: pincode._id.rtbType,
-				lowersubcity: '',
-				subcity: '',
-				city: '',
-				grandcity: '',
-				district: '',
-				comparison: '',
-				state: '',
-				grandstate: '',
-				latitude: '',
-				longitude: '',
-				impression: pincode.impressions,
-				click: pincode.CompanionClickTracking + pincode.SovClickTracking,
-				requests: 0
+				lowersubcity: val ? val.lowersubcity : '',
+				subcity: val ? val.subcity : '',
+				city: val ? val.city : '',
+				grandcity: val ? val.grandcity : '',
+				district: val ? val.district : '',
+				comparison: val ? val.comparison : '',
+				state: val ? val.state : '',
+				grandstate: val ? val.grandstate : '',
+				latitude: val ? val.latitude : '',
+				longitude: val ? val.longitude : '',
+				impression: 0,
+				click: 0,
+				requests: pincode.ads
 			});
 			await newzip.save();
 		} else {
