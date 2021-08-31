@@ -468,6 +468,73 @@ cron.schedule('10 00 * * *', function () {
 
 //Pincode
 
+cron.schedule('15 23 * * *', function () {
+	TempJob();
+});
+
+const TempJob = async () => {
+	const Zipreports2 = require('./models/zipdata2reports');
+	const ZipModelReports = require('./models/zipreports');
+	let phones = await phonemodel2reports.aggregate([
+		{
+			$project: {
+				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+				phoneModel: { $toUpper: "$phoneModel" }
+			}
+		},
+		{ $match: { test: "2021-08-30" } },
+		{ $group: { _id: "$phoneModel" } }
+	], { allowDiskUse: true })
+
+	phones.forEach(async (phn) => {
+		let val = await phonemodel2reports.findOne({ make_model: phn._id, rtbType: { $exists: false } })
+		let updates = {
+			cost: val ? val.cost : '',
+			cumulative: val ? val.cumulative : '',
+			release: val ? val.release : '',
+			company: val ? val.company : '',
+			type: val ? val.type : '',
+			total_percent: val ? val.total_percent : '',
+			model: val ? val.model : '',
+			combined_make_model: val ? val.combined_make_model : '',
+		}
+		await phonemodel2reports.updateMany({ make_model: phn._id, rtbType: { $exists: true } }, { $set: updates })
+	})
+
+
+	let pincodes = await ZipModelReports.aggregate([
+		{
+			$project: {
+				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+				zip: "$zip"
+			}
+		},
+		{ $match: { test: "2021-08-30" } },
+		{ $group: { _id: "$zip" } }
+	], { allowDiskUse: true })
+
+	pincodes.forEach(async (pincode) => {
+		let val = await Zipreports2.findOne({ make_model: pincode._id, rtbType: { $exists: false } })
+		let updates = {
+			area: val ? val.area : '',
+			lowersubcity: val ? val.lowersubcity : '',
+			subcity: val ? val.subcity : '',
+			city: val ? val.city : '',
+			grandcity: val ? val.grandcity : '',
+			district: val ? val.district : '',
+			comparison: val ? val.comparison : '',
+			state: val ? val.state : '',
+			grandstate: val ? val.grandstate : '',
+			latitude: val ? val.latitude : '',
+			longitude: val ? val.longitude : '',
+		}
+		await Zipreports2.updateMany({ make_model: pincode._id, rtbType: { $exists: true } }, { $set: updates })
+	})
+
+
+
+}
+
 cron.schedule('00 1 * * *', function () {
 	PincodeRefresher();
 });
@@ -606,20 +673,21 @@ async function PincodeRequestsRefresher() {
 	pincodes.forEach(async (pincode) => {
 		const match = await Zipreports2.findOne({ pincode: parseInt(pincode._id.zip), rtbType: pincode._id.rtbType });
 		if (!match) {
+			let val = await Zipreports2.findOne({ pincode: parseInt(pincode._id.zip), rtbType: { $exists: false } })
 			const newzip = new Zipreports2({
-				area: '',
+				area: val ? val.area : '',
 				pincode: parseInt(pincode._id.zip),
 				rtbType: pincode._id.rtbType,
-				lowersubcity: '',
-				subcity: '',
-				city: '',
-				grandcity: '',
-				district: '',
-				comparison: '',
-				state: '',
-				grandstate: '',
-				latitude: '',
-				longitude: '',
+				lowersubcity: val ? val.lowersubcity : '',
+				subcity: val ? val.subcity : '',
+				city: val ? val.city : '',
+				grandcity: val ? val.grandcity : '',
+				district: val ? val.district : '',
+				comparison: val ? val.comparison : '',
+				state: val ? val.state : '',
+				grandstate: val ? val.grandstate : '',
+				latitude: val ? val.latitude : '',
+				longitude: val ? val.longitude : '',
 				impression: 0,
 				click: 0,
 				requests: pincode.ads
@@ -689,17 +757,18 @@ async function PhoneRefresher() {
 	phones.forEach(async (phone) => {
 		const match = await Phonereports2.findOne({ make_model: phone._id.phone, rtbType: phone._id.rtbType });
 		if (!match) {
+			let val = await Phonereports2.findOne({ make_model: phone._id.phone, rtbType: { $exists: false } })
 			const newzip = new Phonereports2({
-				cost: '',
+				cost: val ? val.cost : '',
 				make_model: phone._id.phone,
-				cumulative: '',
-				release: '',
-				company: '',
-				type: '',
+				cumulative: val ? val.cumulative : '',
+				release: val ? val.release : '',
+				company: val ? val.company : '',
+				type: val ? val.type : '',
 				rtbType: phone._id.rtbType,
-				total_percent: '',
-				model: '',
-				combined_make_model: '',
+				total_percent: val ? val.total_percent : '',
+				model: val ? val.model : '',
+				combined_make_model: val ? val.combined_make_model : '',
 				impression: phone.impressions,
 				click: phone.CompanionClickTracking + phone.SovClickTracking
 			});
