@@ -468,7 +468,7 @@ cron.schedule('10 00 * * *', function () {
 
 //Pincode
 
-cron.schedule('32 23 * * *', function () {
+cron.schedule('00 00 * * *', function () {
 	TempJob();
 });
 
