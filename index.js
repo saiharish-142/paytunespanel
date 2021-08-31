@@ -468,11 +468,11 @@ cron.schedule('10 00 * * *', function () {
 
 //Pincode
 
-cron.schedule('15 23 * * *', function () {
+cron.schedule('32 23 * * *', function () {
 	TempJob();
 });
 
-const TempJob = async () => {
+async function TempJob() {
 	const Zipreports2 = require('./models/zipdata2reports');
 	const ZipModelReports = require('./models/zipreports');
 	let phones = await phonemodel2reports.aggregate([
