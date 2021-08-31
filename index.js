@@ -474,8 +474,9 @@ cron.schedule('32 23 * * *', function () {
 
 async function TempJob() {
 	const Zipreports2 = require('./models/zipdata2reports');
+	const PhoneModelReports=require('./models/phonemodelreports')
 	const ZipModelReports = require('./models/zipreports');
-	let phones = await phonemodel2reports.aggregate([
+	let phones = await PhoneModelReports.aggregate([
 		{
 			$project: {
 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
@@ -484,7 +485,7 @@ async function TempJob() {
 		},
 		{ $match: { test: "2021-08-30" } },
 		{ $group: { _id: "$phoneModel" } }
-	], { allowDiskUse: true })
+	])
 
 	phones.forEach(async (phn) => {
 		let val = await phonemodel2reports.findOne({ make_model: phn._id, rtbType: { $exists: false } })
@@ -511,7 +512,7 @@ async function TempJob() {
 		},
 		{ $match: { test: "2021-08-30" } },
 		{ $group: { _id: "$zip" } }
-	], { allowDiskUse: true })
+	])
 
 	pincodes.forEach(async (pincode) => {
 		let val = await Zipreports2.findOne({ pincode: pincode._id, rtbType: { $exists: false } })
