@@ -468,71 +468,71 @@ cron.schedule('10 00 * * *', function () {
 
 //Pincode
 
-cron.schedule('00 00 * * *', function () {
-	TempJob();
-});
+// cron.schedule('00 00 * * *', function () {
+// 	TempJob();
+// });
 
-async function TempJob() {
-	const Zipreports2 = require('./models/zipdata2reports');
-	const PhoneModelReports=require('./models/phonemodelreports')
-	const ZipModelReports = require('./models/zipreports');
-	let phones = await PhoneModelReports.aggregate([
-		{
-			$project: {
-				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-				phoneModel: { $toUpper: "$phoneModel" }
-			}
-		},
-		{ $match: { test: "2021-08-30" } },
-		{ $group: { _id: "$phoneModel" } }
-	])
+// async function TempJob() {
+// 	const Zipreports2 = require('./models/zipdata2reports');
+// 	const PhoneModelReports=require('./models/phonemodelreports')
+// 	const ZipModelReports = require('./models/zipreports');
+// 	let phones = await PhoneModelReports.aggregate([
+// 		{
+// 			$project: {
+// 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+// 				phoneModel: { $toUpper: "$phoneModel" }
+// 			}
+// 		},
+// 		{ $match: { test: "2021-08-30" } },
+// 		{ $group: { _id: "$phoneModel" } }
+// 	])
 
-	phones.forEach(async (phn) => {
-		let val = await phonemodel2reports.findOne({ make_model: phn._id, rtbType: { $exists: false } })
-		let updates = {
-			cost: val ? val.cost : '',
-			cumulative: val ? val.cumulative : '',
-			release: val ? val.release : '',
-			company: val ? val.company : '',
-			type: val ? val.type : '',
-			total_percent: val ? val.total_percent : '',
-			model: val ? val.model : '',
-			combined_make_model: val ? val.combined_make_model : '',
-		}
-		await phonemodel2reports.updateMany({ make_model: phn._id, rtbType: { $exists: true } }, { $set: updates })
-	})
+// 	phones.forEach(async (phn) => {
+// 		let val = await phonemodel2reports.findOne({ make_model: phn._id, rtbType: { $exists: false } })
+// 		let updates = {
+// 			cost: val ? val.cost : '',
+// 			cumulative: val ? val.cumulative : '',
+// 			release: val ? val.release : '',
+// 			company: val ? val.company : '',
+// 			type: val ? val.type : '',
+// 			total_percent: val ? val.total_percent : '',
+// 			model: val ? val.model : '',
+// 			combined_make_model: val ? val.combined_make_model : '',
+// 		}
+// 		await phonemodel2reports.updateMany({ make_model: phn._id, rtbType: { $exists: true } }, { $set: updates })
+// 	})
 
 
-	let pincodes = await ZipModelReports.aggregate([
-		{
-			$project: {
-				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-				zip: "$zip"
-			}
-		},
-		{ $match: { test: "2021-08-30" } },
-		{ $group: { _id: "$zip" } }
-	])
+// 	let pincodes = await ZipModelReports.aggregate([
+// 		{
+// 			$project: {
+// 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+// 				zip: "$zip"
+// 			}
+// 		},
+// 		{ $match: { test: "2021-08-30" } },
+// 		{ $group: { _id: "$zip" } }
+// 	])
 
-	pincodes.forEach(async (pincode) => {
-		let val = await Zipreports2.findOne({ pincode: pincode._id, rtbType: { $exists: false } })
-		let updates = {
-			area: val ? val.area : '',
-			lowersubcity: val ? val.lowersubcity : '',
-			subcity: val ? val.subcity : '',
-			city: val ? val.city : '',
-			grandcity: val ? val.grandcity : '',
-			district: val ? val.district : '',
-			comparison: val ? val.comparison : '',
-			state: val ? val.state : '',
-			grandstate: val ? val.grandstate : '',
-			latitude: val ? val.latitude : '',
-			longitude: val ? val.longitude : '',
-		}
-		await Zipreports2.updateMany({ pincode: pincode._id, rtbType: { $exists: true } }, { $set: updates })
-	})
+// 	pincodes.forEach(async (pincode) => {
+// 		let val = await Zipreports2.findOne({ pincode: pincode._id, rtbType: { $exists: false } })
+// 		let updates = {
+// 			area: val ? val.area : '',
+// 			lowersubcity: val ? val.lowersubcity : '',
+// 			subcity: val ? val.subcity : '',
+// 			city: val ? val.city : '',
+// 			grandcity: val ? val.grandcity : '',
+// 			district: val ? val.district : '',
+// 			comparison: val ? val.comparison : '',
+// 			state: val ? val.state : '',
+// 			grandstate: val ? val.grandstate : '',
+// 			latitude: val ? val.latitude : '',
+// 			longitude: val ? val.longitude : '',
+// 		}
+// 		await Zipreports2.updateMany({ pincode: pincode._id, rtbType: { $exists: true } }, { $set: updates })
+// 	})
 
-}
+// }
 
 cron.schedule('00 1 * * *', function () {
 	PincodeRefresher();
