@@ -1389,6 +1389,62 @@ router.get('/phonedata', adminauth, async (req, res) => {
 	}
 });
 
+router.get('/phonedata_audio', adminauth, async (req, res) => {
+	try {
+
+
+		let startdate = new Date();
+		startdate.setDate(01);
+		startdate.setMonth(06); // 1 july
+		startdate.setFullYear(2021);
+
+
+		let date = new Date();
+		let days = Math.round((date.getTime() - startdate.getTime()) / 86400000)
+		if (days === 0) {
+			days = 1;
+		}
+
+		const phone = await phonemodel2.aggregate([
+			{ $sort: { impression: -1 } },
+			{ $addFields: { avgimpression: { $divide: ["$impression", days] } } },
+			{$match:{rtbType:"audio"}}
+		]);
+		res.status(200).json(phone);
+	} catch (err) {
+		console.log(err.message);
+		res.status(400).json({ error: err });
+	}
+});
+
+router.get('/phonedata_video', adminauth, async (req, res) => {
+	try {
+
+
+		let startdate = new Date();
+		startdate.setDate(01);
+		startdate.setMonth(06); // 1 july
+		startdate.setFullYear(2021);
+
+
+		let date = new Date();
+		let days = Math.round((date.getTime() - startdate.getTime()) / 86400000)
+		if (days === 0) {
+			days = 1;
+		}
+
+		const phone = await phonemodel2.aggregate([
+			{ $sort: { impression: -1 } },
+			{ $addFields: { avgimpression: { $divide: ["$impression", days] } } },
+			{$match:{rtbType:"video"}}
+		]);
+		res.status(200).json(phone);
+	} catch (err) {
+		console.log(err.message);
+		res.status(400).json({ error: err });
+	}
+});
+
 router.get('/zipdata', adminauth, async (req, res) => {
 	try {
 		let startdate = new Date();
@@ -1406,6 +1462,59 @@ router.get('/zipdata', adminauth, async (req, res) => {
 			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
 			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
 			{ $sort: { impression: -1 } }
+		]);
+
+		res.status(200).json(result);
+	} catch (err) {
+		console.log(err.message);
+		res.status(400).send({ error: err.mesaage });
+	}
+});
+router.get('/zipdata_audio', adminauth, async (req, res) => {
+	try {
+		let startdate = new Date();
+		startdate.setDate(01);
+		startdate.setMonth(06);
+		startdate.setFullYear(2021);
+
+		let date = new Date();
+		let days = Math.round((date.getTime() - startdate.getTime()) / 86400000);
+		if (days === 0) {
+			days = 1;
+		}
+		const result = await Zipreports2.aggregate([
+			{ $match: { requests: { $exists: true } } },
+			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{ $sort: { impression: -1 } },
+			{$match:{rtbType:"audio"}}
+		]);
+
+		res.status(200).json(result);
+	} catch (err) {
+		console.log(err.message);
+		res.status(400).send({ error: err.mesaage });
+	}
+});
+
+router.get('/zipdata_video', adminauth, async (req, res) => {
+	try {
+		let startdate = new Date();
+		startdate.setDate(01);
+		startdate.setMonth(06);
+		startdate.setFullYear(2021);
+
+		let date = new Date();
+		let days = Math.round((date.getTime() - startdate.getTime()) / 86400000);
+		if (days === 0) {
+			days = 1;
+		}
+		const result = await Zipreports2.aggregate([
+			{ $match: { requests: { $exists: true } } },
+			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{ $sort: { impression: -1 } },
+			{$match:{rtbType:"video"}}
 		]);
 
 		res.status(200).json(result);

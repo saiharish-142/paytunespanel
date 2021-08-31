@@ -5,8 +5,6 @@ import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import { Alert } from '@material-ui/lab';
 import { CSVLink } from 'react-csv';
-import PhoneAudiodata from './phonemodelaudio';
-import PhoneVideodata from './phonemodelvideo';
 import {
 	Table,
 	TableBody,
@@ -44,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 	  }
 }));
 
-export default function Phonedata() {
+export default function PhoneVideodata() {
 	const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -82,7 +80,7 @@ export default function Phonedata() {
 	//const [make_model,setmakemodel]=useState("")
 
 	const data = () => {
-		fetch('/subrepo/phonedata', {
+		fetch('/subrepo/phonedata_audio', {
 			method: 'get',
 			headers: {
 				'Content-Type': 'application/json',
@@ -103,7 +101,7 @@ export default function Phonedata() {
 	};
 
 	useEffect(() => {
-		fetch('/subrepo/phonedata', {
+		fetch('/subrepo/phonedata_video', {
 			method: 'get',
 			headers: {
 				'Content-Type': 'application/json',
@@ -137,7 +135,7 @@ export default function Phonedata() {
 		{ key: 'cumulative', label: 'Cumulative' },
 	];
 	var csvReport = {
-		filename: `PhoneData.csv`,
+		filename: `PhonevideoData.csv`,
 		headers: headers,
 		data: rows
 	};
@@ -199,9 +197,9 @@ export default function Phonedata() {
 	return (
 		<div>
 			<div>
-			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Phone data </h4>
-			<input placeholder="Search PhoneModel"  onChange={(e)=>setsearch(e.target.value)} style={{textAlign:'center',width:'20%',padding:'0.1%', border:'1px solid rgba(61, 61, 64, .25)', background:'#ffffff' }} />
-			<button className="btn" style={{marginLeft:'1%'}} onClick={ SearchData } >Search</button>
+			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Phone Video Data </h4>
+			{/* <input placeholder="Search PhoneModel"  onChange={(e)=>setsearch(e.target.value)} style={{textAlign:'center',width:'20%',padding:'0.1%', border:'1px solid rgba(61, 61, 64, .25)', background:'#ffffff' }} />
+			<button className="btn" style={{marginLeft:'1%'}} onClick={ SearchData } >Search</button> */}
 			</div>
 			
 			
@@ -289,33 +287,6 @@ export default function Phonedata() {
 					onChangePage={handleChangePage}
 					onChangeRowsPerPage={handleChangeRowsPerPage}
 				/>
-				<PhoneAudiodata/>
-				<PhoneVideodata/>
-				{show ? (
-					<div>
-						 <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-		  <div style={{maxHeight:'100vh','overflow-y':'auto'}} className={classes.paper}>
-		  <h4>Edit Phone Data</h4>
-						<Phonedataform
-							props={tempdata}
-							setShow={setShow}
-							setsuccess={setsuccess}
-							data1={data}
-							seterror={seterror}
-						/>
-		  </div>
-        				
-      </Modal>
-						
-					</div>
-				) : (
-					<React.Fragment />
-				)}
 			</Paper>
 		</div>
 	);

@@ -5,8 +5,6 @@ import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import { Alert } from '@material-ui/lab';
 import { CSVLink } from 'react-csv';
-import ZipAudiodata from './zipaudio';
-import ZipVideodata from './zipvideo';
 import {
 	Table,
 	TableBody,
@@ -42,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function Zipdata() {
+export default function ZipVideodata() {
 	const classes = useStyles();
 	const [open, setOpen] = React.useState(false);
 
@@ -100,7 +98,7 @@ export default function Zipdata() {
 	};
 
 	useEffect(() => {
-		fetch('/subrepo/zipdata', {
+		fetch('/subrepo/zipdata_video', {
 			method: 'get',
 			headers: {
 				'Content-Type': 'application/json',
@@ -140,7 +138,7 @@ export default function Zipdata() {
 		{ key: 'longitude', label: 'Longitude' },
 	];
 	var csvReport = {
-		filename: `PincodeData.csv`,
+		filename: `PincodeVideoData.csv`,
 		headers: headers,
 		data: rows
 	};
@@ -188,7 +186,7 @@ export default function Zipdata() {
 
 	return (
 		<div>
-			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Pincode data </h4>
+			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Pincode Video data </h4>
 			<div className={classes.root}>
 				{success ? (
 					<Alert
@@ -294,9 +292,7 @@ export default function Zipdata() {
 					onChangePage={handleChangePage}
 					onChangeRowsPerPage={handleChangeRowsPerPage}
 				/>
-				<ZipAudiodata/>
-				<ZipVideodata/>
-				{show ? (
+				{/* {show ? (
 					<div>
 						<Modal
 							open={open}
@@ -319,7 +315,7 @@ export default function Zipdata() {
 					</div>
 				) : (
 					<React.Fragment />
-				)}
+				)} */}
 			</Paper>
 		</div>
 	);
