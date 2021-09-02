@@ -21,6 +21,7 @@ import CategoryClinet from './CategoryClinet';
 import Creative_Report from './creative_report';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
+import PhoneModelClinet from './PhoneClient';
 
 const useStyles = makeStyles({
 	table: {
@@ -59,6 +60,7 @@ export default function BasicTable({ title, id }) {
 	const [ creativeData, setcreativeData ] = useState([]);
 	const [ creativeDataload, setcreativeDataload ] = useState(true);
 	const [ creativeDataerr, setcreativeDataerr ] = useState(false);
+	const [ phoneModelData, setphoneModelData ] = useState({});
 	const [ pincodeData, setpincodeData ] = useState({});
 	const [ pincodeDataload, setpincodeDataload ] = useState(true);
 	const [ pincodeDataerr, setpincodeDataerr ] = useState(false);
@@ -72,6 +74,7 @@ export default function BasicTable({ title, id }) {
 				PincodeSetter();
 				Creativedata();
 				CategorySetter();
+				DeviceSetter();
 			}
 		},
 		[ report ]
@@ -141,10 +144,43 @@ export default function BasicTable({ title, id }) {
 		setcategoryData(data);
 		setcategoryDataload(false);
 	}
+	async function DeviceSetter() {
+		var sets = report.sets;
+		var ids = report.grp_ids;
+		var data = {};
+		// console.log(report);
+		for (var i = 0; i < sets.length; i++) {
+			if (ids[sets[i]].length) {
+				console.log(ids[sets[i]]);
+				await fetch('/subrepo/phoneModelbycampids', {
+					method: 'put',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + localStorage.getItem('jwt')
+					},
+					body: JSON.stringify({
+						campaignId: ids[sets[i]]
+					})
+				})
+					.then((res) => res.json())
+					.then((result) => {
+						console.log(result);
+						// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
+						data[sets[i]] = result;
+					})
+					.catch((err) => {
+						setpincodeDataerr(true);
+						console.log(err);
+					});
+			}
+		}
+		setphoneModelData(data);
+	}
 	async function uniqueSetter() {
 		var sets = report.sets;
 		var ids = report.grp_ids;
 		var data = {};
+		data['complete'] = { users: 0 };
 		// console.log(report);
 		for (var i = 0; i < sets.length; i++) {
 			if (ids[sets[i]].length) {
@@ -163,7 +199,10 @@ export default function BasicTable({ title, id }) {
 					.then((result) => {
 						console.log(result);
 						// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
-						data[sets[i]] = result;
+						data['complete'].users += result.length
+							? result[0].users != undefined ? result[0].users : 0
+							: 0;
+						data[sets[i]] = result[0];
 					})
 					.catch((err) => {
 						setpincodeDataerr(true);
@@ -239,7 +278,7 @@ export default function BasicTable({ title, id }) {
 		s = s.split('/');
 		return s[1] + '/' + s[0] + '/' + s[2];
 	};
-	const SummaryTable = (title, reportsub, target) => {
+	const SummaryTable = (title, reportsub, target, users) => {
 		// console.log(reportsub, target);
 		if (reportsub && reportsub.message) {
 			return;
@@ -254,10 +293,11 @@ export default function BasicTable({ title, id }) {
 								<TableCell>Campaign Start Date</TableCell>
 								<TableCell>Campaign End Date</TableCell>
 								<TableCell>Total Days of Campaign</TableCell>
-								{/* <TableCell>unique User</TableCell> */}
+								<TableCell>unique User</TableCell>
 								<TableCell>Total Impressions to be delivered</TableCell>
 								<TableCell>Total Impressions Delivered till date</TableCell>
 								<TableCell>Total Clicks Delivered till date</TableCell>
+								<TableCell>Avg Frequency</TableCell>
 								<TableCell>CTR</TableCell>
 							</TableRow>
 						</TableHead>
@@ -275,9 +315,11 @@ export default function BasicTable({ title, id }) {
 								<TableCell>{dateformatchanger(report.startDate)}</TableCell>
 								<TableCell>{dateformatchanger(report.endDate)}</TableCell>
 								<TableCell>{timefinder(report.endDate, report.startDate)} days</TableCell>
+								<TableCell>{users}</TableCell>
 								<TableCell>{target}</TableCell>
 								<TableCell>{reportsub.impressions}</TableCell>
 								<TableCell>{reportsub.clicks + reportsub.clicks1}</TableCell>
+								<TableCell>{Math.round(reportsub.impressions / users)}</TableCell>
 								<TableCell>
 									{Math.round(
 										(reportsub.clicks + reportsub.clicks1) * 100 / reportsub.impressions * 100
@@ -332,10 +374,24 @@ export default function BasicTable({ title, id }) {
 			<div className="titleReport">{title && title.toUpperCase()} Campaign</div>
 			<div className="titleReport">Overall Summary Report</div>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
-			{SummaryTable('Over All Summary', report.report['complete'], report.report.complete[`target`])}
+			{SummaryTable(
+				'Over All Summary',
+				report.report['complete'],
+				report.report.complete[`target`],
+				uniqueData['complete'] ? uniqueData['complete'].users : 0
+			)}
 			{report.sets &&
 				report.sets.map((x) => {
-					return <div>{SummaryTable(x, report.report[x], report.grp_ids[`${x}target`])}</div>;
+					return (
+						<div>
+							{SummaryTable(
+								x,
+								report.report[x],
+								report.grp_ids[`${x}target`],
+								uniqueData[x] ? uniqueData[x].users : 0
+							)}
+						</div>
+					);
 				})}
 			{/* {SummaryTable('Audio', audioReport, ids && ids.audimpression)}
 			{SummaryTable('Display', displayReport, ids && ids.disimpression)}
@@ -352,6 +408,34 @@ export default function BasicTable({ title, id }) {
 				client={true}
 				url="zipbycampids"
 			/> */}
+			<div className="titleReport">Quartile Summary Report</div>
+			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+			<TableContainer style={{ margin: '20px 0' }} elevation={3} component={Paper}>
+				<Table>
+					<TableHead>
+						<TableRow>
+							<TableCell />
+							<TableCell>Start</TableCell>
+							<TableCell>First Quartile</TableCell>
+							<TableCell>Second Quartile</TableCell>
+							<TableCell>Third Quartile</TableCell>
+							<TableCell>Complete</TableCell>
+							<TableCell>Total Impresions</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						<TableRow>
+							<TableCell>Impressions</TableCell>
+							<TableCell>{report.report.complete.start}</TableCell>
+							<TableCell>{report.report.complete.firstQuartile}</TableCell>
+							<TableCell>{report.report.complete.midpoint}</TableCell>
+							<TableCell>{report.report.complete.thirdQuartile}</TableCell>
+							<TableCell>{report.report.complete.complete}</TableCell>
+							<TableCell>{report.report.complete.impressions}</TableCell>
+						</TableRow>
+					</TableBody>
+				</Table>
+			</TableContainer>
 			<div className="titleReport">Pincode Wise Summary Report</div>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
 			{report.sets &&
@@ -361,6 +445,31 @@ export default function BasicTable({ title, id }) {
 							return (
 								<PinClient
 									report={pincodeData[x]}
+									head={x}
+									title={title && title.toUpperCase()}
+									state1={id}
+									impression={report.report.complete.impressions}
+									clicks={report.report.complete.clicks + report.report.complete.clicks1}
+								/>
+							);
+						} else {
+							return (
+								<Paper>
+									<CircularProgress />
+								</Paper>
+							);
+						}
+					}
+				})}
+			<div className="titleReport">Device Type Wise Summary Report</div>
+			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+			{report.sets &&
+				report.sets.map((x) => {
+					if (report.grp_ids[x].length) {
+						if (phoneModelData[x]) {
+							return (
+								<PhoneModelClinet
+									report={phoneModelData[x]}
 									head={x}
 									title={title && title.toUpperCase()}
 									state1={id}

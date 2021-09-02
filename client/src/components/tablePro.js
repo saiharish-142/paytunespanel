@@ -59,6 +59,7 @@ function TablePro() {
 	const [ ibaReports, setibaReports ] = useState([]);
 	const [ frequencyReport, setfrequencyReport ] = useState([]);
 	const [ creativereports, setcreative ] = useState([]);
+	const [ uniqueData, setuniqueData ] = useState({ complete: 0, audio: 0, display: 0, video: 0 });
 	// const [ languageDownloadA, setlanguageDownloadA ] = useState([]);
 	// const [ languageDownloadD, setlanguageDownloadD ] = useState([]);
 	// const [ languageDownloadV, setlanguageDownloadV ] = useState([]);
@@ -86,6 +87,7 @@ function TablePro() {
 				PhoneModelDataPuller(report.ids);
 				IbaDataPuller(report.ids);
 				FrequencyPuller(report.ids);
+				uniqueSetter(report.ids);
 				Creativedata(report.combine_ids);
 			}
 		},
@@ -109,6 +111,42 @@ function TablePro() {
 			}
 		}
 	};
+	async function uniqueSetter(idsa) {
+		console.log(idsa);
+		var sets = [ 'audio', 'display', 'video' ];
+		var ids = idsa;
+		var data = {};
+		data['complete'] = 0;
+		// console.log(report);
+		for (var i = 0; i < sets.length; i++) {
+			if (ids[sets[i]].length) {
+				console.log(ids[sets[i]]);
+				await fetch('/ifas/frequency', {
+					method: 'put',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + localStorage.getItem('jwt')
+					},
+					body: JSON.stringify({
+						campaignId: ids[sets[i]]
+					})
+				})
+					.then((res) => res.json())
+					.then((result) => {
+						console.log(result);
+						// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
+						data['complete'] += result[0].users ? result[0].users : 0;
+						data[sets[i]] = result[0].users;
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+			}
+		}
+		console.log(data);
+		setuniqueData(data);
+		// setcategoryDataload(false);
+	}
 	// pincode data of all data
 	const pincodeDataPuller = (idsa) => {
 		// console.log(idsa)
@@ -299,7 +337,7 @@ function TablePro() {
 		return datechanged;
 	};
 	// summary table
-	const SummaryTable = (title, reportsub, target, spent) => {
+	const SummaryTable = (title, reportsub, target, spent, users) => {
 		// console.log(spent);
 		return (
 			<TableContainer style={{ margin: '20px 0' }} elevation={3} component={Paper}>
@@ -311,12 +349,14 @@ function TablePro() {
 								{title === 'Summary' && <TableCell>Campaign Start Date</TableCell>}
 								{title === 'Summary' && <TableCell>Campaign End Date</TableCell>}
 								{title === 'Summary' && <TableCell>Total Days of Campaign</TableCell>}
+								<TableCell>unique User</TableCell>
 								<TableCell>Total Impressions to be delivered</TableCell>
 								<TableCell>Total Impressions Delivered till date</TableCell>
 								<TableCell>Avg required</TableCell>
 								<TableCell>Avg Achieved</TableCell>
 								<TableCell>Total spent</TableCell>
 								<TableCell>Total Clicks Delivered till date</TableCell>
+								<TableCell>Avg Frequency</TableCell>
 								<TableCell>CTR</TableCell>
 								<TableCell>Balance Impressions</TableCell>
 								{title === 'Summary' && <TableCell>Balance Days</TableCell>}
@@ -339,6 +379,7 @@ function TablePro() {
 								{title === 'Summary' && (
 									<TableCell>{timefinder(report.endDate, report.startDate)} days</TableCell>
 								)}
+								<TableCell>{users}</TableCell>
 								<TableCell>{target}</TableCell>
 								<TableCell>{reportsub.impressions}</TableCell>
 								<TableCell>
@@ -350,6 +391,7 @@ function TablePro() {
 								</TableCell>
 								<TableCell>{Math.round(spent * 1) / 1}</TableCell>
 								<TableCell>{reportsub.clicks}</TableCell>
+								<TableCell>{Math.round(reportsub.impressions / users)}</TableCell>
 								<TableCell>
 									{Math.round(reportsub.clicks * 100 / reportsub.impressions * 100) / 100}%
 								</TableCell>
@@ -774,7 +816,8 @@ function TablePro() {
 				completespentfider('all') +
 					(report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0) +
 					(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0) +
-					(report.videospentOffline ? parseFloat(report.videospentOffline) : 0)
+					(report.videospentOffline ? parseFloat(report.videospentOffline) : 0),
+				uniqueData.complete ? uniqueData.complete : 0
 			)}
 			{report.ids && report.ids.audio && report.ids.audio.length ? (
 				report.report.audioCompleteReport &&
@@ -782,7 +825,8 @@ function TablePro() {
 					'Audio',
 					report.report.audioCompleteReport,
 					report.ids && report.ids.audimpression,
-					completespentfider('audio') + (report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0)
+					completespentfider('audio') + (report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0),
+					uniqueData.audio ? uniqueData.audio : 0
 				)
 			) : (
 				''
@@ -794,7 +838,8 @@ function TablePro() {
 					report.report.displayCompleteReport,
 					report.ids && report.ids.disimpression,
 					completespentfider('display') +
-						(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0)
+						(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0),
+					uniqueData.display ? uniqueData.display : 0
 				)
 			) : (
 				''
@@ -805,7 +850,8 @@ function TablePro() {
 					'Video',
 					report.report.videoCompleteReport,
 					report.ids && report.ids.vidimpression,
-					completespentfider('video') + (report.videospentOffline ? parseFloat(report.videospentOffline) : 0)
+					completespentfider('video') + (report.videospentOffline ? parseFloat(report.videospentOffline) : 0),
+					uniqueData.video ? uniqueData.video : 0
 				)
 			) : (
 				''
