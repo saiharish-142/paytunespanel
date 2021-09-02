@@ -83,11 +83,11 @@ function TablePro() {
 	useEffect(
 		() => {
 			if (report && report.ids && report.combine_ids) {
+				uniqueSetter(report.ids);
 				pincodeDataPuller(report.ids);
 				PhoneModelDataPuller(report.ids);
 				IbaDataPuller(report.ids);
 				FrequencyPuller(report.ids);
-				uniqueSetter(report.ids);
 				Creativedata(report.combine_ids);
 			}
 		},
