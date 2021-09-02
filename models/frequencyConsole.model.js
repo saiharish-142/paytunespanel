@@ -6,6 +6,7 @@ var frequencyConsoleSchema = new Schema({
 	frequency: { type: Number, unique: true },
 	users: Number,
 	impression: Number,
+	appId: String,
 	click: Number
 });
 
