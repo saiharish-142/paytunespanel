@@ -524,6 +524,84 @@ function TablePro() {
 		spentOfflinev: report.videospentOffline ? report.videospentOffline : 0,
 		state1: report.req_id
 	};
+	const OverallDataDown = {
+		complete: [
+			{
+				xSteps: 5,
+				columns: [ { title: 'Overall Report' } ]
+			},
+			{
+				ySteps: 2,
+				columns: [
+					{ title: 'Campaign Start Date' },
+					{ title: 'Campaign End Date' },
+					{ title: 'Total Days of Campaign' },
+					{ title: 'unique User' },
+					{ title: 'Total Impressions to be delivered' },
+					{ title: 'Total Impressions Delivered till date' },
+					{ title: 'Avg required' },
+					{ title: 'Avg Achieved' },
+					{ title: 'Total spent' },
+					{ title: 'Total Clicks Delivered till date' },
+					{ title: 'Avg Frequency' },
+					{ title: 'CTR' },
+					{ title: 'Balance Impressions' },
+					{ title: 'Balance Days' }
+				],
+				data: [
+					{ value: dateformatchanger(report.startDate) },
+					{ value: dateformatchanger(report.endDate) },
+					{ value: timefinder(report.endDate, report.startDate) + ' days' },
+					{ value: uniqueData.complete ? uniqueData.complete : 0 },
+					{
+						value:
+							report.ids && report.ids.audimpression + report.ids.disimpression + report.ids.vidimpression
+					},
+					{ value: report.report.summaryCompleteReport.impressions },
+					{
+						value:
+							Math.round(
+								report.ids &&
+									report.ids.audimpression +
+										report.ids.disimpression +
+										report.ids.vidimpression / timefinder(report.endDate, report.startDate) * 10
+							) / 10
+					},
+					{
+						value:
+							Math.round(
+								report.report.summaryCompleteReport.impressions /
+									timefinder(Date.now(), report.startDate) *
+									10
+							) / 10
+					},
+					{
+						value:
+							completespentfider('all') +
+							(report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0) +
+							(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0) +
+							(report.videospentOffline ? parseFloat(report.videospentOffline) : 0)
+					},
+					{ value: report.report.summaryCompleteReport.clicks },
+					{
+						value: Math.round(
+							report.report.summaryCompleteReport.impressions / uniqueData.complete
+								? uniqueData.complete
+								: 0
+						)
+					},
+					{ value: null },
+					{ value: null },
+					{ value: null },
+					{ value: null }
+				]
+			}
+		],
+		audio: [],
+		display: [],
+		video: [],
+		quartile: []
+	};
 	// const LanguageProps = {
 	// 	state1: report.req_id,
 	// 	arrowRetuner: arrowRetuner,
@@ -761,6 +839,9 @@ function TablePro() {
 		// console.log(props);
 		const data = React.Children.map(props.children, (child) => {
 			// console.log(child);
+			if (child.props.must) {
+				return child;
+			}
 			if (child.props.dataSet && child.props.dataSet[0].data) {
 				return child;
 			}
@@ -787,6 +868,7 @@ function TablePro() {
 			<div className="titleReport">{report.title && report.title.toUpperCase()} Campaign</div>
 			<div className="titleReport">Overall Summary Report</div>
 			<ExeclDownload filename={`Complete Report ${report.title}`}>
+				{/* <ExcelSheet dataSet={OverallDataDown.complete} must={true} name="Over all Summary Data" /> */}
 				<ExcelSheet dataSet={PublisherDown.audio} name="Publisher Audio Wise" />
 				<ExcelSheet dataSet={PublisherDown.display} name="Publisher Display Wise" />
 				<ExcelSheet dataSet={PublisherDown.video} name="Publisher Video Wise" />

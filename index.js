@@ -2204,6 +2204,7 @@ async function FrequencyPublisherRefresher() {
 				$project: {
 					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
 					campaignId: '$campaignId',
+					rtbType: '$rtbType',
 					appId: '$appId',
 					impression: '$impression',
 					click: '$click'
@@ -2212,7 +2213,7 @@ async function FrequencyPublisherRefresher() {
 			{ $match: { test: { $gte: fixDate } } },
 			{
 				$group: {
-					_id: { campaignId: '$campaignId', appId: '$appId' },
+					_id: { campaignId: '$campaignId', rtbType: '$rtbType', appId: '$appId' },
 					users: { $sum: 1 },
 					impression: { $sum: '$impression' },
 					click: { $sum: '$click' }
@@ -2230,6 +2231,7 @@ async function FrequencyPublisherRefresher() {
 			const newzip = new freqpublishreports({
 				campaignId: frequenct._id.campaignId,
 				appId: frequenct._id.appId,
+				rtbType: frequenct._id.rtbType,
 				impression: frequenct.impression,
 				click: frequenct.click,
 				users: frequenct.users
@@ -2239,7 +2241,11 @@ async function FrequencyPublisherRefresher() {
 		} else {
 			const updateddoc = await freqpublishreports
 				.findOneAndUpdate(
-					{ campaignId: frequenct._id.campaignId, appId: frequenct._id.appId },
+					{
+						campaignId: frequenct._id.campaignId,
+						rtbType: frequenct._id.rtbType,
+						appId: frequenct._id.appId
+					},
 					{
 						impression: frequenct.impressions,
 						click: frequenct.click,

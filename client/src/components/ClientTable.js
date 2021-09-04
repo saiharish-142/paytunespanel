@@ -421,6 +421,7 @@ export default function BasicTable({ title, id }) {
 							<TableCell>Third Quartile</TableCell>
 							<TableCell>Complete</TableCell>
 							<TableCell>Total Impresions</TableCell>
+							<TableCell>LTR</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -432,6 +433,7 @@ export default function BasicTable({ title, id }) {
 							<TableCell>{report.report.complete.thirdQuartile}</TableCell>
 							<TableCell>{report.report.complete.complete}</TableCell>
 							<TableCell>{report.report.complete.impressions}</TableCell>
+							<TableCell>{Math.round(report.report.complete.ltr * 100) / 100}%</TableCell>
 						</TableRow>
 					</TableBody>
 				</Table>

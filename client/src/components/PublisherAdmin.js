@@ -118,6 +118,9 @@ function PublisherAdmin({
 								<TableCell onClick={() => tablesorter('feed', 'string')} style={{ cursor: 'pointer' }}>
 									Feed {arrowRetuner(sa === 'feed' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
+								<TableCell onClick={() => tablesorter('feed', 'string')} style={{ cursor: 'pointer' }}>
+									Unique Users {arrowRetuner(sa === 'users' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
 								<TableCell
 									onClick={() => tablesorter('target', 'number')}
 									style={{ cursor: 'pointer' }}
@@ -175,6 +178,7 @@ function PublisherAdmin({
 												''
 											)}
 										</TableCell>
+										<TableCell>{log.unique}</TableCell>
 										<TableCell>{parseInt(log.target)}</TableCell>
 										<TableCell>{log.impressions}</TableCell>
 										<TableCell>{Math.round(log.spent * 1) / 1}</TableCell>
