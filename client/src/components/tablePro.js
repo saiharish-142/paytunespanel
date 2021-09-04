@@ -349,15 +349,15 @@ function TablePro() {
 								{title === 'Summary' && <TableCell>Campaign Start Date</TableCell>}
 								{title === 'Summary' && <TableCell>Campaign End Date</TableCell>}
 								{title === 'Summary' && <TableCell>Total Days of Campaign</TableCell>}
-								<TableCell>unique User</TableCell>
 								<TableCell>Total Impressions to be delivered</TableCell>
 								<TableCell>Total Impressions Delivered till date</TableCell>
+								<TableCell>unique User</TableCell>
+								<TableCell>Avg Frequency</TableCell>
+								<TableCell>Total Clicks Delivered till date</TableCell>
+								<TableCell>CTR</TableCell>
 								<TableCell>Avg required</TableCell>
 								<TableCell>Avg Achieved</TableCell>
 								<TableCell>Total spent</TableCell>
-								<TableCell>Total Clicks Delivered till date</TableCell>
-								<TableCell>Avg Frequency</TableCell>
-								<TableCell>CTR</TableCell>
 								<TableCell>Balance Impressions</TableCell>
 								{title === 'Summary' && <TableCell>Balance Days</TableCell>}
 								<TableCell />
@@ -379,9 +379,14 @@ function TablePro() {
 								{title === 'Summary' && (
 									<TableCell>{timefinder(report.endDate, report.startDate)} days</TableCell>
 								)}
-								<TableCell>{users}</TableCell>
 								<TableCell>{target}</TableCell>
 								<TableCell>{reportsub.impressions}</TableCell>
+								<TableCell>{users}</TableCell>
+								<TableCell>{Math.round(reportsub.impressions / users)}</TableCell>
+								<TableCell>{reportsub.clicks}</TableCell>
+								<TableCell>
+									{Math.round(reportsub.clicks * 100 / reportsub.impressions * 100) / 100}%
+								</TableCell>
 								<TableCell>
 									{Math.round(target / timefinder(report.endDate, report.startDate) * 10) / 10}
 								</TableCell>
@@ -390,11 +395,6 @@ function TablePro() {
 										10}
 								</TableCell>
 								<TableCell>{Math.round(spent * 1) / 1}</TableCell>
-								<TableCell>{reportsub.clicks}</TableCell>
-								<TableCell>{Math.round(reportsub.impressions / users)}</TableCell>
-								<TableCell>
-									{Math.round(reportsub.clicks * 100 / reportsub.impressions * 100) / 100}%
-								</TableCell>
 								<TableCell>{target - reportsub.impressions}</TableCell>
 								{title === 'Summary' && (
 									<TableCell>{timefinder(report.endDate, Date.now())} days</TableCell>
