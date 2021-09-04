@@ -20,6 +20,7 @@ const adminauth = require('../authenMiddleware/adminauth');
 const categoryreports = require('../models/categoryreports');
 const publisherwiseConsole = mongoose.model('publisherwiseConsole');
 const frequencyConsole = mongoose.model('frequencyConsole');
+const freqpublishreports = mongoose.model('freqpublishreports');
 
 router.get('/phonemake', adminauth, (req, res) => {
 	phonemakereports
@@ -721,7 +722,7 @@ router.put('/phoneModelbycampids', adminauth, (req, res) => {
 		.then((result) => {
 			var data = result;
 			var store = {};
-			store['nullData'] = { impression: 0, CompanionClickTracking: 0, SovClickTracking: 0 };
+			store['unknown'] = { impression: 0, CompanionClickTracking: 0, SovClickTracking: 0 };
 			data.map((x) => {
 				if (x && x.extra && x.extra.type) {
 					if (store[x.extra.type]) {
@@ -735,9 +736,9 @@ router.put('/phoneModelbycampids', adminauth, (req, res) => {
 						store[x.extra.type].SovClickTracking = parseInt(x.SovClickTracking);
 					}
 				} else {
-					store['nullData'].impression += parseInt(x.impression);
-					store['nullData'].CompanionClickTracking += parseInt(x.CompanionClickTracking);
-					store['nullData'].SovClickTracking += parseInt(x.SovClickTracking);
+					store['unknown'].impression += parseInt(x.impression);
+					store['unknown'].CompanionClickTracking += parseInt(x.CompanionClickTracking);
+					store['unknown'].SovClickTracking += parseInt(x.SovClickTracking);
 				}
 			});
 			var solu = [];
@@ -939,11 +940,41 @@ router.put('/phoneModelbycampidsallcombo', adminauth, (req, res) => {
 		.catch((err) => res.status(422).json(err));
 });
 
+router.put('/uniqueusersbypub', adminauth, (req, res) => {
+	const { campaignId, appId } = req.body;
+	const dumd = [];
+	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	var apids = appId ? appId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	freqpublishreports
+		.aggregate([
+			{ $match: { campaignId: { $in: ids }, appId: { $in: { apids } } } },
+			{ $group: { _id: '$appId', unique: { $sum: '$users' } } },
+			{ $project: { id: '$_id', unique: 1, _id: 0 } }
+		])
+		.then((result) => res.json(result))
+		.catch((err) => res.status(422).json(err));
+});
+
+router.put('/uniqueusersbycamppub', adminauth, (req, res) => {
+	const { campaignId, appId } = req.body;
+	const dumd = [];
+	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	var apids = appId ? appId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	freqpublishreports
+		.aggregate([
+			{ $match: { campaignId: { $in: ids }, appId: { $in: { apids } } } },
+			{ $group: { _id: '$appId', unique: { $sum: '$users' } } },
+			{ $project: { id: '$_id', unique: 1, _id: 0 } }
+		])
+		.then((result) => res.json(result))
+		.catch((err) => res.status(422).json(err));
+});
+
 router.put('/uniqueusersbycampids', adminauth, (req, res) => {
 	const { campaignId } = req.body;
 	const dumd = [];
 	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
-	uniqueuserreports
+	freqpublishreports
 		.aggregate([
 			{ $match: { campaignId: { $in: ids } } },
 			{ $group: { _id: '$campaignId', unique: { $sum: '$uniqueusers' } } },

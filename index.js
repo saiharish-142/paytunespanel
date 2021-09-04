@@ -63,6 +63,7 @@ require('./models/apppublishers.model');
 require('./models/publisherwiseConsole.model');
 require('./models/frequencyConsole.model');
 require('./models/campaignsClientmanage');
+require('./models/freqencypublishcount.model');
 
 app.use('/auth', require('./routes/user.routes'));
 app.use('/streamingads', require('./routes/streamingads.routes'));
@@ -1701,6 +1702,10 @@ cron.schedule('45 00 * * *', function() {
 	FrequencyDataRefresher();
 });
 
+cron.schedule('50 00 * * *', function() {
+	FrequencyPublisherRefresher();
+});
+
 function arrayincludefinder(array, id) {
 	var status = false;
 	array.map((x) => {
@@ -1739,6 +1744,8 @@ function arr_diff(a1, a2) {
 const publisherwiseConsole = mongoose.model('publisherwiseConsole');
 const frequencyConsole = mongoose.model('frequencyConsole');
 const frequencyreports = mongoose.model('frequencyreports');
+const freqpublishreports = mongoose.model('freqpublishreports');
+const campaignifareports = mongoose.model('campaignifareports');
 
 async function PublisherConsoleLoaderTypeWise(array, type) {
 	array &&
@@ -2167,6 +2174,72 @@ async function FrequencyDataRefresher() {
 			const updateddoc = await frequencyConsole
 				.findOneAndUpdate(
 					{ frequency: frequenct._id },
+					{
+						impression: frequenct.impressions,
+						click: frequenct.click,
+						users: frequenct.users
+					},
+					{ new: true }
+				)
+				.catch((err) => console.log(err));
+			console.log('updated');
+		}
+	});
+}
+
+// FrequencyPublisherRefresher();
+async function FrequencyPublisherRefresher() {
+	let date = new Date(new Date());
+	date.setDate(date.getDate() - 1);
+	date = new Date(date);
+	const year = date.getFullYear();
+	const month = `0${date.getMonth() + 1}`;
+	const date1 = date.getDate();
+	let yesterday = `${year}-${month}-${date1}`;
+	console.log('yesterday', yesterday);
+	// { $match: { test: yesterday } },
+	const frequency = await campaignifareports
+		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					campaignId: '$campaignId',
+					appId: '$appId',
+					impression: '$impression',
+					click: '$click'
+				}
+			},
+			{ $match: { test: { $gte: fixDate } } },
+			{
+				$group: {
+					_id: { campaignId: '$campaignId', appId: '$appId' },
+					users: { $sum: 1 },
+					impression: { $sum: '$impression' },
+					click: { $sum: '$click' }
+				}
+			}
+		])
+		.catch((err) => console.log(err));
+	console.log(frequency.length);
+	frequency.forEach(async (frequenct) => {
+		const match = await freqpublishreports.findOne({
+			campaignId: frequenct._id.campaignId,
+			appId: frequenct._id.appId
+		});
+		if (!match) {
+			const newzip = new freqpublishreports({
+				campaignId: frequenct._id.campaignId,
+				appId: frequenct._id.appId,
+				impression: frequenct.impression,
+				click: frequenct.click,
+				users: frequenct.users
+			});
+			await newzip.save().catch((err) => console.log(err));
+			console.log('created');
+		} else {
+			const updateddoc = await freqpublishreports
+				.findOneAndUpdate(
+					{ campaignId: frequenct._id.campaignId, appId: frequenct._id.appId },
 					{
 						impression: frequenct.impressions,
 						click: frequenct.click,

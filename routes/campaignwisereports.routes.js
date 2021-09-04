@@ -7,6 +7,7 @@ const StreamingAds = mongoose.model('streamingads');
 const publisherapps = mongoose.model('publisherapps');
 const apppublishers = mongoose.model('apppublishers');
 const adsetting = mongoose.model('adsetting');
+const freqpublishreports = mongoose.model('freqpublishreports');
 
 router.get('/reports', adminauth, (req, res) => {
 	campaignwisereports
@@ -585,6 +586,19 @@ function arrayincludefinder(array, id) {
 	return status;
 }
 
+function uniqueValuefinder(array, id) {
+	if (array && array.length) {
+		for (var i = 0; i < array; i++) {
+			if (arr[i]._id === id) {
+				return arr[i].users;
+			}
+		}
+		return 0;
+	} else {
+		return 0;
+	}
+}
+
 router.put('/sumreportofcamall2', adminauth, (req, res) => {
 	const { campaignId } = req.body;
 	// var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
@@ -636,6 +650,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 								firstQuartile: '$firstQuartile',
 								thirdQuartile: '$thirdQuartile',
 								targetimpre: '0',
+								unique: '0',
 								_id: 0
 							}
 						},
@@ -688,6 +703,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 								firstQuartile: '$firstQuartile',
 								thirdQuartile: '$thirdQuartile',
 								targetimpre: '0',
+								unique: '0',
 								_id: 0
 							}
 						},
@@ -740,6 +756,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 								firstQuartile: '$firstQuartile',
 								thirdQuartile: '$thirdQuartile',
 								targetimpre: '0',
+								unique: '0',
 								_id: 0
 							}
 						},
@@ -810,6 +827,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 			var audioCompleteReport = {
 				impressions: 0,
 				clicks: 0,
+				unique: [],
+				uniquedata: [],
+				uniqueValue: 0,
 				complete: 0,
 				start: 0,
 				firstQuartile: 0,
@@ -819,6 +839,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 			var displayCompleteReport = {
 				impressions: 0,
 				clicks: 0,
+				unique: [],
+				uniquedata: [],
+				uniqueValue: 0,
 				complete: 0,
 				start: 0,
 				firstQuartile: 0,
@@ -828,6 +851,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 			var videoCompleteReport = {
 				impressions: 0,
 				clicks: 0,
+				unique: [],
+				uniquedata: [],
+				uniqueValue: 0,
 				complete: 0,
 				start: 0,
 				firstQuartile: 0,
@@ -848,9 +874,44 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 			// }).catch((err) => console.log(err));
 			response.audio &&
 				response.audio.map((x) => {
+					audioCompleteReport.unique.push(x.PublisherSplit);
+				});
+			response.display &&
+				response.display.map((x) => {
+					displayCompleteReport.unique.push(x.PublisherSplit);
+				});
+			response.video &&
+				response.video.map((x) => {
+					videoCompleteReport.unique.push(x.PublisherSplit);
+				});
+			// audioCompleteReport.unique = removeDuplicates(audioCompleteReport.unique);
+			audioCompleteReport.uniquedata = await freqpublishreports
+				.aggregate([
+					{ $match: { campaignId: { $in: audio }, appId: { $in: audioCompleteReport.unique } } },
+					{ $group: { _id: '$appId', users: { $sum: '$users' } } }
+				])
+				.catch((err) => console.log(err));
+			// console.log(audioCompleteReport.uniquedata);
+			// displayCompleteReport.unique = removeDuplicates(displayCompleteReport.unique);
+			displayCompleteReport.uniquedata = await freqpublishreports
+				.aggregate([
+					{ $match: { campaignId: { $in: display }, appId: { $in: displayCompleteReport.unique } } },
+					{ $group: { _id: '$appId', users: { $sum: '$users' } } }
+				])
+				.catch((err) => console.log(err));
+			// videoCompleteReport.unique = removeDuplicates(videoCompleteReport.unique);
+			videoCompleteReport.uniquedata = await freqpublishreports
+				.aggregate([
+					{ $match: { campaignId: { $in: video }, appId: { $in: videoCompleteReport.unique } } },
+					{ $group: { _id: '$appId', users: { $sum: '$users' } } }
+				])
+				.catch((err) => console.log(err));
+			response.audio &&
+				response.audio.map((x) => {
 					x.updatedAt = [ ...new Set(x.updatedAt) ];
 					x.Publisher = [ ...new Set(x.Publisher) ];
 					x.ssp = [ ...new Set(x.ssp) ];
+					x.unique = 0;
 					var testappubid = x.apppubidpo;
 					var forda;
 					if (testappubid && testappubid.length)
@@ -861,6 +922,8 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							}
 						}
 					x.apppubidpo = forda;
+					x.unique = uniqueValuefinder(audioCompleteReport.uniquedata, x.PublisherSplit);
+					audioCompleteReport.uniqueValue += x.unique ? parseInt(x.unique) : 0;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
 					audioCompleteReport.impressions += parseInt(x.impressions);
 					audioCompleteReport.clicks += parseInt(x.clicks);
@@ -905,8 +968,11 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							}
 						}
 					x.apppubidpo = forda;
+					x.unique = uniqueValuefinder(displayCompleteReport.uniquedata, x.PublisherSplit);
+					displayCompleteReport.uniqueValue += x.unique ? parseInt(x.unique) : 0;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId);
 					displayCompleteReport.impressions += parseInt(x.impressions);
+					displayCompleteReport.unique.push(x.PublisherSplit);
 					displayCompleteReport.clicks += parseInt(x.clicks);
 					displayCompleteReport.complete += parseInt(x.complete);
 					displayCompleteReport.midpoint += parseInt(x.midpoint);
@@ -949,7 +1015,10 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							}
 						}
 					x.apppubidpo = forda;
+					x.unique = uniqueValuefinder(videoCompleteReport.uniquedata, x.PublisherSplit);
+					videoCompleteReport.uniqueValue += x.unique ? parseInt(x.unique) : 0;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId);
+					videoCompleteReport.unique.push(x.PublisherSplit);
 					videoCompleteReport.impressions += parseInt(x.impressions);
 					videoCompleteReport.clicks += parseInt(x.clicks);
 					videoCompleteReport.complete += parseInt(x.complete);
@@ -981,7 +1050,16 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 			updatedAtTimes.sort(function(a, b) {
 				return new Date(b) - new Date(a);
 			});
-			var summaryCompleteReport = { impressions: 0, clicks: 0, complete: 0, start: 0, fq: 0, sq: 0, tq: 0 };
+			var summaryCompleteReport = {
+				impressions: 0,
+				clicks: 0,
+				complete: 0,
+				start: 0,
+				fq: 0,
+				sq: 0,
+				tq: 0,
+				uniqueValue: 0
+			};
 			summaryCompleteReport.impressions +=
 				parseInt(audioCompleteReport.impressions) +
 				parseInt(displayCompleteReport.impressions) +
@@ -990,6 +1068,10 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				parseInt(audioCompleteReport.clicks) +
 				parseInt(displayCompleteReport.clicks) +
 				parseInt(videoCompleteReport.clicks);
+			summaryCompleteReport.uniqueValue +=
+				parseInt(audioCompleteReport.uniqueValue) +
+				parseInt(displayCompleteReport.uniqueValue) +
+				parseInt(videoCompleteReport.uniqueValue);
 			summaryCompleteReport.complete +=
 				parseInt(audioCompleteReport.complete) + parseInt(videoCompleteReport.complete);
 			summaryCompleteReport.start += parseInt(audioCompleteReport.start) + parseInt(videoCompleteReport.start);
