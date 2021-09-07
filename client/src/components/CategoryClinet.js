@@ -39,10 +39,6 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 	const headers = [
 		{ key: 'category', label: 'Category' },
 		{ key: 'Name', label: 'Name' },
-		{ key: 'tier1', label: 'Tier 1' },
-		{ key: 'tier2', label: 'Tier 2' },
-		{ key: 'tier3', label: 'Tier 3' },
-		{ key: 'tier4', label: 'Tier 4' },
 		{ key: 'impression', label: 'Impressions' },
 		{ key: 'clicks', label: 'Clicks' },
 		{ key: 'ctr', label: 'CTR' }
@@ -68,10 +64,6 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 				data.map((row) => {
 					row.category = row._id.category ? row._id.category : '';
 					row.Name = row.extra_details.length !== 0 ? row.extra_details[0].Name : '';
-					row.tier1 = row.extra_details.length !== 0 ? row.extra_details[0].tier1 : '';
-					row.tier2 = row.extra_details.length !== 0 ? row.extra_details[0].tier2 : '';
-					row.tier3 = row.extra_details.length !== 0 ? row.extra_details[0].tier3 : '';
-					row.tier4 = row.extra_details.length !== 0 ? row.extra_details[0].tier4 : '';
 					var impre = Math.round(row.impressions * impression / imoop);
 					var cliol = Math.round(
 						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) * clicks / closk
@@ -115,18 +107,6 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 								<TableCell onClick={() => tablesorter('Name', 'string')} style={{ cursor: 'pointer' }}>
 									Name{arrowRetuner(sa === 'Name' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell onClick={() => tablesorter('tier1', 'string')} style={{ cursor: 'pointer' }}>
-									Tier 1{arrowRetuner(sa === 'tier1' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
-								<TableCell onClick={() => tablesorter('tier2', 'string')} style={{ cursor: 'pointer' }}>
-									Tier 2{arrowRetuner(sa === 'tier2' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
-								<TableCell onClick={() => tablesorter('tier3', 'string')} style={{ cursor: 'pointer' }}>
-									Tier 3{arrowRetuner(sa === 'tier3' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
-								<TableCell onClick={() => tablesorter('tier4', 'string')} style={{ cursor: 'pointer' }}>
-									Tier 4{arrowRetuner(sa === 'tier4' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
 								<TableCell
 									onClick={() => tablesorter('impression', 'number')}
 									style={{ cursor: 'pointer' }}
@@ -150,10 +130,6 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 									<TableRow key={i}>
 										<TableCell>{row.category}</TableCell>
 										<TableCell>{row.Name}</TableCell>
-										<TableCell>{row.tier1}</TableCell>
-										<TableCell>{row.tier2}</TableCell>
-										<TableCell>{row.tier3}</TableCell>
-										<TableCell>{row.tier4}</TableCell>
 										<TableCell>{row.impression}</TableCell>
 										<TableCell>{row.clicks}</TableCell>
 										<TableCell>{Math.round(row.ctr * 100) / 100}%</TableCell>

@@ -488,7 +488,7 @@ export default function BasicTable({ title, id }) {
 						}
 					}
 				})}
-			<div className="titleReport">Category Wise Summary Report</div>
+			<div className="titleReport">Listener Profiling Report</div>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
 			{report.sets &&
 				report.sets.map((x) => {

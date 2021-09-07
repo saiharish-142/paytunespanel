@@ -38,6 +38,8 @@ function PublisherAdmin({
 		{ key: 'publishername', label: 'Publisher' },
 		{ key: 'feed', label: 'Feed' },
 		{ key: 'ssp', label: 'SSP' },
+		{ key: 'unique', label: 'Unique Users' },
+		{ key: 'freq', label: 'Average Frequency' },
 		{ key: 'target', label: 'Total Impressions to be delivered' },
 		{ key: 'impressions', label: 'Total Impressions Delivered till date' },
 		{ key: 'spent', label: 'Total spent' },
@@ -59,6 +61,7 @@ function PublisherAdmin({
 				data.map((ad) => {
 					var publishbid = ad.PublisherSplit;
 					// console.log(publishbid);
+					ad.freq = ad.impressions / ad.unique;
 					ad.spent =
 						spentfinder(
 							ad.Publisher._id,
@@ -118,8 +121,15 @@ function PublisherAdmin({
 								<TableCell onClick={() => tablesorter('feed', 'string')} style={{ cursor: 'pointer' }}>
 									Feed {arrowRetuner(sa === 'feed' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell onClick={() => tablesorter('feed', 'string')} style={{ cursor: 'pointer' }}>
-									Unique Users {arrowRetuner(sa === 'users' ? (order === 'asc' ? '1' : '2') : '3')}
+								<TableCell
+									onClick={() => tablesorter('unique', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									Unique Users {arrowRetuner(sa === 'unique' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell onClick={() => tablesorter('freq', 'string')} style={{ cursor: 'pointer' }}>
+									Average Frequency{' '}
+									{arrowRetuner(sa === 'freq' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
 									onClick={() => tablesorter('target', 'number')}
@@ -179,6 +189,7 @@ function PublisherAdmin({
 											)}
 										</TableCell>
 										<TableCell>{log.unique}</TableCell>
+										<TableCell>{parseInt(log.freq)}</TableCell>
 										<TableCell>{parseInt(log.target)}</TableCell>
 										<TableCell>{log.impressions}</TableCell>
 										<TableCell>{Math.round(log.spent * 1) / 1}</TableCell>
