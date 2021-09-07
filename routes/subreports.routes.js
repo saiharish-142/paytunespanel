@@ -1524,6 +1524,33 @@ router.get('/zipdata_video', adminauth, async (req, res) => {
 	}
 });
 
+router.get('/zipdata_banner', adminauth, async (req, res) => {
+	try {
+		let startdate = new Date();
+		startdate.setDate(30);
+		startdate.setMonth(07); // 30 aug
+		startdate.setFullYear(2021);
+
+		let date = new Date();
+		let days = Math.round((date.getTime() - startdate.getTime()) / 86400000);
+		if (days === 0) {
+			days = 1;
+		}
+		const result = await Zipreports2.aggregate([
+			{ $match: { requests: { $exists: true } } },
+			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{ $sort: { impression: -1 } },
+			{$match:{rtbType:"banner"}}
+		]);
+
+		res.status(200).json(result);
+	} catch (err) {
+		console.log(err.message);
+		res.status(400).send({ error: err.mesaage });
+	}
+});
+
 router.put('/editzipdata', adminauth, async (req, res) => {
 	try {
 		//data.make_model=data.make_model.toLowerCase()
