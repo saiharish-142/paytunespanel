@@ -1,7 +1,6 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import TablePagination from '@material-ui/core/TablePagination';
-import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { orderSetter } from '../redux/actions/manageadsAction';
 import { CSVLink } from 'react-csv';
@@ -14,18 +13,27 @@ const useStyles = makeStyles({
 	}
 });
 
-function CategoryClinet({ report, title, head, impression, clicks }) {
+function PhoneModelClinet({ title, report, head, impression, clicks }) {
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
-	const [ adss, setadss ] = React.useState([]);
+	const [ adss, setadss ] = React.useState(report);
 	const [ sa, setsa ] = React.useState('impression');
 	const [ order, setorder ] = React.useState('desc');
-	const tablesorter = (column, type) => {
-		var orde = sa === column ? (order === 'asc' ? 'desc' : 'asc') : 'asc';
-		setorder(orde);
-		setsa(column);
-		var setData = orderSetter(orde, column, adss, type);
-		setadss(setData);
+	const headers = [
+		{ key: 'phoneModel', label: 'Phone Model' },
+		{ key: 'release', label: 'Release Month And Year' },
+		{ key: 'cost', label: 'Release Cost or MRP' },
+		{ key: 'company', label: 'Company Name' },
+		{ key: 'model', label: 'Model' },
+		{ key: 'type', label: 'Type of Device' },
+		{ key: 'impression', label: 'Impressions' },
+		{ key: 'clicks', label: 'Clicks' },
+		{ key: 'ctr', label: 'CTR' }
+	];
+	var csvReport = {
+		filename: `${head}_${title}_PhoneModelData.csv`,
+		headers: headers,
+		data: adss
 	};
 	const arrowRetuner = (mode) => {
 		if (mode === '1') {
@@ -36,35 +44,28 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
 		}
 	};
-	const headers = [
-		{ key: 'category', label: 'Category' },
-		{ key: 'Name', label: 'Name' },
-		{ key: 'impression', label: 'Impressions' },
-		{ key: 'clicks', label: 'Clicks' },
-		{ key: 'ctr', label: 'CTR' }
-	];
-	var csvReport = {
-		filename: `${head}_${title}_IBAData.csv`,
-		headers: headers,
-		data: adss
+	const tablesorter = (column, type) => {
+		var orde = sa === column ? (order === 'asc' ? 'desc' : 'asc') : 'asc';
+		setorder(orde);
+		setsa(column);
+		var setData = orderSetter(orde, column, adss, type);
+		setadss(setData);
 	};
 	useEffect(
 		() => {
 			if (report && report.length > 0) {
 				var data = report;
 				data.sort(function(a, b) {
-					return b.impressions - a.impressions;
+					return b.impression - a.impression;
 				});
 				var imoop = 0;
 				var closk = 0;
 				data.map((row) => {
-					imoop += row.impressions;
+					imoop += row.impression;
 					closk += parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
 				});
 				data.map((row) => {
-					row.category = row._id.category ? row._id.category : '';
-					row.Name = row.extra_details.length !== 0 ? row.extra_details[0].Name : '';
-					var impre = Math.round(row.impressions * impression / imoop);
+					var impre = Math.round(row.impression * impression / imoop);
 					var cliol = Math.round(
 						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) * clicks / closk
 					);
@@ -73,7 +74,6 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 					row.ctr = cliol * 100 / impre;
 				});
 				csvReport.data = data;
-				console.log('neww', data);
 				setadss(data);
 			} else {
 				setadss(report);
@@ -89,6 +89,7 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 		setRowsPerPage(+event.target.value);
 		setPage(0);
 	};
+	// console.log(adss && adss.length ? 'data' : 'no data')
 	return (
 		<Paper>
 			<TableContainer style={{ margin: '20px 0' }}>
@@ -98,14 +99,8 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 					<Table className={classes.table} aria-label="simple table">
 						<TableHead>
 							<TableRow>
-								<TableCell
-									onClick={() => tablesorter('category', 'string')}
-									style={{ cursor: 'pointer' }}
-								>
-									Category{arrowRetuner(sa === 'category' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
-								<TableCell onClick={() => tablesorter('Name', 'string')} style={{ cursor: 'pointer' }}>
-									Name{arrowRetuner(sa === 'Name' ? (order === 'asc' ? '1' : '2') : '3')}
+								<TableCell onClick={() => tablesorter('type', 'string')} style={{ cursor: 'pointer' }}>
+									Type of Device{arrowRetuner(sa === 'type' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
 									onClick={() => tablesorter('impression', 'number')}
@@ -128,11 +123,10 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 							{adss.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => {
 								return (
 									<TableRow key={i}>
-										<TableCell>{row.category}</TableCell>
-										<TableCell>{row.Name}</TableCell>
+										<TableCell>{row.type}</TableCell>
 										<TableCell>{row.impression}</TableCell>
 										<TableCell>{row.clicks}</TableCell>
-										<TableCell>{Math.round(row.ctr * 100) / 100}%</TableCell>
+										<TableCell>{Math.round(row.ctr * 100) / 100 + '%'}</TableCell>
 									</TableRow>
 								);
 							})}
@@ -155,4 +149,4 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 	);
 }
 
-export default CategoryClinet;
+export default PhoneModelClinet;

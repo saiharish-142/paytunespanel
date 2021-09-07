@@ -316,6 +316,7 @@ export const ClientReport = () => async (dispatch, getState) => {
 		firstQuartile: 0,
 		impressions: 0,
 		midpoint: 0,
+		ltr: 0,
 		start: 0,
 		thirdQuartile: 0,
 		updatedAt: []
@@ -446,6 +447,7 @@ export const ClientReport = () => async (dispatch, getState) => {
 		return new Date(b) - new Date(a);
 	});
 	pullerData.complete.updatedAt = pullerData.complete.updatedAt[0];
+	pullerData.complete.ltr = pullerData.complete.complete / pullerData.complete.impressions;
 	console.log(dass, puller, pullerData);
 	dispatch({
 		type: REPORT_LOADED_CLIENT,

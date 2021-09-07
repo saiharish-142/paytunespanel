@@ -16,10 +16,26 @@ router.get('/reports', adminauth, (req, res) => {
 		.catch((er) => res.status(400).json(er));
 });
 
-router.put('/frequency', adminauth, (req, res) => {
+router.put('/tes', adminauth, (req, res) => {
 	const { campaignId } = req.body;
 	var audio = campaignId.map((id) => mongoose.Types.ObjectId(id));
 	campaignifareports
+		.aggregate([
+			{ $match: { campaignId: { $in: audio } } },
+			{ $group: { _id: '$ifa' } },
+			{ $group: { _id: null, uniqueUsers: { $sum: 1 } } }
+		])
+		.allowDiskUse(true)
+		.then((result) => {
+			res.json(result);
+		})
+		.catch((err) => console.log(err));
+});
+
+router.put('/frequency', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	var audio = campaignId.map((id) => mongoose.Types.ObjectId(id));
+	frequencyreports
 		.aggregate([
 			{ $match: { campaignId: { $in: audio } } },
 			{

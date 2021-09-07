@@ -5,7 +5,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { IdContext } from '../App';
 import EnhancedTable from '../components/ClientTable';
 import PreLoader from '../components/loaders/PreLoader';
-import { clientReportBase, idStorer } from '../redux/actions/reportActions';
+import { clientReportBase, idStorer, ReportLoading } from '../redux/actions/reportActions';
 import { Breadcrumbs } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
@@ -20,7 +20,8 @@ function ClientReport({ adminView }) {
 	// const [ title, settitle ] = useState('');
 	useEffect(
 		() => {
-			if (campname) {
+			if (campname && campname != report.req_id) {
+				dispatchRedux(ReportLoading());
 				dispatchRedux(idStorer(campname));
 				dispatch1({ type: 'ID', payload: campname });
 				dispatchRedux(clientReportBase());

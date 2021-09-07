@@ -59,6 +59,7 @@ function TablePro() {
 	const [ ibaReports, setibaReports ] = useState([]);
 	const [ frequencyReport, setfrequencyReport ] = useState([]);
 	const [ creativereports, setcreative ] = useState([]);
+	const [ uniqueData, setuniqueData ] = useState({ complete: 0, audio: 0, display: 0, video: 0 });
 	// const [ languageDownloadA, setlanguageDownloadA ] = useState([]);
 	// const [ languageDownloadD, setlanguageDownloadD ] = useState([]);
 	// const [ languageDownloadV, setlanguageDownloadV ] = useState([]);
@@ -82,6 +83,7 @@ function TablePro() {
 	useEffect(
 		() => {
 			if (report && report.ids && report.combine_ids) {
+				uniqueSetter(report.ids);
 				pincodeDataPuller(report.ids);
 				PhoneModelDataPuller(report.ids);
 				IbaDataPuller(report.ids);
@@ -109,6 +111,42 @@ function TablePro() {
 			}
 		}
 	};
+	async function uniqueSetter(idsa) {
+		console.log(idsa);
+		var sets = [ 'audio', 'display', 'video' ];
+		var ids = idsa;
+		var data = {};
+		data['complete'] = 0;
+		// console.log(report);
+		for (var i = 0; i < sets.length; i++) {
+			if (ids[sets[i]].length) {
+				console.log(ids[sets[i]]);
+				await fetch('/ifas/frequency', {
+					method: 'put',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + localStorage.getItem('jwt')
+					},
+					body: JSON.stringify({
+						campaignId: ids[sets[i]]
+					})
+				})
+					.then((res) => res.json())
+					.then((result) => {
+						console.log(result);
+						// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
+						data['complete'] += result[0].users ? result[0].users : 0;
+						data[sets[i]] = result[0].users;
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+			}
+		}
+		console.log(data);
+		setuniqueData(data);
+		// setcategoryDataload(false);
+	}
 	// pincode data of all data
 	const pincodeDataPuller = (idsa) => {
 		// console.log(idsa)
@@ -299,7 +337,7 @@ function TablePro() {
 		return datechanged;
 	};
 	// summary table
-	const SummaryTable = (title, reportsub, target, spent) => {
+	const SummaryTable = (title, reportsub, target, spent, users) => {
 		// console.log(spent);
 		return (
 			<TableContainer style={{ margin: '20px 0' }} elevation={3} component={Paper}>
@@ -313,11 +351,13 @@ function TablePro() {
 								{title === 'Summary' && <TableCell>Total Days of Campaign</TableCell>}
 								<TableCell>Total Impressions to be delivered</TableCell>
 								<TableCell>Total Impressions Delivered till date</TableCell>
+								<TableCell>unique User</TableCell>
+								<TableCell>Avg Frequency</TableCell>
+								<TableCell>Total Clicks Delivered till date</TableCell>
+								<TableCell>CTR</TableCell>
 								<TableCell>Avg required</TableCell>
 								<TableCell>Avg Achieved</TableCell>
 								<TableCell>Total spent</TableCell>
-								<TableCell>Total Clicks Delivered till date</TableCell>
-								<TableCell>CTR</TableCell>
 								<TableCell>Balance Impressions</TableCell>
 								{title === 'Summary' && <TableCell>Balance Days</TableCell>}
 								<TableCell />
@@ -341,6 +381,12 @@ function TablePro() {
 								)}
 								<TableCell>{target}</TableCell>
 								<TableCell>{reportsub.impressions}</TableCell>
+								<TableCell>{users}</TableCell>
+								<TableCell>{Math.round(reportsub.impressions / users)}</TableCell>
+								<TableCell>{reportsub.clicks}</TableCell>
+								<TableCell>
+									{Math.round(reportsub.clicks * 100 / reportsub.impressions * 100) / 100}%
+								</TableCell>
 								<TableCell>
 									{Math.round(target / timefinder(report.endDate, report.startDate) * 10) / 10}
 								</TableCell>
@@ -349,10 +395,6 @@ function TablePro() {
 										10}
 								</TableCell>
 								<TableCell>{Math.round(spent * 1) / 1}</TableCell>
-								<TableCell>{reportsub.clicks}</TableCell>
-								<TableCell>
-									{Math.round(reportsub.clicks * 100 / reportsub.impressions * 100) / 100}%
-								</TableCell>
 								<TableCell>{target - reportsub.impressions}</TableCell>
 								{title === 'Summary' && (
 									<TableCell>{timefinder(report.endDate, Date.now())} days</TableCell>
@@ -481,6 +523,84 @@ function TablePro() {
 		spentOfflined: report.displayspentOffline ? report.displayspentOffline : 0,
 		spentOfflinev: report.videospentOffline ? report.videospentOffline : 0,
 		state1: report.req_id
+	};
+	const OverallDataDown = {
+		complete: [
+			{
+				xSteps: 5,
+				columns: [ { title: 'Overall Report' } ]
+			},
+			{
+				ySteps: 2,
+				columns: [
+					{ title: 'Campaign Start Date' },
+					{ title: 'Campaign End Date' },
+					{ title: 'Total Days of Campaign' },
+					{ title: 'unique User' },
+					{ title: 'Total Impressions to be delivered' },
+					{ title: 'Total Impressions Delivered till date' },
+					{ title: 'Avg required' },
+					{ title: 'Avg Achieved' },
+					{ title: 'Total spent' },
+					{ title: 'Total Clicks Delivered till date' },
+					{ title: 'Avg Frequency' },
+					{ title: 'CTR' },
+					{ title: 'Balance Impressions' },
+					{ title: 'Balance Days' }
+				],
+				data: [
+					{ value: dateformatchanger(report.startDate) },
+					{ value: dateformatchanger(report.endDate) },
+					{ value: timefinder(report.endDate, report.startDate) + ' days' },
+					{ value: uniqueData.complete ? uniqueData.complete : 0 },
+					{
+						value:
+							report.ids && report.ids.audimpression + report.ids.disimpression + report.ids.vidimpression
+					},
+					{ value: report.report.summaryCompleteReport.impressions },
+					{
+						value:
+							Math.round(
+								report.ids &&
+									report.ids.audimpression +
+										report.ids.disimpression +
+										report.ids.vidimpression / timefinder(report.endDate, report.startDate) * 10
+							) / 10
+					},
+					{
+						value:
+							Math.round(
+								report.report.summaryCompleteReport.impressions /
+									timefinder(Date.now(), report.startDate) *
+									10
+							) / 10
+					},
+					{
+						value:
+							completespentfider('all') +
+							(report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0) +
+							(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0) +
+							(report.videospentOffline ? parseFloat(report.videospentOffline) : 0)
+					},
+					{ value: report.report.summaryCompleteReport.clicks },
+					{
+						value: Math.round(
+							report.report.summaryCompleteReport.impressions / uniqueData.complete
+								? uniqueData.complete
+								: 0
+						)
+					},
+					{ value: null },
+					{ value: null },
+					{ value: null },
+					{ value: null }
+				]
+			}
+		],
+		audio: [],
+		display: [],
+		video: [],
+		quartile: []
 	};
 	// const LanguageProps = {
 	// 	state1: report.req_id,
@@ -719,6 +839,9 @@ function TablePro() {
 		// console.log(props);
 		const data = React.Children.map(props.children, (child) => {
 			// console.log(child);
+			if (child.props.must) {
+				return child;
+			}
 			if (child.props.dataSet && child.props.dataSet[0].data) {
 				return child;
 			}
@@ -745,6 +868,7 @@ function TablePro() {
 			<div className="titleReport">{report.title && report.title.toUpperCase()} Campaign</div>
 			<div className="titleReport">Overall Summary Report</div>
 			<ExeclDownload filename={`Complete Report ${report.title}`}>
+				{/* <ExcelSheet dataSet={OverallDataDown.complete} must={true} name="Over all Summary Data" /> */}
 				<ExcelSheet dataSet={PublisherDown.audio} name="Publisher Audio Wise" />
 				<ExcelSheet dataSet={PublisherDown.display} name="Publisher Display Wise" />
 				<ExcelSheet dataSet={PublisherDown.video} name="Publisher Video Wise" />
@@ -774,7 +898,8 @@ function TablePro() {
 				completespentfider('all') +
 					(report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0) +
 					(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0) +
-					(report.videospentOffline ? parseFloat(report.videospentOffline) : 0)
+					(report.videospentOffline ? parseFloat(report.videospentOffline) : 0),
+				uniqueData.complete ? uniqueData.complete : 0
 			)}
 			{report.ids && report.ids.audio && report.ids.audio.length ? (
 				report.report.audioCompleteReport &&
@@ -782,7 +907,8 @@ function TablePro() {
 					'Audio',
 					report.report.audioCompleteReport,
 					report.ids && report.ids.audimpression,
-					completespentfider('audio') + (report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0)
+					completespentfider('audio') + (report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0),
+					uniqueData.audio ? uniqueData.audio : 0
 				)
 			) : (
 				''
@@ -794,7 +920,8 @@ function TablePro() {
 					report.report.displayCompleteReport,
 					report.ids && report.ids.disimpression,
 					completespentfider('display') +
-						(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0)
+						(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0),
+					uniqueData.display ? uniqueData.display : 0
 				)
 			) : (
 				''
@@ -805,7 +932,8 @@ function TablePro() {
 					'Video',
 					report.report.videoCompleteReport,
 					report.ids && report.ids.vidimpression,
-					completespentfider('video') + (report.videospentOffline ? parseFloat(report.videospentOffline) : 0)
+					completespentfider('video') + (report.videospentOffline ? parseFloat(report.videospentOffline) : 0),
+					uniqueData.video ? uniqueData.video : 0
 				)
 			) : (
 				''
