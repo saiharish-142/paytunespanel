@@ -985,8 +985,8 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						}
 					x.apppubidpo = forda;
 					var dunique = audioCompleteReport.uniquedata3[x.PublisherSplit];
-					console.log(dunique);
-					x.unique = dunique;
+					// console.log(dunique);
+					x.unique = dunique ? dunique : 0;
 					// audioCompleteReport.uniqueValue += x.unique ? parseInt(x.unique) : 0;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
 					audioCompleteReport.impressions += parseInt(x.impressions);
@@ -1032,7 +1032,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							}
 						}
 					x.apppubidpo = forda;
-					x.unique = displayCompleteReport.uniquedata[x.PublisherSplit];
+					x.unique = displayCompleteReport.uniquedata[x.PublisherSplit]
+						? displayCompleteReport.uniquedata[x.PublisherSplit]
+						: 0;
 					// displayCompleteReport.uniqueValue += x.unique ? parseInt(x.unique) : 0;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId);
 					displayCompleteReport.impressions += parseInt(x.impressions);
@@ -1079,7 +1081,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							}
 						}
 					x.apppubidpo = forda;
-					x.unique = videoCompleteReport.uniquedata[x.PublisherSplit];
+					x.unique = videoCompleteReport.uniquedata[x.PublisherSplit]
+						? videoCompleteReport.uniquedata[x.PublisherSplit]
+						: 0;
 					// videoCompleteReport.uniqueValue += x.unique ? parseInt(x.unique) : 0;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId);
 					videoCompleteReport.unique.push(x.PublisherSplit);
