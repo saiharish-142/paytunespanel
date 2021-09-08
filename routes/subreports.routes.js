@@ -1591,7 +1591,7 @@ router.get('/zipdata_banner', adminauth, async (req, res) => {
 			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
 			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
 			{ $sort: { impression: -1 } },
-			{$match:{rtbType:"banner"}}
+			{$match:{rtbType:"display"}}
 		]);
 
 		res.status(200).json(result);

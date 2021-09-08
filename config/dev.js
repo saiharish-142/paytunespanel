@@ -3,3 +3,5 @@ module.exports={
     MONGOURI:'mongodb://ptazrmngusernew:Pkdkd434232323873463AzrTM@20.189.119.185:27017/paytunesmusic',
     JWT_SECRET:'guib91298hinx91208hi9nxk'
 }
+
+// scp -i paytunes-new_key.pem -r /C:\paytunes_new\server azureuser@20.102.123.144:/var/
