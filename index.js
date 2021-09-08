@@ -604,7 +604,7 @@ async function PincodeRefresher() {
 				longitude: val ? val.longitude : '',
 				impression: 0,
 				click: 0,
-				requests: pincode.ads
+				requests: 0
 			});
 			await newzip.save();
 		} else {
