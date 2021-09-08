@@ -53,6 +53,11 @@ function PublisherConsoleTable({
 	useEffect(
 		() => {
 			if (consoledata.searchedpublisherData) {
+				var data = consoledata.searchedpublisherData;
+				data.map((x) => {
+					var uniquef = x.impression / x.unique;
+					x.uniquef = uniquef ? Math.round(uniquef * 10) / 10 : 0;
+				});
 				setadss(consoledata.searchedpublisherData);
 				// tablesorter('impression', 'number');
 			}
@@ -98,6 +103,19 @@ function PublisherConsoleTable({
 									Feed {arrowRetuner(sa === 'fede' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
+									onClick={() => tablesorter('unique', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									Unique Users {arrowRetuner(sa === 'unique' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('uniquef', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									Average Frequency
+									{arrowRetuner(sa === 'uniquef' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
 									onClick={() => tablesorter('impression', 'number')}
 									style={{ cursor: 'pointer' }}
 								>
@@ -121,6 +139,8 @@ function PublisherConsoleTable({
 											<TableCell>{log.publisherName}</TableCell>
 											<TableCell>{log.ssp}</TableCell>
 											<TableCell>{log.fede}</TableCell>
+											<TableCell>{log.unique}</TableCell>
+											<TableCell>{log.uniquef}</TableCell>
 											<TableCell>{log.impression}</TableCell>
 											<TableCell>{log.click}</TableCell>
 											<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>

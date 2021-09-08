@@ -527,10 +527,6 @@ function TablePro() {
 	const OverallDataDown = {
 		complete: [
 			{
-				xSteps: 5,
-				columns: [ { title: 'Overall Report' } ]
-			},
-			{
 				ySteps: 2,
 				columns: [
 					{ title: 'Campaign Start Date' },
@@ -857,6 +853,7 @@ function TablePro() {
 					</Button>
 				}
 			>
+				{/* <ExcelSheet dataSet={OverallDataDown.complete} name="Over all Summary Data" /> */}
 				{data.map((child) => {
 					return child;
 				})}

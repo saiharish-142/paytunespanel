@@ -256,11 +256,13 @@ export const CreativeBody = (report1) => {
 export const ConsolePhoneBody = (report1) => {
 	return report1.map((log, index) => {
 		var ctr = log.ctr + '%';
-
+		var uniquef = Math.round(log.impression / log.unique * 100) / 100;
 		return [
 			{ value: log.publisherName ? log.publisherName : '' },
 			{ value: log.ssp ? log.ssp : '' },
 			{ value: log.fede ? log.fede : '' },
+			{ value: log.unique ? log.unique : '' },
+			{ value: uniquef ? uniquef : '' },
 			{ value: log.impression ? log.impression : 0 },
 			{ value: log.click ? log.click : 0 },
 			{ value: ctr ? ctr : 0 + '%' }
