@@ -588,11 +588,11 @@ function arrayincludefinder(array, id) {
 
 function uniqueValuefinder(array, id) {
 	if (array && array.length) {
-		for (var i = 0; i < array; i++) {
-			if (arr[i]._id === id) {
-				return arr[i].users;
+		array.map((idsd) => {
+			if (idsd._id === id) {
+				return idsd.users;
 			}
-		}
+		});
 		return 0;
 	} else {
 		return 0;
@@ -937,7 +937,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							}
 						}
 					x.apppubidpo = forda;
-					x.unique = uniqueValuefinder(audioCompleteReport.uniquedata, x.PublisherSplit);
+					var dunique = uniqueValuefinder(audioCompleteReport.uniquedata, x.PublisherSplit);
+					console.log(dunique);
+					x.unique = dunique;
 					// audioCompleteReport.uniqueValue += x.unique ? parseInt(x.unique) : 0;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
 					audioCompleteReport.impressions += parseInt(x.impressions);
