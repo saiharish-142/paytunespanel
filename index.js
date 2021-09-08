@@ -602,7 +602,7 @@ async function PincodeRequestsRefresher() {
 				{ pincode: parseInt(pincode._id.zip), rtbType: pincode._id.rtbType },
 				{
 					$inc: {
-						requests: pincode.ads
+						requests: 0
 					}
 				},
 				{ new: true }
