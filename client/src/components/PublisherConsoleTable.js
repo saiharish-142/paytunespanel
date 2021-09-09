@@ -102,12 +102,36 @@ function PublisherConsoleTable({
 								<TableCell onClick={() => tablesorter('fede', 'string')} style={{ cursor: 'pointer' }}>
 									Feed {arrowRetuner(sa === 'fede' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
+								{title === 'Audio' && (
+									<TableCell
+										onClick={() => tablesorter('req', 'string')}
+										style={{ cursor: 'pointer' }}
+									>
+										Requests {arrowRetuner(sa === 'req' ? (order === 'asc' ? '1' : '2') : '3')}
+									</TableCell>
+								)}
+								{title === 'Audio' && (
+									<TableCell
+										onClick={() => tablesorter('avgreq', 'string')}
+										style={{ cursor: 'pointer' }}
+									>
+										Avg Requests{' '}
+										{arrowRetuner(sa === 'avgreq' ? (order === 'asc' ? '1' : '2') : '3')}
+									</TableCell>
+								)}
 								<TableCell
 									onClick={() => tablesorter('impression', 'number')}
 									style={{ cursor: 'pointer' }}
 								>
 									Total Impressions Delivered till date{' '}
 									{arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('avgimpre', 'number')}
+									style={{ cursor: 'pointer' }}
+								>
+									Average Impressions
+									{arrowRetuner(sa === 'avgimpre' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
 									onClick={() => tablesorter('unique', 'string')}
@@ -139,7 +163,10 @@ function PublisherConsoleTable({
 											<TableCell>{log.publisherName}</TableCell>
 											<TableCell>{log.ssp}</TableCell>
 											<TableCell>{log.fede}</TableCell>
+											{title === 'Audio' && <TableCell>{log.req}</TableCell>}
+											{title === 'Audio' && <TableCell>{log.avgreq}</TableCell>}
 											<TableCell>{log.impression}</TableCell>
+											<TableCell>{log.avgimpre}</TableCell>
 											<TableCell>{log.unique}</TableCell>
 											<TableCell>{log.uniquef}</TableCell>
 											<TableCell>{log.click}</TableCell>

@@ -276,7 +276,7 @@ export default function BasicTable({ title, id }) {
 		// var datee = datee.toString();
 		// console.log(s,date,s.split('/'))
 		s = s.split(' ');
-		console.log(s);
+		// console.log(s);
 		return s[2] + '-' + s[1] + '-' + s[3] + ' ' + s[4];
 	};
 	const SummaryTable = (title, reportsub, target, users) => {
