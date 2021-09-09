@@ -61,7 +61,7 @@ function PublisherAdmin({
 				data.map((ad) => {
 					var publishbid = ad.PublisherSplit;
 					// console.log(publishbid);
-					ad.freq = ad.impressions / ad.unique;
+					ad.freq = Math.round(ad.impressions / ad.unique * 100) / 100;
 					ad.spent =
 						spentfinder(
 							ad.Publisher._id,
@@ -122,16 +122,6 @@ function PublisherAdmin({
 									Feed {arrowRetuner(sa === 'feed' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
-									onClick={() => tablesorter('unique', 'string')}
-									style={{ cursor: 'pointer' }}
-								>
-									Unique Users {arrowRetuner(sa === 'unique' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
-								<TableCell onClick={() => tablesorter('freq', 'string')} style={{ cursor: 'pointer' }}>
-									Average Frequency{' '}
-									{arrowRetuner(sa === 'freq' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
-								<TableCell
 									onClick={() => tablesorter('target', 'number')}
 									style={{ cursor: 'pointer' }}
 								>
@@ -145,8 +135,15 @@ function PublisherAdmin({
 									Total Impressions Delivered till date{' '}
 									{arrowRetuner(sa === 'impressions' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell onClick={() => tablesorter('spent', 'number')} style={{ cursor: 'pointer' }}>
-									Total spent {arrowRetuner(sa === 'spent' ? (order === 'asc' ? '1' : '2') : '3')}
+								<TableCell
+									onClick={() => tablesorter('unique', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									Unique Users {arrowRetuner(sa === 'unique' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell onClick={() => tablesorter('freq', 'string')} style={{ cursor: 'pointer' }}>
+									Average Frequency{' '}
+									{arrowRetuner(sa === 'freq' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
 									onClick={() => tablesorter('clicks', 'number')}
@@ -157,6 +154,9 @@ function PublisherAdmin({
 								</TableCell>
 								<TableCell onClick={() => tablesorter('ctr', 'number')} style={{ cursor: 'pointer' }}>
 									CTR {arrowRetuner(sa === 'ctr' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell onClick={() => tablesorter('spent', 'number')} style={{ cursor: 'pointer' }}>
+									Total spent {arrowRetuner(sa === 'spent' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell>
 									{adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
@@ -188,13 +188,13 @@ function PublisherAdmin({
 												''
 											)}
 										</TableCell>
-										<TableCell>{log.unique}</TableCell>
-										<TableCell>{parseInt(log.freq)}</TableCell>
 										<TableCell>{parseInt(log.target)}</TableCell>
 										<TableCell>{log.impressions}</TableCell>
-										<TableCell>{Math.round(log.spent * 1) / 1}</TableCell>
+										<TableCell>{log.unique}</TableCell>
+										<TableCell>{log.freq}</TableCell>
 										<TableCell>{log.clicks}</TableCell>
 										<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>
+										<TableCell>{Math.round(log.spent * 1) / 1}</TableCell>
 										<TableCell
 											className="mangeads__report"
 											onClick={() => history.push(`/manageAds/${state1}/detailed`)}

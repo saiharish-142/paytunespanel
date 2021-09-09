@@ -382,7 +382,7 @@ function TablePro() {
 								<TableCell>{target}</TableCell>
 								<TableCell>{reportsub.impressions}</TableCell>
 								<TableCell>{users}</TableCell>
-								<TableCell>{Math.round(reportsub.impressions / users)}</TableCell>
+								<TableCell>{Math.round(reportsub.impressions / users * 100) / 100}</TableCell>
 								<TableCell>{reportsub.clicks}</TableCell>
 								<TableCell>
 									{Math.round(reportsub.clicks * 100 / reportsub.impressions * 100) / 100}%

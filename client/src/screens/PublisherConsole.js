@@ -52,6 +52,8 @@ function PublisherConsole() {
 		{ key: 'publisherName', label: 'Publisher' },
 		{ key: 'ssp', label: 'SSP' },
 		{ key: 'fede', label: 'Feed' },
+		{ key: 'unique', label: 'Unique Users' },
+		{ key: 'uniquef', label: 'Average Frequency' },
 		{ key: 'impression', label: 'Total Impressions Delivered till date' },
 		{ key: 'click', label: 'Total Clicks Delivered till date' },
 		{ key: 'ctr', label: 'CTR' }

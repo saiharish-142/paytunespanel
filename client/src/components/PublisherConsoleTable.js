@@ -56,7 +56,7 @@ function PublisherConsoleTable({
 				var data = consoledata.searchedpublisherData;
 				data.map((x) => {
 					var uniquef = x.impression / x.unique;
-					x.uniquef = uniquef ? Math.round(uniquef * 10) / 10 : 0;
+					x.uniquef = uniquef ? Math.round(uniquef * 100) / 100 : 0;
 				});
 				setadss(consoledata.searchedpublisherData);
 				// tablesorter('impression', 'number');
@@ -103,6 +103,13 @@ function PublisherConsoleTable({
 									Feed {arrowRetuner(sa === 'fede' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
+									onClick={() => tablesorter('impression', 'number')}
+									style={{ cursor: 'pointer' }}
+								>
+									Total Impressions Delivered till date{' '}
+									{arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
 									onClick={() => tablesorter('unique', 'string')}
 									style={{ cursor: 'pointer' }}
 								>
@@ -114,13 +121,6 @@ function PublisherConsoleTable({
 								>
 									Average Frequency
 									{arrowRetuner(sa === 'uniquef' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
-								<TableCell
-									onClick={() => tablesorter('impression', 'number')}
-									style={{ cursor: 'pointer' }}
-								>
-									Total Impressions Delivered till date{' '}
-									{arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell onClick={() => tablesorter('click', 'number')} style={{ cursor: 'pointer' }}>
 									Total Clicks Delivered till date{' '}
@@ -139,9 +139,9 @@ function PublisherConsoleTable({
 											<TableCell>{log.publisherName}</TableCell>
 											<TableCell>{log.ssp}</TableCell>
 											<TableCell>{log.fede}</TableCell>
+											<TableCell>{log.impression}</TableCell>
 											<TableCell>{log.unique}</TableCell>
 											<TableCell>{log.uniquef}</TableCell>
-											<TableCell>{log.impression}</TableCell>
 											<TableCell>{log.click}</TableCell>
 											<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>
 										</TableRow>

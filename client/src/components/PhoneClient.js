@@ -60,6 +60,7 @@ function PhoneModelClinet({ title, report, head, impression, clicks }) {
 				});
 				var imoop = 0;
 				var closk = 0;
+				data = data.filter((x) => x.type != 'unknown');
 				data.map((row) => {
 					imoop += row.impression;
 					closk += parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
@@ -72,6 +73,7 @@ function PhoneModelClinet({ title, report, head, impression, clicks }) {
 					row.impression = impre;
 					row.clicks = cliol;
 					row.ctr = cliol * 100 / impre;
+					return row;
 				});
 				csvReport.data = data;
 				setadss(data);

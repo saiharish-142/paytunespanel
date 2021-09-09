@@ -37,7 +37,6 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 		}
 	};
 	const headers = [
-		{ key: 'category', label: 'Category' },
 		{ key: 'Name', label: 'Name' },
 		{ key: 'impression', label: 'Impressions' },
 		{ key: 'clicks', label: 'Clicks' },
@@ -62,8 +61,6 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 					closk += parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
 				});
 				data.map((row) => {
-					row.category = row._id.category ? row._id.category : '';
-					row.Name = row.extra_details.length !== 0 ? row.extra_details[0].Name : '';
 					var impre = Math.round(row.impressions * impression / imoop);
 					var cliol = Math.round(
 						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) * clicks / closk
@@ -98,12 +95,6 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 					<Table className={classes.table} aria-label="simple table">
 						<TableHead>
 							<TableRow>
-								<TableCell
-									onClick={() => tablesorter('category', 'string')}
-									style={{ cursor: 'pointer' }}
-								>
-									Category{arrowRetuner(sa === 'category' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
 								<TableCell onClick={() => tablesorter('Name', 'string')} style={{ cursor: 'pointer' }}>
 									Name{arrowRetuner(sa === 'Name' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
@@ -128,7 +119,6 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 							{adss.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => {
 								return (
 									<TableRow key={i}>
-										<TableCell>{row.category}</TableCell>
 										<TableCell>{row.Name}</TableCell>
 										<TableCell>{row.impression}</TableCell>
 										<TableCell>{row.clicks}</TableCell>

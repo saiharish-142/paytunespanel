@@ -272,11 +272,12 @@ export default function BasicTable({ title, id }) {
 	const updatedatetimeseter = (date) => {
 		// console.log(date)
 		// var datee = new Date(date);
-		var s = new Date(date).toLocaleString(undefined, { timeZone: 'Asia/Kolkata' });
+		var s = new Date(date).toString();
 		// var datee = datee.toString();
 		// console.log(s,date,s.split('/'))
-		s = s.split('/');
-		return s[1] + '/' + s[0] + '/' + s[2];
+		s = s.split(' ');
+		console.log(s);
+		return s[2] + '-' + s[1] + '-' + s[3] + ' ' + s[4];
 	};
 	const SummaryTable = (title, reportsub, target, users) => {
 		// console.log(reportsub, target);
@@ -293,37 +294,32 @@ export default function BasicTable({ title, id }) {
 								<TableCell>Campaign Start Date</TableCell>
 								<TableCell>Campaign End Date</TableCell>
 								<TableCell>Total Days of Campaign</TableCell>
-								<TableCell>unique User</TableCell>
 								<TableCell>Total Impressions to be delivered</TableCell>
 								<TableCell>Total Impressions Delivered till date</TableCell>
+								<TableCell>Unique User</TableCell>
+								<TableCell>Average Frequency</TableCell>
 								<TableCell>Total Clicks Delivered till date</TableCell>
-								<TableCell>Avg Frequency</TableCell>
 								<TableCell>CTR</TableCell>
+								<TableCell>LTR</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							<TableRow
-								style={{
-									background: colorfinder(
-										timefinder(report.endDate, report.startDate),
-										timefinder(Date.now(), report.startDate),
-										target,
-										reportsub.impressions
-									)
-								}}
-							>
+							<TableRow>
 								<TableCell>{dateformatchanger(report.startDate)}</TableCell>
 								<TableCell>{dateformatchanger(report.endDate)}</TableCell>
 								<TableCell>{timefinder(report.endDate, report.startDate)} days</TableCell>
-								<TableCell>{users}</TableCell>
 								<TableCell>{target}</TableCell>
 								<TableCell>{reportsub.impressions}</TableCell>
+								<TableCell>{users}</TableCell>
+								<TableCell>{Math.round(reportsub.impressions / users * 100) / 100}</TableCell>
 								<TableCell>{reportsub.clicks + reportsub.clicks1}</TableCell>
-								<TableCell>{Math.round(reportsub.impressions / users)}</TableCell>
 								<TableCell>
 									{Math.round(
 										(reportsub.clicks + reportsub.clicks1) * 100 / reportsub.impressions * 100
 									) / 100}%
+								</TableCell>
+								<TableCell>
+									{Math.round(reportsub.complete * 100 / reportsub.impressions * 100) / 100}%
 								</TableCell>
 							</TableRow>
 						</TableBody>
@@ -415,7 +411,6 @@ export default function BasicTable({ title, id }) {
 					<TableHead>
 						<TableRow>
 							<TableCell />
-							<TableCell>Start</TableCell>
 							<TableCell>First Quartile</TableCell>
 							<TableCell>Second Quartile</TableCell>
 							<TableCell>Third Quartile</TableCell>
@@ -427,7 +422,6 @@ export default function BasicTable({ title, id }) {
 					<TableBody>
 						<TableRow>
 							<TableCell>Impressions</TableCell>
-							<TableCell>{report.report.complete.start}</TableCell>
 							<TableCell>{report.report.complete.firstQuartile}</TableCell>
 							<TableCell>{report.report.complete.midpoint}</TableCell>
 							<TableCell>{report.report.complete.thirdQuartile}</TableCell>
@@ -450,8 +444,8 @@ export default function BasicTable({ title, id }) {
 									head={x}
 									title={title && title.toUpperCase()}
 									state1={id}
-									impression={report.report.complete.impressions}
-									clicks={report.report.complete.clicks + report.report.complete.clicks1}
+									impression={report.report[x].impressions}
+									clicks={report.report[x].clicks + report.report[x].clicks1}
 								/>
 							);
 						} else {
@@ -475,8 +469,8 @@ export default function BasicTable({ title, id }) {
 									head={x}
 									title={title && title.toUpperCase()}
 									state1={id}
-									impression={report.report.complete.impressions}
-									clicks={report.report.complete.clicks + report.report.complete.clicks1}
+									impression={report.report[x].impressions}
+									clicks={report.report[x].clicks + report.report[x].clicks1}
 								/>
 							);
 						} else {
@@ -500,8 +494,8 @@ export default function BasicTable({ title, id }) {
 									head={x}
 									title={title && title.toUpperCase()}
 									state1={id}
-									impression={report.report.complete.impressions}
-									clicks={report.report.complete.clicks + report.report.complete.clicks1}
+									impression={report.report[x].impressions}
+									clicks={report.report[x].clicks + report.report[x].clicks1}
 								/>
 							);
 						} else {
@@ -516,10 +510,7 @@ export default function BasicTable({ title, id }) {
 			{creativeData.length ? (
 				<div>
 					<div className="titleReport">Creative Wise Summary Report</div>
-					<div>
-						last updated at -{' '}
-						{report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
-					</div>
+					<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
 					<Creative_Report
 						// title="Audio"
 						state1={report.req_id}
