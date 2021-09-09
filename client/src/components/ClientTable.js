@@ -319,7 +319,7 @@ export default function BasicTable({ title, id }) {
 									) / 100}%
 								</TableCell>
 								<TableCell>
-									{Math.round(reportsub.complete * 100 / reportsub.impressions * 100) / 100}%
+									{Math.round(reportsub.complete / reportsub.impressions * 100) / 100}%
 								</TableCell>
 							</TableRow>
 						</TableBody>
