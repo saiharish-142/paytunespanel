@@ -64,6 +64,7 @@ require('./models/publisherwiseConsole.model');
 require('./models/frequencyConsole.model');
 require('./models/campaignsClientmanage');
 require('./models/freqencypublishcount.model');
+require('./models/uareqreports.models');
 
 app.use('/auth', require('./routes/user.routes'));
 app.use('/streamingads', require('./routes/streamingads.routes'));

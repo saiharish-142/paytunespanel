@@ -21,6 +21,7 @@ const categoryreports = require('../models/categoryreports');
 const publisherwiseConsole = mongoose.model('publisherwiseConsole');
 const frequencyConsole = mongoose.model('frequencyConsole');
 const freqpublishreports = mongoose.model('freqpublishreports');
+const uareqreports = mongoose.model('uareqreports');
 
 router.get('/phonemake', adminauth, (req, res) => {
 	phonemakereports
@@ -1348,6 +1349,13 @@ router.get('/publisherComplete2', adminauth, async (req, res) => {
 	let audio = await publisherwiseConsole.find({ type: 'audio' }).catch((err) => console.log(err));
 	let display = await publisherwiseConsole.find({ type: 'display' }).catch((err) => console.log(err));
 	let video = await publisherwiseConsole.find({ type: 'video' }).catch((err) => console.log(err));
+	let uadata = await uareqreports
+		.aggregate([ { $group: { _id: '$publisherid', request: { $sum: '$ads' } } } ])
+		.catch((err) => console.log(err));
+	var sol = {};
+	uadata.map((x) => {
+		sol[x._id] = x.request;
+	});
 	var compo = {
 		impression: 0,
 		start: 0,
@@ -1374,7 +1382,7 @@ router.get('/publisherComplete2', adminauth, async (req, res) => {
 			compo.thirdQuartile += x.thirdQuartile;
 			compo.complete += x.complete;
 		});
-	res.json({ audio: audio, display: display, video: video, complete: compo });
+	res.json({ audio: audio, display: display, video: video, complete: compo, sol });
 });
 
 ///////////////////  new apis //////////////////////////////
