@@ -1024,14 +1024,6 @@ router.put('/categorywiseids', adminauth, async (req, res) => {
 		var audio = campaignId.map((id) => mongoose.Types.ObjectId(id));
 		const resultaudio = await CategoryReports.aggregate([
 			{ $match: { campaignId: { $in: audio } } },
-			// {$project:{
-			// 	category:1,
-			// 	impression:1,
-			// 	CompanionClickTracking:1,
-			// 	SovClickTracking:1,
-			// 	test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-			// }},
-			// {$match:{test:{$gt:setdate}}},
 			{
 				$group: {
 					_id: { category: '$category' },
@@ -1075,17 +1067,40 @@ router.put('/categorywiseids', adminauth, async (req, res) => {
 					extra_details: { $ifNull: [ '$extra_details', [] ] }
 				}
 			}
-			// {
-			// 	$project: {
-			// 		impressions: 1,
-			// 		CompanionClickTracking: 1,
-			// 		SovClickTracking: 1,
-			// 		extra_details: { $ifNull: ['$extra_details', []] }
-			// 	}
-			// }
 		]).allowDiskUse(true);
-		res.status(200).json(resultaudio);
+		var soul = {};
+		resultaudio.map((x) => {
+			if (x.extra_details && x.extra_details.length) {
+				if (x.extra_details[0].Name) {
+					if (soul[x.extra_details[0].Name]) {
+						soul[x.extra_details[0].Name].impressions += x.impressions;
+						soul[x.extra_details[0].Name].CompanionClickTracking += x.CompanionClickTracking;
+						soul[x.extra_details[0].Name].SovClickTracking += x.SovClickTracking;
+					} else {
+						soul[x.extra_details[0].Name] = {
+							impressions: 0,
+							CompanionClickTracking: 0,
+							SovClickTracking: 0
+						};
+						soul[x.extra_details[0].Name].impressions = x.impressions;
+						soul[x.extra_details[0].Name].CompanionClickTracking = x.CompanionClickTracking;
+						soul[x.extra_details[0].Name].SovClickTracking = x.SovClickTracking;
+					}
+				}
+			}
+		});
+		var sender = [];
+		for (const [ y, z ] of Object.entries(soul)) {
+			sender.push({
+				Name: y,
+				impressions: z.impressions,
+				SovClickTracking: z.SovClickTracking,
+				CompanionClickTracking: z.CompanionClickTracking
+			});
+		}
+		res.status(200).json(sender);
 	} catch (err) {
+		console.log(err);
 		res.status(400).json({ error: err.message });
 	}
 });
@@ -1588,10 +1603,10 @@ router.get('/zipdata_banner', adminauth, async (req, res) => {
 		}
 		const result = await Zipreports2.aggregate([
 			{ $match: { requests: { $exists: true } } },
-			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
-			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{ $addFields: { avgrequest: { $divide: [ '$requests', days ] } } },
+			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $sort: { impression: -1 } },
-			{$match:{rtbType:"display"}}
+			{ $match: { rtbType: 'display' } }
 		]);
 
 		res.status(200).json(result);
