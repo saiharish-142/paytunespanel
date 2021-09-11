@@ -272,7 +272,7 @@ export default function BasicTable({ title, id }) {
 	const updatedatetimeseter = (date) => {
 		// console.log(date)
 		// var datee = new Date(date);
-		var s = new Date(date).toString();
+		var s = new Date(new Date()).toString();
 		// var datee = datee.toString();
 		// console.log(s,date,s.split('/'))
 		s = s.split(' ');
