@@ -527,20 +527,24 @@ function TablePro() {
 	const OverallDataDown = {
 		complete: [
 			{
+				xSteps: 5,
+				columns: [ { title: 'Overall Complete Summary report' } ]
+			},
+			{
 				ySteps: 2,
 				columns: [
 					{ title: 'Campaign Start Date' },
 					{ title: 'Campaign End Date' },
 					{ title: 'Total Days of Campaign' },
-					{ title: 'unique User' },
 					{ title: 'Total Impressions to be delivered' },
 					{ title: 'Total Impressions Delivered till date' },
+					{ title: 'unique User' },
+					{ title: 'Avg Frequency' },
+					{ title: 'Total Clicks Delivered till date' },
+					{ title: 'CTR' },
 					{ title: 'Avg required' },
 					{ title: 'Avg Achieved' },
 					{ title: 'Total spent' },
-					{ title: 'Total Clicks Delivered till date' },
-					{ title: 'Avg Frequency' },
-					{ title: 'CTR' },
 					{ title: 'Balance Impressions' },
 					{ title: 'Balance Days' }
 				],
@@ -548,12 +552,28 @@ function TablePro() {
 					{ value: dateformatchanger(report.startDate) },
 					{ value: dateformatchanger(report.endDate) },
 					{ value: timefinder(report.endDate, report.startDate) + ' days' },
-					{ value: uniqueData.complete ? uniqueData.complete : 0 },
 					{
 						value:
 							report.ids && report.ids.audimpression + report.ids.disimpression + report.ids.vidimpression
 					},
 					{ value: report.report.summaryCompleteReport.impressions },
+					{ value: uniqueData.complete ? uniqueData.complete : 0 },
+					{
+						value: Math.round(
+							report.report.summaryCompleteReport.impressions / uniqueData.complete
+								? uniqueData.complete
+								: 0
+						)
+					},
+					{ value: report.report.summaryCompleteReport.clicks },
+					{
+						value:
+							Math.round(
+								report.report.summaryCompleteReport.clicks /
+									report.report.summaryCompleteReport.impressions *
+									100
+							) / 100
+					},
 					{
 						value:
 							Math.round(
@@ -578,18 +598,15 @@ function TablePro() {
 							(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0) +
 							(report.videospentOffline ? parseFloat(report.videospentOffline) : 0)
 					},
-					{ value: report.report.summaryCompleteReport.clicks },
 					{
-						value: Math.round(
-							report.report.summaryCompleteReport.impressions / uniqueData.complete
-								? uniqueData.complete
-								: 0
-						)
+						value:
+							report.ids &&
+							report.ids.audimpression +
+								report.ids.disimpression +
+								report.ids.vidimpression -
+								report.report.summaryCompleteReport.impressions
 					},
-					{ value: null },
-					{ value: null },
-					{ value: null },
-					{ value: null }
+					{ value: timefinder(report.endDate, Date.now()) }
 				]
 			}
 		],
@@ -864,6 +881,16 @@ function TablePro() {
 		<div>
 			<div className="titleReport">{report.title && report.title.toUpperCase()} Campaign</div>
 			<div className="titleReport">Overall Summary Report</div>
+			<ExcelFile
+				filename={'Small Tables'}
+				element={
+					<Button variant="outlined" color="primary">
+						Download ST
+					</Button>
+				}
+			>
+				<ExcelSheet dataSet={OverallDataDown.complete} name="21" />
+			</ExcelFile>
 			<ExeclDownload filename={`Complete Report ${report.title}`}>
 				{/* <ExcelSheet dataSet={OverallDataDown.complete} must={true} name="Over all Summary Data" /> */}
 				<ExcelSheet dataSet={PublisherDown.audio} name="Publisher Audio Wise" />
