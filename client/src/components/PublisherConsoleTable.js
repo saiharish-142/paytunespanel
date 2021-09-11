@@ -104,7 +104,7 @@ function PublisherConsoleTable({
 								</TableCell>
 								{title === 'Audio' && (
 									<TableCell
-										onClick={() => tablesorter('req', 'string')}
+										onClick={() => tablesorter('req', 'number')}
 										style={{ cursor: 'pointer' }}
 									>
 										Requests {arrowRetuner(sa === 'req' ? (order === 'asc' ? '1' : '2') : '3')}
@@ -112,7 +112,7 @@ function PublisherConsoleTable({
 								)}
 								{title === 'Audio' && (
 									<TableCell
-										onClick={() => tablesorter('avgreq', 'string')}
+										onClick={() => tablesorter('avgreq', 'number')}
 										style={{ cursor: 'pointer' }}
 									>
 										Avg Requests{' '}
