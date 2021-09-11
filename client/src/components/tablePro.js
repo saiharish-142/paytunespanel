@@ -528,7 +528,8 @@ function TablePro() {
 		complete: [
 			{
 				xSteps: 5,
-				columns: [ { title: 'Overall Complete Summary report' } ]
+				columns: [ { title: 'Overall Complete Summary report' } ],
+				data: []
 			},
 			{
 				ySteps: 2,
