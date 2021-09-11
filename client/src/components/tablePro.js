@@ -326,9 +326,14 @@ function TablePro() {
 	};
 	// return string formate of date
 	const updatedatetimeseter = (date) => {
-		var s = new Date(date).toLocaleString(undefined, { timeZone: 'Asia/Kolkata' });
-		s = s.split('/');
-		return s[1] + '/' + s[0] + '/' + s[2];
+		// console.log(date)
+		// var datee = new Date(date);
+		var s = new Date(date).toString();
+		// var datee = datee.toString();
+		// console.log(s,date,s.split('/'))
+		s = s.split(' ');
+		// console.log(s);
+		return s[2] + '-' + s[1] + '-' + s[3] + ' ' + s[4];
 	};
 	// returns a good format of date
 	const dateformatchanger = (date) => {
