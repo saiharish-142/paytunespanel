@@ -527,11 +527,6 @@ function TablePro() {
 	const OverallDataDown = {
 		complete: [
 			{
-				xSteps: 5,
-				columns: [ { title: 'Overall Complete Summary report' } ],
-				data: []
-			},
-			{
 				ySteps: 2,
 				columns: [
 					{ title: 'Campaign Start Date' },
@@ -882,7 +877,7 @@ function TablePro() {
 		<div>
 			<div className="titleReport">{report.title && report.title.toUpperCase()} Campaign</div>
 			<div className="titleReport">Overall Summary Report</div>
-			<ExcelFile
+			{/* <ExcelFile
 				filename={'Small Tables'}
 				element={
 					<Button variant="outlined" color="primary">
@@ -891,7 +886,7 @@ function TablePro() {
 				}
 			>
 				<ExcelSheet dataSet={OverallDataDown.complete} name="21" />
-			</ExcelFile>
+			</ExcelFile> */}
 			<ExeclDownload filename={`Complete Report ${report.title}`}>
 				{/* <ExcelSheet dataSet={OverallDataDown.complete} must={true} name="Over all Summary Data" /> */}
 				<ExcelSheet dataSet={PublisherDown.audio} name="Publisher Audio Wise" />
