@@ -12,6 +12,8 @@ function PinClient({ report, title, head, impression, clicks }) {
 	const history = useHistory();
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
+	const [ totalImpreS, settotalImpreS ] = React.useState(0);
+	const [ totalClickS, settotalClickS ] = React.useState(0);
 	const [ adss, setadss ] = React.useState(report);
 	const [ imrer, setimrer ] = React.useState(0);
 	const [ clicker, setclicker ] = React.useState(0);
@@ -63,6 +65,8 @@ function PinClient({ report, title, head, impression, clicks }) {
 				});
 				var imoop = 0;
 				var closk = 0;
+				var imoop1 = 0;
+				var closk1 = 0;
 				data.map((row) => {
 					imoop += row.impression;
 					closk += row.clicks;
@@ -72,11 +76,15 @@ function PinClient({ report, title, head, impression, clicks }) {
 					row.impression = impre;
 					var cliol = Math.round(row.clicks * clicks / closk);
 					row.clicks = parseInt(cliol);
+					imoop1 += impre;
+					closk1 += cliol;
 					row.ctr = parseInt(cliol) * 100 / parseInt(impre);
 				});
 				csvReport.data = data;
 				setadss(data);
 				setadssload(false);
+				settotalImpreS(imoop1);
+				settotalClickS(closk1);
 			} else {
 				setadss(report);
 			}
@@ -150,14 +158,6 @@ function PinClient({ report, title, head, impression, clicks }) {
 										District{arrowRetuner(sa === 'district' ? (order === 'asc' ? '1' : '2') : '3')}
 									</TableCell>
 									<TableCell
-										onClick={() => tablesorter('comparison', 'string')}
-										style={{ cursor: 'pointer' }}
-									>
-										Comparison{arrowRetuner(
-											sa === 'comparison' ? (order === 'asc' ? '1' : '2') : '3'
-										)}
-									</TableCell>
-									<TableCell
 										onClick={() => tablesorter('state', 'string')}
 										style={{ cursor: 'pointer' }}
 									>
@@ -206,7 +206,6 @@ function PinClient({ report, title, head, impression, clicks }) {
 											<TableCell>{row.city ? row.city : ''}</TableCell>
 											<TableCell>{row.grandcity ? row.grandcity : ''}</TableCell>
 											<TableCell>{row.district ? row.district : ''}</TableCell>
-											<TableCell>{row.comparison ? row.comparison : ''}</TableCell>
 											<TableCell>{row.state ? row.state : ''}</TableCell>
 											<TableCell>{row.grandstate ? row.grandstate : ''}</TableCell>
 											<TableCell>{row.impression ? row.impression : ''}</TableCell>
@@ -215,6 +214,20 @@ function PinClient({ report, title, head, impression, clicks }) {
 										</TableRow>
 									);
 								})}
+								<TableRow>
+									<TableCell>Total</TableCell>
+									<TableCell />
+									<TableCell />
+									<TableCell />
+									<TableCell />
+									<TableCell />
+									<TableCell />
+									<TableCell />
+									<TableCell />
+									<TableCell>{totalImpreS}</TableCell>
+									<TableCell>{totalClickS}</TableCell>
+									<TableCell>{Math.round(totalClickS / totalImpreS * 100) / 100}</TableCell>
+								</TableRow>
 							</TableBody>
 						</Table>
 					) : (

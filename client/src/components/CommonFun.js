@@ -35,6 +35,12 @@ export const PhoneModelHead = [
 	{ title: 'Clicks' },
 	{ title: 'CTR' }
 ];
+export const PhoneModelClientHead = [
+	{ title: 'Type of Device' },
+	{ title: 'Impressions' },
+	{ title: 'Clicks' },
+	{ title: 'CTR' }
+];
 export const FrequencyHead = [
 	{ title: 'Frequency' },
 	{ title: 'Impressions' },
@@ -55,6 +61,8 @@ export const IBAHead = [
 	{ title: 'Clicks' },
 	{ title: 'CTR' }
 ];
+export const IBAClientHead = [ { title: 'Name' }, { title: 'Impressions' }, { title: 'Clicks' }, { title: 'CTR' } ];
+
 export const PincodeHead = [
 	{ title: 'Pincode' },
 	{ title: 'Urban/Rural' },
@@ -290,4 +298,71 @@ export const QuartileBodyCon = (report1) => {
 			];
 		})
 	);
+};
+export const PincodeClientBody = (report1, impressionR, clicksR) => {
+	var compimpre = 0;
+	var compclick = 0;
+	report1.map((x) => {
+		compimpre += x.impression;
+		compclick += x.clicks;
+	});
+	return report1.map((log, index) => {
+		var impression = Math.round(log.impression * impressionR / compimpre);
+		var clicks = Math.round(log.clicks * clicksR / compclick);
+		var ctr = clicks * 100 / impression;
+		return [
+			{ value: log.zip ? log.zip : '' },
+			{ value: log.area ? log.area : '' },
+			{ value: log.lowersubcity ? log.lowersubcity : '' },
+			{ value: log.subcity ? log.subcity : '' },
+			{ value: log.city ? log.city : '' },
+			{ value: log.grandcity ? log.grandcity : '' },
+			{ value: log.district ? log.district : '' },
+			{ value: log.state ? log.state : '' },
+			{ value: log.grandstate ? log.grandstate : '' },
+			{ value: impression ? impression : 0 },
+			{ value: clicks ? clicks : 0 },
+			{ value: ctr ? ctr : 0 }
+		];
+	});
+};
+export const PhoneModelClientBody = (report1, impressionR, clicksR) => {
+	var compimpre = 0;
+	var compclick = 0;
+	report1.map((x) => {
+		compimpre += x.impression;
+		compclick += x.clicks;
+	});
+	return report1.map((log, index) => {
+		var type = log ? log.type : '';
+		var impression = log ? log.impression * impressionR / compimpre : 0;
+		var clicks = (parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) * clicksR / compclick;
+		var ctr = impression ? clicks * 100 / impression : 0;
+		return [
+			{ value: type ? type : '' },
+			{ value: impression ? impression : 0 },
+			{ value: clicks ? clicks : 0 },
+			{ value: ctr ? ctr : 0 }
+		];
+	});
+};
+export const IBAClientBody = (report1, impressionR, clicksR) => {
+	var compimpre = 0;
+	var compclick = 0;
+	report1.map((x) => {
+		compimpre += x.impression;
+		compclick += x.clicks;
+	});
+	return report1.map((log, index) => {
+		var Name = log.extra_details ? log.extra_details.Name : '';
+		var impression = log ? log.impressions * impressionR / compimpre : 0;
+		var clicks = (parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) * clicksR / compclick;
+		var ctr = impression ? clicks * 100 / impression : 0;
+		return [
+			{ value: Name ? Name : '' },
+			{ value: impression ? impression : 0 },
+			{ value: clicks ? clicks : 0 },
+			{ value: ctr ? ctr : 0 }
+		];
+	});
 };

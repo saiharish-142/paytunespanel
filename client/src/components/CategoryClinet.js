@@ -17,6 +17,8 @@ const useStyles = makeStyles({
 function CategoryClinet({ report, title, head, impression, clicks }) {
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
+	const [ totalImpreS, settotalImpreS ] = React.useState(0);
+	const [ totalClickS, settotalClickS ] = React.useState(0);
 	const [ adss, setadss ] = React.useState([]);
 	const [ sa, setsa ] = React.useState('impression');
 	const [ order, setorder ] = React.useState('desc');
@@ -56,6 +58,8 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 				});
 				var imoop = 0;
 				var closk = 0;
+				var imoop1 = 0;
+				var closk1 = 0;
 				data.map((row) => {
 					imoop += row.impressions;
 					closk += parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
@@ -67,11 +71,15 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 					);
 					row.impression = impre;
 					row.clicks = cliol;
+					imoop1 += impre;
+					closk1 += cliol;
 					row.ctr = cliol * 100 / impre;
 				});
 				csvReport.data = data;
 				console.log('neww', data);
 				setadss(data);
+				settotalImpreS(imoop1);
+				settotalClickS(closk1);
 			} else {
 				setadss(report);
 			}
@@ -126,6 +134,12 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 									</TableRow>
 								);
 							})}
+							<TableRow>
+								<TableCell>Total</TableCell>
+								<TableCell>{totalImpreS}</TableCell>
+								<TableCell>{totalClickS}</TableCell>
+								<TableCell>{Math.round(totalClickS / totalImpreS * 100) / 100}</TableCell>
+							</TableRow>
 						</TableBody>
 					</Table>
 				) : (
