@@ -500,40 +500,77 @@ export const clientReportBase = () => async (dispatch, getState) => {
 			.then((res) => res.json())
 			.then((result) => {
 				console.log(result);
-				fetch('/streamingads/groupedsingleClient', {
-					method: 'put',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: 'Bearer ' + localStorage.getItem('jwt')
-					},
-					body: JSON.stringify({
-						adtitle: result.campaignName,
-						podcast: result.podcast,
-						onDemand: result.onDemand,
-						musicapps: result.musicapps
+				if (result.type === 'campaign') {
+					fetch('/streamingads/groupedsingleClient', {
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: 'Bearer ' + localStorage.getItem('jwt')
+						},
+						body: JSON.stringify({
+							adtitle: result.campaignName,
+							podcast: result.podcast,
+							onDemand: result.onDemand,
+							musicapps: result.musicapps
+						})
 					})
-				})
-					.then((res) => res.json())
-					.then((reso) => {
-						console.log(reso);
-						console.log(result);
-						dispatch({
-							type: REPORT_BASE_LOADED_CLIENT,
-							payload: {
-								main: result,
-								ids: reso.ids,
-								id: reso.id,
-								title: result.campaignName,
-								startDate: result.startDate,
-								endDate: result.endDate
-							}
+						.then((res) => res.json())
+						.then((reso) => {
+							console.log(reso);
+							console.log(result);
+							dispatch({
+								type: REPORT_BASE_LOADED_CLIENT,
+								payload: {
+									main: result,
+									ids: reso.ids,
+									id: reso.id,
+									title: result.campaignName,
+									startDate: result.startDate,
+									endDate: result.endDate
+								}
+							});
+							dispatch(ClientReport());
+						})
+						.catch((err) => {
+							console.log(err);
+							dispatch({ type: REPORT_ERROR });
 						});
-						dispatch(ClientReport());
+				} else {
+					fetch('/streamingads/groupedbundleClient', {
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: 'Bearer ' + localStorage.getItem('jwt')
+						},
+						body: JSON.stringify({
+							id: result.campaignName,
+							podcast: result.podcast,
+							onDemand: result.onDemand,
+							musicapps: result.musicapps
+						})
 					})
-					.catch((err) => {
-						console.log(err);
-						dispatch({ type: REPORT_ERROR });
-					});
+						.then((res) => res.json())
+						.then((reso) => {
+							console.log(reso);
+							console.log(result);
+							dispatch({
+								type: REPORT_BASE_LOADED_CLIENT,
+								payload: {
+									main: result,
+									ids: reso.ids,
+									id: reso.id,
+									title: result.campaignName,
+									startDate: result.startDate,
+									endDate: result.endDate
+								}
+							});
+							dispatch(ClientReport());
+						})
+						.catch((err) => {
+							console.log(err);
+							dispatch({ type: REPORT_ERROR });
+						});
+				}
 			})
 			.catch((err) => {
 				console.log(err);

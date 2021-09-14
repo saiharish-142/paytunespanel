@@ -90,6 +90,7 @@ function SortPaTable(props) {
 										) : (
 											<TableCell>{row.bundleadtitle}</TableCell>
 										)}
+										{props.clientview && <TableCell>{row.userid}</TableCell>}
 										<TableCell>{row.PricingModel}</TableCell>
 										{!props.clientdirect &&
 										!props.clientview && (

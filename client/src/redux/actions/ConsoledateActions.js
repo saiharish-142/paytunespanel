@@ -29,7 +29,7 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 		})
 			.then((res) => res.json())
 			.then((result) => {
-				// console.log(result);
+				console.log(result);
 				var dataA = result.audio;
 				dataA.sort(function(a, b) {
 					return b.impression - a.impression;
@@ -42,11 +42,14 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 					x.avgimpre = Math.round(x.impression / x.days * 100) / 100;
 					if (x.fede === 'Podcast') {
 						x.req = result.sol[x.apppubid];
-						x.avgreq = Math.round(result.sol[x.apppubid] / x.days * 100) / 100;
+						x.useage = result.sola[x.apppubid];
+						x.useage = 0;
+						// x.avgreq = Math.round(result.sol[x.apppubid] / x.days * 100) / 100;
 						// console.log(x.req);
 					} else {
 						x.req = 0;
 						x.avgreq = 0;
+						x.useage = 0;
 					}
 					// console.log(x.fede);
 					x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';

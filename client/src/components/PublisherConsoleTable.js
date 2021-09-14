@@ -104,6 +104,14 @@ function PublisherConsoleTable({
 								</TableCell>
 								{title === 'Audio' && (
 									<TableCell
+										onClick={() => tablesorter('useage', 'number')}
+										style={{ cursor: 'pointer' }}
+									>
+										User Agent {arrowRetuner(sa === 'useage' ? (order === 'asc' ? '1' : '2') : '3')}
+									</TableCell>
+								)}
+								{title === 'Audio' && (
+									<TableCell
 										onClick={() => tablesorter('req', 'number')}
 										style={{ cursor: 'pointer' }}
 									>
@@ -163,6 +171,7 @@ function PublisherConsoleTable({
 											<TableCell>{log.publisherName}</TableCell>
 											<TableCell>{log.ssp}</TableCell>
 											<TableCell>{log.fede}</TableCell>
+											{title === 'Audio' && <TableCell>{log.useage}</TableCell>}
 											{title === 'Audio' && <TableCell>{log.req}</TableCell>}
 											{title === 'Audio' && <TableCell>{log.avgreq}</TableCell>}
 											<TableCell>{log.impression}</TableCell>

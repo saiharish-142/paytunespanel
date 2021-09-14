@@ -560,7 +560,7 @@ function EditUser() {
 									value={usertype}
 									disabled
 									// onChange={(e) => setusertype(e.target.value)}
-									label="USe Type"
+									label="User Type"
 								>
 									<option arial-label="None" value="" />
 									<option value="admin">Admin</option>

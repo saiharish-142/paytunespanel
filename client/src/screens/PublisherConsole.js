@@ -52,6 +52,7 @@ function PublisherConsole() {
 		{ key: 'publisherName', label: 'Publisher' },
 		{ key: 'ssp', label: 'SSP' },
 		{ key: 'fede', label: 'Feed' },
+		{ key: 'useage', label: 'User Agent' },
 		{ key: 'req', label: 'Requests' },
 		{ key: 'avgreq', label: 'Average Requests' },
 		{ key: 'unique', label: 'Unique Users' },

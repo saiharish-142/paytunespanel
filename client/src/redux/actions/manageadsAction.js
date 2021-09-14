@@ -205,7 +205,7 @@ export const loadClientAAds = () => (dispatch, getState) => {
 		})
 			.then((res) => res.json())
 			.then((res) => {
-				// console.log(res);
+				console.log(res);
 				var con = res;
 				con.map((ad) => {
 					var remainingdays = 0;
@@ -217,6 +217,7 @@ export const loadClientAAds = () => (dispatch, getState) => {
 					if (remainingdays < 0) {
 						remainingdays = 'completed campaign';
 					}
+					ad.userid = ad.userid.username;
 					ad.remainingDays = remainingdays;
 					return ad;
 				});

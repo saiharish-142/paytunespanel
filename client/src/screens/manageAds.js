@@ -102,6 +102,14 @@ function Dashboard({ clientview, clientdirect }) {
 		{ type: 'date', key: 'endDate', label: 'End Date' },
 		{ type: 'number', key: 'remainingDays', label: 'Remaining Days' }
 	];
+	const headersAdminClient = [
+		{ type: 'string', key: 'campaignName', label: 'Name' },
+		{ type: 'string', key: 'userid', label: 'Clinet Name' },
+		{ type: 'string', key: 'PricingModel', label: 'Pricing Model' },
+		{ type: 'date', key: 'startDate', label: 'Start Date' },
+		{ type: 'date', key: 'endDate', label: 'End Date' },
+		{ type: 'number', key: 'remainingDays', label: 'Remaining Days' }
+	];
 	// console.log(manageads);
 	if (!(clientdirect || clientview) && manageads && manageads.searchedmanageads) {
 		const csvReport = {
@@ -132,7 +140,7 @@ function Dashboard({ clientview, clientdirect }) {
 	if ((clientdirect || clientview) && clientmanageads && clientmanageads.searchedmanageads) {
 		const csvReport = {
 			filename: 'ManageAds.csv',
-			headers: headersClient,
+			headers: clientview ? headersAdminClient : headersClient,
 			data: clientmanageads.searchedmanageads
 		};
 		return (
@@ -140,7 +148,7 @@ function Dashboard({ clientview, clientdirect }) {
 				<SearchCampagin state={user && user.user.usertype} inval={searchval} setInval={onChangeReduxclient} />
 				<SortPaTable
 					tabletype="campagins"
-					headers={headersClient}
+					headers={clientview ? headersAdminClient : headersClient}
 					csvReport={csvReport}
 					orderManager={clientorderManager}
 					clientview={clientview}
