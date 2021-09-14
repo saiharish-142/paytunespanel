@@ -1350,11 +1350,13 @@ router.get('/publisherComplete2', adminauth, async (req, res) => {
 	let display = await publisherwiseConsole.find({ type: 'display' }).catch((err) => console.log(err));
 	let video = await publisherwiseConsole.find({ type: 'video' }).catch((err) => console.log(err));
 	let uadata = await uareqreports
-		.aggregate([ { $group: { _id: '$publisherid', request: { $sum: '$ads' } } } ])
+		.aggregate([ { $group: { _id: '$publisherid', request: { $sum: '$ads' }, userAgent: { $sum: '$ua' } } } ])
 		.catch((err) => console.log(err));
 	var sol = {};
+	var sola = {};
 	uadata.map((x) => {
 		sol[x._id] = x.request;
+		sola[x._id] = x.userAgent;
 	});
 	var compo = {
 		impression: 0,
@@ -1382,7 +1384,7 @@ router.get('/publisherComplete2', adminauth, async (req, res) => {
 			compo.thirdQuartile += x.thirdQuartile;
 			compo.complete += x.complete;
 		});
-	res.json({ audio: audio, display: display, video: video, complete: compo, sol });
+	res.json({ audio: audio, display: display, video: video, complete: compo, sol, sola });
 });
 
 ///////////////////  new apis //////////////////////////////
