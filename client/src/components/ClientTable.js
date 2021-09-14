@@ -32,6 +32,7 @@ import {
 	PhoneModelClientHead,
 	PhoneModelClientBody
 } from './CommonFun';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles({
 	table: {
@@ -42,8 +43,9 @@ const useStyles = makeStyles({
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 
-export default function BasicTable({ title, id }) {
+export default function BasicTable({ title, id, adminView }) {
 	const { state1 } = useContext(IdContext);
+	const history = useHistory();
 	// const [logs, setlogs] = useState([])
 	const [ ids, setids ] = useState({});
 	// const [ audioReport, setaudioReport ] = useState({});
@@ -321,6 +323,7 @@ export default function BasicTable({ title, id }) {
 								<TableCell>Total Clicks Delivered till date</TableCell>
 								<TableCell>CTR</TableCell>
 								<TableCell>LTR</TableCell>
+								<TableCell />
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -340,6 +343,18 @@ export default function BasicTable({ title, id }) {
 								</TableCell>
 								<TableCell>
 									{Math.round(reportsub.complete / reportsub.impressions * 100) / 100}%
+								</TableCell>
+								<TableCell
+									className="mangeads__report"
+									onClick={() => {
+										if (adminView) {
+											history.push(`/clientSideCamp/${report.req_id}/summarydetailed`);
+										} else {
+											history.push(`/manageAds/${report.req_id}/summarydetailed`);
+										}
+									}}
+								>
+									Detailed Report
 								</TableCell>
 							</TableRow>
 						</TableBody>

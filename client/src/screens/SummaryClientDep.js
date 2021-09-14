@@ -9,7 +9,7 @@ import { clientReportBase, idStorer, ReportLoading } from '../redux/actions/repo
 import { Breadcrumbs } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
-function ClientReport({ adminView }) {
+function SummaryClientDep({ adminView }) {
 	const { campname } = useParams();
 	const dispatchRedux = useDispatch();
 	const report = useSelector((state) => state.report);
@@ -42,9 +42,9 @@ function ClientReport({ adminView }) {
 				<button
 					onClick={() => {
 						if (adminView) {
-							history.push(`/clientSideCamp`);
+							history.push(`/clientSideCamp/${report.req_id}`);
 						} else {
-							history.push(`/manageAds`);
+							history.push(`/manageAds/${report.req_id}`);
 						}
 					}}
 					className="btn #424242 grey darken-3"
@@ -65,58 +65,27 @@ function ClientReport({ adminView }) {
 					<Link style={{ color: 'black' }} to="/clientSideCamp">
 						Manage Ads
 					</Link>
-					<Link style={{ color: 'black' }} href={`/clientSideCamp/${report.req_id}`}>
+					<Link
+						style={{ color: 'black' }}
+						onClick={() => {
+							if (adminView) {
+								history.push(`/clientSideCamp/${report.req_id}`);
+							} else {
+								history.push(`/manageAds/${report.req_id}`);
+							}
+						}}
+						href={`/clientSideCamp/${report.req_id}`}
+					>
 						{report.title}
+					</Link>
+					<Link style={{ color: 'black' }} href={`/clientSideCamp/${report.req_id}/summarydetailed`}>
+						Detailed Summary
 					</Link>
 				</Breadcrumbs>
 			</div>
-			{/* <TitlRname title={title} settitle={settitle} submit={submitTitle} setloading={setloading} loading={loading} /> */}
-			{/* <div style={{margin:'0 auto',fontSize:'larger',width:'fit-content',fontWeight:'500',borderBottom:'1px solid black'}}>Summary Report</div> */}
-			<EnhancedTable title={report.title} id={campname} adminView={adminView} />
+			<div />
 		</div>
 	);
 }
 
-export default ClientReport;
-
-// useEffect(
-// 	() => {
-// 		if (campname) {
-// 			fetch(`/auth/campdetails/${campname}`, {
-// 				method: 'get',
-// 				headers: {
-// 					'Content-Type': 'application/json',
-// 					Authorization: 'Bearer ' + localStorage.getItem('jwt')
-// 				}
-// 			})
-// 				.then((res) => res.json())
-// 				.then(async (result) => {
-// 					setsinglead(result);
-// 					settitle(result.campaignName);
-// 					console.log(result);
-// 					fetch('/streamingads/groupedsingleClient', {
-// 						method: 'put',
-// 						headers: {
-// 							'Content-Type': 'application/json',
-// 							Authorization: 'Bearer ' + localStorage.getItem('jwt')
-// 						},
-// 						body: JSON.stringify({
-// 							adtitle: result.campaignName,
-// 							podcast: result.podcast,
-// 							onDemand: result.onDemand,
-// 							musicapps: result.musicapps
-// 						})
-// 					})
-// 						.then((res) => res.json())
-// 						.then((ids) => {
-// 							console.log(ids);
-// 						})
-// 						.catch((err) => console.log(err));
-// 				})
-// 				.catch((err) => {
-// 					console.log(err);
-// 				});
-// 		}
-// 	},
-// 	[ campname ]
-// );
+export default SummaryClientDep;
