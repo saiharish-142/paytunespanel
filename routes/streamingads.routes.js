@@ -430,6 +430,7 @@ router.get('/clientcamps', adminauth, (req, res) => {
 router.get('/Acampaigns', adminauth, (req, res) => {
 	campaignClient
 		.find({})
+		.populate('userid')
 		.then((result) => {
 			var sao = result;
 			sao.map((ad) => {
