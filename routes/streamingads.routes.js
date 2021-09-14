@@ -973,27 +973,31 @@ async function idsreturnspliter(ids) {
 			}
 		])
 		.catch((err) => console.log(err));
-	depo[0].campaignId.map((x) => podca.push(x));
-	audio = arr_diff(audio, podca);
-	podca = removeDuplicates(podca);
-	audio = audio && audio.length ? audio.map((id) => mongoose.Types.ObjectId(id)) : [];
-	let som = await campaignwisereports
-		.aggregate([
-			{ $match: { apppubid: { $in: musicids }, campaignId: { $in: audio } } },
-			{ $group: { _id: null, campaignId: { $push: '$campaignId' } } }
-		])
-		.catch((err) => console.log(err));
-	som = som[0] && som[0].campaignId;
-	som = removeDuplicates(som);
-	som.map((x) => music.push(x));
-	audio = arr_diff(audio, som);
-	audio.map((x) => onDem.push(x));
-	music = removeDuplicates(music);
-	podca = removeDuplicates(podca);
-	onDem = removeDuplicates(onDem);
-	dads.pod = podca;
-	dads.dem = onDem;
-	dads.mus = music;
+	if (depo.length) {
+		depo[0].campaignId.map((x) => podca.push(x));
+		audio = arr_diff(audio, podca);
+		podca = removeDuplicates(podca);
+		audio = audio && audio.length ? audio.map((id) => mongoose.Types.ObjectId(id)) : [];
+		let som = await campaignwisereports
+			.aggregate([
+				{ $match: { apppubid: { $in: musicids }, campaignId: { $in: audio } } },
+				{ $group: { _id: null, campaignId: { $push: '$campaignId' } } }
+			])
+			.catch((err) => console.log(err));
+		som = som[0] && som[0].campaignId;
+		som = removeDuplicates(som);
+		som.map((x) => music.push(x));
+		audio = arr_diff(audio, som);
+		audio.map((x) => onDem.push(x));
+		music = removeDuplicates(music);
+		podca = removeDuplicates(podca);
+		onDem = removeDuplicates(onDem);
+		dads.pod = podca;
+		dads.dem = onDem;
+		dads.mus = music;
+	} else {
+		dads.dem = ids;
+	}
 	return dads;
 }
 

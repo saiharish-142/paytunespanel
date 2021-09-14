@@ -1356,7 +1356,7 @@ router.get('/publisherComplete2', adminauth, async (req, res) => {
 	var sola = {};
 	uadata.map((x) => {
 		sol[x._id] = x.request;
-		sola[x._id] = x.userAgent;
+		sola[x._id] = [ ...new Set(x.userAgent) ];
 	});
 	var compo = {
 		impression: 0,
