@@ -1350,7 +1350,7 @@ router.get('/publisherComplete2', adminauth, async (req, res) => {
 	let display = await publisherwiseConsole.find({ type: 'display' }).catch((err) => console.log(err));
 	let video = await publisherwiseConsole.find({ type: 'video' }).catch((err) => console.log(err));
 	let uadata = await uareqreports
-		.aggregate([ { $group: { _id: '$publisherid', request: { $sum: '$ads' }, userAgent: { $sum: '$ua' } } } ])
+		.aggregate([ { $group: { _id: '$publisherid', request: { $sum: '$ads' }, userAgent: { $push: '$ua' } } } ])
 		.catch((err) => console.log(err));
 	var sol = {};
 	var sola = {};
