@@ -42,9 +42,9 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 					x.avgimpre = Math.round(x.impression / x.days * 100) / 100;
 					if (x.fede === 'Podcast') {
 						x.req = result.sol[x.apppubid];
-						x.useage = result.sola[x.apppubid];
+						// x.useage = result.sola[x.apppubid];
 						x.useage = 0;
-						// x.avgreq = Math.round(result.sol[x.apppubid] / x.days * 100) / 100;
+						x.avgreq = Math.round(result.sol[x.apppubid] / x.days * 100) / 100;
 						// console.log(x.req);
 					} else {
 						x.req = 0;
