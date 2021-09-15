@@ -216,7 +216,7 @@ router.put('/pinbycampids', adminauth, (req, res) => {
 	const { campaignId } = req.body;
 	const dumd = [];
 	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
-	zipreports
+	zipsumreport
 		.aggregate([
 			{ $match: { campaignId: { $in: ids } } },
 			{
@@ -240,7 +240,7 @@ router.put('/pinbycampids', adminauth, (req, res) => {
 				$project: {
 					zip: '$_id.zip',
 					impression: 1,
-					clicks: 1,
+					clicks: '$clicks',
 					createdOn: 1,
 					_id: 0,
 					area: '$extra.area',
