@@ -99,7 +99,7 @@ export default function BasicTable({ title, id, adminView }) {
 		for (var i = 0; i < sets.length; i++) {
 			if (ids[sets[i]].length) {
 				console.log(ids[sets[i]]);
-				await fetch('/subrepo/zipbycampids', {
+				await fetch('/subrepo/pinbycampids', {
 					method: 'put',
 					headers: {
 						'Content-Type': 'application/json',

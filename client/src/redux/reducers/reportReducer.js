@@ -6,6 +6,9 @@ import {
 	REPORT_BASE_LOADED_CLIENT,
 	REPORT_ERROR,
 	REPORT_ID_,
+	REPORT_LOADING_SUMMDET,
+	REPORT_LOADED_SUMMDET,
+	REPORT_ERROR_SUMMDET,
 	REPORT_SPENT_LOADED,
 	REPORT_CLEAR
 } from '../types.js';
@@ -22,6 +25,9 @@ const initialState = {
 	message: null,
 	error: null,
 	isLoading: true,
+	issumdetLoading: true,
+	sumdetreport: null,
+	sumdeterr: false,
 	loadfail: null
 };
 
@@ -33,7 +39,23 @@ export default function(state = initialState, action) {
 				loadfail: false,
 				isLoading: true
 			};
+		case REPORT_LOADING_SUMMDET:
+			return {
+				...state,
+				sumdeterr: false,
+				issumdetLoading: true
+			};
 		case REPORT_ID_:
+			return {
+				...state,
+				req_id: action.payload
+			};
+		case REPORT_ERROR_SUMMDET:
+			return {
+				...state,
+				sumdeterr: true
+			};
+		case REPORT_LOADED_SUMMDET:
 			return {
 				...state,
 				req_id: action.payload
@@ -41,7 +63,8 @@ export default function(state = initialState, action) {
 		case REPORT_SPENT_LOADED:
 			return {
 				...state,
-				spent: action.payload
+				sumdetreport: action.payload.data,
+				issumdetLoading: false
 			};
 		case REPORT_BASE_LOADED:
 			return {

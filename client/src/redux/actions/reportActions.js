@@ -8,6 +8,9 @@ import {
 	REPORT_ID_,
 	REPORT_SPENT_LOADED,
 	REPORT_CLEAR,
+	REPORT_LOADING_SUMMDET,
+	REPORT_LOADED_SUMMDET,
+	REPORT_ERROR_SUMMDET,
 	REPORT_READY
 } from '../types.js';
 import { tokenConfig } from './authAction.js';
@@ -577,5 +580,54 @@ export const clientReportBase = () => async (dispatch, getState) => {
 				dispatch({ type: REPORT_ERROR });
 			});
 		// console.log(base);
+	}
+};
+
+export const ClientSummDet = () => async (dispatch, getState) => {
+	const repo = getState().report;
+	console.log(repo);
+	console.log('repo');
+	var sol = {};
+	try {
+		if (repo.sets && repo.sets.length) {
+			for (var i = 0; repo.sets.length; i++) {
+				console.log(repo.sets[i]);
+				// fetch('/offreport/detreportcambydat', {
+				// 	method: 'put',
+				// 	headers: {
+				// 		'Content-Type': 'application/json',
+				// 		Authorization: 'Bearer ' + localStorage.getItem('jwt')
+				// 	},
+				// 	body: JSON.stringify({
+				// 		campaignId: repo.grp_ids[repo.sets[i]]
+				// 	})
+				// })
+				// 	.then((res) => res.json())
+				// 	.then((result) => {
+				// 		var dlogs = result;
+				// 		// console.log(result,'re')
+				// 		// dlogs = dlogs.concat(logs)
+				// 		dlogs = dlogs.sort(function(a, b) {
+				// 			var d1 = new Date(a.date);
+				// 			var d2 = new Date(b.date);
+				// 			return d2 - d1;
+				// 		});
+				// 		dlogs = dlogs.sort(function(a, b) {
+				// 			var d1 = new Date(a.updatedAt[0]);
+				// 			var d2 = new Date(b.updatedAt[0]);
+				// 			if (a.date === b.date) return d2 - d1;
+				// 		});
+				// 		console.log(dlogs);
+				// 		sol[repo.sets[i]] = dlogs;
+				// 	});
+			}
+			console.log(sol);
+		} else {
+			dispatch({
+				type: REPORT_ERROR_SUMMDET
+			});
+		}
+	} catch (e) {
+		console.log(e);
 	}
 };

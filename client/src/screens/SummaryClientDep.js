@@ -5,7 +5,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { IdContext } from '../App';
 import EnhancedTable from '../components/ClientTable';
 import PreLoader from '../components/loaders/PreLoader';
-import { clientReportBase, idStorer, ReportLoading } from '../redux/actions/reportActions';
+import { clientReportBase, ClientSummDet, idStorer, ReportLoading } from '../redux/actions/reportActions';
 import { Breadcrumbs } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
@@ -28,6 +28,14 @@ function SummaryClientDep({ adminView }) {
 			}
 		},
 		[ campname ]
+	);
+	useEffect(
+		() => {
+			if (!report.isLoading) {
+				// dispatchRedux(ClientSummDet());
+			}
+		},
+		[ report.isLoading ]
 	);
 	if (report.isLoading) {
 		return (
