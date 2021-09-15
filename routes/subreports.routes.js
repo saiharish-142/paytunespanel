@@ -22,6 +22,7 @@ const publisherwiseConsole = mongoose.model('publisherwiseConsole');
 const frequencyConsole = mongoose.model('frequencyConsole');
 const freqpublishreports = mongoose.model('freqpublishreports');
 const uareqreports = mongoose.model('uareqreports');
+const zipsumreport = mongoose.model('zipsumreport');
 
 router.get('/phonemake', adminauth, (req, res) => {
 	phonemakereports
@@ -189,6 +190,55 @@ router.put('/zipbycampids', adminauth, (req, res) => {
 				$project: {
 					zip: '$_id.zip',
 					campaignId: '$_id.campaignId',
+					impression: 1,
+					clicks: { $sum: [ '$CompanionClickTracking', '$SovClickTracking' ] },
+					createdOn: 1,
+					_id: 0,
+					area: '$extra.area',
+					lowersubcity: '$area.lowersubcity',
+					subcity: '$extra.subcity',
+					city: '$extra.city',
+					grandcity: '$extra.grandcity',
+					district: '$extra.district',
+					comparison: '$extra.comparison',
+					state: '$extra.state',
+					grandstate: '$extra.grandstate',
+					latitude: '$extra.latitude',
+					longitude: '$extra.longitude'
+				}
+			}
+		])
+		.then((result) => res.json(result))
+		.catch((err) => res.status(422).json(err));
+});
+
+router.put('/pinbycampids', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	const dumd = [];
+	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	zipreports
+		.aggregate([
+			{ $match: { campaignId: { $in: ids } } },
+			{
+				$group: {
+					_id: { zip: '$zip' },
+					impression: { $sum: '$impression' },
+					clicks: { $sum: '$clicks' },
+					createdOn: { $push: '$createdOn' }
+				}
+			},
+			{
+				$lookup: {
+					from: 'zipreports2',
+					localField: '_id.zip',
+					foreignField: 'pincode',
+					as: 'extra'
+				}
+			},
+			{ $unwind: { path: '$extra', preserveNullAndEmptyArrays: true } },
+			{
+				$project: {
+					zip: '$_id.zip',
 					impression: 1,
 					clicks: { $sum: [ '$CompanionClickTracking', '$SovClickTracking' ] },
 					createdOn: 1,

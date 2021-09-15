@@ -51,6 +51,7 @@ require('./models/regionreports');
 require('./models/spentreports');
 require('./models/uniqueuserreports');
 require('./models/zipreports');
+require('./models/zipsumrepo.model');
 require('./models/zipdata2reports');
 require('./models/zipuniqueuserreports');
 require('./models/bindingcollections.model');
@@ -1607,6 +1608,10 @@ cron.schedule('45 00 * * *', function() {
 	FrequencyDataRefresher();
 });
 
+cron.schedule('55 00 * * *', function() {
+	pincodesumreport();
+});
+
 cron.schedule('35 00 * * *', function() {
 	FrequencyPublisherRefresher();
 });
@@ -1668,6 +1673,8 @@ const frequencyConsole = mongoose.model('frequencyConsole');
 const frequencyreports = mongoose.model('frequencyreports');
 const freqpublishreports = mongoose.model('freqpublishreports');
 const campaignifareports = mongoose.model('campaignifareports');
+const zipreports = mongoose.model('zipreports');
+const zipsumreport = mongoose.model('zipsumreport');
 
 async function PublisherConsoleLoaderTypeWise(array, type, chevk2) {
 	// console.log(array.length, array[0]);
@@ -2242,6 +2249,135 @@ async function FrequencyPublisherRefresher() {
 		}
 	});
 }
+
+// pincodesumreport();
+async function pincodesumreport() {
+	var datee = new Date('2021-07-01').toISOString();
+	var cdate, cmonth, cyear;
+	var cdatee = new Date(new Date());
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk2 = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	cdatee.setDate(cdatee.getDate() - 1);
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	console.log(chevk, chevk2);
+	// console.log(new Date(chevk));
+	zipreports
+		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					zip: '$zip',
+					campaignId: '$campaignId',
+					impression: '$impression',
+					clicks: { $sum: [ '$SovClickTracking', '$CompanionClickTracking' ] }
+				}
+			},
+			{
+				$match: {
+					test: { $gte: chevk, $lt: chevk2 },
+					zip: { $gt: 600 },
+					impression: { $gt: 10 },
+					clicks: { $gt: 10 }
+				}
+			},
+			{
+				$group: {
+					_id: { zip: '$zip', campaignId: '$campaignId' },
+					impression: { $sum: '$impression' },
+					clicks: { $sum: '$clicks' }
+				}
+			}
+		])
+		.allowDiskUse(true)
+		.then(async (result) => {
+			console.log(result.length);
+			if (result.length) {
+				for (var i = 0; i < result.length; i++) {
+					const storeClick = result[i].clicks;
+					let match = await zipsumreport
+						.findOne({ zip: result[i]._id.zip, campaignId: result[i]._id.campaignId })
+						.catch((err) => console.log(err));
+					if (match) {
+						if (match.createdOn === chevk2) {
+							console.log('Already Done');
+						} else {
+							match.impression += result[i].impression;
+							match.clicks += storeClick;
+							match.createdOn = chevk2;
+							match
+								.save()
+								.then((rs) => {
+									console.log('updated');
+								})
+								.catch((err) => console.log(err));
+						}
+					} else {
+						const zipmac = new zipsumreport({
+							zip: result[i]._id.zip,
+							campaignId: result[i]._id.campaignId,
+							impression: result[i].impression,
+							clicks: storeClick,
+							createdOn: chevk2
+						});
+						zipmac
+							.save()
+							.then((sda) => {
+								console.log('created');
+							})
+							.catch((err) => console.log(err));
+					}
+				}
+			}
+		})
+		.catch((err) => console.log(err));
+}
+
+// result.map(async (zip) => {
+// 	const storeClick = zip.CompanionClickTracking
+// 		? zip.CompanionClickTracking
+// 		: 0 + zip.SovClickTracking ? zip.SovClickTracking : 0;
+// 	let match = await zipsumreport
+// 		.findOne({ zip: zip._id.zip, campaignId: zip._id.campaignId })
+// 		.catch((err) => console.log(err));
+// 	if (match) {
+// 		if (match.createdOn === chevk2) {
+// 			console.log('Already Done');
+// 		} else {
+// 			match.impression += zip.impression;
+// 			match.clicks += storeClick;
+// 			match.createdOn = chevk2;
+// 			match
+// 				.save()
+// 				.then((rs) => {
+// 					console.log('updated');
+// 				})
+// 				.catch((err) => console.log(err));
+// 		}
+// 	} else {
+// 		const zipmac = new zipsumreport({
+// 			zip: zip._id.zip,
+// 			campaignId: zip._id.campaignId,
+// 			impression: zip.impression,
+// 			clicks: storeClick,
+// 			createdOn: chevk2
+// 		});
+// 		zipmac
+// 			.save()
+// 			.then((sda) => {
+// 				console.log('created');
+// 			})
+// 			.catch((err) => console.log(err));
+// 	}
+// });
 
 // publisherDataAudio.forEach(async (publisherB) => {
 // 	// console.log(publisherB.PublisherSplit);
