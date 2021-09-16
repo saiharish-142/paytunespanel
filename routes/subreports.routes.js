@@ -221,7 +221,7 @@ router.put('/pinbycampids', adminauth, (req, res) => {
 			{ $match: { campaignId: { $in: ids } } },
 			{
 				$group: {
-					_id: { zip: '$zip' },
+					_id: '$zip',
 					campaignId: { $push: '$campaignId' },
 					impression: { $sum: '$impression' },
 					clicks: { $sum: '$clicks' },
@@ -231,35 +231,36 @@ router.put('/pinbycampids', adminauth, (req, res) => {
 			{
 				$lookup: {
 					from: 'zipreports2',
-					localField: '_id.zip',
+					localField: '_id',
 					foreignField: 'pincode',
 					as: 'extra'
 				}
-			},
-			{ $unwind: { path: '$extra', preserveNullAndEmptyArrays: true } },
-			{
-				$project: {
-					zip: '$_id.zip',
-					impression: 1,
-					clicks: '$clicks',
-					campaignId: '$campaignId',
-					createdOn: 1,
-					_id: 0,
-					area: '$extra.area',
-					lowersubcity: '$area.lowersubcity',
-					subcity: '$extra.subcity',
-					city: '$extra.city',
-					grandcity: '$extra.grandcity',
-					district: '$extra.district',
-					comparison: '$extra.comparison',
-					state: '$extra.state',
-					grandstate: '$extra.grandstate',
-					latitude: '$extra.latitude',
-					longitude: '$extra.longitude'
-				}
 			}
 		])
-		.then((result) => res.json(result))
+		.then((result) => {
+			var data = result;
+			for (var i = 0; i < data.length; i++) {
+				if (data[i].extra && data[i].extra[0]) {
+					data[i].zip = data[i]._id;
+					data[i].impression = data[i].impression;
+					data[i].clicks = data[i].clicks;
+					data[i].campaignId = data[i].campaignId;
+					data[i].area = data[i].extra[0].area;
+					data[i].lowersubcity = data[i].area.lowersubcity;
+					data[i].subcity = data[i].extra[0].subcity;
+					data[i].city = data[i].extra[0].city;
+					data[i].grandcity = data[i].extra[0].grandcity;
+					data[i].district = data[i].extra[0].district;
+					data[i].comparison = data[i].extra[0].comparison;
+					data[i].state = data[i].extra[0].state;
+					data[i].grandstate = data[i].extra[0].grandstate;
+					data[i].latitude = data[i].extra[0].latitude;
+					data[i].longitude = data[i].extra[0].longitude;
+					data[i].extra = data[i].extra[0];
+				}
+			}
+			res.json(data);
+		})
 		.catch((err) => res.status(422).json(err));
 });
 
