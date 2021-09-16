@@ -222,6 +222,7 @@ router.put('/pinbycampids', adminauth, (req, res) => {
 			{
 				$group: {
 					_id: { zip: '$zip' },
+					campaignId: { $push: '$campaignId' },
 					impression: { $sum: '$impression' },
 					clicks: { $sum: '$clicks' },
 					createdOn: { $push: '$createdOn' }
@@ -241,6 +242,7 @@ router.put('/pinbycampids', adminauth, (req, res) => {
 					zip: '$_id.zip',
 					impression: 1,
 					clicks: '$clicks',
+					campaignId: '$campaignId',
 					createdOn: 1,
 					_id: 0,
 					area: '$extra.area',
