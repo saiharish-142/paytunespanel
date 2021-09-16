@@ -107,18 +107,20 @@ function SummaryClientDep({ adminView }) {
 			<div>last updated at - {updatedatetimeseter()}</div>
 			{report.sets &&
 				report.sets.map((x) => {
-					console.log(report.report[x]);
-					return (
-						<SummaryDetDate
-							report={report.sumdetreport[x]}
-							head={x}
-							title={report.title && report.title.toUpperCase()}
-							state1={campname}
-							impression={report.report[x].impressions}
-							clicks={report.report[x].clicks + report.report[x].clicks1}
-							complete={report.report[x].complete}
-						/>
-					);
+					if (x != 'unselected') {
+						console.log(report.report[x]);
+						return (
+							<SummaryDetDate
+								report={report.sumdetreport[x]}
+								head={x}
+								title={report.title && report.title.toUpperCase()}
+								state1={campname}
+								impression={report.report[x].impressions}
+								clicks={report.report[x].clicks + report.report[x].clicks1}
+								complete={report.report[x].complete}
+							/>
+						);
+					}
 				})}
 		</div>
 	);
