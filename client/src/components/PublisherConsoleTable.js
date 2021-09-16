@@ -23,6 +23,10 @@ function PublisherConsoleTable({
 		setSearchval(val);
 	};
 	const [ rowsPerPage, setRowsPerPage ] = useState(consoledata.publisherDataRPP);
+	const [ ci, setci ] = React.useState(0);
+	const [ cc, setcc ] = React.useState(0);
+	const [ cu, setcu ] = React.useState(0);
+	const [ cr, setcr ] = React.useState(0);
 	const [ page, setPage ] = useState(consoledata.publisherDataPagination);
 	const [ sa, setsa ] = useState(consoledata.publisherDataordername);
 	const [ order, setorder ] = useState(consoledata.publisherDataorderdir);
@@ -54,10 +58,22 @@ function PublisherConsoleTable({
 		() => {
 			if (consoledata.searchedpublisherData) {
 				var data = consoledata.searchedpublisherData;
+				var ai = 0,
+					ac = 0,
+					ar = 0,
+					au = 0;
 				data.map((x) => {
+					ai += x.impression;
+					ac += x.click;
+					if (title === 'Audio') ar += x.req;
+					au += x.unique;
 					var uniquef = x.impression / x.unique;
 					x.uniquef = uniquef ? Math.round(uniquef * 100) / 100 : 0;
 				});
+				setci(ai);
+				setcc(ac);
+				setcu(au);
+				setcr(ar);
 				setadss(consoledata.searchedpublisherData);
 				// tablesorter('impression', 'number');
 			}
@@ -186,6 +202,20 @@ function PublisherConsoleTable({
 							) : (
 								''
 							)}
+							<TableRow>
+								<TableCell className="boldClass">Total</TableCell>
+								<TableCell />
+								<TableCell />
+								{title === 'Audio' && <TableCell className="boldClass" />}
+								{title === 'Audio' && <TableCell className="boldClass">{cr}</TableCell>}
+								{title === 'Audio' && <TableCell className="boldClass" />}
+								<TableCell className="boldClass">{ci}</TableCell>
+								<TableCell />
+								<TableCell className="boldClass">{cu}</TableCell>
+								<TableCell />
+								<TableCell className="boldClass">{cc}</TableCell>
+								<TableCell />
+							</TableRow>
 						</TableBody>
 					</Table>
 				</TableContainer>

@@ -14,6 +14,8 @@ const useStyles = makeStyles({
 function Creative_Report({ title, report, state1 }) {
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
+	const [ ci, setci ] = React.useState(0);
+	const [ cc, setcc ] = React.useState(0);
 	const [ adss, setadss ] = React.useState(report);
 	const headers = [
 		{ key: 'creativeset', label: 'Creative Set' },
@@ -34,19 +36,27 @@ function Creative_Report({ title, report, state1 }) {
 				data.sort(function(a, b) {
 					return b.impressions - a.impressions;
 				});
+				var ai = 0,
+					ac = 0;
 				data.map((row) => {
 					row.creativeset = row._id.creativeset ? row._id.creativeset : '';
 					row.impression = row ? row.impression : 0;
+					ai += row.impression;
 					row.clicks = parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
+					ac += row.clicks;
 					row.ctr =
 						Math.round(
-							((parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) *
+							(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) *
 								100 /
-								parseInt(row.impression))*100
-						)/100 +
+								parseInt(row.impression) *
+								100
+						) /
+							100 +
 						'%';
 				});
 				setadss(data);
+				setci(ai);
+				setcc(ac);
 			} else {
 				setadss(report);
 			}
@@ -92,9 +102,7 @@ function Creative_Report({ title, report, state1 }) {
 										<TableCell>
 											{parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)}
 										</TableCell>
-										<TableCell>
-											{row.ctr}
-										</TableCell>
+										<TableCell>{row.ctr}</TableCell>
 										{/* <TableCell
 											className="mangeads__report"
 											onClick={() => history.push(`/manageAds/${state1}/detailed`)}
@@ -104,6 +112,14 @@ function Creative_Report({ title, report, state1 }) {
 									</TableRow>
 								);
 							})}
+							<TableRow>
+								<TableCell className="boldClass">Total</TableCell>
+								<TableCell />
+								<TableCell className="boldClass">{ci}</TableCell>
+								<TableCell className="boldClass">{cc}</TableCell>
+								<TableCell />
+								<TableCell />
+							</TableRow>
 						</TableBody>
 					</Table>
 				) : (

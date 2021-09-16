@@ -8,6 +8,7 @@ import PreLoader from '../components/loaders/PreLoader';
 import { clientReportBase, ClientSummDet, idStorer, ReportLoading } from '../redux/actions/reportActions';
 import { Breadcrumbs } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import SummaryDetDate from '../components/summaryDetDate';
 
 function SummaryClientDep({ adminView }) {
 	const { campname } = useParams();
@@ -32,12 +33,22 @@ function SummaryClientDep({ adminView }) {
 	useEffect(
 		() => {
 			if (!report.isLoading) {
-				// dispatchRedux(ClientSummDet());
+				dispatchRedux(ClientSummDet());
 			}
 		},
 		[ report.isLoading ]
 	);
-	if (report.isLoading) {
+	const updatedatetimeseter = () => {
+		// console.log(date)
+		// var datee = new Date(date);
+		var s = new Date(new Date()).toString();
+		// var datee = datee.toString();
+		// console.log(s,date,s.split('/'))
+		s = s.split(' ');
+		// console.log(s);
+		return s[2] + '-' + s[1] + '-' + s[3] + ' ' + s[4];
+	};
+	if (report.isLoading || report.issumdetLoading) {
 		return (
 			<div className="dashboard">
 				<PreLoader />
@@ -91,7 +102,24 @@ function SummaryClientDep({ adminView }) {
 					</Link>
 				</Breadcrumbs>
 			</div>
-			<div />
+			<div className="titleReport">{report.title && report.title.toUpperCase()} Campaign</div>
+			<div className="titleReport">Detailed Summary report</div>
+			<div>last updated at - {updatedatetimeseter()}</div>
+			{report.sets &&
+				report.sets.map((x) => {
+					console.log(report.report[x]);
+					return (
+						<SummaryDetDate
+							report={report.sumdetreport[x]}
+							head={x}
+							title={report.title && report.title.toUpperCase()}
+							state1={campname}
+							impression={report.report[x].impressions}
+							clicks={report.report[x].clicks + report.report[x].clicks1}
+							complete={report.report[x].complete}
+						/>
+					);
+				})}
 		</div>
 	);
 }

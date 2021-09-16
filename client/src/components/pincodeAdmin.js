@@ -16,6 +16,8 @@ function PincodeAdmin({ title, report, state1, arrowRetuner }) {
 	const history = useHistory();
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
+	const [ ci, setci ] = React.useState(0);
+	const [ cc, setcc ] = React.useState(0);
 	const [ adss, setadss ] = React.useState(report);
 	const [ sa, setsa ] = React.useState('impression');
 	const [ order, setorder ] = React.useState('desc');
@@ -53,14 +55,20 @@ function PincodeAdmin({ title, report, state1, arrowRetuner }) {
 				data.sort(function(a, b) {
 					return b.impression - a.impression;
 				});
+				var ai = 0,
+					ac = 0;
 				data.map((row) => {
+					ai += row.impression;
 					row.clicks = parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
+					ac += row.clicks;
 					row.ctr =
 						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) *
 						100 /
 						parseInt(row.impression);
 				});
 				csvReport.data = data;
+				setci(ai);
+				setcc(ac);
 				setadss(data);
 			} else {
 				setadss(report);
@@ -173,7 +181,7 @@ function PincodeAdmin({ title, report, state1, arrowRetuner }) {
 										<TableCell>{row.grandstate ? row.grandstate : ''}</TableCell>
 										<TableCell>{row.impression ? row.impression : ''}</TableCell>
 										<TableCell>{row.clicks}</TableCell>
-										<TableCell>{Math.round(row.ctr * 100)/100}%</TableCell>
+										<TableCell>{Math.round(row.ctr * 100) / 100}%</TableCell>
 										<TableCell
 											className="mangeads__report"
 											onClick={() => history.push(`/manageAds/${state1}/detailed`)}
@@ -183,6 +191,22 @@ function PincodeAdmin({ title, report, state1, arrowRetuner }) {
 									</TableRow>
 								);
 							})}
+							<TableRow>
+								<TableCell className="boldClass">Total</TableCell>
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell className="boldClass">{ci}</TableCell>
+								<TableCell className="boldClass">{cc}</TableCell>
+								<TableCell />
+								<TableCell />
+							</TableRow>
 						</TableBody>
 					</Table>
 				) : (

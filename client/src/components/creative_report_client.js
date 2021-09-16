@@ -90,7 +90,7 @@ function Creative_Report({ title, report, state1, impression, clicks }) {
 								<TableCell>Clicks</TableCell>
 								<TableCell>CTR</TableCell>
 								<TableCell>
-									{adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
+									{/* {adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''} */}
 								</TableCell>
 							</TableRow>
 						</TableHead>
@@ -117,11 +117,13 @@ function Creative_Report({ title, report, state1, impression, clicks }) {
 								);
 							})}
 							<TableRow>
-								<TableCell>Total</TableCell>
-								<TableCell />
-								<TableCell>{totalImpreS}</TableCell>
-								<TableCell>{totalClickS}</TableCell>
-								<TableCell>{Math.round(totalClickS / totalImpreS * 100) / 100}</TableCell>
+								<TableCell className="boldClass">Total</TableCell>
+								<TableCell className="boldClass" />
+								<TableCell className="boldClass">{totalImpreS}</TableCell>
+								<TableCell className="boldClass">{totalClickS}</TableCell>
+								<TableCell className="boldClass">
+									{Math.round(totalClickS / totalImpreS * 100) / 100}
+								</TableCell>
 							</TableRow>
 						</TableBody>
 					</Table>

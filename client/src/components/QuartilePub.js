@@ -15,6 +15,12 @@ const useStyles = makeStyles({
 function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
+	const [ comp1, setcomp1 ] = React.useState(0);
+	const [ comp2, setcomp2 ] = React.useState(0);
+	const [ comp3, setcomp3 ] = React.useState(0);
+	const [ comp4, setcomp4 ] = React.useState(0);
+	const [ compi, setcompi ] = React.useState(0);
+	const [ compc, setcompc ] = React.useState(0);
 	const [ sa, setsa ] = React.useState('impressions');
 	const [ order, setorder ] = React.useState('desc');
 	const [ adss, setadss ] = React.useState(report);
@@ -40,10 +46,21 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 				data.sort(function(a, b) {
 					return b.impressions - a.impressions;
 				});
-				// data.map((x) => {
-				// 	x.ltr =
-				// 		(x.complete ? parseInt(x.complete) : 0) * 100 / (x.impressions ? parseInt(x.impressions) : 0);
-				// });
+				var a1, a2, a3, a4, ai, ac;
+				data.map((x) => {
+					a1 += x.start;
+					a2 += x.firstQuartile;
+					a3 += x.midpoint;
+					a4 += x.thirdQuartile;
+					ai += x.impressions;
+					ac += x.complete;
+				});
+				setcomp1(a1);
+				setcomp2(a2);
+				setcomp3(a3);
+				setcomp4(a4);
+				setcompi(ai);
+				setcompc(ac);
 				setadss(data);
 			} else {
 				setadss(report);
@@ -141,6 +158,16 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 									</TableRow>
 								);
 							})}
+							<TableRow>
+								<TableCell className="boldClass">Total</TableCell>
+								<TableCell className="boldClass">{compi}</TableCell>
+								<TableCell className="boldClass">{comp1}</TableCell>
+								<TableCell className="boldClass">{comp2}</TableCell>
+								<TableCell className="boldClass">{comp3}</TableCell>
+								<TableCell className="boldClass">{comp4}</TableCell>
+								<TableCell className="boldClass">{compc}</TableCell>
+								<TableCell className="boldClass">{Math.round(compc / compi * 100) / 100}%</TableCell>
+							</TableRow>
 						</TableBody>
 					</Table>
 				) : (

@@ -31,6 +31,10 @@ function PublisherAdmin({
 	const history = useHistory();
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
+	const [ impreComp, setimpreComp ] = React.useState(0);
+	const [ clicksComp, setclicksComp ] = React.useState(0);
+	const [ spentComp, setspentComp ] = React.useState(0);
+	const [ uniqueComp, setuniqueComp ] = React.useState(0);
 	const [ sa, setsa ] = React.useState('impressions');
 	const [ order, setorder ] = React.useState('desc');
 	const [ adss, setadss ] = React.useState(report);
@@ -58,10 +62,18 @@ function PublisherAdmin({
 				data.sort(function(a, b) {
 					return b.impressions - a.impressions;
 				});
+				var imoop = 0,
+					cliom = 0,
+					spentdd = 0,
+					uniqea = 0;
 				data.map((ad) => {
 					var publishbid = ad.PublisherSplit;
 					// console.log(publishbid);
 					ad.freq = Math.round(ad.impressions / ad.unique * 100) / 100;
+					imoop += ad.impressions;
+					uniqea += ad.unique;
+					cliom += ad.clicks;
+					spentdd += ad.spent ? parseFloat(ad.spent) : 0;
 					ad.spent =
 						spentfinder(
 							ad.Publisher._id,
@@ -77,6 +89,10 @@ function PublisherAdmin({
 					return ad;
 				});
 				csvReport.data = data;
+				setimpreComp(imoop);
+				setclicksComp(cliom);
+				setuniqueComp(uniqea);
+				setspentComp(spentdd);
 				setadss(data);
 			} else {
 				setadss(report);
@@ -204,6 +220,24 @@ function PublisherAdmin({
 									</TableRow>
 								);
 							})}
+							<TableRow>
+								<TableCell className="boldClass">Total</TableCell>
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell className="boldClass">{impreComp}</TableCell>
+								<TableCell className="boldClass">{uniqueComp}</TableCell>
+								<TableCell className="boldClass">
+									{Math.round(impreComp / uniqueComp * 100) / 100}
+								</TableCell>
+								<TableCell className="boldClass">{clicksComp}</TableCell>
+								<TableCell className="boldClass">
+									{Math.round(clicksComp / impreComp * 100) / 100}
+								</TableCell>
+								{/* <TableCell className="boldClass">{spentComp}</TableCell> */}
+								<TableCell />
+								<TableCell />
+							</TableRow>
 						</TableBody>
 					</Table>
 				) : (

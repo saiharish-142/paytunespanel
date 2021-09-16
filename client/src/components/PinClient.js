@@ -106,7 +106,7 @@ function PinClient({ report, title, head, impression, clicks }) {
 			<Paper>
 				<TableContainer style={{ margin: '20px 0' }}>
 					<div style={{ margin: '5px', fontWeight: 'bolder' }}>{head} Report</div>
-					{adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
+					{/* {adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''} */}
 					{adss && adss.length > 0 ? (
 						<Table aria-label="simple table">
 							<TableHead>
@@ -215,18 +215,20 @@ function PinClient({ report, title, head, impression, clicks }) {
 									);
 								})}
 								<TableRow>
-									<TableCell>Total</TableCell>
-									<TableCell />
-									<TableCell />
-									<TableCell />
-									<TableCell />
-									<TableCell />
-									<TableCell />
-									<TableCell />
-									<TableCell />
-									<TableCell>{totalImpreS}</TableCell>
-									<TableCell>{totalClickS}</TableCell>
-									<TableCell>{Math.round(totalClickS / totalImpreS * 100) / 100}</TableCell>
+									<TableCell className="boldClass">Total</TableCell>
+									<TableCell className="boldClass" />
+									<TableCell className="boldClass" />
+									<TableCell className="boldClass" />
+									<TableCell className="boldClass" />
+									<TableCell className="boldClass" />
+									<TableCell className="boldClass" />
+									<TableCell className="boldClass" />
+									<TableCell className="boldClass" />
+									<TableCell className="boldClass">{totalImpreS}</TableCell>
+									<TableCell className="boldClass">{totalClickS}</TableCell>
+									<TableCell className="boldClass">
+										{Math.round(totalClickS / totalImpreS * 100) / 100}
+									</TableCell>
 								</TableRow>
 							</TableBody>
 						</Table>

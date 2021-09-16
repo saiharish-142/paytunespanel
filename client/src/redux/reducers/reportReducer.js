@@ -58,13 +58,13 @@ export default function(state = initialState, action) {
 		case REPORT_LOADED_SUMMDET:
 			return {
 				...state,
-				req_id: action.payload
+				sumdetreport: action.payload,
+				issumdetLoading: false
 			};
 		case REPORT_SPENT_LOADED:
 			return {
 				...state,
-				sumdetreport: action.payload.data,
-				issumdetLoading: false
+				spent: action.payload
 			};
 		case REPORT_BASE_LOADED:
 			return {

@@ -17,6 +17,9 @@ function FrequencyAdmin({ title, report, state1, arrowRetuner }) {
 	const classes = useStyles();
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
+	const [ ci, setci ] = React.useState(0);
+	const [ cc, setcc ] = React.useState(0);
+	const [ cu, setcu ] = React.useState(0);
 	const [ adss, setadss ] = React.useState(report);
 	const [ sa, setsa ] = React.useState('_id');
 	const [ order, setorder ] = React.useState('asc');
@@ -46,10 +49,19 @@ function FrequencyAdmin({ title, report, state1, arrowRetuner }) {
 				data.sort(function(a, b) {
 					return parseInt(a._id) - parseInt(b._id);
 				});
+				var ai = 0,
+					ac = 0,
+					au = 0;
 				data.map((ad) => {
+					ai += ad.impression;
+					ac += ad.click;
+					au += ad.users;
 					ad.ctr = parseInt(ad.click) * 100 / parseInt(ad.impression);
 				});
 				csvReport.data = data;
+				setci(ai);
+				setcc(ac);
+				setcu(au);
 				setadss(data);
 			} else {
 				setadss(report);
@@ -129,6 +141,18 @@ function FrequencyAdmin({ title, report, state1, arrowRetuner }) {
 								<TableRow>
 									<TableCell>No ads to display</TableCell>
 								</TableRow>
+							)}
+							{adss && adss.length ? (
+								<TableRow>
+									<TableCell className="boldClass">Total</TableCell>
+									<TableCell className="boldClass">{ci}</TableCell>
+									<TableCell className="boldClass">{cu}</TableCell>
+									<TableCell className="boldClass">{cc}</TableCell>
+									<TableCell />
+									<TableCell />
+								</TableRow>
+							) : (
+								''
 							)}
 						</TableBody>
 					</Table>

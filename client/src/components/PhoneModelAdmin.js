@@ -16,6 +16,8 @@ function PhoneModelAdmin({ title, report, state1, arrowRetuner }) {
 	const history = useHistory();
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
+	const [ compi, setcompi ] = React.useState(0);
+	const [ compc, setcompc ] = React.useState(0);
 	const [ adss, setadss ] = React.useState(report);
 	const [ sa, setsa ] = React.useState('impression');
 	const [ order, setorder ] = React.useState('desc');
@@ -49,6 +51,8 @@ function PhoneModelAdmin({ title, report, state1, arrowRetuner }) {
 				data.sort(function(a, b) {
 					return b.impression - a.impression;
 				});
+				var ai = 0,
+					ac = 0;
 				data.map((a) => {
 					a.phoneModel = a.phoneModel ? a.phoneModel : null;
 					a.release = a.extra ? a.extra.release : null;
@@ -57,11 +61,15 @@ function PhoneModelAdmin({ title, report, state1, arrowRetuner }) {
 					a.model = a.extra ? a.extra.model : null;
 					a.type = a.extra ? a.extra.type : null;
 					a.impression = a ? a.impression : null;
+					ai += a.impression ? parseInt(a.impression) : 0;
 					a.clicks = parseInt(a.CompanionClickTracking) + parseInt(a.SovClickTracking);
+					ac += a.clicks ? parseInt(a.clicks) : 0;
 					a.ctr = a.impression
 						? (parseInt(a.CompanionClickTracking) + parseInt(a.SovClickTracking)) * 100 / a.impression
 						: 0;
 				});
+				setcompi(ai);
+				setcompc(ac);
 				csvReport.data = data;
 				setadss(data);
 			} else {
@@ -160,6 +168,17 @@ function PhoneModelAdmin({ title, report, state1, arrowRetuner }) {
 									</TableRow>
 								);
 							})}
+							<TableRow>
+								<TableCell className="boldClass">Total</TableCell>
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell className="boldClass">{compi}</TableCell>
+								<TableCell className="boldClass">{compc}</TableCell>
+								<TableCell />
+							</TableRow>
 						</TableBody>
 					</Table>
 				) : (

@@ -26,7 +26,7 @@ import Categorydata from './screens/Categorydata';
 import PreLoader from './components/loaders/PreLoader';
 import { loadRatio } from './redux/actions/currencyAction';
 import PublisherConsole from './screens/PublisherConsole';
-import FrequencyConsole from './screens/FrequencyConsole';
+// import FrequencyConsole from './screens/FrequencyConsole';
 import SummaryClientDep from './screens/SummaryClientDep';
 
 export const IdContext = createContext();

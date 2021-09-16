@@ -585,43 +585,51 @@ export const clientReportBase = () => async (dispatch, getState) => {
 
 export const ClientSummDet = () => async (dispatch, getState) => {
 	const repo = getState().report;
+	const repo2 = getState().report.sets;
 	console.log(repo);
+	console.log(repo2);
 	console.log('repo');
 	var sol = {};
 	try {
-		if (repo.sets && repo.sets.length) {
-			for (var i = 0; repo.sets.length; i++) {
-				console.log(repo.sets[i]);
-				// fetch('/offreport/detreportcambydat', {
-				// 	method: 'put',
-				// 	headers: {
-				// 		'Content-Type': 'application/json',
-				// 		Authorization: 'Bearer ' + localStorage.getItem('jwt')
-				// 	},
-				// 	body: JSON.stringify({
-				// 		campaignId: repo.grp_ids[repo.sets[i]]
-				// 	})
-				// })
-				// 	.then((res) => res.json())
-				// 	.then((result) => {
-				// 		var dlogs = result;
-				// 		// console.log(result,'re')
-				// 		// dlogs = dlogs.concat(logs)
-				// 		dlogs = dlogs.sort(function(a, b) {
-				// 			var d1 = new Date(a.date);
-				// 			var d2 = new Date(b.date);
-				// 			return d2 - d1;
-				// 		});
-				// 		dlogs = dlogs.sort(function(a, b) {
-				// 			var d1 = new Date(a.updatedAt[0]);
-				// 			var d2 = new Date(b.updatedAt[0]);
-				// 			if (a.date === b.date) return d2 - d1;
-				// 		});
-				// 		console.log(dlogs);
-				// 		sol[repo.sets[i]] = dlogs;
-				// 	});
+		if (repo2 && repo2.length) {
+			console.log('repo2');
+			for (var i = 0; i < repo2.length; i++) {
+				console.log(repo2[i]);
+				await fetch('/offreport/detreportcambydat', {
+					method: 'put',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + localStorage.getItem('jwt')
+					},
+					body: JSON.stringify({
+						campaignId: repo.grp_ids[repo.sets[i]]
+					})
+				})
+					.then((res) => res.json())
+					.then((result) => {
+						var dlogs = result;
+						// console.log(result,'re')
+						// dlogs = dlogs.concat(logs)
+						// dlogs = dlogs.filter((x) => x.impressions > 0);
+						dlogs = dlogs.sort(function(a, b) {
+							var d1 = new Date(a.date);
+							var d2 = new Date(b.date);
+							return d2 - d1;
+						});
+						dlogs = dlogs.sort(function(a, b) {
+							var d1 = new Date(a.updatedAt[0]);
+							var d2 = new Date(b.updatedAt[0]);
+							if (a.date === b.date) return d2 - d1;
+						});
+						console.log(dlogs);
+						sol[repo.sets[i]] = dlogs;
+					});
 			}
-			console.log(sol);
+			console.log(sol, 'sol');
+			dispatch({
+				type: REPORT_LOADED_SUMMDET,
+				payload: sol
+			});
 		} else {
 			dispatch({
 				type: REPORT_ERROR_SUMMDET

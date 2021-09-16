@@ -636,12 +636,12 @@ export default function BasicTable({ title, id, adminView }) {
 				</Table>
 			</TableContainer>
 			<div className="titleReport">Pincode Wise Summary Report</div>
-			<ExeclDownload filename={`Pincode Wise Report ${title}`}>
+			{/* <ExeclDownload filename={`Pincode Wise Report ${title}`}>
 				{report.sets &&
 					report.sets.map((x) => {
 						return <ExcelSheet dataSet={pinda[x]} name={`Pincode ${x} Wise`} />;
 					})}
-			</ExeclDownload>
+			</ExeclDownload> */}
 			<div>last updated at - {lastUpdated ? updatedatetimeseterpin(lastUpdated) : 'Not found'}</div>
 			{report.sets &&
 				report.sets.map((x) => {
@@ -667,12 +667,12 @@ export default function BasicTable({ title, id, adminView }) {
 					}
 				})}
 			<div className="titleReport">Device Type Wise Summary Report</div>
-			<ExeclDownload filename={`Device Type Wise Report ${title}`}>
+			{/* <ExeclDownload filename={`Device Type Wise Report ${title}`}>
 				{report.sets &&
 					report.sets.map((x) => {
 						return <ExcelSheet dataSet={phonedat[x]} name={`PhoneModel ${x} Wise`} />;
 					})}
-			</ExeclDownload>
+			</ExeclDownload> */}
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
 			{report.sets &&
 				report.sets.map((x) => {
@@ -698,12 +698,12 @@ export default function BasicTable({ title, id, adminView }) {
 					}
 				})}
 			<div className="titleReport">Listener Profiling Report</div>
-			<ExeclDownload filename={`Listener Profiling Report ${title}`}>
+			{/* <ExeclDownload filename={`Listener Profiling Report ${title}`}>
 				{report.sets &&
 					report.sets.map((x) => {
 						return <ExcelSheet dataSet={CateDat[x]} name={`Category ${x} Wise`} />;
 					})}
-			</ExeclDownload>
+			</ExeclDownload> */}
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
 			{report.sets &&
 				report.sets.map((x) => {
