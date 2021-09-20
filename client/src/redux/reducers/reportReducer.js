@@ -37,6 +37,7 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				loadfail: false,
+				issumdetLoading: true,
 				isLoading: true
 			};
 		case REPORT_LOADING_SUMMDET:

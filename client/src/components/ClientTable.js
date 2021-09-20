@@ -19,9 +19,9 @@ import ReactExport from 'react-data-export';
 import PinClient from './PinClient';
 import CategoryClinet from './CategoryClinet';
 import Creative_Report from './creative_report_client';
+import PhoneModelClinet from './PhoneClient';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
-import PhoneModelClinet from './PhoneClient';
 import {
 	CreativeBody,
 	CreativeHead,
@@ -30,7 +30,9 @@ import {
 	IBAClientHead,
 	IBAClientBody,
 	PhoneModelClientHead,
-	PhoneModelClientBody
+	PhoneModelClientBody,
+	SumDetClientHead,
+	SumDetClientBody
 } from './CommonFun';
 import { useHistory } from 'react-router';
 
@@ -380,7 +382,7 @@ export default function BasicTable({ title, id, adminView }) {
 				filename={props.filename}
 				element={
 					<Button variant="outlined" color="primary">
-						Download Tables
+						Download Tables{props.load ? <CircularProgress /> : ''}
 					</Button>
 				}
 			>
@@ -461,7 +463,6 @@ export default function BasicTable({ title, id, adminView }) {
 				{ title: 'Second Quartile' },
 				{ title: 'Third Quartile' },
 				{ title: 'Complete' },
-				{ title: 'Total Impresions' },
 				{ title: 'LTR' }
 			],
 			data: [
@@ -471,7 +472,6 @@ export default function BasicTable({ title, id, adminView }) {
 					{ value: report.report.complete.midpoint },
 					{ value: report.report.complete.thirdQuartile },
 					{ value: report.report.complete.complete },
-					{ value: report.report.complete.impressions },
 					{ value: Math.round(report.report.complete.ltr * 100) / 100 }
 				]
 			]
@@ -566,12 +566,34 @@ export default function BasicTable({ title, id, adminView }) {
 			data: report.ids.combined && creativeData && creativeData.length && CreativeBody(creativeData)
 		}
 	];
+	const DateGen = () => {
+		var vamp = {};
+		report.sets.map((x) => {
+			vamp[x] = [
+				{
+					columns: SumDetClientHead,
+					data:
+						!report.issumdetLoading &&
+						report.grp_ids[x].length &&
+						report.sumdetreport[x] &&
+						SumDetClientBody(
+							report.sumdetreport[x],
+							report.report[x].impressions,
+							report.report[x].clicks + report.report[x].clicks1,
+							report.report[x].complete
+						)
+				}
+			];
+		});
+		return vamp;
+	};
+	const datesumda = DateGen();
 	return (
 		<React.Fragment>
 			{/* <IconBreadcrumbs /> */}
 			<div className="titleReport">{title && title.toUpperCase()} Campaign</div>
 			<div className="titleReport">Overall Summary Report</div>
-			<ExeclDownload filename={`Complete Report ${title}`}>
+			<ExeclDownload filename={`Complete Report ${title}`} load={report.issumdetLoading}>
 				<ExcelSheet dataSet={CompleteGen()} must={true} name="Over all Summary Data" />
 				{report.sets &&
 					report.sets.map((x) => {
@@ -584,6 +606,10 @@ export default function BasicTable({ title, id, adminView }) {
 				{report.sets &&
 					report.sets.map((x) => {
 						return <ExcelSheet dataSet={CateDat[x]} name={`Category ${x} Wise`} />;
+					})}
+				{report.sets &&
+					report.sets.map((x) => {
+						return <ExcelSheet dataSet={datesumda[x]} name={`${x} Wise Detailed Summary report`} />;
 					})}
 				<ExcelSheet dataSet={CreativeDown} name="Creative Wise" />
 			</ExeclDownload>
@@ -618,7 +644,6 @@ export default function BasicTable({ title, id, adminView }) {
 							<TableCell>Second Quartile</TableCell>
 							<TableCell>Third Quartile</TableCell>
 							<TableCell>Complete</TableCell>
-							<TableCell>Total Impresions</TableCell>
 							<TableCell>LTR</TableCell>
 						</TableRow>
 					</TableHead>
@@ -629,7 +654,6 @@ export default function BasicTable({ title, id, adminView }) {
 							<TableCell>{report.report.complete.midpoint}</TableCell>
 							<TableCell>{report.report.complete.thirdQuartile}</TableCell>
 							<TableCell>{report.report.complete.complete}</TableCell>
-							<TableCell>{report.report.complete.impressions}</TableCell>
 							<TableCell>{Math.round(report.report.complete.ltr * 100) / 100}%</TableCell>
 						</TableRow>
 					</TableBody>

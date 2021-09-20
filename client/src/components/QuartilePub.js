@@ -166,7 +166,9 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 								<TableCell className="boldClass">{comp3}</TableCell>
 								<TableCell className="boldClass">{comp4}</TableCell>
 								<TableCell className="boldClass">{compc}</TableCell>
-								<TableCell className="boldClass">{Math.round(compc / compi * 100) / 100}%</TableCell>
+								<TableCell className="boldClass">
+									{Math.round(compc * 100 / compi * 100) / 100}%
+								</TableCell>
 							</TableRow>
 						</TableBody>
 					</Table>

@@ -47,10 +47,10 @@ function Creative_Report({ title, report, state1, impression, clicks }) {
 				// console.log(imoop, closk);
 				data.map((row) => {
 					row.creativeset = row._id.creativeset ? row._id.creativeset : '';
-					var impre = Math.round(row.impression * impression / imoop);
+					var impre = Math.trunc(row.impression * impression / imoop);
 					console.log(impre);
 					row.impression = impre;
-					var cliol = Math.round(
+					var cliol = Math.trunc(
 						parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking) * clicks / closk
 					);
 					row.clicks = parseInt(cliol);
@@ -116,13 +116,28 @@ function Creative_Report({ title, report, state1, impression, clicks }) {
 									</TableRow>
 								);
 							})}
+							{(totalImpreS < impression || totalClickS < clicks) && (
+								<TableRow>
+									<TableCell />
+									<TableCell />
+									<TableCell>{impression - totalImpreS > 0 ? impression - totalImpreS : 0}</TableCell>
+									<TableCell>{clicks - totalClickS > 0 ? clicks - totalClickS : 0}</TableCell>
+									<TableCell>
+										{Math.round(
+											(clicks - totalClickS > 0 ? clicks - totalClickS : 0) /
+												(impression - totalImpreS > 0 ? impression - totalImpreS : 0) *
+												100
+										) / 100}%
+									</TableCell>
+								</TableRow>
+							)}
 							<TableRow>
 								<TableCell className="boldClass">Total</TableCell>
 								<TableCell className="boldClass" />
 								<TableCell className="boldClass">{totalImpreS}</TableCell>
 								<TableCell className="boldClass">{totalClickS}</TableCell>
 								<TableCell className="boldClass">
-									{Math.round(totalClickS / totalImpreS * 100) / 100}
+									{Math.round(totalClickS / totalImpreS * 100) / 100}%
 								</TableCell>
 							</TableRow>
 						</TableBody>

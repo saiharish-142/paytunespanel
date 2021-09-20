@@ -232,7 +232,7 @@ function PublisherAdmin({
 								</TableCell>
 								<TableCell className="boldClass">{clicksComp}</TableCell>
 								<TableCell className="boldClass">
-									{Math.round(clicksComp / impreComp * 100) / 100}
+									{Math.round(clicksComp * 100 / impreComp * 100) / 100}%
 								</TableCell>
 								{/* <TableCell className="boldClass">{spentComp}</TableCell> */}
 								<TableCell />

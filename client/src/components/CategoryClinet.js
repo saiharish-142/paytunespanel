@@ -65,8 +65,8 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 					closk += parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
 				});
 				data.map((row) => {
-					var impre = Math.round(row.impressions * impression / imoop);
-					var cliol = Math.round(
+					var impre = Math.trunc(row.impressions * impression / imoop);
+					var cliol = Math.trunc(
 						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) * clicks / closk
 					);
 					row.impression = impre;
@@ -134,12 +134,26 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 									</TableRow>
 								);
 							})}
+							{(totalImpreS < impression || totalClickS < clicks) && (
+								<TableRow>
+									<TableCell />
+									<TableCell>{impression - totalImpreS > 0 ? impression - totalImpreS : 0}</TableCell>
+									<TableCell>{clicks - totalClickS > 0 ? clicks - totalClickS : 0}</TableCell>
+									<TableCell>
+										{Math.round(
+											(clicks - totalClickS > 0 ? clicks - totalClickS : 0) /
+												(impression - totalImpreS > 0 ? impression - totalImpreS : 0) *
+												100
+										) / 100}%
+									</TableCell>
+								</TableRow>
+							)}
 							<TableRow>
 								<TableCell className="boldClass">Total</TableCell>
 								<TableCell className="boldClass">{totalImpreS}</TableCell>
 								<TableCell className="boldClass">{totalClickS}</TableCell>
 								<TableCell className="boldClass">
-									{Math.round(totalClickS / totalImpreS * 100) / 100}
+									{Math.round(totalClickS / totalImpreS * 100) / 100}%
 								</TableCell>
 							</TableRow>
 						</TableBody>

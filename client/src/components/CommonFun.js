@@ -63,16 +63,19 @@ export const IBAHead = [
 ];
 export const IBAClientHead = [ { title: 'Name' }, { title: 'Impressions' }, { title: 'Clicks' }, { title: 'CTR' } ];
 
+export const SumDetClientHead = [
+	{ title: 'Date' },
+	{ title: 'Impressions' },
+	{ title: 'Clicks' },
+	{ title: 'CTR' },
+	{ title: 'Complete' }
+];
 export const PincodeHead = [
 	{ title: 'Pincode' },
 	{ title: 'Urban/Rural' },
-	{ title: 'Lower Sub City' },
-	{ title: 'Subsubcity' },
 	{ title: 'City' },
 	{ title: 'Grand City' },
-	{ title: 'District' },
 	{ title: 'State' },
-	{ title: 'Grand State' },
 	{ title: 'Impressions' },
 	{ title: 'Clicks' },
 	{ title: 'CTR' }
@@ -313,13 +316,9 @@ export const PincodeClientBody = (report1, impressionR, clicksR) => {
 		return [
 			{ value: log.zip ? log.zip : '' },
 			{ value: log.area ? log.area : '' },
-			{ value: log.lowersubcity ? log.lowersubcity : '' },
-			{ value: log.subcity ? log.subcity : '' },
 			{ value: log.city ? log.city : '' },
 			{ value: log.grandcity ? log.grandcity : '' },
-			{ value: log.district ? log.district : '' },
 			{ value: log.state ? log.state : '' },
-			{ value: log.grandstate ? log.grandstate : '' },
 			{ value: impression ? impression : 0 },
 			{ value: clicks ? clicks : 0 },
 			{ value: ctr ? ctr : 0 }
@@ -363,6 +362,30 @@ export const IBAClientBody = (report1, impressionR, clicksR) => {
 			{ value: impression ? impression : 0 },
 			{ value: clicks ? clicks : 0 },
 			{ value: ctr ? ctr : 0 }
+		];
+	});
+};
+export const SumDetClientBody = (report1, impressionR, clicksR, completeR) => {
+	var compimpre = 0;
+	var compclick = 0;
+	var compcomplete = 0;
+	report1.map((x) => {
+		compimpre += parseInt(x.impressions);
+		compclick += x.clicks;
+		compcomplete += x.complete ? x.complete : 0;
+	});
+	return report1.map((log, index) => {
+		var Name = log.date ? log.date : '';
+		var impression = log ? parseInt(log.impressions) * impressionR / compimpre : 0;
+		var complete = log ? log.complete * completeR / compcomplete : 0;
+		var clicks = log.clicks * clicksR / compclick;
+		var ctr = impression ? clicks * 100 / impression : 0;
+		return [
+			{ value: Name ? Name : '' },
+			{ value: impression ? impression : 0 },
+			{ value: clicks ? clicks : 0 },
+			{ value: ctr ? ctr : 0 },
+			{ value: complete ? complete : 0 }
 		];
 	});
 };

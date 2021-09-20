@@ -177,7 +177,9 @@ function PhoneModelAdmin({ title, report, state1, arrowRetuner }) {
 								<TableCell />
 								<TableCell className="boldClass">{compi}</TableCell>
 								<TableCell className="boldClass">{compc}</TableCell>
-								<TableCell />
+								<TableCell className="boldClass">
+									{Math.round(compc * 100 / compi * 100) / 100}%
+								</TableCell>
 							</TableRow>
 						</TableBody>
 					</Table>

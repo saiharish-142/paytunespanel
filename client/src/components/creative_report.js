@@ -103,6 +103,7 @@ function Creative_Report({ title, report, state1 }) {
 											{parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)}
 										</TableCell>
 										<TableCell>{row.ctr}</TableCell>
+										<TableCell />
 										{/* <TableCell
 											className="mangeads__report"
 											onClick={() => history.push(`/manageAds/${state1}/detailed`)}
@@ -117,7 +118,7 @@ function Creative_Report({ title, report, state1 }) {
 								<TableCell />
 								<TableCell className="boldClass">{ci}</TableCell>
 								<TableCell className="boldClass">{cc}</TableCell>
-								<TableCell />
+								<TableCell className="boldClass">{Math.round(cc * 100 / ci * 100) / 100}%</TableCell>
 								<TableCell />
 							</TableRow>
 						</TableBody>

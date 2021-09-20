@@ -1,14 +1,19 @@
 import React, { useEffect, useContext } from 'react';
-import { useState } from 'react';
+// import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { IdContext } from '../App';
-import EnhancedTable from '../components/ClientTable';
+// import EnhancedTable from '../components/ClientTable';
 import PreLoader from '../components/loaders/PreLoader';
 import { clientReportBase, ClientSummDet, idStorer, ReportLoading } from '../redux/actions/reportActions';
-import { Breadcrumbs } from '@material-ui/core';
+import { Breadcrumbs, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import SummaryDetDate from '../components/summaryDetDate';
+import { SumDetClientBody, SumDetClientHead } from '../components/CommonFun';
+import ReactExport from 'react-data-export';
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 
 function SummaryClientDep({ adminView }) {
 	const { campname } = useParams();
@@ -32,7 +37,7 @@ function SummaryClientDep({ adminView }) {
 	);
 	useEffect(
 		() => {
-			if (!report.isLoading) {
+			if (!report.isLoading && report.issumdetLoading) {
 				dispatchRedux(ClientSummDet());
 			}
 		},
@@ -55,6 +60,52 @@ function SummaryClientDep({ adminView }) {
 			</div>
 		);
 	}
+	function ExeclDownload(props) {
+		// console.log(props);
+		const data = React.Children.map(props.children, (child) => {
+			// console.log(child);
+			if (child.props.dataSet && child.props.dataSet[0].data) {
+				return child;
+			}
+		});
+		// console.log(data);
+		// console.log(data);
+		return (
+			<ExcelFile
+				filename={props.filename}
+				element={
+					<Button variant="outlined" color="primary">
+						Download Tables
+					</Button>
+				}
+			>
+				{data.map((child) => {
+					return child;
+				})}
+			</ExcelFile>
+		);
+	}
+	const DateGen = () => {
+		var vamp = {};
+		report.sets.map((x) => {
+			vamp[x] = [
+				{
+					columns: SumDetClientHead,
+					data:
+						report.grp_ids[x].length &&
+						report.sumdetreport[x] &&
+						SumDetClientBody(
+							report.sumdetreport[x],
+							report.report[x].impressions,
+							report.report[x].clicks + report.report[x].clicks1,
+							report.report[x].complete
+						)
+				}
+			];
+		});
+		return vamp;
+	};
+	const datesumda = DateGen();
 	return (
 		<div style={{ padding: '20px' }}>
 			<div style={{ minWidth: '60vw', display: 'flex', alignItems: 'center' }}>
@@ -105,9 +156,15 @@ function SummaryClientDep({ adminView }) {
 			<div className="titleReport">{report.title && report.title.toUpperCase()} Campaign</div>
 			<div className="titleReport">Detailed Summary report</div>
 			<div>last updated at - {updatedatetimeseter()}</div>
+			<ExeclDownload filename={`Pincode Wise Report ${report.title}`}>
+				{report.sets &&
+					report.sets.map((x) => {
+						return <ExcelSheet dataSet={datesumda[x]} name={`${x} Wise Detailed Summary report`} />;
+					})}
+			</ExeclDownload>
 			{report.sets &&
 				report.sets.map((x) => {
-					if (x != 'unselected') {
+					if (x.toLowerCase() != 'unselected') {
 						console.log(report.report[x]);
 						return (
 							<SummaryDetDate

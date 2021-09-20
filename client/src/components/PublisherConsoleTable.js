@@ -214,7 +214,7 @@ function PublisherConsoleTable({
 								<TableCell className="boldClass">{cu}</TableCell>
 								<TableCell />
 								<TableCell className="boldClass">{cc}</TableCell>
-								<TableCell />
+								<TableCell className="boldClass">{Math.round(cc * 100 / ci * 100) / 100}%</TableCell>
 							</TableRow>
 						</TableBody>
 					</Table>

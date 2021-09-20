@@ -280,30 +280,6 @@ export const ShowReport = () => (dispatch, getState) => {
 	});
 };
 
-// async function Puller(ids) {
-// 	var data;
-// 	fetch('/offreport/sumreportofcamallClient', {
-// 		method: 'put',
-// 		headers: {
-// 			'Content-Type': 'application/json',
-// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
-// 		},
-// 		body: JSON.stringify({
-// 			campaignId: ids
-// 		})
-// 	})
-// 		.then((res) => res.json())
-// 		.then((resu) => {
-// 			var result = resu;
-// 			data = resu;
-// 			console.log(result);
-// 			// return result;
-// 		})
-// 		.catch((err) => console.log(err));
-// 	// const result = await data.json();
-// 	return data;
-// }
-
 export const ClientReport = () => async (dispatch, getState) => {
 	const data = getState().report.data;
 	const data2 = getState().report.ids;
@@ -450,7 +426,18 @@ export const ClientReport = () => async (dispatch, getState) => {
 		return new Date(b) - new Date(a);
 	});
 	pullerData.complete.updatedAt = pullerData.complete.updatedAt[0];
-	pullerData.complete.ltr = pullerData.complete.complete / pullerData.complete.impressions;
+	pullerData.complete.midpoint =
+		pullerData.complete.midpoint / pullerData.complete.firstQuartile * pullerData.complete.impressions;
+	pullerData.complete.thirdQuartile =
+		pullerData.complete.thirdQuartile / pullerData.complete.firstQuartile * pullerData.complete.impressions;
+	pullerData.complete.complete =
+		pullerData.complete.complete / pullerData.complete.firstQuartile * pullerData.complete.impressions;
+	pullerData.complete.firstQuartile =
+		pullerData.complete.firstQuartile / pullerData.complete.firstQuartile * pullerData.complete.impressions;
+	pullerData.complete.ltr = pullerData.complete.complete / pullerData.complete.firstQuartile;
+	pullerData.complete.midpoint = Math.round(pullerData.complete.midpoint);
+	pullerData.complete.thirdQuartile = Math.round(pullerData.complete.thirdQuartile);
+	pullerData.complete.complete = Math.round(pullerData.complete.complete);
 	console.log(dass, puller, pullerData);
 	dispatch({
 		type: REPORT_LOADED_CLIENT,
@@ -595,35 +582,37 @@ export const ClientSummDet = () => async (dispatch, getState) => {
 			console.log('repo2');
 			for (var i = 0; i < repo2.length; i++) {
 				console.log(repo2[i]);
-				await fetch('/offreport/detreportcambydat', {
-					method: 'put',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: 'Bearer ' + localStorage.getItem('jwt')
-					},
-					body: JSON.stringify({
-						campaignId: repo.grp_ids[repo.sets[i]]
+				if (repo.sets[i].toLowerCase() != 'unselected') {
+					await fetch('/offreport/detreportcambydat', {
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: 'Bearer ' + localStorage.getItem('jwt')
+						},
+						body: JSON.stringify({
+							campaignId: repo.grp_ids[repo.sets[i]]
+						})
 					})
-				})
-					.then((res) => res.json())
-					.then((result) => {
-						var dlogs = result;
-						// console.log(result,'re')
-						// dlogs = dlogs.concat(logs)
-						// dlogs = dlogs.filter((x) => x.impressions > 0);
-						dlogs = dlogs.sort(function(a, b) {
-							var d1 = new Date(a.date);
-							var d2 = new Date(b.date);
-							return d2 - d1;
+						.then((res) => res.json())
+						.then((result) => {
+							var dlogs = result;
+							// console.log(result,'re')
+							// dlogs = dlogs.concat(logs)
+							// dlogs = dlogs.filter((x) => x.impressions > 0);
+							dlogs = dlogs.sort(function(a, b) {
+								var d1 = new Date(a.date);
+								var d2 = new Date(b.date);
+								return d2 - d1;
+							});
+							dlogs = dlogs.sort(function(a, b) {
+								var d1 = new Date(a.updatedAt[0]);
+								var d2 = new Date(b.updatedAt[0]);
+								if (a.date === b.date) return d2 - d1;
+							});
+							console.log(dlogs);
+							sol[repo.sets[i]] = dlogs;
 						});
-						dlogs = dlogs.sort(function(a, b) {
-							var d1 = new Date(a.updatedAt[0]);
-							var d2 = new Date(b.updatedAt[0]);
-							if (a.date === b.date) return d2 - d1;
-						});
-						console.log(dlogs);
-						sol[repo.sets[i]] = dlogs;
-					});
+				}
 			}
 			console.log(sol, 'sol');
 			dispatch({
@@ -639,3 +628,27 @@ export const ClientSummDet = () => async (dispatch, getState) => {
 		console.log(e);
 	}
 };
+
+// async function Puller(ids) {
+// 	var data;
+// 	fetch('/offreport/sumreportofcamallClient', {
+// 		method: 'put',
+// 		headers: {
+// 			'Content-Type': 'application/json',
+// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+// 		},
+// 		body: JSON.stringify({
+// 			campaignId: ids
+// 		})
+// 	})
+// 		.then((res) => res.json())
+// 		.then((resu) => {
+// 			var result = resu;
+// 			data = resu;
+// 			console.log(result);
+// 			// return result;
+// 		})
+// 		.catch((err) => console.log(err));
+// 	// const result = await data.json();
+// 	return data;
+// }

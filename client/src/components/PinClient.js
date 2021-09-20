@@ -39,14 +39,9 @@ function PinClient({ report, title, head, impression, clicks }) {
 	const headers = [
 		{ key: 'zip', label: 'Pincode' },
 		{ key: 'area', label: 'Urban/Rural' },
-		{ key: 'lowersubcity', label: 'Lower Sub City' },
-		{ key: 'subcity', label: 'Subsubcity' },
 		{ key: 'city', label: 'City' },
 		{ key: 'grandcity', label: 'Grand City' },
-		{ key: 'district', label: 'District' },
-		{ key: 'comparison', label: 'Comparison' },
 		{ key: 'state', label: 'State' },
-		{ key: 'grandstate', label: 'Grand State' },
 		{ key: 'impression', label: 'Impressions' },
 		{ key: 'clicks', label: 'Clicks' },
 		{ key: 'ctr', label: 'CTR' }
@@ -72,9 +67,9 @@ function PinClient({ report, title, head, impression, clicks }) {
 					closk += row.clicks;
 				});
 				data.map((row) => {
-					var impre = Math.round(row.impression * impression / imoop);
+					var impre = Math.trunc(row.impression * impression / imoop);
 					row.impression = impre;
-					var cliol = Math.round(row.clicks * clicks / closk);
+					var cliol = Math.trunc(row.clicks * clicks / closk);
 					row.clicks = parseInt(cliol);
 					imoop1 += impre;
 					closk1 += cliol;
@@ -124,20 +119,6 @@ function PinClient({ report, title, head, impression, clicks }) {
 										Urban/Rural{arrowRetuner(sa === 'area' ? (order === 'asc' ? '1' : '2') : '3')}
 									</TableCell>
 									<TableCell
-										onClick={() => tablesorter('lowersubcity', 'string')}
-										style={{ cursor: 'pointer' }}
-									>
-										Lower Sub City{arrowRetuner(
-											sa === 'lowersubcity' ? (order === 'asc' ? '1' : '2') : '3'
-										)}
-									</TableCell>
-									<TableCell
-										onClick={() => tablesorter('subcity', 'string')}
-										style={{ cursor: 'pointer' }}
-									>
-										Subsubcity{arrowRetuner(sa === 'subcity' ? (order === 'asc' ? '1' : '2') : '3')}
-									</TableCell>
-									<TableCell
 										onClick={() => tablesorter('city', 'string')}
 										style={{ cursor: 'pointer' }}
 									>
@@ -152,24 +133,10 @@ function PinClient({ report, title, head, impression, clicks }) {
 										)}
 									</TableCell>
 									<TableCell
-										onClick={() => tablesorter('district', 'string')}
-										style={{ cursor: 'pointer' }}
-									>
-										District{arrowRetuner(sa === 'district' ? (order === 'asc' ? '1' : '2') : '3')}
-									</TableCell>
-									<TableCell
 										onClick={() => tablesorter('state', 'string')}
 										style={{ cursor: 'pointer' }}
 									>
 										State{arrowRetuner(sa === 'state' ? (order === 'asc' ? '1' : '2') : '3')}
-									</TableCell>
-									<TableCell
-										onClick={() => tablesorter('grandstate', 'string')}
-										style={{ cursor: 'pointer' }}
-									>
-										Grand State{arrowRetuner(
-											sa === 'grandstate' ? (order === 'asc' ? '1' : '2') : '3'
-										)}
 									</TableCell>
 									<TableCell
 										onClick={() => tablesorter('impression', 'number')}
@@ -201,25 +168,37 @@ function PinClient({ report, title, head, impression, clicks }) {
 												{row.zip ? row.zip : ''}
 											</TableCell>
 											<TableCell>{row.area ? row.area : ''}</TableCell>
-											<TableCell>{row.lowersubcity ? row.lowersubcity : ''}</TableCell>
-											<TableCell>{row.subcity ? row.subcity : ''}</TableCell>
 											<TableCell>{row.city ? row.city : ''}</TableCell>
 											<TableCell>{row.grandcity ? row.grandcity : ''}</TableCell>
-											<TableCell>{row.district ? row.district : ''}</TableCell>
 											<TableCell>{row.state ? row.state : ''}</TableCell>
-											<TableCell>{row.grandstate ? row.grandstate : ''}</TableCell>
 											<TableCell>{row.impression ? row.impression : ''}</TableCell>
 											<TableCell>{row.clicks}</TableCell>
 											<TableCell>{Math.round(row.ctr * 100) / 100}%</TableCell>
 										</TableRow>
 									);
 								})}
+								{(totalImpreS < impression || totalClickS < clicks) && (
+									<TableRow>
+										<TableCell />
+										<TableCell />
+										<TableCell />
+										<TableCell />
+										<TableCell />
+										<TableCell>
+											{impression - totalImpreS > 0 ? impression - totalImpreS : 0}
+										</TableCell>
+										<TableCell>{clicks - totalClickS > 0 ? clicks - totalClickS : 0}</TableCell>
+										<TableCell>
+											{Math.round(
+												(clicks - totalClickS > 0 ? clicks - totalClickS : 0) /
+													(impression - totalImpreS > 0 ? impression - totalImpreS : 0) *
+													100
+											) / 100}%
+										</TableCell>
+									</TableRow>
+								)}
 								<TableRow>
 									<TableCell className="boldClass">Total</TableCell>
-									<TableCell className="boldClass" />
-									<TableCell className="boldClass" />
-									<TableCell className="boldClass" />
-									<TableCell className="boldClass" />
 									<TableCell className="boldClass" />
 									<TableCell className="boldClass" />
 									<TableCell className="boldClass" />
@@ -227,7 +206,7 @@ function PinClient({ report, title, head, impression, clicks }) {
 									<TableCell className="boldClass">{totalImpreS}</TableCell>
 									<TableCell className="boldClass">{totalClickS}</TableCell>
 									<TableCell className="boldClass">
-										{Math.round(totalClickS / totalImpreS * 100) / 100}
+										{Math.round(totalClickS / totalImpreS * 100) / 100}%
 									</TableCell>
 								</TableRow>
 							</TableBody>

@@ -148,7 +148,9 @@ function FrequencyAdmin({ title, report, state1, arrowRetuner }) {
 									<TableCell className="boldClass">{ci}</TableCell>
 									<TableCell className="boldClass">{cu}</TableCell>
 									<TableCell className="boldClass">{cc}</TableCell>
-									<TableCell />
+									<TableCell className="boldClass">
+										{Math.round(cc * 100 / ci * 100) / 100}%
+									</TableCell>
 									<TableCell />
 								</TableRow>
 							) : (
