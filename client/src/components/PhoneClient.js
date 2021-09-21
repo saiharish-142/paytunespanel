@@ -149,7 +149,7 @@ function PhoneModelClinet({ title, report, head, impression, clicks }) {
 								<TableCell className="boldClass">{totalImpreS}</TableCell>
 								<TableCell className="boldClass">{totalClickS}</TableCell>
 								<TableCell className="boldClass">
-									{Math.round(totalClickS / totalImpreS * 100) / 100}%
+									{Math.round(totalClickS * 100 / totalImpreS * 100) / 100}%
 								</TableCell>
 							</TableRow>
 						</TableBody>
