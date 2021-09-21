@@ -58,6 +58,15 @@ function Creative_Report({ title, report, state1, impression, clicks }) {
 					closk1 += cliol;
 					row.ctr = Math.round(parseInt(cliol) * 100 / parseInt(impre) * 100) / 100 + '%';
 				});
+				if (imoop1 < impression || closk1 < clicks) {
+					data.push({
+						impression: impression - imoop1,
+						clicks: clicks - closk1,
+						ctr: (clicks - closk1) * 100 / (impression - imoop1)
+					});
+					imoop1 += impression - imoop1;
+					closk1 += clicks - closk1;
+				}
 				setadss(data);
 				settotalImpreS(imoop1);
 				settotalClickS(closk1);
@@ -116,21 +125,6 @@ function Creative_Report({ title, report, state1, impression, clicks }) {
 									</TableRow>
 								);
 							})}
-							{(totalImpreS < impression || totalClickS < clicks) && (
-								<TableRow>
-									<TableCell />
-									<TableCell />
-									<TableCell>{impression - totalImpreS > 0 ? impression - totalImpreS : 0}</TableCell>
-									<TableCell>{clicks - totalClickS > 0 ? clicks - totalClickS : 0}</TableCell>
-									<TableCell>
-										{Math.round(
-											(clicks - totalClickS > 0 ? clicks - totalClickS : 0) /
-												(impression - totalImpreS > 0 ? impression - totalImpreS : 0) *
-												100
-										) / 100}%
-									</TableCell>
-								</TableRow>
-							)}
 							<TableRow>
 								<TableCell className="boldClass">Total</TableCell>
 								<TableCell className="boldClass" />

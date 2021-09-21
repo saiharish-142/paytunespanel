@@ -75,6 +75,15 @@ function PinClient({ report, title, head, impression, clicks }) {
 					closk1 += cliol;
 					row.ctr = parseInt(cliol) * 100 / parseInt(impre);
 				});
+				if (imoop1 < impression || closk1 < clicks) {
+					data.push({
+						impression: impression - imoop1,
+						clicks: clicks - closk1,
+						ctr: (clicks - closk1) * 100 / (impression - imoop1)
+					});
+					imoop1 += impression - imoop1;
+					closk1 += clicks - closk1;
+				}
 				csvReport.data = data;
 				setadss(data);
 				setadssload(false);
@@ -177,26 +186,6 @@ function PinClient({ report, title, head, impression, clicks }) {
 										</TableRow>
 									);
 								})}
-								{(totalImpreS < impression || totalClickS < clicks) && (
-									<TableRow>
-										<TableCell />
-										<TableCell />
-										<TableCell />
-										<TableCell />
-										<TableCell />
-										<TableCell>
-											{impression - totalImpreS > 0 ? impression - totalImpreS : 0}
-										</TableCell>
-										<TableCell>{clicks - totalClickS > 0 ? clicks - totalClickS : 0}</TableCell>
-										<TableCell>
-											{Math.round(
-												(clicks - totalClickS > 0 ? clicks - totalClickS : 0) /
-													(impression - totalImpreS > 0 ? impression - totalImpreS : 0) *
-													100
-											) / 100}%
-										</TableCell>
-									</TableRow>
-								)}
 								<TableRow>
 									<TableCell className="boldClass">Total</TableCell>
 									<TableCell className="boldClass" />
@@ -206,7 +195,7 @@ function PinClient({ report, title, head, impression, clicks }) {
 									<TableCell className="boldClass">{totalImpreS}</TableCell>
 									<TableCell className="boldClass">{totalClickS}</TableCell>
 									<TableCell className="boldClass">
-										{Math.round(totalClickS / totalImpreS * 100) / 100}%
+										{Math.round(totalClickS * 100 / totalImpreS * 100) / 100}%
 									</TableCell>
 								</TableRow>
 							</TableBody>
