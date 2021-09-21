@@ -310,8 +310,8 @@ export const PincodeClientBody = (report1, impressionR, clicksR) => {
 		compclick += x.clicks;
 	});
 	return report1.map((log, index) => {
-		var impression = Math.round(log.impression * impressionR / compimpre);
-		var clicks = Math.round(log.clicks * clicksR / compclick);
+		var impression = Math.trunc(log.impression * impressionR / compimpre);
+		var clicks = Math.trunc(log.clicks * clicksR / compclick);
 		var ctr = clicks * 100 / impression;
 		return [
 			{ value: log.zip ? log.zip : '' },
@@ -321,7 +321,7 @@ export const PincodeClientBody = (report1, impressionR, clicksR) => {
 			{ value: log.state ? log.state : '' },
 			{ value: impression ? impression : 0 },
 			{ value: clicks ? clicks : 0 },
-			{ value: ctr ? ctr : 0 }
+			{ value: ctr ? ctr + '%' : 0 }
 		];
 	});
 };
@@ -330,18 +330,21 @@ export const PhoneModelClientBody = (report1, impressionR, clicksR) => {
 	var compclick = 0;
 	report1.map((x) => {
 		compimpre += x.impression;
+		x.clicks = parseInt(x.CompanionClickTracking) + parseInt(x.SovClickTracking);
 		compclick += x.clicks;
 	});
 	return report1.map((log, index) => {
 		var type = log ? log.type : '';
-		var impression = log ? log.impression * impressionR / compimpre : 0;
-		var clicks = (parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) * clicksR / compclick;
+		var impression = log ? Math.trunc(log.impression * impressionR / compimpre) : 0;
+		var clicks = Math.trunc(
+			(parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) * clicksR / compclick
+		);
 		var ctr = impression ? clicks * 100 / impression : 0;
 		return [
 			{ value: type ? type : '' },
 			{ value: impression ? impression : 0 },
 			{ value: clicks ? clicks : 0 },
-			{ value: ctr ? ctr : 0 }
+			{ value: ctr ? ctr + '%' : 0 }
 		];
 	});
 };
@@ -353,39 +356,37 @@ export const IBAClientBody = (report1, impressionR, clicksR) => {
 		compclick += x.clicks;
 	});
 	return report1.map((log, index) => {
-		var Name = log.extra_details ? log.extra_details.Name : '';
-		var impression = log ? log.impressions * impressionR / compimpre : 0;
-		var clicks = (parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) * clicksR / compclick;
+		var Name = log.Name ? log.Name : '';
+		var impression = log ? Math.trunc(log.impressions * impressionR / compimpre) : 0;
+		var clicks = Math.trunc(
+			(parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) * clicksR / compclick
+		);
 		var ctr = impression ? clicks * 100 / impression : 0;
 		return [
 			{ value: Name ? Name : '' },
 			{ value: impression ? impression : 0 },
 			{ value: clicks ? clicks : 0 },
-			{ value: ctr ? ctr : 0 }
+			{ value: ctr ? ctr + '%' : 0 }
 		];
 	});
 };
-export const SumDetClientBody = (report1, impressionR, clicksR, completeR) => {
+export const SumDetClientBody = (report1, impressionR, clicksR) => {
 	var compimpre = 0;
 	var compclick = 0;
-	var compcomplete = 0;
 	report1.map((x) => {
 		compimpre += parseInt(x.impressions);
 		compclick += x.clicks;
-		compcomplete += x.complete ? x.complete : 0;
 	});
 	return report1.map((log, index) => {
 		var Name = log.date ? log.date : '';
-		var impression = log ? parseInt(log.impressions) * impressionR / compimpre : 0;
-		var complete = log ? log.complete * completeR / compcomplete : 0;
-		var clicks = log.clicks * clicksR / compclick;
+		var impression = log ? Math.trunc(parseInt(log.impressions) * impressionR / compimpre) : 0;
+		var clicks = Math.trunc(log.clicks * clicksR / compclick);
 		var ctr = impression ? clicks * 100 / impression : 0;
 		return [
 			{ value: Name ? Name : '' },
 			{ value: impression ? impression : 0 },
 			{ value: clicks ? clicks : 0 },
-			{ value: ctr ? ctr : 0 },
-			{ value: complete ? complete : 0 }
+			{ value: ctr ? ctr + '%' : 0 }
 		];
 	});
 };

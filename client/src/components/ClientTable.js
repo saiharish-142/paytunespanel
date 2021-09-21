@@ -86,7 +86,7 @@ export default function BasicTable({ title, id, adminView }) {
 				uniqueSetter();
 				setlastUpdated(report.report.complete.updatedAt);
 				PincodeSetter();
-				Creativedata();
+				// Creativedata();
 				CategorySetter();
 				DeviceSetter();
 			}
@@ -127,33 +127,33 @@ export default function BasicTable({ title, id, adminView }) {
 	}
 	async function CategorySetter() {
 		var sets = report.sets;
-		var ids = report.grp_ids;
+		var ids = report.cateids;
 		var data = {};
-		// console.log(report);
 		for (var i = 0; i < sets.length; i++) {
-			if (ids[sets[i]].length) {
-				console.log(ids[sets[i]]);
-				await fetch('/subrepo/categorywiseids', {
-					method: 'put',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: 'Bearer ' + localStorage.getItem('jwt')
-					},
-					body: JSON.stringify({
-						campaignId: ids[sets[i]]
+			if (ids[sets[i]])
+				if (ids[sets[i]].length) {
+					console.log(ids[sets[i]]);
+					await fetch('/subrepo/categorywiseids', {
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: 'Bearer ' + localStorage.getItem('jwt')
+						},
+						body: JSON.stringify({
+							campaignId: ids[sets[i]]
+						})
 					})
-				})
-					.then((res) => res.json())
-					.then((result) => {
-						console.log(result);
-						// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
-						data[sets[i]] = result;
-					})
-					.catch((err) => {
-						setpincodeDataerr(true);
-						console.log(err);
-					});
-			}
+						.then((res) => res.json())
+						.then((result) => {
+							console.log(result);
+							// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
+							data[sets[i]] = result;
+						})
+						.catch((err) => {
+							setpincodeDataerr(true);
+							console.log(err);
+						});
+				}
 		}
 		setcategoryData(data);
 		setcategoryDataload(false);
@@ -344,7 +344,7 @@ export default function BasicTable({ title, id, adminView }) {
 									) / 100}%
 								</TableCell>
 								<TableCell>
-									{Math.round(reportsub.complete / reportsub.impressions * 100) / 100}%
+									{Math.round(reportsub.complete * 100 / reportsub.impressions * 100) / 100}%
 								</TableCell>
 								<TableCell
 									className="mangeads__report"
@@ -443,7 +443,7 @@ export default function BasicTable({ title, id, adminView }) {
 									100 +
 								'%'
 						},
-						{ value: Math.round(reportsub.complete / reportsub.impressions * 100) / 100 + '%' }
+						{ value: Math.round(reportsub.complete * 100 / reportsub.impressions * 100) / 100 + '%' }
 					]
 				]
 			}
@@ -472,7 +472,7 @@ export default function BasicTable({ title, id, adminView }) {
 					{ value: report.report.complete.midpoint },
 					{ value: report.report.complete.thirdQuartile },
 					{ value: report.report.complete.complete },
-					{ value: Math.round(report.report.complete.ltr * 100) / 100 }
+					{ value: Math.round(report.report.complete.ltr * 100) / 100 + '%' }
 				]
 			]
 		}
@@ -560,12 +560,12 @@ export default function BasicTable({ title, id, adminView }) {
 		return vamp;
 	};
 	const phonedat = phoneModelGen();
-	const CreativeDown = [
-		{
-			columns: CreativeHead,
-			data: report.ids.combined && creativeData && creativeData.length && CreativeBody(creativeData)
-		}
-	];
+	// const CreativeDown = [
+	// 	{
+	// 		columns: CreativeHead,
+	// 		data: report.ids.combined && creativeData && creativeData.length && CreativeBody(creativeData)
+	// 	}
+	// ];
 	const DateGen = () => {
 		var vamp = {};
 		report.sets.map((x) => {
@@ -579,8 +579,7 @@ export default function BasicTable({ title, id, adminView }) {
 						SumDetClientBody(
 							report.sumdetreport[x],
 							report.report[x].impressions,
-							report.report[x].clicks + report.report[x].clicks1,
-							report.report[x].complete
+							report.report[x].clicks + report.report[x].clicks1
 						)
 				}
 			];
@@ -605,13 +604,13 @@ export default function BasicTable({ title, id, adminView }) {
 					})}
 				{report.sets &&
 					report.sets.map((x) => {
-						return <ExcelSheet dataSet={CateDat[x]} name={`Category ${x} Wise`} />;
+						return <ExcelSheet dataSet={CateDat[x]} name={`listener Profile Report ${x} Wise`} />;
 					})}
 				{report.sets &&
 					report.sets.map((x) => {
-						return <ExcelSheet dataSet={datesumda[x]} name={`${x} Wise Detailed Summary report`} />;
+						return <ExcelSheet dataSet={datesumda[x]} name={`Daily Report ${x}`} />;
 					})}
-				<ExcelSheet dataSet={CreativeDown} name="Creative Wise" />
+				{/* <ExcelSheet dataSet={CreativeDown} name="Creative Wise" /> */}
 			</ExeclDownload>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
 			{SummaryTable(
@@ -731,7 +730,7 @@ export default function BasicTable({ title, id, adminView }) {
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
 			{report.sets &&
 				report.sets.map((x) => {
-					if (report.grp_ids[x].length) {
+					if (report.cateids[x] && report.cateids[x].length) {
 						if (categoryData[x]) {
 							return (
 								<CategoryClinet
@@ -752,7 +751,7 @@ export default function BasicTable({ title, id, adminView }) {
 						}
 					}
 				})}
-			{creativeData.length ? (
+			{/* {creativeData.length ? (
 				<div>
 					<div className="titleReport">Creative Wise Summary Report</div>
 					<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
@@ -767,7 +766,7 @@ export default function BasicTable({ title, id, adminView }) {
 				</div>
 			) : (
 				''
-			)}
+			)} */}
 		</React.Fragment>
 	);
 }

@@ -119,12 +119,6 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 								<TableCell onClick={() => tablesorter('ctr', 'number')} style={{ cursor: 'pointer' }}>
 									CTR{arrowRetuner(sa === 'ctr' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell
-									onClick={() => tablesorter('complete', 'number')}
-									style={{ cursor: 'pointer' }}
-								>
-									Complete{arrowRetuner(sa === 'complete' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -135,7 +129,6 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 										<TableCell>{row.impressions}</TableCell>
 										<TableCell>{row.clicks}</TableCell>
 										<TableCell>{Math.round(row.ctr * 100) / 100 + '%'}</TableCell>
-										<TableCell>{row.complete}</TableCell>
 									</TableRow>
 								);
 							})}

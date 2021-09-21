@@ -286,6 +286,7 @@ export const ClientReport = () => async (dispatch, getState) => {
 	// console.log(data2);
 	var dass = [];
 	var puller = {};
+	var pullerCate = {};
 	var pullerData = {};
 	pullerData['complete'] = {
 		target: 0,
@@ -304,14 +305,17 @@ export const ClientReport = () => async (dispatch, getState) => {
 		dass.push(data.audio);
 		if (puller[data.audio]) {
 			data2.audio.map((x) => puller[data.audio].push(x));
+			data2.audio.map((x) => pullerCate[data.audio].push(x));
 			puller[`${data.audio}target`] += data2.audimpression;
 			pullerData[`complete`].target += data2.audimpression;
 		} else {
 			puller[data.audio] = [];
+			pullerCate[data.audio] = [];
 			puller[`${data.audio}target`] = 0;
 			puller[`${data.audio}target`] += data2.audimpression;
 			pullerData[`complete`].target += data2.audimpression;
 			data2.audio.map((x) => puller[data.audio].push(x));
+			data2.audio.map((x) => pullerCate[data.audio].push(x));
 		}
 	}
 	if (!(data.onDemand === data.podcast && data.onDemand === data.musicapps)) {
@@ -319,42 +323,51 @@ export const ClientReport = () => async (dispatch, getState) => {
 			dass.push(data.onDemand);
 			if (puller[data.onDemand]) {
 				data2.onDemand.map((x) => puller[data.onDemand].push(x));
+				data2.onDemand.map((x) => pullerCate[data.onDemand].push(x));
 				pullerData[`complete`].target += data2.subimpression.dem;
 				puller[`${data.onDemand}target`] += data2.subimpression.dem;
 			} else {
 				puller[data.onDemand] = [];
+				pullerCate[data.onDemand] = [];
 				puller[`${data.onDemand}target`] = 0;
 				pullerData[`complete`].target += data2.subimpression.dem;
 				puller[`${data.onDemand}target`] += data2.subimpression.dem;
 				data2.onDemand.map((x) => puller[data.onDemand].push(x));
+				data2.onDemand.map((x) => pullerCate[data.onDemand].push(x));
 			}
 		}
 		if (data.podcast) {
 			dass.push(data.podcast);
 			if (puller[data.podcast]) {
 				data2.podcast.map((x) => puller[data.podcast].push(x));
+				data2.podcast.map((x) => pullerCate[data.podcast].push(x));
 				pullerData[`complete`].target += data2.subimpression.pod;
 				puller[`${data.podcast}target`] += data2.subimpression.pod;
 			} else {
 				puller[data.podcast] = [];
+				pullerCate[data.podcast] = [];
 				puller[`${data.podcast}target`] = 0;
 				pullerData[`complete`].target += data2.subimpression.pod;
 				puller[`${data.podcast}target`] += data2.subimpression.pod;
 				data2.podcast.map((x) => puller[data.podcast].push(x));
+				data2.podcast.map((x) => pullerCate[data.podcast].push(x));
 			}
 		}
 		if (data.musicapps) {
 			dass.push(data.musicapps);
 			if (puller[data.musicapps]) {
 				data2.musicapps.map((x) => puller[data.musicapps].push(x));
+				data2.musicapps.map((x) => pullerCate[data.musicapps].push(x));
 				pullerData[`complete`].target += data2.subimpression.mus;
 				puller[`${data.musicapps}target`] += data2.subimpression.mus;
 			} else {
 				puller[data.musicapps] = [];
+				pullerCate[data.musicapps] = [];
 				puller[`${data.musicapps}target`] = 0;
 				pullerData[`complete`].target += data2.subimpression.mus;
 				puller[`${data.musicapps}target`] += data2.subimpression.mus;
 				data2.musicapps.map((x) => puller[data.musicapps].push(x));
+				data2.musicapps.map((x) => pullerCate[data.musicapps].push(x));
 			}
 		}
 	}
@@ -376,14 +389,17 @@ export const ClientReport = () => async (dispatch, getState) => {
 		dass.push(data.video);
 		if (puller[data.video]) {
 			data2.video.map((x) => puller[data.video].push(x));
+			data2.video.map((x) => pullerCate[data.video].push(x));
 			pullerData[`complete`].target += data2.vidimpression;
 			puller[`${data.video}target`] += data2.vidimpression;
 		} else {
 			puller[data.video] = [];
+			pullerCate[data.video] = [];
 			puller[`${data.video}target`] = 0;
 			puller[`${data.video}target`] += data2.vidimpression;
 			pullerData[`complete`].target += data2.vidimpression;
 			data2.video.map((x) => puller[data.video].push(x));
+			data2.video.map((x) => pullerCate[data.video].push(x));
 		}
 	}
 	dass = [ ...new Set(dass) ];
@@ -434,7 +450,7 @@ export const ClientReport = () => async (dispatch, getState) => {
 		pullerData.complete.complete / pullerData.complete.firstQuartile * pullerData.complete.impressions;
 	pullerData.complete.firstQuartile =
 		pullerData.complete.firstQuartile / pullerData.complete.firstQuartile * pullerData.complete.impressions;
-	pullerData.complete.ltr = pullerData.complete.complete / pullerData.complete.firstQuartile;
+	pullerData.complete.ltr = pullerData.complete.complete * 100 / pullerData.complete.firstQuartile;
 	pullerData.complete.midpoint = Math.round(pullerData.complete.midpoint);
 	pullerData.complete.thirdQuartile = Math.round(pullerData.complete.thirdQuartile);
 	pullerData.complete.complete = Math.round(pullerData.complete.complete);
@@ -444,6 +460,7 @@ export const ClientReport = () => async (dispatch, getState) => {
 		payload: {
 			mains: dass,
 			ids: puller,
+			cateids: pullerCate,
 			report: pullerData
 		}
 	});

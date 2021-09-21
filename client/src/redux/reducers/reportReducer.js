@@ -16,6 +16,7 @@ import {
 const initialState = {
 	req_id: null,
 	ids: null,
+	cateids: null,
 	combine_ids: null,
 	title: null,
 	endDate: null,
@@ -90,6 +91,7 @@ export default function(state = initialState, action) {
 				...state,
 				sets: action.payload.mains,
 				grp_ids: action.payload.ids,
+				cateids: action.payload.cateids,
 				isLoading: false,
 				report: action.payload.report
 			};
