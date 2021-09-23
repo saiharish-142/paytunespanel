@@ -318,7 +318,6 @@ export default function BasicTable({ title, id, adminView }) {
 								<TableCell>Campaign Start Date</TableCell>
 								<TableCell>Campaign End Date</TableCell>
 								<TableCell>Total Days of Campaign</TableCell>
-								<TableCell>Total Impressions to be delivered</TableCell>
 								<TableCell>Total Impressions Delivered till date</TableCell>
 								<TableCell>Unique User</TableCell>
 								<TableCell>Average Frequency</TableCell>
@@ -333,7 +332,6 @@ export default function BasicTable({ title, id, adminView }) {
 								<TableCell>{dateformatchanger(report.startDate)}</TableCell>
 								<TableCell>{dateformatchanger(report.endDate)}</TableCell>
 								<TableCell>{timefinder(report.endDate, report.startDate)} days</TableCell>
-								<TableCell>{target}</TableCell>
 								<TableCell>{reportsub.impressions}</TableCell>
 								<TableCell>{users}</TableCell>
 								<TableCell>{Math.round(reportsub.impressions / users * 100) / 100}</TableCell>
@@ -414,7 +412,6 @@ export default function BasicTable({ title, id, adminView }) {
 					{ title: 'Campaign Start Date' },
 					{ title: 'Campaign End Date' },
 					{ title: 'Total Days of Campaign' },
-					{ title: 'Total Impressions to be delivered' },
 					{ title: 'Total Impressions Delivered till date' },
 					{ title: 'Unique User' },
 					{ title: 'Average Frequency' },
@@ -427,7 +424,6 @@ export default function BasicTable({ title, id, adminView }) {
 						{ value: dateformatchanger(report.startDate) },
 						{ value: dateformatchanger(report.endDate) },
 						{ value: timefinder(report.endDate, report.startDate) + 'days' },
-						{ value: target ? target : 0 },
 						{ value: reportsub.impressions ? reportsub.impressions : 0 },
 						{ value: users ? users : 0 },
 						{

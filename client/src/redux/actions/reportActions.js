@@ -454,6 +454,14 @@ export const ClientReport = () => async (dispatch, getState) => {
 	pullerData.complete.midpoint = Math.round(pullerData.complete.midpoint);
 	pullerData.complete.thirdQuartile = Math.round(pullerData.complete.thirdQuartile);
 	pullerData.complete.complete = Math.round(pullerData.complete.complete);
+	for (const [ y, z ] of Object.entries(pullerCate)) {
+		pullerData[y].midpoint = pullerData[y].midpoint / pullerData[y].firstQuartile * pullerData[y].impressions;
+		pullerData[y].thirdQuartile =
+			pullerData[y].thirdQuartile / pullerData[y].firstQuartile * pullerData[y].impressions;
+		pullerData[y].complete = pullerData[y].complete / pullerData[y].firstQuartile * pullerData[y].impressions;
+		pullerData[y].firstQuartile = pullerData[y].impressions;
+		pullerData[y].ltr = pullerData[y].complete * 100 / pullerData[y].impressions;
+	}
 	console.log(dass, puller, pullerData);
 	dispatch({
 		type: REPORT_LOADED_CLIENT,
