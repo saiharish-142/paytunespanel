@@ -323,7 +323,7 @@ export default function BasicTable({ title, id, adminView }) {
 								<TableCell>Average Frequency</TableCell>
 								<TableCell>Total Clicks Delivered till date</TableCell>
 								<TableCell>CTR</TableCell>
-								<TableCell>LTR</TableCell>
+								{reportsub.ltr && <TableCell>LTR</TableCell>}
 								<TableCell />
 							</TableRow>
 						</TableHead>
@@ -341,9 +341,11 @@ export default function BasicTable({ title, id, adminView }) {
 										(reportsub.clicks + reportsub.clicks1) * 100 / reportsub.impressions * 100
 									) / 100}%
 								</TableCell>
-								<TableCell>
-									{Math.round(reportsub.complete * 100 / reportsub.impressions * 100) / 100}%
-								</TableCell>
+								{reportsub.ltr && (
+									<TableCell>
+										{Math.round(reportsub.complete * 100 / reportsub.impressions * 100) / 100}%
+									</TableCell>
+								)}
 								<TableCell
 									className="mangeads__report"
 									onClick={() => {
