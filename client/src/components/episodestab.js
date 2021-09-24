@@ -282,9 +282,9 @@ export default function EpisodeTab(){
 									<TableCell>{row.avgrequest ? Math.round(row.avgrequest)  : ''}</TableCell>
 									<TableCell>{row.publisher ? row.publisher: ''}</TableCell>
 									<TableCell>{row.category==="#N/A" ? row.category_details.new_taxonamy : row.category}</TableCell>
-									<TableCell>{row.category_details.length ? row.category_details.tier1 : ''}</TableCell>
-									<TableCell>{row.category_details.length ? row.category_details.tier2 : ''}</TableCell>
-									<TableCell>{row.category_details.length ? row.category_details.tier3 : ''}</TableCell>
+									<TableCell>{row.category_details ? row.category_details.tier1 : ''}</TableCell>
+									<TableCell>{row.category_details ? row.category_details.tier2 : ''}</TableCell>
+									<TableCell>{row.category_details ? row.category_details.tier3 : ''}</TableCell>
 									<TableCell>{row.displayname ? row.displayname : ''}</TableCell>
 									<TableCell>{row.hostPossibility ? row.hostPossibility : ''}</TableCell>
 									<TableCell>
