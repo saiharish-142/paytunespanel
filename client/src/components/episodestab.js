@@ -44,6 +44,8 @@ const useStyles = makeStyles((theme) => ({
 export default function EpisodeTab(){
 
     const [rows,setrows]=useState([])
+	const [search1, setsearch] = useState('');
+	const [searchedData, setsearchedData] = useState([]);
 	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
 	const [ error, seterror ] = useState('');
 	const [ success, setsuccess ] = useState('');
@@ -74,8 +76,35 @@ export default function EpisodeTab(){
 		{ key: 'request', label: 'Request' },
 		{ key: 'avgrequest', label: 'Avg Requests' },
 		{ key: 'publisher', label: 'Publisher Name' },
-		{ key: 'category', label: 'Category' }
+		{ key: 'category', label: 'Category' },
+		{ key: 'tier1', label: 'Tier1' },
+		{ key: 'tier2', label: 'Tier2' },
+		{ key: 'tier3', label: 'Tier3' },
+		{ key: 'displayname', label: 'Display Name' },
+		{ key: 'hostPossibility', label: 'Host Possibility' },
 	];
+
+	function SearchData() {
+		let arr = [];
+
+		arr = rows.filter(
+			(row) =>{
+				if(row.episodename.toString().replace(/\s+/g, '').trim().toLowerCase() ===
+				search1.replace(/\s+/g, '').trim().toLowerCase()){
+					return row
+				}
+			}
+				
+		);
+		console.log(arr)
+		if (arr.length === 0) {
+			setsearchedData('No Data Found!');
+		} else {		
+			setsearchedData(arr);
+			console.log('jvhvhvhv', arr);
+		}
+	}
+
 	var csvReport = {
 		filename: `EpisodeData.csv`,
 		headers: headers,
@@ -220,8 +249,8 @@ export default function EpisodeTab(){
         <div>
 			<div>
 			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Episode Data Tab</h4>
-			{/* <input placeholder="Search PhoneModel"  onChange={(e)=>setsearch(e.target.value)} style={{textAlign:'center',width:'20%',padding:'0.1%', border:'1px solid rgba(61, 61, 64, .25)', background:'#ffffff' }} />
-			<button className="btn" style={{marginLeft:'1%'}} onClick={ SearchData } >Search</button> */}
+			<input placeholder="Search Episode Name"  onChange={(e)=>setsearch(e.target.value)} style={{textAlign:'center',width:'20%',padding:'0.1%', border:'1px solid rgba(61, 61, 64, .25)', background:'#ffffff' }} />
+			<button className="btn" style={{marginLeft:'1%'}} onClick={ SearchData } >Search</button>
 			</div>
 			<div className={classes.root}>
 				{success ? (
@@ -254,7 +283,9 @@ export default function EpisodeTab(){
             <Paper>
 				<CSVLink {...csvReport} style={{padding:'10px',marginTop:'20px'}} >Download Table</CSVLink>
 			{/* {searchedData==='No Data Found!'? <h7>{searchedData}</h7>:   */}
-            <TableContainer style={{maxHeight:440}}>
+			{searchedData === 'No Data Found!' ? (
+					<h7>{searchedData}</h7>
+				) :(<TableContainer style={{maxHeight:440}}>
 					<Table stickyHeader aria-label="sticky table" >
 						<TableHead  style={{position:"sticky",top:0}}>
 							<TableRow >
@@ -296,7 +327,9 @@ export default function EpisodeTab(){
 							))}
 						</TableBody>
 					</Table>
-				</TableContainer>  
+				</TableContainer>
+				)}
+              
 				
 				<TablePagination
 					rowsPerPageOptions={[ 100, 1000, 10000 ]}
