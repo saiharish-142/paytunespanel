@@ -84,7 +84,7 @@ export default function EpisodeTab(){
 
     useEffect(() => {
 		fetch('/rtbreq/getepisodewise_report', {
-			method: 'POST',
+			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + localStorage.getItem('jwt')
@@ -105,7 +105,7 @@ export default function EpisodeTab(){
 
 	const data = () => {
 		fetch('/rtbreq/getepisodewise_report', {
-			method: 'POST',
+			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + localStorage.getItem('jwt')

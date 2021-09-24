@@ -244,7 +244,7 @@ router.get(
     }
 )
 
-router.post(
+router.get(
     '/getepisodewise_report',
     adminauth,
     async (req, res) => {
