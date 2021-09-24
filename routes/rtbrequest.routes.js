@@ -319,7 +319,10 @@ router.get(
                         avgrequest:"$avgrequest",
                         displayname: "$displayname",
                         hostPossibility: "$hostPossibility",
-                        category_details: 1,
+                        tier1:"$category_details.tier1",
+                        tier2:"$category_details.tier2",
+                        tier3:"$category_details.tier3",
+                        new_taxonamy:"$category_details.new_taxonamy"
                         
                     }
                 },
