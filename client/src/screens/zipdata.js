@@ -56,6 +56,8 @@ export default function Zipdata() {
 	const handleClose = () => {
 		setOpen(false);
 	};
+	const [search1, setsearch] = useState('');
+	const [searchedData, setsearchedData] = useState([]);
 	const [error, seterror] = useState('');
 	const [success, setsuccess] = useState('');
 	const [rows, setrows] = useState([]);
@@ -99,7 +101,31 @@ export default function Zipdata() {
 				console.log(dat);
 			});
 	};
+	function SearchData() {
+		let arr = [];
 
+		arr = rows.filter(
+			(row) =>
+				row.pincode.toString().replace(/\s+/g, '') ===
+				search1.replace(/\s+/g, '')
+		);
+		if (arr.length === 0) {
+			setsearchedData('No Data Found!');
+		} else {
+			var ai = 0,
+				ac = 0;
+			if (arr.length) {
+				arr.map((x) => {
+					ai += parseInt(x.impression);
+					ac += parseInt(x.click);
+				});
+			}
+			setci(ai);
+			setcc(ac);
+			setsearchedData(arr);
+			console.log('jvhvhvhv', arr);
+		}
+	}
 	useEffect(() => {
 		fetch('/subrepo/zipdata', {
 			method: 'get',
@@ -189,7 +215,23 @@ export default function Zipdata() {
 
 	return (
 		<div>
-			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Pincode data </h4>
+			<div>
+				<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Pincode data </h4>
+				<input
+					placeholder="Search Pincode"
+					onChange={(e) => setsearch(e.target.value)}
+					style={{
+						textAlign: 'center',
+						width: '20%',
+						padding: '0.1%',
+						border: '1px solid rgba(61, 61, 64, .25)',
+						background: '#ffffff'
+					}}
+				/>
+				<button className="btn" style={{ marginLeft: '1%' }} onClick={SearchData}>
+					Search
+				</button>
+			</div>
 			<div className={classes.root}>
 				{success ? (
 					<Alert
@@ -220,71 +262,76 @@ export default function Zipdata() {
 			</div>
 
 			<Paper>
-			<CSVLink {...csvReport}  >Download Table</CSVLink>
-				<TableContainer style={{ maxHeight: 440 }}>
-					<Table stickyHeader aria-label="sticky table">
-						<TableHead>
-							<TableRow>
-								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell onClick={() => requestSort('pincode')} className={getClassNamesFor('pincode')} style={{ cursor: 'pointer' }}> Pincode {arrowRetuner(sortconfig.key === 'pincode' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('requests')} className={getClassNamesFor('requests')} style={{ cursor: 'pointer' }}> Requests {arrowRetuner(sortconfig.key === 'requests' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('avgrequest')} className={getClassNamesFor('avgrequest')} style={{ cursor: 'pointer' }}> Avg Requests {arrowRetuner(sortconfig.key === 'avgrequest' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('impression')} className={getClassNamesFor('impression')} style={{ cursor: 'pointer' }}> Impressions {arrowRetuner(sortconfig.key === 'impression' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('avgimpression')} className={getClassNamesFor('avgimpression')} style={{ cursor: 'pointer' }}>Avg Impressions {arrowRetuner(sortconfig.key === 'avgimpression' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('click')} className={getClassNamesFor('click')} style={{ cursor: 'pointer' }}> Click {arrowRetuner(sortconfig.key === 'click' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell>CTR</TableCell>}
-								{<TableCell onClick={() => requestSort('area')} className={getClassNamesFor('area')} style={{ cursor: 'pointer' }}> Urban/Rural {arrowRetuner(sortconfig.key === 'area' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('lowersubcity')} className={getClassNamesFor('lowersubcity')} style={{ cursor: 'pointer' }}> Lower Sub City {arrowRetuner(sortconfig.key === 'lowersubcity' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								<TableCell onClick={() => requestSort('subcity')} className={getClassNamesFor('subcity')} style={{ cursor: 'pointer' }}> SubCity {arrowRetuner(sortconfig.key === 'subcity' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
-								<TableCell onClick={() => requestSort('city')} className={getClassNamesFor('city')} style={{ cursor: 'pointer' }}> City {arrowRetuner(sortconfig.key === 'city' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
-								<TableCell onClick={() => requestSort('grandcity')} className={getClassNamesFor('grandcity')} style={{ cursor: 'pointer' }}> Grand City {arrowRetuner(sortconfig.key === 'grandcity' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
-								{<TableCell onClick={() => requestSort('district')} className={getClassNamesFor('district')} style={{ cursor: 'pointer' }}> District {arrowRetuner(sortconfig.key === 'district' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('comparison')} className={getClassNamesFor('comparison')} style={{ cursor: 'pointer' }}> Comparison {arrowRetuner(sortconfig.key === 'comparison' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('state')} className={getClassNamesFor('state')} style={{ cursor: 'pointer' }}>  State {arrowRetuner(sortconfig.key === 'state' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('grandstate')} className={getClassNamesFor('grandstate')} style={{ cursor: 'pointer' }}> Grand State {arrowRetuner(sortconfig.key === 'grandstate' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell onClick={() => requestSort('latitude')} className={getClassNamesFor('latitude')} style={{ cursor: 'pointer' }}> Latitude {arrowRetuner(sortconfig.key === 'latitude' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('longitude')} className={getClassNamesFor('longitude')} style={{ cursor: 'pointer' }}> Longitude {arrowRetuner(sortconfig.key === 'longitude' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+				<CSVLink {...csvReport}  >Download Table</CSVLink>
+				{searchedData === 'No Data Found!' ? (
+					<h7>{searchedData}</h7>
+				) : (
+					<TableContainer style={{ maxHeight: 440 }}>
+						<Table stickyHeader aria-label="sticky table">
+							<TableHead>
+								<TableRow>
+									{/* <TableCell>{title}</TableCell> */}
+									{<TableCell onClick={() => requestSort('pincode')} className={getClassNamesFor('pincode')} style={{ cursor: 'pointer' }}> Pincode {arrowRetuner(sortconfig.key === 'pincode' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => requestSort('requests')} className={getClassNamesFor('requests')} style={{ cursor: 'pointer' }}> Requests {arrowRetuner(sortconfig.key === 'requests' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => requestSort('avgrequest')} className={getClassNamesFor('avgrequest')} style={{ cursor: 'pointer' }}> Avg Requests {arrowRetuner(sortconfig.key === 'avgrequest' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => requestSort('impression')} className={getClassNamesFor('impression')} style={{ cursor: 'pointer' }}> Impressions {arrowRetuner(sortconfig.key === 'impression' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => requestSort('avgimpression')} className={getClassNamesFor('avgimpression')} style={{ cursor: 'pointer' }}>Avg Impressions {arrowRetuner(sortconfig.key === 'avgimpression' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => requestSort('click')} className={getClassNamesFor('click')} style={{ cursor: 'pointer' }}> Click {arrowRetuner(sortconfig.key === 'click' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell>CTR</TableCell>}
+									{<TableCell onClick={() => requestSort('area')} className={getClassNamesFor('area')} style={{ cursor: 'pointer' }}> Urban/Rural {arrowRetuner(sortconfig.key === 'area' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => requestSort('lowersubcity')} className={getClassNamesFor('lowersubcity')} style={{ cursor: 'pointer' }}> Lower Sub City {arrowRetuner(sortconfig.key === 'lowersubcity' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									<TableCell onClick={() => requestSort('subcity')} className={getClassNamesFor('subcity')} style={{ cursor: 'pointer' }}> SubCity {arrowRetuner(sortconfig.key === 'subcity' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
+									<TableCell onClick={() => requestSort('city')} className={getClassNamesFor('city')} style={{ cursor: 'pointer' }}> City {arrowRetuner(sortconfig.key === 'city' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
+									<TableCell onClick={() => requestSort('grandcity')} className={getClassNamesFor('grandcity')} style={{ cursor: 'pointer' }}> Grand City {arrowRetuner(sortconfig.key === 'grandcity' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
+									{<TableCell onClick={() => requestSort('district')} className={getClassNamesFor('district')} style={{ cursor: 'pointer' }}> District {arrowRetuner(sortconfig.key === 'district' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => requestSort('comparison')} className={getClassNamesFor('comparison')} style={{ cursor: 'pointer' }}> Comparison {arrowRetuner(sortconfig.key === 'comparison' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => requestSort('state')} className={getClassNamesFor('state')} style={{ cursor: 'pointer' }}>  State {arrowRetuner(sortconfig.key === 'state' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => requestSort('grandstate')} className={getClassNamesFor('grandstate')} style={{ cursor: 'pointer' }}> Grand State {arrowRetuner(sortconfig.key === 'grandstate' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
+									{<TableCell onClick={() => requestSort('latitude')} className={getClassNamesFor('latitude')} style={{ cursor: 'pointer' }}> Latitude {arrowRetuner(sortconfig.key === 'latitude' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => requestSort('longitude')} className={getClassNamesFor('longitude')} style={{ cursor: 'pointer' }}> Longitude {arrowRetuner(sortconfig.key === 'longitude' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
 
-								{<TableCell />}
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{rows &&
-								rows.length &&
-								rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-									<TableRow key={row.name}>
-										<TableCell component="th" scope="row">
-											{row.pincode ? row.pincode : ''}
-										</TableCell>
-										<TableCell>{row.requests ? row.requests : ''}</TableCell>
-										<TableCell>{row.avgrequest ? Math.round(row.avgrequest)  : ''}</TableCell>
-										<TableCell>{row.impression ? row.impression : ''}</TableCell>
-										<TableCell>{row.impression ? Math.round(row.avgimpression)  : ''}</TableCell>
-										<TableCell>{row.click ? row.click : 0}</TableCell>
-										<TableCell>{row.impression!==0 ? Math.round(((row.click/row.impression)*100))/100 : 0}%</TableCell>
-										
-										<TableCell>{row.area ? row.area : ''}</TableCell>
-										<TableCell>{row.lowersubcity ? row.lowersubcity : ''}</TableCell>
-										<TableCell>{row.subcity ? row.subcity : ''}</TableCell>
-										<TableCell>{row.city ? row.city : ''}</TableCell>
-										<TableCell>{row.grandcity ? row.grandcity : ''}</TableCell>
-										<TableCell>{row.district ? row.district : ''}</TableCell>
-										<TableCell>{row.comparison ? row.comparison : ''}</TableCell>
-										<TableCell>{row.state ? row.state : ''}</TableCell>
-										<TableCell>{row.grandstate ? row.grandstate : ''}</TableCell>
-										<TableCell>{row.latitude ? row.latitude : ''}</TableCell>
-										<TableCell>{row.longitude ? row.longitude : ''}</TableCell>
+									{<TableCell />}
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{rows &&
+									rows.length &&
+									rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+										<TableRow key={row.name}>
+											<TableCell component="th" scope="row">
+												{row.pincode ? row.pincode : ''}
+											</TableCell>
+											<TableCell>{row.requests ? row.requests : ''}</TableCell>
+											<TableCell>{row.avgrequest ? Math.round(row.avgrequest) : ''}</TableCell>
+											<TableCell>{row.impression ? row.impression : ''}</TableCell>
+											<TableCell>{row.impression ? Math.round(row.avgimpression) : ''}</TableCell>
+											<TableCell>{row.click ? row.click : 0}</TableCell>
+											<TableCell>{row.impression !== 0 ? Math.round(((row.click / row.impression) * 100)) / 100 : 0}%</TableCell>
 
-										<TableCell>
-											<button className="btn" onClick={() => handleOpen(row)}>
-												Edit{' '}
-											</button>
-										</TableCell>
-									</TableRow>
-								))}
-						</TableBody>
-					</Table>
-				</TableContainer>
+											<TableCell>{row.area ? row.area : ''}</TableCell>
+											<TableCell>{row.lowersubcity ? row.lowersubcity : ''}</TableCell>
+											<TableCell>{row.subcity ? row.subcity : ''}</TableCell>
+											<TableCell>{row.city ? row.city : ''}</TableCell>
+											<TableCell>{row.grandcity ? row.grandcity : ''}</TableCell>
+											<TableCell>{row.district ? row.district : ''}</TableCell>
+											<TableCell>{row.comparison ? row.comparison : ''}</TableCell>
+											<TableCell>{row.state ? row.state : ''}</TableCell>
+											<TableCell>{row.grandstate ? row.grandstate : ''}</TableCell>
+											<TableCell>{row.latitude ? row.latitude : ''}</TableCell>
+											<TableCell>{row.longitude ? row.longitude : ''}</TableCell>
+
+											<TableCell>
+												<button className="btn" onClick={() => handleOpen(row)}>
+													Edit{' '}
+												</button>
+											</TableCell>
+										</TableRow>
+									))}
+							</TableBody>
+						</Table>
+					</TableContainer>
+				)}
+
 				<TablePagination
 					rowsPerPageOptions={[10, 100, 1000, 10000]}
 					component="div"
@@ -295,9 +342,9 @@ export default function Zipdata() {
 					onChangePage={handleChangePage}
 					onChangeRowsPerPage={handleChangeRowsPerPage}
 				/>
-				<ZipAudiodata/>
-				<ZipVideodata/>
-				<ZipBannerdata/>
+				<ZipAudiodata />
+				<ZipVideodata />
+				<ZipBannerdata />
 				{show ? (
 					<div>
 						<Modal
