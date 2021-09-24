@@ -246,7 +246,7 @@ router.get(
 
 router.get(
     '/getepisodewise_report',
-    adminauth,
+    // adminauth,
     async (req, res) => {
         try {
 
