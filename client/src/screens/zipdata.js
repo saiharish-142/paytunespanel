@@ -106,7 +106,7 @@ export default function Zipdata() {
 
 		arr = rows.filter(
 			(row) =>
-				row.pincode.toString().replace(/\s+/g, '') ===
+				row.pincode?row.pincode:""  .toString().replace(/\s+/g, '') ===
 				search1.replace(/\s+/g, '')
 		);
 		if (arr.length === 0) {
