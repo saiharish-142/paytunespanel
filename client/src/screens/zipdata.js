@@ -111,17 +111,7 @@ export default function Zipdata() {
 		);
 		if (arr.length === 0) {
 			setsearchedData('No Data Found!');
-		} else {
-			var ai = 0,
-				ac = 0;
-			if (arr.length) {
-				arr.map((x) => {
-					ai += parseInt(x.impression);
-					ac += parseInt(x.click);
-				});
-			}
-			setci(ai);
-			setcc(ac);
+		} else {		
 			setsearchedData(arr);
 			console.log('jvhvhvhv', arr);
 		}
