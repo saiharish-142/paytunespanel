@@ -105,9 +105,14 @@ export default function Zipdata() {
 		let arr = [];
 
 		arr = rows.filter(
-			(row) =>
-				row.pincode?row.pincode:""  .toString().replace(/\s+/g, '') ===
-				search1.replace(/\s+/g, '')
+			(row) =>{
+				if((row.pincode?row.pincode:"").toString().replace(/\s+/g, '') ===
+				search1.replace(/\s+/g, '')){
+					return row
+				}
+				
+			}
+				
 		);
 		console.log(arr)
 		if (arr.length === 0) {
