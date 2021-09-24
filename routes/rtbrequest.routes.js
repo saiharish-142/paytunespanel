@@ -298,7 +298,7 @@ router.post(
                         request: { $sum: "$requests" },
                         displayname: { $first: "$displayname" },
                         hostPossibility: { $first: "$hostPossibility" },
-                        category_details: { $addToSet: "$extra_details" }
+                        category_details: { $first: "$extra_details" }
                     }
                 },
                 {
