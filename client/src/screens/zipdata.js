@@ -109,6 +109,7 @@ export default function Zipdata() {
 				row.pincode?row.pincode:""  .toString().replace(/\s+/g, '') ===
 				search1.replace(/\s+/g, '')
 		);
+		console.log(arr)
 		if (arr.length === 0) {
 			setsearchedData('No Data Found!');
 		} else {		
@@ -284,9 +285,8 @@ export default function Zipdata() {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{rows &&
-									rows.length &&
-									rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+								
+									{(searchedData.length !== 0 ? searchedData : rows).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
 										<TableRow key={row.name}>
 											<TableCell component="th" scope="row">
 												{row.pincode ? row.pincode : ''}
