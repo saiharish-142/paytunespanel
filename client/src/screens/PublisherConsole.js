@@ -48,11 +48,28 @@ function PublisherConsole() {
 	// const [ sa, setsa ] = useState(consoledata.publisherDataordername);
 	// const [ order, setorder ] = useState(consoledata.publisherDataorderdir);
 	// const [ adss, setadss ] = useState(consoledata.searchedpublisherData);
+	const headersAudio = [
+		{ key: 'publisherName', label: 'Publisher' },
+		{ key: 'ssp', label: 'SSP' },
+		{ key: 'fede', label: 'Feed' },
+		{ key: 'useage', label: 'User Agent' },
+		{ key: 'req', label: 'Requests' },
+		{ key: 'avgreq', label: 'Average Requests' },
+		{ key: 'unique', label: 'Unique Users' },
+		{ key: 'uniquef', label: 'Average Frequency' },
+		{ key: 'impression', label: 'Total Impressions Delivered till date' },
+		{ key: 'avgimpre', label: 'Average Impressions' },
+		{ key: 'click', label: 'Total Clicks Delivered till date' },
+		{ key: 'ctr', label: 'CTR' }
+	];
 	const headers = [
 		{ key: 'publisherName', label: 'Publisher' },
 		{ key: 'ssp', label: 'SSP' },
 		{ key: 'fede', label: 'Feed' },
+		{ key: 'unique', label: 'Unique Users' },
+		{ key: 'uniquef', label: 'Average Frequency' },
 		{ key: 'impression', label: 'Total Impressions Delivered till date' },
+		{ key: 'avgimpre', label: 'Average Impressions' },
 		{ key: 'click', label: 'Total Clicks Delivered till date' },
 		{ key: 'ctr', label: 'CTR' }
 	];
@@ -213,7 +230,7 @@ function PublisherConsole() {
 			</div>
 			<PublisherConsoleTable
 				title="Audio"
-				headers={headers}
+				headers={headersAudio}
 				consoledata={consoledataAudio}
 				arrowRetuner={arrowRetuner}
 				searchPublisherData={searchPublisherData.audio}

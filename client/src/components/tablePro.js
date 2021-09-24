@@ -326,9 +326,14 @@ function TablePro() {
 	};
 	// return string formate of date
 	const updatedatetimeseter = (date) => {
-		var s = new Date(date).toLocaleString(undefined, { timeZone: 'Asia/Kolkata' });
-		s = s.split('/');
-		return s[1] + '/' + s[0] + '/' + s[2];
+		// console.log(date)
+		// var datee = new Date(date);
+		var s = new Date(new Date()).toString();
+		// var datee = datee.toString();
+		// console.log(s,date,s.split('/'))
+		s = s.split(' ');
+		// console.log(s);
+		return s[2] + '-' + s[1] + '-' + s[3] + ' ' + s[4];
 	};
 	// returns a good format of date
 	const dateformatchanger = (date) => {
@@ -382,7 +387,7 @@ function TablePro() {
 								<TableCell>{target}</TableCell>
 								<TableCell>{reportsub.impressions}</TableCell>
 								<TableCell>{users}</TableCell>
-								<TableCell>{Math.round(reportsub.impressions / users)}</TableCell>
+								<TableCell>{Math.round(reportsub.impressions / users * 100) / 100}</TableCell>
 								<TableCell>{reportsub.clicks}</TableCell>
 								<TableCell>
 									{Math.round(reportsub.clicks * 100 / reportsub.impressions * 100) / 100}%
@@ -528,79 +533,360 @@ function TablePro() {
 		complete: [
 			{
 				xSteps: 5,
-				columns: [ { title: 'Overall Report' } ]
+				columns: [ { title: 'Overall Summery Report' } ],
+				data: [ [ { value: '' } ] ]
 			},
 			{
-				ySteps: 2,
 				columns: [
 					{ title: 'Campaign Start Date' },
 					{ title: 'Campaign End Date' },
 					{ title: 'Total Days of Campaign' },
-					{ title: 'unique User' },
 					{ title: 'Total Impressions to be delivered' },
 					{ title: 'Total Impressions Delivered till date' },
+					{ title: 'unique User' },
+					{ title: 'Avg Frequency' },
+					{ title: 'Total Clicks Delivered till date' },
+					{ title: 'CTR' },
 					{ title: 'Avg required' },
 					{ title: 'Avg Achieved' },
 					{ title: 'Total spent' },
-					{ title: 'Total Clicks Delivered till date' },
-					{ title: 'Avg Frequency' },
-					{ title: 'CTR' },
 					{ title: 'Balance Impressions' },
 					{ title: 'Balance Days' }
 				],
 				data: [
-					{ value: dateformatchanger(report.startDate) },
-					{ value: dateformatchanger(report.endDate) },
-					{ value: timefinder(report.endDate, report.startDate) + ' days' },
-					{ value: uniqueData.complete ? uniqueData.complete : 0 },
-					{
-						value:
-							report.ids && report.ids.audimpression + report.ids.disimpression + report.ids.vidimpression
-					},
-					{ value: report.report.summaryCompleteReport.impressions },
-					{
-						value:
-							Math.round(
+					[
+						{ value: dateformatchanger(report.startDate) },
+						{ value: dateformatchanger(report.endDate) },
+						{ value: timefinder(report.endDate, report.startDate) + ' days' },
+						{
+							value:
 								report.ids &&
-									report.ids.audimpression +
-										report.ids.disimpression +
-										report.ids.vidimpression / timefinder(report.endDate, report.startDate) * 10
-							) / 10
-					},
-					{
-						value:
-							Math.round(
-								report.report.summaryCompleteReport.impressions /
-									timefinder(Date.now(), report.startDate) *
-									10
-							) / 10
-					},
-					{
-						value:
-							completespentfider('all') +
-							(report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0) +
-							(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0) +
-							(report.videospentOffline ? parseFloat(report.videospentOffline) : 0)
-					},
-					{ value: report.report.summaryCompleteReport.clicks },
-					{
-						value: Math.round(
-							report.report.summaryCompleteReport.impressions / uniqueData.complete
-								? uniqueData.complete
-								: 0
-						)
-					},
-					{ value: null },
-					{ value: null },
-					{ value: null },
-					{ value: null }
+								report.ids.audimpression + report.ids.disimpression + report.ids.vidimpression
+						},
+						{ value: report.report.summaryCompleteReport.impressions },
+						{ value: uniqueData.complete ? uniqueData.complete : 0 },
+						{
+							value: Math.round(
+								report.report.summaryCompleteReport.impressions / uniqueData.complete
+									? uniqueData.complete
+									: 0
+							)
+						},
+						{ value: report.report.summaryCompleteReport.clicks },
+						{
+							value:
+								Math.round(
+									report.report.summaryCompleteReport.clicks /
+										report.report.summaryCompleteReport.impressions *
+										100
+								) / 100
+						},
+						{
+							value:
+								Math.round(
+									report.ids &&
+										report.ids.audimpression +
+											report.ids.disimpression +
+											report.ids.vidimpression / timefinder(report.endDate, report.startDate) * 10
+								) / 10
+						},
+						{
+							value:
+								Math.round(
+									report.report.summaryCompleteReport.impressions /
+										timefinder(Date.now(), report.startDate) *
+										10
+								) / 10
+						},
+						{
+							value:
+								completespentfider('all') +
+								(report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0) +
+								(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0) +
+								(report.videospentOffline ? parseFloat(report.videospentOffline) : 0)
+						},
+						{
+							value:
+								report.ids &&
+								report.ids.audimpression +
+									report.ids.disimpression +
+									report.ids.vidimpression -
+									report.report.summaryCompleteReport.impressions
+						},
+						{ value: timefinder(report.endDate, Date.now()) }
+					]
 				]
 			}
 		],
-		audio: [],
-		display: [],
-		video: [],
-		quartile: []
+		audio: [
+			{
+				ySteps: 1,
+				xSteps: 5,
+				columns: [ { title: 'Audio Wise Summery Report' } ],
+				data: [ [ { value: '' } ] ]
+			},
+			{
+				columns: [
+					{ title: 'Total Impressions to be delivered' },
+					{ title: 'Total Impressions Delivered till date' },
+					{ title: 'unique User' },
+					{ title: 'Avg Frequency' },
+					{ title: 'Total Clicks Delivered till date' },
+					{ title: 'CTR' },
+					{ title: 'Avg required' },
+					{ title: 'Avg Achieved' },
+					{ title: 'Total spent' },
+					{ title: 'Balance Impressions' },
+					{ title: 'Balance Days' }
+				],
+				data: [
+					[
+						{
+							value: report.ids && report.ids.audimpression
+						},
+						{ value: report.report.audioCompleteReport.impressions },
+						{ value: uniqueData.audio ? uniqueData.audio : 0 },
+						{
+							value: Math.round(
+								report.report.audioCompleteReport.impressions / uniqueData.audio ? uniqueData.audio : 0
+							)
+						},
+						{ value: report.report.audioCompleteReport.clicks },
+						{
+							value:
+								Math.round(
+									report.report.audioCompleteReport.clicks /
+										report.report.audioCompleteReport.impressions *
+										100
+								) / 100
+						},
+						{
+							value:
+								Math.round(
+									report.ids &&
+										report.ids.audimpression / timefinder(report.endDate, report.startDate) * 10
+								) / 10
+						},
+						{
+							value:
+								Math.round(
+									report.report.audioCompleteReport.impressions /
+										timefinder(Date.now(), report.startDate) *
+										10
+								) / 10
+						},
+						{
+							value:
+								completespentfider('audio') +
+								(report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0)
+						},
+						{
+							value:
+								report.ids && report.ids.audimpression - report.report.audioCompleteReport.impressions
+						},
+						{ value: timefinder(report.endDate, Date.now()) }
+					]
+				]
+			}
+		],
+		display: [
+			{
+				ySteps: 1,
+				xSteps: 5,
+				columns: [ { title: 'Display Wise Summery Report' } ],
+				data: [ [ { value: '' } ] ]
+			},
+			{
+				columns: [
+					{ title: 'Total Impressions to be delivered' },
+					{ title: 'Total Impressions Delivered till date' },
+					{ title: 'unique User' },
+					{ title: 'Avg Frequency' },
+					{ title: 'Total Clicks Delivered till date' },
+					{ title: 'CTR' },
+					{ title: 'Avg required' },
+					{ title: 'Avg Achieved' },
+					{ title: 'Total spent' },
+					{ title: 'Balance Impressions' },
+					{ title: 'Balance Days' }
+				],
+				data: [
+					[
+						{
+							value: report.ids && report.ids.disimpression
+						},
+						{ value: report.report.displayCompleteReport.impressions },
+						{ value: uniqueData.display ? uniqueData.display : 0 },
+						{
+							value: Math.round(
+								report.report.displayCompleteReport.impressions / uniqueData.display
+									? uniqueData.display
+									: 0
+							)
+						},
+						{ value: report.report.displayCompleteReport.clicks },
+						{
+							value:
+								Math.round(
+									report.report.displayCompleteReport.clicks /
+										report.report.displayCompleteReport.impressions *
+										100
+								) / 100
+						},
+						{
+							value:
+								Math.round(
+									report.ids &&
+										report.ids.disimpression / timefinder(report.endDate, report.startDate) * 10
+								) / 10
+						},
+						{
+							value:
+								Math.round(
+									report.report.displayCompleteReport.impressions /
+										timefinder(Date.now(), report.startDate) *
+										10
+								) / 10
+						},
+						{
+							value:
+								completespentfider('display') +
+								(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0)
+						},
+						{
+							value:
+								report.ids && report.ids.disimpression - report.report.displayCompleteReport.impressions
+						},
+						{ value: timefinder(report.endDate, Date.now()) }
+					]
+				]
+			}
+		],
+		video: [
+			{
+				ySteps: 1,
+				xSteps: 5,
+				columns: [ { title: 'Video Wise Summery Report' } ],
+				data: [ [ { value: '' } ] ]
+			},
+			{
+				columns: [
+					{ title: 'Total Impressions to be delivered' },
+					{ title: 'Total Impressions Delivered till date' },
+					{ title: 'unique User' },
+					{ title: 'Avg Frequency' },
+					{ title: 'Total Clicks Delivered till date' },
+					{ title: 'CTR' },
+					{ title: 'Avg required' },
+					{ title: 'Avg Achieved' },
+					{ title: 'Total spent' },
+					{ title: 'Balance Impressions' },
+					{ title: 'Balance Days' }
+				],
+				data: [
+					[
+						{
+							value: report.ids && report.ids.vidimpression
+						},
+						{ value: report.report.videoCompleteReport.impressions },
+						{ value: uniqueData.video ? uniqueData.video : 0 },
+						{
+							value: Math.round(
+								report.report.videoCompleteReport.impressions / uniqueData.video ? uniqueData.video : 0
+							)
+						},
+						{ value: report.report.videoCompleteReport.clicks },
+						{
+							value:
+								Math.round(
+									report.report.videoCompleteReport.clicks /
+										report.report.videoCompleteReport.impressions *
+										100
+								) / 100
+						},
+						{
+							value:
+								Math.round(
+									report.ids &&
+										report.ids.vidimpression / timefinder(report.endDate, report.startDate) * 10
+								) / 10
+						},
+						{
+							value:
+								Math.round(
+									report.report.videoCompleteReport.impressions /
+										timefinder(Date.now(), report.startDate) *
+										10
+								) / 10
+						},
+						{
+							value:
+								completespentfider('video') +
+								(report.videospentOffline ? parseFloat(report.videospentOffline) : 0)
+						},
+						{
+							value:
+								report.ids && report.ids.vidimpression - report.report.videoCompleteReport.impressions
+						},
+						{ value: timefinder(report.endDate, Date.now()) }
+					]
+				]
+			}
+		],
+		quartile: [
+			{
+				ySteps: 1,
+				xSteps: 5,
+				columns: [ { title: 'Quartile Summery Report' } ],
+				data: [ [ { value: '' } ] ]
+			},
+			{
+				columns: [
+					{ title: '' },
+					{ title: 'Start' },
+					{ title: 'First Quartile' },
+					{ title: 'Second Quartile' },
+					{ title: 'Third Quartile' },
+					{ title: 'Complete' },
+					{ title: 'Total Impresions' },
+					{ title: 'LTR' }
+				],
+				data: [
+					[
+						{ value: 'Impressions' },
+						{
+							value: report.report.summaryCompleteReport.start
+								? report.report.summaryCompleteReport.start
+								: 0
+						},
+						{ value: report.report.summaryCompleteReport.fq ? report.report.summaryCompleteReport.fq : 0 },
+						{ value: report.report.summaryCompleteReport.sq ? report.report.summaryCompleteReport.sq : 0 },
+						{ value: report.report.summaryCompleteReport.tq ? report.report.summaryCompleteReport.tq : 0 },
+						{
+							value: report.report.summaryCompleteReport.complete
+								? report.report.summaryCompleteReport.complete
+								: 0
+						},
+						{
+							value: report.report.summaryCompleteReport.impressions
+								? report.report.summaryCompleteReport.impressions
+								: 0
+						},
+						{
+							value:
+								report.report.summaryCompleteReport.complete /
+								report.report.summaryCompleteReport.impressions
+									? Math.round(
+											report.report.summaryCompleteReport.complete /
+												report.report.summaryCompleteReport.impressions *
+												100
+										) / 100
+									: 0
+						}
+					]
+				]
+			}
+		]
 	};
 	// const LanguageProps = {
 	// 	state1: report.req_id,
@@ -835,15 +1121,31 @@ function TablePro() {
 			data: report.ids && creativereports && creativereports.length && CreativeBody(creativereports)
 		}
 	];
+	const CompeleteSheetGen = () => {
+		var vamp = [];
+		OverallDataDown.complete.map((x) => vamp.push(x));
+		if (report.ids && report.ids.audio && report.ids.audio.length && report.report.audioCompleteReport)
+			OverallDataDown.audio.map((x) => vamp.push(x));
+		if (report.ids && report.ids.display && report.ids.display.length && report.report.displayCompleteReport)
+			OverallDataDown.display.map((x) => vamp.push(x));
+		// vamp.concat(OverallDataDown.display);
+		if (report.ids && report.ids.video && report.ids.video.length && report.report.videoCompleteReport)
+			OverallDataDown.video.map((x) => vamp.push(x));
+		// vamp.concat(OverallDataDown.video);
+		// console.log(vamp);
+		OverallDataDown.quartile.map((x) => vamp.push(x));
+		return vamp;
+	};
+	// const manu = CompeleteSheetGen();
+	// console.log(manu);
 	function ExeclDownload(props) {
 		// console.log(props);
 		const data = React.Children.map(props.children, (child) => {
 			// console.log(child);
-			if (child.props.must) {
-				return child;
-			}
 			if (child.props.dataSet && child.props.dataSet[0].data) {
 				return child;
+			} else {
+				// console.log(child);
 			}
 		});
 		// console.log(data);
@@ -857,6 +1159,7 @@ function TablePro() {
 					</Button>
 				}
 			>
+				{/* <ExcelSheet dataSet={OverallDataDown.complete} name="Over all Summary Data" /> */}
 				{data.map((child) => {
 					return child;
 				})}
@@ -867,8 +1170,18 @@ function TablePro() {
 		<div>
 			<div className="titleReport">{report.title && report.title.toUpperCase()} Campaign</div>
 			<div className="titleReport">Overall Summary Report</div>
+			{/* <ExcelFile
+				filename={'Small Tables'}
+				element={
+					<Button variant="outlined" color="primary">
+						Download ST
+					</Button>
+				}
+			>
+				<ExcelSheet dataSet={CompeleteSheetGen()} name="21" />
+			</ExcelFile> */}
 			<ExeclDownload filename={`Complete Report ${report.title}`}>
-				{/* <ExcelSheet dataSet={OverallDataDown.complete} must={true} name="Over all Summary Data" /> */}
+				<ExcelSheet dataSet={CompeleteSheetGen()} must={true} name="Over all Summary Data" />
 				<ExcelSheet dataSet={PublisherDown.audio} name="Publisher Audio Wise" />
 				<ExcelSheet dataSet={PublisherDown.display} name="Publisher Display Wise" />
 				<ExcelSheet dataSet={PublisherDown.video} name="Publisher Video Wise" />

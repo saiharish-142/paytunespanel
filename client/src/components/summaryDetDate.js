@@ -13,25 +13,15 @@ const useStyles = makeStyles({
 	}
 });
 
-function PhoneModelClinet({ title, report, head, impression, clicks }) {
+function SummaryDetDate({ report, head, impression, clicks, complete }) {
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
 	const [ totalImpreS, settotalImpreS ] = React.useState(0);
 	const [ totalClickS, settotalClickS ] = React.useState(0);
+	const [ totalCompS, settotalCompS ] = React.useState(0);
 	const [ adss, setadss ] = React.useState(report);
-	const [ sa, setsa ] = React.useState('impression');
+	const [ sa, setsa ] = React.useState('date');
 	const [ order, setorder ] = React.useState('desc');
-	const headers = [
-		{ key: 'type', label: 'Type of Device' },
-		{ key: 'impression', label: 'Impressions' },
-		{ key: 'clicks', label: 'Clicks' },
-		{ key: 'ctr', label: 'CTR' }
-	];
-	var csvReport = {
-		filename: `${head}_${title}_PhoneModelData.csv`,
-		headers: headers,
-		data: adss
-	};
 	const arrowRetuner = (mode) => {
 		if (mode === '1') {
 			return <ArrowUpwardRoundedIcon fontSize="small" />;
@@ -57,38 +47,36 @@ function PhoneModelClinet({ title, report, head, impression, clicks }) {
 				});
 				var imoop = 0;
 				var closk = 0;
+				var clomp = 0;
 				var imoop1 = 0;
 				var closk1 = 0;
+				var clomp1 = 0;
 				data = data.filter((x) => x.type != 'unknown');
 				data.map((row) => {
-					imoop += row.impression;
-					closk += parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
+					imoop += parseInt(row.impressions);
+					row.impressions = parseInt(row.impressions);
+					closk += row.clicks;
+					clomp += row.complete;
 				});
+				console.log(imoop, closk, clomp);
 				data.map((row) => {
-					var impre = Math.trunc(row.impression * impression / imoop);
-					var cliol = Math.trunc(
-						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) * clicks / closk
-					);
-					row.impression = impre;
+					var impre = Math.round(row.impressions * impression / imoop);
+					var cmpu = Math.round(row.complete * complete / clomp);
+					var cliol = Math.round(row.clicks * clicks / closk);
+					row.impressions = impre;
+					row.complete = cmpu;
 					row.clicks = cliol;
 					imoop1 += impre;
 					closk1 += cliol;
+					clomp1 += cmpu;
 					row.ctr = cliol * 100 / impre;
 					return row;
 				});
-				if (imoop1 < impression || closk1 < clicks) {
-					data.push({
-						impression: impression - imoop1,
-						clicks: clicks - closk1,
-						ctr: (clicks - closk1) * 100 / (impression - imoop1)
-					});
-					imoop1 += impression - imoop1;
-					closk1 += clicks - closk1;
-				}
-				csvReport.data = data;
+				console.log(data);
 				setadss(data);
 				settotalImpreS(imoop1);
 				settotalClickS(closk1);
+				settotalCompS(clomp1);
 			} else {
 				setadss(report);
 			}
@@ -103,24 +91,24 @@ function PhoneModelClinet({ title, report, head, impression, clicks }) {
 		setRowsPerPage(+event.target.value);
 		setPage(0);
 	};
-	// console.log(adss && adss.length ? 'data' : 'no data')
 	return (
 		<Paper>
 			<TableContainer style={{ margin: '20px 0' }}>
 				<div style={{ margin: '5px', fontWeight: 'bolder' }}>{head} Report</div>
-				{/* {adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''} */}
 				{adss && adss.length > 0 ? (
 					<Table className={classes.table} aria-label="simple table">
 						<TableHead>
 							<TableRow>
-								<TableCell onClick={() => tablesorter('type', 'string')} style={{ cursor: 'pointer' }}>
-									Type of Device{arrowRetuner(sa === 'type' ? (order === 'asc' ? '1' : '2') : '3')}
+								<TableCell onClick={() => tablesorter('date', 'string')} style={{ cursor: 'pointer' }}>
+									Date{arrowRetuner(sa === 'date' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
-									onClick={() => tablesorter('impression', 'number')}
+									onClick={() => tablesorter('impressions', 'number')}
 									style={{ cursor: 'pointer' }}
 								>
-									Impressions{arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}
+									Impressions{arrowRetuner(
+										sa === 'impressions' ? (order === 'asc' ? '1' : '2') : '3'
+									)}
 								</TableCell>
 								<TableCell
 									onClick={() => tablesorter('clicks', 'number')}
@@ -137,8 +125,8 @@ function PhoneModelClinet({ title, report, head, impression, clicks }) {
 							{adss.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => {
 								return (
 									<TableRow key={i}>
-										<TableCell>{row.type}</TableCell>
-										<TableCell>{row.impression}</TableCell>
+										<TableCell>{row.date}</TableCell>
+										<TableCell>{row.impressions}</TableCell>
 										<TableCell>{row.clicks}</TableCell>
 										<TableCell>{Math.round(row.ctr * 100) / 100 + '%'}</TableCell>
 									</TableRow>
@@ -149,8 +137,9 @@ function PhoneModelClinet({ title, report, head, impression, clicks }) {
 								<TableCell className="boldClass">{totalImpreS}</TableCell>
 								<TableCell className="boldClass">{totalClickS}</TableCell>
 								<TableCell className="boldClass">
-									{Math.round(totalClickS * 100 / totalImpreS * 100) / 100}%
+									{Math.round(totalClickS * 100 / totalImpreS * 100) / 100}
 								</TableCell>
+								<TableCell className="boldClass">{totalCompS}</TableCell>
 							</TableRow>
 						</TableBody>
 					</Table>
@@ -171,4 +160,4 @@ function PhoneModelClinet({ title, report, head, impression, clicks }) {
 	);
 }
 
-export default PhoneModelClinet;
+export default SummaryDetDate;

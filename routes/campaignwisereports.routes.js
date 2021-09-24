@@ -588,11 +588,11 @@ function arrayincludefinder(array, id) {
 
 function uniqueValuefinder(array, id) {
 	if (array && array.length) {
-		for (var i = 0; i < array; i++) {
-			if (arr[i]._id === id) {
-				return arr[i].users;
+		array.map((idsd) => {
+			if (idsd._id === id) {
+				return idsd.users;
 			}
-		}
+		});
 		return 0;
 	} else {
 		return 0;
@@ -828,7 +828,6 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				impressions: 0,
 				clicks: 0,
 				unique: [],
-				uniquedata: [],
 				uniqueValue: 0,
 				complete: 0,
 				start: 0,
@@ -840,7 +839,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				impressions: 0,
 				clicks: 0,
 				unique: [],
-				uniquedata: [],
+				uniquedata: {},
 				uniqueValue: 0,
 				complete: 0,
 				start: 0,
@@ -852,7 +851,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				impressions: 0,
 				clicks: 0,
 				unique: [],
-				uniquedata: [],
+				uniquedata: {},
 				uniqueValue: 0,
 				complete: 0,
 				start: 0,
@@ -885,42 +884,90 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					videoCompleteReport.unique.push(x.PublisherSplit);
 				});
 			// audioCompleteReport.unique = removeDuplicates(audioCompleteReport.unique);
-			audioCompleteReport.uniquedata = await freqpublishreports
+			datmaaudio = await freqpublishreports
 				.aggregate([
 					{ $match: { campaignId: { $in: audio }, appId: { $in: audioCompleteReport.unique } } },
 					{ $group: { _id: '$appId', users: { $sum: '$users' } } }
 				])
 				.catch((err) => console.log(err));
-			if (audioCompleteReport.uniquedata.length) {
-				for (var i = 0; i < audioCompleteReport.uniquedata.length; i++) {
-					audioCompleteReport.uniqueValue += parseInt(audioCompleteReport.uniquedata[i].users);
+			var tempaudio = {};
+			if (datmaaudio.length) {
+				for (var i = 0; i < datmaaudio.length; i++) {
+					audioCompleteReport.uniqueValue += parseInt(datmaaudio[i].users);
+				}
+				for (var i = 0; i < datmaaudio.length; i++) {
+					if (datmaaudio[i]._id === null) {
+						tempaudio['null'] = parseInt(datmaaudio[i].users);
+					} else {
+						tempaudio[datmaaudio[i]._id] = parseInt(datmaaudio[i].users);
+					}
 				}
 			}
-			// console.log(audioCompleteReport.uniquedata);
-			// displayCompleteReport.unique = removeDuplicates(displayCompleteReport.unique);
-			displayCompleteReport.uniquedata = await freqpublishreports
+			console.log(tempaudio);
+			audioCompleteReport.uniquedata3 = tempaudio;
+			audioCompleteReport.uniquedata = tempaudio;
+			audioCompleteReport.uniquedata2 = datmaaudio;
+			datmadisplay = await freqpublishreports
 				.aggregate([
 					{ $match: { campaignId: { $in: display }, appId: { $in: displayCompleteReport.unique } } },
 					{ $group: { _id: '$appId', users: { $sum: '$users' } } }
 				])
 				.catch((err) => console.log(err));
-			if (displayCompleteReport.uniquedata.length) {
-				for (var i = 0; i < displayCompleteReport.uniquedata.length; i++) {
-					displayCompleteReport.uniqueValue += parseInt(displayCompleteReport.uniquedata[i].users);
+			var tempdisplay = {};
+			if (datmadisplay.length) {
+				for (var i = 0; i < datmadisplay.length; i++) {
+					displayCompleteReport.uniqueValue += parseInt(datmadisplay[i].users);
+					if (datmadisplay[i]._id === null) {
+						tempdisplay['null'] = parseInt(datmadisplay[i].users);
+					} else {
+						tempdisplay[datmadisplay[i]._id] = parseInt(datmadisplay[i].users);
+					}
 				}
 			}
-			// videoCompleteReport.unique = removeDuplicates(videoCompleteReport.unique);
-			videoCompleteReport.uniquedata = await freqpublishreports
+			displayCompleteReport.uniquedata = tempdisplay;
+			datmavideo = await freqpublishreports
 				.aggregate([
 					{ $match: { campaignId: { $in: video }, appId: { $in: videoCompleteReport.unique } } },
 					{ $group: { _id: '$appId', users: { $sum: '$users' } } }
 				])
 				.catch((err) => console.log(err));
-			if (videoCompleteReport.uniquedata.length) {
-				for (var i = 0; i < videoCompleteReport.uniquedata.length; i++) {
-					videoCompleteReport.uniqueValue += parseInt(videoCompleteReport.uniquedata[i].users);
+			var tempvideo = {};
+			if (datmavideo.length) {
+				for (var i = 0; i < datmavideo.length; i++) {
+					videoCompleteReport.uniqueValue += parseInt(datmavideo[i].users);
+					if (datmavideo[i]._id === null) {
+						tempvideo['null'] = parseInt(datmavideo[i].users);
+					} else {
+						tempvideo[datmavideo[i]._id] = parseInt(datmavideo[i].users);
+					}
 				}
 			}
+			audioCompleteReport.uniquedata = tempvideo;
+			// console.log(audioCompleteReport.uniquedata);
+			// displayCompleteReport.unique = removeDuplicates(displayCompleteReport.unique);
+			// displayCompleteReport.uniquedata = await freqpublishreports
+			// 	.aggregate([
+			// 		{ $match: { campaignId: { $in: display }, appId: { $in: displayCompleteReport.unique } } },
+			// 		{ $group: { _id: '$appId', users: { $sum: '$users' } } }
+			// 	])
+			// 	.catch((err) => console.log(err));
+			// if (displayCompleteReport.uniquedata.length) {
+			// 	for (var i = 0; i < displayCompleteReport.uniquedata.length; i++) {
+			// 		displayCompleteReport.uniqueValue += parseInt(displayCompleteReport.uniquedata[i].users);
+			// 	}
+			// }
+			// // videoCompleteReport.unique = removeDuplicates(videoCompleteReport.unique);
+			// videoCompleteReport.uniquedata = await freqpublishreports
+			// 	.aggregate([
+			// 		{ $match: { campaignId: { $in: video }, appId: { $in: videoCompleteReport.unique } } },
+			// 		{ $group: { _id: '$appId', users: { $sum: '$users' } } }
+			// 	])
+			// 	.catch((err) => console.log(err));
+			// if (videoCompleteReport.uniquedata.length) {
+			// 	for (var i = 0; i < videoCompleteReport.uniquedata.length; i++) {
+			// 		videoCompleteReport.uniqueValue += parseInt(videoCompleteReport.uniquedata[i].users);
+			// 	}
+			// }
 			response.audio &&
 				response.audio.map((x) => {
 					x.updatedAt = [ ...new Set(x.updatedAt) ];
@@ -937,7 +984,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							}
 						}
 					x.apppubidpo = forda;
-					x.unique = uniqueValuefinder(audioCompleteReport.uniquedata, x.PublisherSplit);
+					var dunique = audioCompleteReport.uniquedata3[x.PublisherSplit];
+					// console.log(dunique);
+					x.unique = dunique ? dunique : 0;
 					// audioCompleteReport.uniqueValue += x.unique ? parseInt(x.unique) : 0;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
 					audioCompleteReport.impressions += parseInt(x.impressions);
@@ -983,7 +1032,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							}
 						}
 					x.apppubidpo = forda;
-					x.unique = uniqueValuefinder(displayCompleteReport.uniquedata, x.PublisherSplit);
+					x.unique = displayCompleteReport.uniquedata[x.PublisherSplit]
+						? displayCompleteReport.uniquedata[x.PublisherSplit]
+						: 0;
 					// displayCompleteReport.uniqueValue += x.unique ? parseInt(x.unique) : 0;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId);
 					displayCompleteReport.impressions += parseInt(x.impressions);
@@ -1030,7 +1081,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 							}
 						}
 					x.apppubidpo = forda;
-					x.unique = uniqueValuefinder(videoCompleteReport.uniquedata, x.PublisherSplit);
+					x.unique = videoCompleteReport.uniquedata[x.PublisherSplit]
+						? videoCompleteReport.uniquedata[x.PublisherSplit]
+						: 0;
 					// videoCompleteReport.uniqueValue += x.unique ? parseInt(x.unique) : 0;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId);
 					videoCompleteReport.unique.push(x.PublisherSplit);

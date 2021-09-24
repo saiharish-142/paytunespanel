@@ -51,6 +51,7 @@ require('./models/regionreports');
 require('./models/spentreports');
 require('./models/uniqueuserreports');
 require('./models/zipreports');
+require('./models/zipsumrepo.model');
 require('./models/zipdata2reports');
 require('./models/zipuniqueuserreports');
 require('./models/bindingcollections.model');
@@ -64,6 +65,7 @@ require('./models/publisherwiseConsole.model');
 require('./models/frequencyConsole.model');
 require('./models/campaignsClientmanage');
 require('./models/freqencypublishcount.model');
+require('./models/uareqreports.models');
 
 app.use('/auth', require('./routes/user.routes'));
 app.use('/streamingads', require('./routes/streamingads.routes'));
@@ -88,103 +90,7 @@ if (process.env.NODE_ENV === 'production') {
 	});
 }
 
-// var d = new Date()
-//     d.setDate(d.getDate()-1);
-//     if(d.getDate() < 10){
-//         var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
-//     }else{
-//         var dte = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
-//     }
-// var yd = new Date(dte)
-// console.log(dte)
 app.listen(port, () => console.log(`app listening on port ${port}!`));
-
-// cron.schedule('20 00 * * *', function() {
-//     var d = new Date()
-//     d.setDate(d.getDate()-1);
-//     if(d.getDate() < 10){
-//         var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
-//     }else{
-//         var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
-//     }
-//     const trackinglogs = mongoose.model('trackinglogs')
-//     var data = [];
-//     trackinglogs.aggregate([
-//         { $match: {
-//             "date":date,
-//             "type":{$in:["impression","complete","click","companionclicktracking","clicktracking"]}
-//         } },
-//         { $group:{
-//             _id: {date:"$date" ,campaignId:"$campaignId" ,appId: "$appId",region :"$region",type:"$type"},count:{$sum:1}
-//         }},{$group:{
-//             _id:{date:"$_id.date" ,campaignId:"$_id.campaignId" ,appId:"$_id.appId",type:"$_id.type"} , region:{$push:"$_id.region"}, count:{$sum:"$count"}
-//         }},{$group:{
-//             _id:{date:"$_id.date" ,campaignId:"$_id.campaignId" ,appId:"$_id.appId"}, type:{$push:{type:"$_id.type",count:"$count"}}, region:{$push:"$region"}
-//         }},{$group:{
-//             _id:{date:"$_id.date" ,campaignId:"$_id.campaignId"}, report:{$push:{appId:"$_id.appId", type:"$type", region:"$region"}}
-//         }},{$project:{
-//             date: "$_id.date",campaignId:"$_id.campaignId", report:"$report", _id:0
-//         }}
-//     ])
-//     .then(result=>{
-//         data = result;
-//         data.map((det)=>{
-//             console.log(det.campaignId)
-//             det.report.map(camrepo=>{
-//                 var resregion = [].concat.apply([], camrepo.region);
-//                 resregion = [...new Set(resregion)];
-//                 camrepo.region = resregion
-//             })
-//         })
-//         var compr = [];
-//         for(var i=0; i<data.length; i++ ){
-//             const Report = mongoose.model('Report')
-//             var cam = data[i].campaignId ;
-//             var da = data[i].date ;
-//             for(var j=0;j<data[i].report.length;j++){
-//                 var impre = 0;
-//                 var compl = 0;
-//                 var click = 0;
-//                 data[i].report[j].type.map(repo => {
-//                     if(repo.type==='impression'){
-//                         impre += repo.count
-//                     }
-//                     if(repo.type==='complete'){
-//                         compl += repo.count
-//                     }
-//                     if(repo.type==='companionclicktracking'){
-//                         click += repo.count
-//                     }
-//                     if(repo.type==='clicktracking'){
-//                         click += repo.count
-//                     }
-//                     if(repo.type==='click'){
-//                         click += repo.count
-//                     }
-//                 })
-//                 const report = new Report({
-//                     date:da,
-//                     Publisher:data[i].report[j].appId,
-//                     campaignId:cam,
-//                     impressions:impre,
-//                     complete:compl,
-//                     clicks:click,
-//                     region:data[i].report[j].region,
-//                     spend:impre,
-//                     avgSpend:impre
-//                 })
-//                 report.save()
-//                 .then(result => {
-//                     compr.push(result)
-//                     console.log("completed")
-//                 })
-//                 .catch(err => console.log(err))
-//             }
-//         }
-//         // res.json(compr)
-//     })
-//     .catch(err => console.log(err))
-// });
 
 cron.schedule('00 02 * * *', function() {
 	var d = new Date();
@@ -604,7 +510,7 @@ async function PincodeRefresher() {
 				longitude: val ? val.longitude : '',
 				impression: 0,
 				click: 0,
-				requests: 0
+				requests: pincode.ads
 			});
 			await newzip.save();
 		} else {
@@ -698,7 +604,7 @@ async function PincodeRequestsRefresher() {
 				{ pincode: parseInt(pincode._id.zip), rtbType: pincode._id.rtbType },
 				{
 					$inc: {
-						requests: pincode.ads
+						requests: 0
 					}
 				},
 				{ new: true }
@@ -1694,7 +1600,7 @@ async function ReportsRefresher(date, credate) {
 	// res.json(compr)
 }
 
-cron.schedule('40 00 * * *', function() {
+cron.schedule('42 00 * * *', function() {
 	PublisherDataRefresher();
 });
 
@@ -1702,7 +1608,11 @@ cron.schedule('45 00 * * *', function() {
 	FrequencyDataRefresher();
 });
 
-cron.schedule('50 00 * * *', function() {
+cron.schedule('55 00 * * *', function() {
+	pincodesumreport();
+});
+
+cron.schedule('35 00 * * *', function() {
 	FrequencyPublisherRefresher();
 });
 
@@ -1741,20 +1651,56 @@ function arr_diff(a1, a2) {
 	return diff;
 }
 
+const timefinder = (da1, da2) => {
+	var d1 = new Date(da1);
+	var d2 = new Date(da2);
+	if (d1 === d2) {
+		return 1;
+	}
+	if (d1 < d2) {
+		return 1;
+	}
+	var show = d1.getTime() - d2.getTime();
+	var resula = show / (1000 * 3600 * 24);
+	if (Math.round(resula * 1) / 1 === 0) {
+		resula = 1;
+	}
+	return Math.round(resula * 10) / 10;
+};
+
 const publisherwiseConsole = mongoose.model('publisherwiseConsole');
 const frequencyConsole = mongoose.model('frequencyConsole');
 const frequencyreports = mongoose.model('frequencyreports');
 const freqpublishreports = mongoose.model('freqpublishreports');
 const campaignifareports = mongoose.model('campaignifareports');
+const zipreports = mongoose.model('zipreports');
+const zipsumreport = mongoose.model('zipsumreport');
 
-async function PublisherConsoleLoaderTypeWise(array, type) {
-	array &&
-		array.forEach(async (publisherB) => {
+async function PublisherConsoleLoaderTypeWise(array, type, chevk2) {
+	// console.log(array.length, array[0]);
+	// for (var z = 0; z < array.length; z++) {
+	// 	console.log(array[z]);
+	// }
+	if (array && array.length)
+		array.map(async (publis) => {
 			// console.log(publisherB.PublisherSplit);
-			var publisherBit = publisherB;
-			publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
+			var publisherBit = publis;
+			// publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
 			publisherBit.ssp = [ ...new Set(publisherBit.ssp) ];
 			var testappubid = publisherBit.apppubidpo;
+			// console.log(publisherBit.test);
+			var daysCount = 1;
+			if (typeof publisherBit.test === 'object') {
+				publisherBit.test = [ ...new Set(publisherBit.test) ];
+				publisherBit.test.sort(function(a, b) {
+					var d1 = new Date(a);
+					var d2 = new Date(b);
+					return d1 - d2;
+				});
+				// console.log(publisherBit.test);
+				daysCount = publisherBit.test.length;
+				publisherBit.test = publisherBit.test[0];
+			}
 			var forda;
 			if (testappubid && testappubid.length)
 				for (var i = 0; i < testappubid.length; i++) {
@@ -1764,25 +1710,37 @@ async function PublisherConsoleLoaderTypeWise(array, type) {
 					}
 				}
 			publisherBit.apppubidpo = forda;
-			publisherBit.Publisher = publisherBit.Publisher[0];
 			publisherBit.ssp = publisherBit.ssp ? publisherBit.ssp[0] : '';
-			publisherBit.campaignId = publisherBit.campaignId[0];
+			publisherBit.campaignId = publisherBit.campaignId.map((id) => mongoose.Types.ObjectId(id));
+			// console.log(publisherBit.campaignId);
+			const userCount = await freqpublishreports.aggregate([
+				{ $match: { appId: publisherBit.PublisherSplit, rtbType: type } },
+				{ $group: { _id: null, users: { $sum: '$users' } } }
+			]);
+			var numbr = 0;
+			// console.log(userCount);
+			if (userCount.length) {
+				numbr = userCount[0].users;
+			}
+			var faa = publisherBit.feed !== undefined ? publisherBit.feed : null;
 			const match = await publisherwiseConsole
-				.findOne({ apppubid: publisherBit.PublisherSplit, type: type })
+				.findOne({ apppubid: publisherBit.PublisherSplit, type: type, feed: faa })
 				.catch((err) => console.log(err));
+			// console.log(match);
 			if (!match) {
+				// var time = timefinder(new Date(), publisherBit.test);
 				if (type === 'display') {
 					const newzip = new publisherwiseConsole({
 						apppubid: publisherBit.PublisherSplit,
-						campaignId: publisherBit.campaignId,
+						createdOn: publisherBit.test,
 						type: type,
+						days: daysCount,
+						unique: numbr,
 						publisherName: publisherBit.apppubidpo
 							? publisherBit.apppubidpo.publishername
 								? publisherBit.apppubidpo.publishername
 								: publisherBit.PublisherSplit
-							: publisherBit.PublisherSplit
-								? publisherBit.PublisherSplit
-								: publisherBit.Publisher.AppName,
+							: publisherBit.PublisherSplit,
 						ssp: publisherBit.ssp,
 						feed: publisherBit.feed !== undefined ? publisherBit.feed : null,
 						impression: publisherBit.impressions ? publisherBit.impressions : 0,
@@ -1795,15 +1753,15 @@ async function PublisherConsoleLoaderTypeWise(array, type) {
 				} else {
 					const newzip = new publisherwiseConsole({
 						apppubid: publisherBit.PublisherSplit,
-						campaignId: publisherBit.campaignId,
+						createdOn: publisherBit.test,
 						type: type,
+						days: daysCount,
+						unique: numbr,
 						publisherName: publisherBit.apppubidpo
 							? publisherBit.apppubidpo.publishername
 								? publisherBit.apppubidpo.publishername
 								: publisherBit.PublisherSplit
-							: publisherBit.PublisherSplit
-								? publisherBit.PublisherSplit
-								: publisherBit.Publisher.AppName,
+							: publisherBit.PublisherSplit,
 						ssp: publisherBit.ssp,
 						feed: publisherBit.feed !== undefined ? publisherBit.feed : null,
 						impression: publisherBit.impressions ? publisherBit.impressions : 0,
@@ -1820,39 +1778,43 @@ async function PublisherConsoleLoaderTypeWise(array, type) {
 					console.log('created');
 				}
 			} else {
-				if (type === 'display') {
-					const updateddoc = await publisherwiseConsole
-						.findOneAndUpdate(
-							{ publisherBit: publisherBit.PublisherSplit, type: type },
-							{
-								impression: publisherBit.impressions,
-								click: publisherBit.clicks
-									? publisherBit.clicks
-									: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
-							},
-							{ new: true }
-						)
-						.catch((err) => console.log(err));
-					console.log('updated');
+				if (match.createdOn === publisherBit.test && match.days === daysCount) {
+					console.log('Already Done');
+				} else if (type === 'display') {
+					console.log(match.appubid);
+					match.createdOn = publisherBit.test;
+					match.unique = numbr;
+					match.impression = publisherBit.impressions;
+					match.click = publisherBit.clicks
+						? publisherBit.clicks
+						: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0;
+					match.days = daysCount;
+					match
+						.save()
+						.then((d) => {
+							console.log('updated');
+						})
+						.catch((err) => console.log('err'));
 				} else {
-					const updateddoc = await publisherwiseConsole
-						.findOneAndUpdate(
-							{ publisherBit: publisherBit.PublisherSplit, type: type },
-							{
-								impression: publisherBit.impressions,
-								start: publisherBit.start,
-								firstQuartile: publisherBit.firstQuartile,
-								midpoint: publisherBit.midpoint,
-								thirdQuartile: publisherBit.thirdQuartile,
-								complete: publisherBit.complete,
-								click: publisherBit.clicks
-									? publisherBit.clicks
-									: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
-							},
-							{ new: true }
-						)
-						.catch((err) => console.log(err));
-					console.log('updated');
+					console.log(match.appubid);
+					match.createdOn = publisherBit.test;
+					match.unique = numbr;
+					match.impression = publisherBit.impressions;
+					match.start = publisherBit.start;
+					match.firstQuartile = publisherBit.firstQuartile;
+					match.midpoint = publisherBit.midpoint;
+					match.thirdQuartile = publisherBit.thirdQuartile;
+					match.complete = publisherBit.complete;
+					match.click = publisherBit.clicks
+						? publisherBit.clicks
+						: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0;
+					match.days = daysCount;
+					match
+						.save()
+						.then((d) => {
+							console.log('updated');
+						})
+						.catch((err) => console.log('err'));
 				}
 			}
 		});
@@ -1863,14 +1825,31 @@ console.log(fixDate);
 
 // PublisherDataRefresher();
 async function PublisherDataRefresher() {
-	let date = new Date(new Date());
-	date.setDate(date.getDate() - 1);
-	date = new Date(date);
-	const year = date.getFullYear();
-	const month = `0${date.getMonth() + 1}`;
-	const date1 = date.getDate();
-	let yesterday = `${year}-${month}-${date1}`;
-	console.log('yesterday', yesterday);
+	// let date = new Date(new Date());
+	// date.setDate(date.getDate() - 1);
+	// date = new Date(date);
+	// const year = date.getFullYear();
+	// const month = `0${date.getMonth() + 1}`;
+	// const date1 = date.getDate();
+	// let yesterday = `${year}-${month}-${date1}`;
+	// console.log('yesterday', yesterday);
+	var datee = new Date('2021-09-05').toISOString();
+	var cdate, cmonth, cyear;
+	var cdatee = new Date(new Date());
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk2 = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	cdatee.setDate(cdatee.getDate() - 1);
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	console.log(datee, chevk, chevk2);
 	const adsetting = mongoose.model('adsetting');
 	const StreamingAds = mongoose.model('streamingads');
 	const publisherapps = mongoose.model('publisherapps');
@@ -1902,6 +1881,10 @@ async function PublisherDataRefresher() {
 		ids.video.push(x.campaignId.toString());
 		idsDefined.push(x.campaignId.toString());
 	});
+	var letf = arr_diff(totalids, idsDefined);
+	letf.map((d) => {
+		ids.audio.push(d.toString());
+	});
 	// console.log(totalids.length);
 	// var audiodig = arr_diff(totalids, idsDefined);
 	// console.log(totalids.length, idsDefined.length);
@@ -1916,7 +1899,6 @@ async function PublisherDataRefresher() {
 			{
 				$project: {
 					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-					appId: '$appId',
 					apppubid: '$apppubid',
 					feed: '$feed',
 					ssp: '$ssp',
@@ -1931,11 +1913,11 @@ async function PublisherDataRefresher() {
 					complete: '$complete'
 				}
 			},
-			{ $match: { test: { $gte: fixDate } } },
+			{ $match: { test: { $gte: datee, $lt: chevk2 } } },
 			{
 				$group: {
 					_id: { appubid: '$apppubid', feed: '$feed' },
-					appId: { $push: '$appId' },
+					test: { $push: '$test' },
 					ssp: { $push: '$ssp' },
 					camp: { $push: '$campaignId' },
 					impressions: { $sum: '$impression' },
@@ -1950,10 +1932,9 @@ async function PublisherDataRefresher() {
 			},
 			{
 				$project: {
-					Publisher: '$appId',
 					PublisherSplit: '$_id.appubid',
 					feed: '$_id.feed',
-					updatedAt: '$updatedAt',
+					test: '$test',
 					ssp: '$ssp',
 					campaignId: '$camp',
 					impressions: '$impressions',
@@ -1983,54 +1964,37 @@ async function PublisherDataRefresher() {
 			{
 				$project: {
 					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-					appId: '$appId',
 					apppubid: '$apppubid',
 					feed: '$feed',
 					ssp: '$ssp',
 					campaignId: '$campaignId',
 					impression: '$impression',
 					CompanionClickTracking: '$CompanionClickTracking',
-					SovClickTracking: '$SovClickTracking',
-					start: '$start',
-					firstQuartile: '$firstQuartile',
-					midpoint: '$midpoint',
-					thirdQuartile: '$thirdQuartile',
-					complete: '$complete'
+					SovClickTracking: '$SovClickTracking'
 				}
 			},
-			{ $match: { test: { $gte: fixDate } } },
+			{ $match: { test: { $gte: datee, $lt: chevk2 } } },
 			{
 				$group: {
 					_id: { appubid: '$apppubid', feed: '$feed' },
-					appId: { $push: '$appId' },
+					test: { $push: '$test' },
 					ssp: { $push: '$ssp' },
 					camp: { $push: '$campaignId' },
 					impressions: { $sum: '$impression' },
 					clicks: { $sum: '$CompanionClickTracking' },
-					clicks1: { $sum: '$SovClickTracking' },
-					start: { $sum: '$start' },
-					firstQuartile: { $sum: '$firstQuartile' },
-					midpoint: { $sum: '$midpoint' },
-					thirdQuartile: { $sum: '$thirdQuartile' },
-					complete: { $sum: '$complete' }
+					clicks1: { $sum: '$SovClickTracking' }
 				}
 			},
 			{
 				$project: {
-					Publisher: '$appId',
 					PublisherSplit: '$_id.appubid',
 					feed: '$_id.feed',
-					updatedAt: '$updatedAt',
+					test: '$test',
 					ssp: '$ssp',
 					campaignId: '$camp',
 					impressions: '$impressions',
 					clicks: '$clicks',
 					clicks1: '$clicks1',
-					start: '$start',
-					firstQuartile: '$firstQuartile',
-					midpoint: '$midpoint',
-					thirdQuartile: '$thirdQuartile',
-					complete: '$complete',
 					_id: 0
 				}
 			},
@@ -2043,14 +2007,13 @@ async function PublisherDataRefresher() {
 				}
 			}
 		])
-		.catch((err) => console.log(err));
+		.catch((err) => console.log('err'));
 	var publisherDataVideo = await campaignwisereports
 		.aggregate([
 			{ $match: { campaignId: { $in: ids.video } } },
 			{
 				$project: {
 					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-					appId: '$appId',
 					apppubid: '$apppubid',
 					feed: '$feed',
 					ssp: '$ssp',
@@ -2065,11 +2028,11 @@ async function PublisherDataRefresher() {
 					complete: '$complete'
 				}
 			},
-			{ $match: { test: { $gte: fixDate } } },
+			{ $match: { test: { $gte: datee, $lt: chevk2 } } },
 			{
 				$group: {
 					_id: { appubid: '$apppubid', feed: '$feed' },
-					appId: { $push: '$appId' },
+					test: { $push: '$test' },
 					ssp: { $push: '$ssp' },
 					camp: { $push: '$campaignId' },
 					impressions: { $sum: '$impression' },
@@ -2084,10 +2047,9 @@ async function PublisherDataRefresher() {
 			},
 			{
 				$project: {
-					Publisher: '$appId',
 					PublisherSplit: '$_id.appubid',
 					feed: '$_id.feed',
-					updatedAt: '$updatedAt',
+					test: '$test',
 					ssp: '$ssp',
 					campaignId: '$camp',
 					impressions: '$impressions',
@@ -2110,19 +2072,19 @@ async function PublisherDataRefresher() {
 				}
 			}
 		])
-		.catch((err) => console.log(err));
-	publisherDataAudio = await publisherapps
-		.populate(publisherDataAudio, { path: 'Publisher', select: '_id AppName' })
-		.catch((err) => console.log(err));
-	publisherDataDisplay = await publisherapps
-		.populate(publisherDataDisplay, { path: 'Publisher', select: '_id AppName' })
-		.catch((err) => console.log(err));
-	publisherDataVideo = await publisherapps
-		.populate(publisherDataVideo, { path: 'Publisher', select: '_id AppName' })
-		.catch((err) => console.log(err));
+		.catch((err) => console.log('err'));
+	// publisherDataAudio = await publisherapps
+	// 	.populate(publisherDataAudio, { path: 'Publisher', select: '_id AppName' })
+	// 	.catch((err) => console.log('err'));
+	// publisherDataDisplay = await publisherapps
+	// 	.populate(publisherDataDisplay, { path: 'Publisher', select: '_id AppName' })
+	// 	.catch((err) => console.log('err'));
+	// publisherDataVideo = await publisherapps
+	// 	.populate(publisherDataVideo, { path: 'Publisher', select: '_id AppName' })
+	// 	.catch((err) => console.log('err'));
 	console.log('started');
 	console.log(publisherDataAudio.length, publisherDataDisplay.length, publisherDataVideo.length);
-	await PublisherConsoleLoaderTypeWise(publisherDataAudio, 'audio');
+	await PublisherConsoleLoaderTypeWise(publisherDataAudio, 'audio', chevk2);
 	await PublisherConsoleLoaderTypeWise(publisherDataDisplay, 'display');
 	await PublisherConsoleLoaderTypeWise(publisherDataVideo, 'video');
 }
@@ -2189,14 +2151,43 @@ async function FrequencyDataRefresher() {
 
 // FrequencyPublisherRefresher();
 async function FrequencyPublisherRefresher() {
-	let date = new Date(new Date());
-	date.setDate(date.getDate() - 1);
-	date = new Date(date);
-	const year = date.getFullYear();
-	const month = `0${date.getMonth() + 1}`;
-	const date1 = date.getDate();
-	let yesterday = `${year}-${month}-${date1}`;
-	console.log('yesterday', yesterday);
+	// let date = new Date(new Date());
+	// date.setDate(date.getDate() - 1);
+	// date = new Date(date);
+	// const year = date.getFullYear();
+	// const month = `0${date.getMonth() + 1}`;
+	// const date1 = date.getDate();
+	// let yesterday = `${year}-${month}-${date1}`;
+	// console.log('yesterday', yesterday);
+	var datee = new Date('2021-09-05').toISOString();
+	// var datee = new Date(new Date());
+	// datee.setDate(datee.getDate() - 1);
+	// var date = datee.getDate();
+	// var month = datee.getMonth() + 1;
+	// var year = datee.getFullYear();
+	// console.log(datee.getFullYear(), datee.getMonth() + 1, datee.getDate());
+	// var datee2 = new Date().toISOString();
+	var cdate, cmonth, cyear;
+	var cdatee = new Date(new Date());
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk2 = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	cdatee.setDate(cdatee.getDate() - 1);
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	console.log(datee, chevk, chevk2);
+	// datee2.setDate(datee2.getDate());
+	// var date2 = datee2.getDate();
+	// var month2 = datee2.getMonth() + 1;
+	// var year2 = datee2.getFullYear();
+	// console.log(datee2.getFullYear(), datee2.getMonth() + 1, datee2.getDate());
 	// { $match: { test: yesterday } },
 	const frequency = await campaignifareports
 		.aggregate([
@@ -2205,15 +2196,15 @@ async function FrequencyPublisherRefresher() {
 					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
 					campaignId: '$campaignId',
 					rtbType: '$rtbType',
-					appId: '$appId',
+					apppubid: '$apppubid',
 					impression: '$impression',
 					click: '$click'
 				}
 			},
-			{ $match: { test: { $gte: fixDate } } },
+			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
 			{
 				$group: {
-					_id: { campaignId: '$campaignId', rtbType: '$rtbType', appId: '$appId' },
+					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
 					users: { $sum: 1 },
 					impression: { $sum: '$impression' },
 					click: { $sum: '$click' }
@@ -2225,39 +2216,168 @@ async function FrequencyPublisherRefresher() {
 	frequency.forEach(async (frequenct) => {
 		const match = await freqpublishreports.findOne({
 			campaignId: frequenct._id.campaignId,
-			appId: frequenct._id.appId
+			rtbType: frequenct._id.rtbType,
+			appId: frequenct._id.apppubid
 		});
 		if (!match) {
 			const newzip = new freqpublishreports({
 				campaignId: frequenct._id.campaignId,
-				appId: frequenct._id.appId,
+				appId: frequenct._id.apppubid,
 				rtbType: frequenct._id.rtbType,
 				impression: frequenct.impression,
+				createdOn: chevk2,
 				click: frequenct.click,
 				users: frequenct.users
 			});
 			await newzip.save().catch((err) => console.log(err));
 			console.log('created');
 		} else {
-			const updateddoc = await freqpublishreports
-				.findOneAndUpdate(
-					{
-						campaignId: frequenct._id.campaignId,
-						rtbType: frequenct._id.rtbType,
-						appId: frequenct._id.appId
-					},
-					{
-						impression: frequenct.impressions,
-						click: frequenct.click,
-						users: frequenct.users
-					},
-					{ new: true }
-				)
-				.catch((err) => console.log(err));
-			console.log('updated');
+			if (match.createdOn === chevk2) {
+				console.log('Null');
+			} else {
+				match.impression += frequenct.impressions;
+				match.click += frequenct.click;
+				match.users += frequenct.users;
+				match.createdOn = chevk2;
+				match
+					.save()
+					.then((ss) => {
+						console.log('updated');
+					})
+					.catch((err) => console.log(err));
+			}
 		}
 	});
 }
+
+// pincodesumreport();
+async function pincodesumreport() {
+	var datee = new Date('2021-07-01').toISOString();
+	var cdate, cmonth, cyear;
+	var cdatee = new Date(new Date());
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk2 = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	cdatee.setDate(cdatee.getDate() - 1);
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	console.log(chevk, chevk2);
+	// console.log(new Date(chevk));
+	zipreports
+		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					zip: '$zip',
+					campaignId: '$campaignId',
+					impression: '$impression',
+					clicks: { $sum: [ '$SovClickTracking', '$CompanionClickTracking' ] }
+				}
+			},
+			{
+				$match: {
+					test: { $gte: chevk, $lt: chevk2 },
+					zip: { $gt: 600 },
+					impression: { $gt: 10 },
+					clicks: { $gt: 10 }
+				}
+			},
+			{
+				$group: {
+					_id: { zip: '$zip', campaignId: '$campaignId' },
+					impression: { $sum: '$impression' },
+					clicks: { $sum: '$clicks' }
+				}
+			}
+		])
+		.allowDiskUse(true)
+		.then(async (result) => {
+			console.log(result.length);
+			if (result.length) {
+				for (var i = 0; i < result.length; i++) {
+					const storeClick = result[i].clicks;
+					let match = await zipsumreport
+						.findOne({ zip: result[i]._id.zip, campaignId: result[i]._id.campaignId })
+						.catch((err) => console.log(err));
+					if (match) {
+						if (match.createdOn === chevk2) {
+							console.log('Already Done');
+						} else {
+							match.impression += result[i].impression;
+							match.clicks += storeClick;
+							match.createdOn = chevk2;
+							match
+								.save()
+								.then((rs) => {
+									console.log('updated');
+								})
+								.catch((err) => console.log(err));
+						}
+					} else {
+						const zipmac = new zipsumreport({
+							zip: result[i]._id.zip,
+							campaignId: result[i]._id.campaignId,
+							impression: result[i].impression,
+							clicks: storeClick,
+							createdOn: chevk2
+						});
+						zipmac
+							.save()
+							.then((sda) => {
+								console.log('created');
+							})
+							.catch((err) => console.log(err));
+					}
+				}
+			}
+		})
+		.catch((err) => console.log(err));
+}
+
+// result.map(async (zip) => {
+// 	const storeClick = zip.CompanionClickTracking
+// 		? zip.CompanionClickTracking
+// 		: 0 + zip.SovClickTracking ? zip.SovClickTracking : 0;
+// 	let match = await zipsumreport
+// 		.findOne({ zip: zip._id.zip, campaignId: zip._id.campaignId })
+// 		.catch((err) => console.log(err));
+// 	if (match) {
+// 		if (match.createdOn === chevk2) {
+// 			console.log('Already Done');
+// 		} else {
+// 			match.impression += zip.impression;
+// 			match.clicks += storeClick;
+// 			match.createdOn = chevk2;
+// 			match
+// 				.save()
+// 				.then((rs) => {
+// 					console.log('updated');
+// 				})
+// 				.catch((err) => console.log(err));
+// 		}
+// 	} else {
+// 		const zipmac = new zipsumreport({
+// 			zip: zip._id.zip,
+// 			campaignId: zip._id.campaignId,
+// 			impression: zip.impression,
+// 			clicks: storeClick,
+// 			createdOn: chevk2
+// 		});
+// 		zipmac
+// 			.save()
+// 			.then((sda) => {
+// 				console.log('created');
+// 			})
+// 			.catch((err) => console.log(err));
+// 	}
+// });
 
 // publisherDataAudio.forEach(async (publisherB) => {
 // 	// console.log(publisherB.PublisherSplit);

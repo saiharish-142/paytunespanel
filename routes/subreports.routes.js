@@ -21,6 +21,8 @@ const categoryreports = require('../models/categoryreports');
 const publisherwiseConsole = mongoose.model('publisherwiseConsole');
 const frequencyConsole = mongoose.model('frequencyConsole');
 const freqpublishreports = mongoose.model('freqpublishreports');
+const uareqreports = mongoose.model('uareqreports');
+const zipsumreport = mongoose.model('zipsumreport');
 
 router.get('/phonemake', adminauth, (req, res) => {
 	phonemakereports
@@ -207,6 +209,58 @@ router.put('/zipbycampids', adminauth, (req, res) => {
 			}
 		])
 		.then((result) => res.json(result))
+		.catch((err) => res.status(422).json(err));
+});
+
+router.put('/pinbycampids', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	const dumd = [];
+	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	zipsumreport
+		.aggregate([
+			{ $match: { campaignId: { $in: ids } } },
+			{
+				$group: {
+					_id: '$zip',
+					campaignId: { $push: '$campaignId' },
+					impression: { $sum: '$impression' },
+					clicks: { $sum: '$clicks' },
+					createdOn: { $push: '$createdOn' }
+				}
+			},
+			{
+				$lookup: {
+					from: 'zipreports2',
+					localField: '_id',
+					foreignField: 'pincode',
+					as: 'extra'
+				}
+			}
+		])
+		.then((result) => {
+			var data = result;
+			for (var i = 0; i < data.length; i++) {
+				if (data[i].extra && data[i].extra[0]) {
+					data[i].zip = data[i]._id;
+					data[i].impression = data[i].impression;
+					data[i].clicks = data[i].clicks;
+					data[i].campaignId = data[i].campaignId;
+					data[i].area = data[i].extra[0].area;
+					data[i].lowersubcity = data[i].area.lowersubcity;
+					data[i].subcity = data[i].extra[0].subcity;
+					data[i].city = data[i].extra[0].city;
+					data[i].grandcity = data[i].extra[0].grandcity;
+					data[i].district = data[i].extra[0].district;
+					data[i].comparison = data[i].extra[0].comparison;
+					data[i].state = data[i].extra[0].state;
+					data[i].grandstate = data[i].extra[0].grandstate;
+					data[i].latitude = data[i].extra[0].latitude;
+					data[i].longitude = data[i].extra[0].longitude;
+					data[i].extra = data[i].extra[0];
+				}
+			}
+			res.json(data);
+		})
 		.catch((err) => res.status(422).json(err));
 });
 
@@ -1024,14 +1078,6 @@ router.put('/categorywiseids', adminauth, async (req, res) => {
 		var audio = campaignId.map((id) => mongoose.Types.ObjectId(id));
 		const resultaudio = await CategoryReports.aggregate([
 			{ $match: { campaignId: { $in: audio } } },
-			// {$project:{
-			// 	category:1,
-			// 	impression:1,
-			// 	CompanionClickTracking:1,
-			// 	SovClickTracking:1,
-			// 	test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-			// }},
-			// {$match:{test:{$gt:setdate}}},
 			{
 				$group: {
 					_id: { category: '$category' },
@@ -1075,17 +1121,40 @@ router.put('/categorywiseids', adminauth, async (req, res) => {
 					extra_details: { $ifNull: [ '$extra_details', [] ] }
 				}
 			}
-			// {
-			// 	$project: {
-			// 		impressions: 1,
-			// 		CompanionClickTracking: 1,
-			// 		SovClickTracking: 1,
-			// 		extra_details: { $ifNull: ['$extra_details', []] }
-			// 	}
-			// }
 		]).allowDiskUse(true);
-		res.status(200).json(resultaudio);
+		var soul = {};
+		resultaudio.map((x) => {
+			if (x.extra_details && x.extra_details.length) {
+				if (x.extra_details[0].Name) {
+					if (soul[x.extra_details[0].Name]) {
+						soul[x.extra_details[0].Name].impressions += x.impressions;
+						soul[x.extra_details[0].Name].CompanionClickTracking += x.CompanionClickTracking;
+						soul[x.extra_details[0].Name].SovClickTracking += x.SovClickTracking;
+					} else {
+						soul[x.extra_details[0].Name] = {
+							impressions: 0,
+							CompanionClickTracking: 0,
+							SovClickTracking: 0
+						};
+						soul[x.extra_details[0].Name].impressions = x.impressions;
+						soul[x.extra_details[0].Name].CompanionClickTracking = x.CompanionClickTracking;
+						soul[x.extra_details[0].Name].SovClickTracking = x.SovClickTracking;
+					}
+				}
+			}
+		});
+		var sender = [];
+		for (const [ y, z ] of Object.entries(soul)) {
+			sender.push({
+				Name: y,
+				impressions: z.impressions,
+				SovClickTracking: z.SovClickTracking,
+				CompanionClickTracking: z.CompanionClickTracking
+			});
+		}
+		res.status(200).json(sender);
 	} catch (err) {
+		console.log(err);
 		res.status(400).json({ error: err.message });
 	}
 });
@@ -1333,6 +1402,15 @@ router.get('/publisherComplete2', adminauth, async (req, res) => {
 	let audio = await publisherwiseConsole.find({ type: 'audio' }).catch((err) => console.log(err));
 	let display = await publisherwiseConsole.find({ type: 'display' }).catch((err) => console.log(err));
 	let video = await publisherwiseConsole.find({ type: 'video' }).catch((err) => console.log(err));
+	let uadata = await uareqreports
+		.aggregate([ { $group: { _id: '$publisherid', request: { $sum: '$ads' }, userAgent: { $push: '$ua' } } } ])
+		.catch((err) => console.log(err));
+	var sol = {};
+	var sola = {};
+	uadata.map((x) => {
+		sol[x._id] = x.request;
+		sola[x._id] = [ ...new Set(x.userAgent) ];
+	});
 	var compo = {
 		impression: 0,
 		start: 0,
@@ -1359,7 +1437,7 @@ router.get('/publisherComplete2', adminauth, async (req, res) => {
 			compo.thirdQuartile += x.thirdQuartile;
 			compo.complete += x.complete;
 		});
-	res.json({ audio: audio, display: display, video: video, complete: compo });
+	res.json({ audio: audio, display: display, video: video, complete: compo, sol, sola });
 });
 
 ///////////////////  new apis //////////////////////////////
@@ -1588,10 +1666,10 @@ router.get('/zipdata_banner', adminauth, async (req, res) => {
 		}
 		const result = await Zipreports2.aggregate([
 			{ $match: { requests: { $exists: true } } },
-			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
-			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{ $addFields: { avgrequest: { $divide: [ '$requests', days ] } } },
+			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $sort: { impression: -1 } },
-			{$match:{rtbType:"display"}}
+			{ $match: { rtbType: 'display' } }
 		]);
 
 		res.status(200).json(result);

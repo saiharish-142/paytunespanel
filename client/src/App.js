@@ -26,7 +26,8 @@ import Categorydata from './screens/Categorydata';
 import PreLoader from './components/loaders/PreLoader';
 import { loadRatio } from './redux/actions/currencyAction';
 import PublisherConsole from './screens/PublisherConsole';
-import FrequencyConsole from './screens/FrequencyConsole';
+// import FrequencyConsole from './screens/FrequencyConsole';
+import SummaryClientDep from './screens/SummaryClientDep';
 
 export const IdContext = createContext();
 
@@ -130,6 +131,11 @@ function App() {
 								exact
 								render={() => <ClientReport adminView={true} />}
 							/>
+							<Route
+								path="/clientSideCamp/:campname/summarydetailed"
+								exact
+								render={() => <SummaryClientDep adminView={true} />}
+							/>
 							<Redirect to="/" />
 						</Switch>
 					</BrowserRouter>
@@ -147,6 +153,7 @@ function App() {
 						<Route path="/manageAds" exact render={() => <Dashboard clientdirect={true} />} />
 						{/* <Route path="/manageBundles" exact render={() => <DashboardBundle clientdirect={true} />} /> */}
 						<Route path="/manageAds/:campname" exact render={() => <ClientReport />} />
+						<Route path="/manageAds/:campname/summarydetailed" exact render={() => <SummaryClientDep />} />
 						{/* <Route path="/manageBundles/:campname" exact render={() => <ClientReport />} /> */}
 						<Redirect to="/" />
 					</Switch>

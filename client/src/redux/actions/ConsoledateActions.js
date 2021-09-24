@@ -29,7 +29,7 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 		})
 			.then((res) => res.json())
 			.then((result) => {
-				// console.log(result);
+				console.log(result);
 				var dataA = result.audio;
 				dataA.sort(function(a, b) {
 					return b.impression - a.impression;
@@ -37,22 +37,36 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 				dataA.map((x) => {
 					x.ctr = x.click * 100 / x.impression;
 					// x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
-					console.log(x.feed);
+					// console.log(x.feed);
 					x.fede = x.feed === 3 ? 'Podcast' : 'Ondemand and Streaming';
-					console.log(x.fede);
+					x.avgimpre = Math.round(x.impression / x.days * 100) / 100;
+					if (x.fede === 'Podcast') {
+						x.req = result.sol[x.apppubid];
+						// x.useage = result.sola[x.apppubid];
+						x.useage = 0;
+						x.avgreq = Math.round(result.sol[x.apppubid] / x.days * 100) / 100;
+						// console.log(x.req);
+					} else {
+						x.req = 0;
+						x.avgreq = 0;
+						x.useage = 0;
+					}
+					// console.log(x.fede);
 					x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';
 				});
+				console.log(dataA);
 				var dataD = result.display;
 				dataD.sort(function(a, b) {
 					return b.impression - a.impression;
 				});
 				dataD.map((x) => {
 					x.ctr = x.click * 100 / x.impression;
-					console.log(x.feed);
+					// console.log(x.feed);
 					x.fede = x.feed === 3 ? 'Podcast' : 'Ondemand and Streaming';
-					console.log(x.fede);
+					// console.log(x.fede);
 					// x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';
+					x.avgimpre = Math.round(x.impression / x.days * 100) / 100;
 				});
 				var dataV = result.video;
 				dataV.sort(function(a, b) {
@@ -60,11 +74,12 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 				});
 				dataV.map((x) => {
 					x.ctr = x.click * 100 / x.impression;
-					console.log(x.feed);
+					// console.log(x.feed);
 					x.fede = x.feed === 3 ? 'Podcast' : 'Ondemand and Streaming';
-					console.log(x.fede);
+					// console.log(x.fede);
 					// x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';
+					x.avgimpre = Math.round(x.impression / x.days * 100) / 100;
 				});
 				// console.log({ audio: dataA });
 				dispatch({

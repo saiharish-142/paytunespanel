@@ -17,6 +17,8 @@ const useStyles = makeStyles({
 function CategoryClinet({ report, title, head, impression, clicks }) {
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
+	const [ totalImpreS, settotalImpreS ] = React.useState(0);
+	const [ totalClickS, settotalClickS ] = React.useState(0);
 	const [ adss, setadss ] = React.useState([]);
 	const [ sa, setsa ] = React.useState('impression');
 	const [ order, setorder ] = React.useState('desc');
@@ -37,7 +39,6 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 		}
 	};
 	const headers = [
-		{ key: 'category', label: 'Category' },
 		{ key: 'Name', label: 'Name' },
 		{ key: 'impression', label: 'Impressions' },
 		{ key: 'clicks', label: 'Clicks' },
@@ -57,24 +58,37 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 				});
 				var imoop = 0;
 				var closk = 0;
+				var imoop1 = 0;
+				var closk1 = 0;
 				data.map((row) => {
 					imoop += row.impressions;
 					closk += parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
 				});
 				data.map((row) => {
-					row.category = row._id.category ? row._id.category : '';
-					row.Name = row.extra_details.length !== 0 ? row.extra_details[0].Name : '';
-					var impre = Math.round(row.impressions * impression / imoop);
-					var cliol = Math.round(
+					var impre = Math.trunc(row.impressions * impression / imoop);
+					var cliol = Math.trunc(
 						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) * clicks / closk
 					);
 					row.impression = impre;
 					row.clicks = cliol;
+					imoop1 += impre;
+					closk1 += cliol;
 					row.ctr = cliol * 100 / impre;
 				});
+				if (imoop1 < impression || closk1 < clicks) {
+					data.push({
+						impression: impression - imoop1,
+						clicks: clicks - closk1,
+						ctr: (clicks - closk1) * 100 / (impression - imoop1)
+					});
+					imoop1 += impression - imoop1;
+					closk1 += clicks - closk1;
+				}
 				csvReport.data = data;
 				console.log('neww', data);
 				setadss(data);
+				settotalImpreS(imoop1);
+				settotalClickS(closk1);
 			} else {
 				setadss(report);
 			}
@@ -93,17 +107,11 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 		<Paper>
 			<TableContainer style={{ margin: '20px 0' }}>
 				<div style={{ margin: '5px', fontWeight: 'bolder' }}>{head} Report</div>
-				{adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
+				{/* {adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''} */}
 				{adss && adss.length > 0 ? (
 					<Table className={classes.table} aria-label="simple table">
 						<TableHead>
 							<TableRow>
-								<TableCell
-									onClick={() => tablesorter('category', 'string')}
-									style={{ cursor: 'pointer' }}
-								>
-									Category{arrowRetuner(sa === 'category' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
 								<TableCell onClick={() => tablesorter('Name', 'string')} style={{ cursor: 'pointer' }}>
 									Name{arrowRetuner(sa === 'Name' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
@@ -128,7 +136,6 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 							{adss.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => {
 								return (
 									<TableRow key={i}>
-										<TableCell>{row.category}</TableCell>
 										<TableCell>{row.Name}</TableCell>
 										<TableCell>{row.impression}</TableCell>
 										<TableCell>{row.clicks}</TableCell>
@@ -136,6 +143,14 @@ function CategoryClinet({ report, title, head, impression, clicks }) {
 									</TableRow>
 								);
 							})}
+							<TableRow>
+								<TableCell className="boldClass">Total</TableCell>
+								<TableCell className="boldClass">{totalImpreS}</TableCell>
+								<TableCell className="boldClass">{totalClickS}</TableCell>
+								<TableCell className="boldClass">
+									{Math.round(totalClickS * 100 / totalImpreS * 100) / 100}%
+								</TableCell>
+							</TableRow>
 						</TableBody>
 					</Table>
 				) : (

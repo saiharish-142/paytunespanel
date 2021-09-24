@@ -7,6 +7,7 @@ var campaignifareportsSchema = new Schema({
 	appId: String,
 	ifa: String,
 	zip: String,
+	apppubid: String,
 	rtbType: String,
 	impression: Number,
 	click: Number,

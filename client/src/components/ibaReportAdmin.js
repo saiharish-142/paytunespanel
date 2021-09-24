@@ -16,6 +16,8 @@ function IbaReportAdmin({ title, report, state1, arrowRetuner }) {
 	const history = useHistory();
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
+	const [ ci, setci ] = React.useState(0);
+	const [ cc, setcc ] = React.useState(0);
 	const [ adss, setadss ] = React.useState([]);
 	const [ sa, setsa ] = React.useState('impression');
 	const [ order, setorder ] = React.useState('desc');
@@ -51,24 +53,30 @@ function IbaReportAdmin({ title, report, state1, arrowRetuner }) {
 				data.sort(function(a, b) {
 					return b.impressions - a.impressions;
 				});
+				var ai = 0,
+					ac = 0;
 				data.map((row) => {
 					row.category = row._id.category ? row._id.category : '';
-					row.Name = row.extra_details.length!==0 ? row.extra_details[0].Name : '';
-					row.tier1 = row.extra_details.length!==0 ? row.extra_details[0].tier1 : '';
-					row.tier2 = row.extra_details.length!==0 ? row.extra_details[0].tier2 : '';
-					row.tier3 = row.extra_details.length!==0 ? row.extra_details[0].tier3 : '';
-					row.tier4 = row.extra_details.length!==0 ? row.extra_details[0].tier4 : '';
-					row.genderCategory = row.extra_details.length!==0 ? row.extra_details[0].genderCategory : '';
-					row.AgeCategory = row.extra_details.length!==0 ? row.extra_details[0].AgeCategory : '';
+					row.Name = row.extra_details.length !== 0 ? row.extra_details[0].Name : '';
+					row.tier1 = row.extra_details.length !== 0 ? row.extra_details[0].tier1 : '';
+					row.tier2 = row.extra_details.length !== 0 ? row.extra_details[0].tier2 : '';
+					row.tier3 = row.extra_details.length !== 0 ? row.extra_details[0].tier3 : '';
+					row.tier4 = row.extra_details.length !== 0 ? row.extra_details[0].tier4 : '';
+					row.genderCategory = row.extra_details.length !== 0 ? row.extra_details[0].genderCategory : '';
+					row.AgeCategory = row.extra_details.length !== 0 ? row.extra_details[0].AgeCategory : '';
 					row.impression = row.impressions ? row.impressions : 0;
+					ai += row.impressions;
 					row.clicks = parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
+					ac += row.clicks;
 					row.ctr =
 						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) *
 						100 /
 						(row.impressions ? row.impressions : 0);
 				});
 				csvReport.data = data;
-				console.log('neww',data)
+				console.log('neww', data);
+				setci(ai);
+				setcc(ac);
 				setadss(data);
 			} else {
 				setadss(report);
@@ -174,6 +182,20 @@ function IbaReportAdmin({ title, report, state1, arrowRetuner }) {
 									</TableRow>
 								);
 							})}
+							<TableRow>
+								<TableCell className="boldClass">Total</TableCell>
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell className="boldClass">{ci}</TableCell>
+								<TableCell className="boldClass">{cc}</TableCell>
+								<TableCell className="boldClass">{Math.round(cc * 100 / ci * 100) / 100}%</TableCell>
+								<TableCell />
+							</TableRow>
 						</TableBody>
 					</Table>
 				) : (

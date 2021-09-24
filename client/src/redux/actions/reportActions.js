@@ -8,6 +8,9 @@ import {
 	REPORT_ID_,
 	REPORT_SPENT_LOADED,
 	REPORT_CLEAR,
+	REPORT_LOADING_SUMMDET,
+	REPORT_LOADED_SUMMDET,
+	REPORT_ERROR_SUMMDET,
 	REPORT_READY
 } from '../types.js';
 import { tokenConfig } from './authAction.js';
@@ -277,36 +280,13 @@ export const ShowReport = () => (dispatch, getState) => {
 	});
 };
 
-// async function Puller(ids) {
-// 	var data;
-// 	fetch('/offreport/sumreportofcamallClient', {
-// 		method: 'put',
-// 		headers: {
-// 			'Content-Type': 'application/json',
-// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
-// 		},
-// 		body: JSON.stringify({
-// 			campaignId: ids
-// 		})
-// 	})
-// 		.then((res) => res.json())
-// 		.then((resu) => {
-// 			var result = resu;
-// 			data = resu;
-// 			console.log(result);
-// 			// return result;
-// 		})
-// 		.catch((err) => console.log(err));
-// 	// const result = await data.json();
-// 	return data;
-// }
-
 export const ClientReport = () => async (dispatch, getState) => {
 	const data = getState().report.data;
 	const data2 = getState().report.ids;
 	// console.log(data2);
 	var dass = [];
 	var puller = {};
+	var pullerCate = {};
 	var pullerData = {};
 	pullerData['complete'] = {
 		target: 0,
@@ -325,14 +305,17 @@ export const ClientReport = () => async (dispatch, getState) => {
 		dass.push(data.audio);
 		if (puller[data.audio]) {
 			data2.audio.map((x) => puller[data.audio].push(x));
+			data2.audio.map((x) => pullerCate[data.audio].push(x));
 			puller[`${data.audio}target`] += data2.audimpression;
 			pullerData[`complete`].target += data2.audimpression;
 		} else {
 			puller[data.audio] = [];
+			pullerCate[data.audio] = [];
 			puller[`${data.audio}target`] = 0;
 			puller[`${data.audio}target`] += data2.audimpression;
 			pullerData[`complete`].target += data2.audimpression;
 			data2.audio.map((x) => puller[data.audio].push(x));
+			data2.audio.map((x) => pullerCate[data.audio].push(x));
 		}
 	}
 	if (!(data.onDemand === data.podcast && data.onDemand === data.musicapps)) {
@@ -340,42 +323,51 @@ export const ClientReport = () => async (dispatch, getState) => {
 			dass.push(data.onDemand);
 			if (puller[data.onDemand]) {
 				data2.onDemand.map((x) => puller[data.onDemand].push(x));
+				data2.onDemand.map((x) => pullerCate[data.onDemand].push(x));
 				pullerData[`complete`].target += data2.subimpression.dem;
 				puller[`${data.onDemand}target`] += data2.subimpression.dem;
 			} else {
 				puller[data.onDemand] = [];
+				pullerCate[data.onDemand] = [];
 				puller[`${data.onDemand}target`] = 0;
 				pullerData[`complete`].target += data2.subimpression.dem;
 				puller[`${data.onDemand}target`] += data2.subimpression.dem;
 				data2.onDemand.map((x) => puller[data.onDemand].push(x));
+				data2.onDemand.map((x) => pullerCate[data.onDemand].push(x));
 			}
 		}
 		if (data.podcast) {
 			dass.push(data.podcast);
 			if (puller[data.podcast]) {
 				data2.podcast.map((x) => puller[data.podcast].push(x));
+				data2.podcast.map((x) => pullerCate[data.podcast].push(x));
 				pullerData[`complete`].target += data2.subimpression.pod;
 				puller[`${data.podcast}target`] += data2.subimpression.pod;
 			} else {
 				puller[data.podcast] = [];
+				pullerCate[data.podcast] = [];
 				puller[`${data.podcast}target`] = 0;
 				pullerData[`complete`].target += data2.subimpression.pod;
 				puller[`${data.podcast}target`] += data2.subimpression.pod;
 				data2.podcast.map((x) => puller[data.podcast].push(x));
+				data2.podcast.map((x) => pullerCate[data.podcast].push(x));
 			}
 		}
 		if (data.musicapps) {
 			dass.push(data.musicapps);
 			if (puller[data.musicapps]) {
 				data2.musicapps.map((x) => puller[data.musicapps].push(x));
+				data2.musicapps.map((x) => pullerCate[data.musicapps].push(x));
 				pullerData[`complete`].target += data2.subimpression.mus;
 				puller[`${data.musicapps}target`] += data2.subimpression.mus;
 			} else {
 				puller[data.musicapps] = [];
+				pullerCate[data.musicapps] = [];
 				puller[`${data.musicapps}target`] = 0;
 				pullerData[`complete`].target += data2.subimpression.mus;
 				puller[`${data.musicapps}target`] += data2.subimpression.mus;
 				data2.musicapps.map((x) => puller[data.musicapps].push(x));
+				data2.musicapps.map((x) => pullerCate[data.musicapps].push(x));
 			}
 		}
 	}
@@ -397,14 +389,17 @@ export const ClientReport = () => async (dispatch, getState) => {
 		dass.push(data.video);
 		if (puller[data.video]) {
 			data2.video.map((x) => puller[data.video].push(x));
+			data2.video.map((x) => pullerCate[data.video].push(x));
 			pullerData[`complete`].target += data2.vidimpression;
 			puller[`${data.video}target`] += data2.vidimpression;
 		} else {
 			puller[data.video] = [];
+			pullerCate[data.video] = [];
 			puller[`${data.video}target`] = 0;
 			puller[`${data.video}target`] += data2.vidimpression;
 			pullerData[`complete`].target += data2.vidimpression;
 			data2.video.map((x) => puller[data.video].push(x));
+			data2.video.map((x) => pullerCate[data.video].push(x));
 		}
 	}
 	dass = [ ...new Set(dass) ];
@@ -447,13 +442,33 @@ export const ClientReport = () => async (dispatch, getState) => {
 		return new Date(b) - new Date(a);
 	});
 	pullerData.complete.updatedAt = pullerData.complete.updatedAt[0];
-	pullerData.complete.ltr = pullerData.complete.complete / pullerData.complete.impressions;
+	pullerData.complete.midpoint =
+		pullerData.complete.midpoint / pullerData.complete.firstQuartile * pullerData.complete.impressions;
+	pullerData.complete.thirdQuartile =
+		pullerData.complete.thirdQuartile / pullerData.complete.firstQuartile * pullerData.complete.impressions;
+	pullerData.complete.complete =
+		pullerData.complete.complete / pullerData.complete.firstQuartile * pullerData.complete.impressions;
+	pullerData.complete.firstQuartile =
+		pullerData.complete.firstQuartile / pullerData.complete.firstQuartile * pullerData.complete.impressions;
+	pullerData.complete.ltr = pullerData.complete.complete * 100 / pullerData.complete.firstQuartile;
+	pullerData.complete.midpoint = Math.round(pullerData.complete.midpoint);
+	pullerData.complete.thirdQuartile = Math.round(pullerData.complete.thirdQuartile);
+	pullerData.complete.complete = Math.round(pullerData.complete.complete);
+	for (const [ y, z ] of Object.entries(pullerCate)) {
+		pullerData[y].midpoint = pullerData[y].midpoint / pullerData[y].firstQuartile * pullerData[y].impressions;
+		pullerData[y].thirdQuartile =
+			pullerData[y].thirdQuartile / pullerData[y].firstQuartile * pullerData[y].impressions;
+		pullerData[y].complete = pullerData[y].complete / pullerData[y].firstQuartile * pullerData[y].impressions;
+		pullerData[y].firstQuartile = pullerData[y].impressions;
+		pullerData[y].ltr = pullerData[y].complete * 100 / pullerData[y].impressions;
+	}
 	console.log(dass, puller, pullerData);
 	dispatch({
 		type: REPORT_LOADED_CLIENT,
 		payload: {
 			mains: dass,
 			ids: puller,
+			cateids: pullerCate,
 			report: pullerData
 		}
 	});
@@ -500,40 +515,77 @@ export const clientReportBase = () => async (dispatch, getState) => {
 			.then((res) => res.json())
 			.then((result) => {
 				console.log(result);
-				fetch('/streamingads/groupedsingleClient', {
-					method: 'put',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: 'Bearer ' + localStorage.getItem('jwt')
-					},
-					body: JSON.stringify({
-						adtitle: result.campaignName,
-						podcast: result.podcast,
-						onDemand: result.onDemand,
-						musicapps: result.musicapps
+				if (result.type === 'campaign') {
+					fetch('/streamingads/groupedsingleClient', {
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: 'Bearer ' + localStorage.getItem('jwt')
+						},
+						body: JSON.stringify({
+							adtitle: result.campaignName,
+							podcast: result.podcast,
+							onDemand: result.onDemand,
+							musicapps: result.musicapps
+						})
 					})
-				})
-					.then((res) => res.json())
-					.then((reso) => {
-						console.log(reso);
-						console.log(result);
-						dispatch({
-							type: REPORT_BASE_LOADED_CLIENT,
-							payload: {
-								main: result,
-								ids: reso.ids,
-								id: reso.id,
-								title: result.campaignName,
-								startDate: result.startDate,
-								endDate: result.endDate
-							}
+						.then((res) => res.json())
+						.then((reso) => {
+							console.log(reso);
+							console.log(result);
+							dispatch({
+								type: REPORT_BASE_LOADED_CLIENT,
+								payload: {
+									main: result,
+									ids: reso.ids,
+									id: reso.id,
+									title: result.campaignName,
+									startDate: result.startDate,
+									endDate: result.endDate
+								}
+							});
+							dispatch(ClientReport());
+						})
+						.catch((err) => {
+							console.log(err);
+							dispatch({ type: REPORT_ERROR });
 						});
-						dispatch(ClientReport());
+				} else {
+					fetch('/streamingads/groupedbundleClient', {
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: 'Bearer ' + localStorage.getItem('jwt')
+						},
+						body: JSON.stringify({
+							id: result.campaignName,
+							podcast: result.podcast,
+							onDemand: result.onDemand,
+							musicapps: result.musicapps
+						})
 					})
-					.catch((err) => {
-						console.log(err);
-						dispatch({ type: REPORT_ERROR });
-					});
+						.then((res) => res.json())
+						.then((reso) => {
+							console.log(reso);
+							console.log(result);
+							dispatch({
+								type: REPORT_BASE_LOADED_CLIENT,
+								payload: {
+									main: result,
+									ids: reso.ids,
+									id: reso.id,
+									title: result.campaignName,
+									startDate: result.startDate,
+									endDate: result.endDate
+								}
+							});
+							dispatch(ClientReport());
+						})
+						.catch((err) => {
+							console.log(err);
+							dispatch({ type: REPORT_ERROR });
+						});
+				}
 			})
 			.catch((err) => {
 				console.log(err);
@@ -542,3 +594,86 @@ export const clientReportBase = () => async (dispatch, getState) => {
 		// console.log(base);
 	}
 };
+
+export const ClientSummDet = () => async (dispatch, getState) => {
+	const repo = getState().report;
+	const repo2 = getState().report.sets;
+	console.log(repo);
+	console.log(repo2);
+	console.log('repo');
+	var sol = {};
+	try {
+		if (repo2 && repo2.length) {
+			console.log('repo2');
+			for (var i = 0; i < repo2.length; i++) {
+				console.log(repo2[i]);
+				if (repo.sets[i].toLowerCase() != 'unselected') {
+					await fetch('/offreport/detreportcambydat', {
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: 'Bearer ' + localStorage.getItem('jwt')
+						},
+						body: JSON.stringify({
+							campaignId: repo.grp_ids[repo.sets[i]]
+						})
+					})
+						.then((res) => res.json())
+						.then((result) => {
+							var dlogs = result;
+							// console.log(result,'re')
+							// dlogs = dlogs.concat(logs)
+							// dlogs = dlogs.filter((x) => x.impressions > 0);
+							dlogs = dlogs.sort(function(a, b) {
+								var d1 = new Date(a.date);
+								var d2 = new Date(b.date);
+								return d2 - d1;
+							});
+							dlogs = dlogs.sort(function(a, b) {
+								var d1 = new Date(a.updatedAt[0]);
+								var d2 = new Date(b.updatedAt[0]);
+								if (a.date === b.date) return d2 - d1;
+							});
+							console.log(dlogs);
+							sol[repo.sets[i]] = dlogs;
+						});
+				}
+			}
+			console.log(sol, 'sol');
+			dispatch({
+				type: REPORT_LOADED_SUMMDET,
+				payload: sol
+			});
+		} else {
+			dispatch({
+				type: REPORT_ERROR_SUMMDET
+			});
+		}
+	} catch (e) {
+		console.log(e);
+	}
+};
+
+// async function Puller(ids) {
+// 	var data;
+// 	fetch('/offreport/sumreportofcamallClient', {
+// 		method: 'put',
+// 		headers: {
+// 			'Content-Type': 'application/json',
+// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+// 		},
+// 		body: JSON.stringify({
+// 			campaignId: ids
+// 		})
+// 	})
+// 		.then((res) => res.json())
+// 		.then((resu) => {
+// 			var result = resu;
+// 			data = resu;
+// 			console.log(result);
+// 			// return result;
+// 		})
+// 		.catch((err) => console.log(err));
+// 	// const result = await data.json();
+// 	return data;
+// }

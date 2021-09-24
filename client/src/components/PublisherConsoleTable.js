@@ -23,6 +23,10 @@ function PublisherConsoleTable({
 		setSearchval(val);
 	};
 	const [ rowsPerPage, setRowsPerPage ] = useState(consoledata.publisherDataRPP);
+	const [ ci, setci ] = React.useState(0);
+	const [ cc, setcc ] = React.useState(0);
+	const [ cu, setcu ] = React.useState(0);
+	const [ cr, setcr ] = React.useState(0);
 	const [ page, setPage ] = useState(consoledata.publisherDataPagination);
 	const [ sa, setsa ] = useState(consoledata.publisherDataordername);
 	const [ order, setorder ] = useState(consoledata.publisherDataorderdir);
@@ -53,6 +57,23 @@ function PublisherConsoleTable({
 	useEffect(
 		() => {
 			if (consoledata.searchedpublisherData) {
+				var data = consoledata.searchedpublisherData;
+				var ai = 0,
+					ac = 0,
+					ar = 0,
+					au = 0;
+				data.map((x) => {
+					ai += x.impression;
+					ac += x.click;
+					if (title === 'Audio') ar += x.req;
+					au += x.unique;
+					var uniquef = x.impression / x.unique;
+					x.uniquef = uniquef ? Math.round(uniquef * 100) / 100 : 0;
+				});
+				setci(ai);
+				setcc(ac);
+				setcu(au);
+				setcr(ar);
 				setadss(consoledata.searchedpublisherData);
 				// tablesorter('impression', 'number');
 			}
@@ -97,12 +118,57 @@ function PublisherConsoleTable({
 								<TableCell onClick={() => tablesorter('fede', 'string')} style={{ cursor: 'pointer' }}>
 									Feed {arrowRetuner(sa === 'fede' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
+								{title === 'Audio' && (
+									<TableCell
+										onClick={() => tablesorter('useage', 'number')}
+										style={{ cursor: 'pointer' }}
+									>
+										User Agent {arrowRetuner(sa === 'useage' ? (order === 'asc' ? '1' : '2') : '3')}
+									</TableCell>
+								)}
+								{title === 'Audio' && (
+									<TableCell
+										onClick={() => tablesorter('req', 'number')}
+										style={{ cursor: 'pointer' }}
+									>
+										Requests {arrowRetuner(sa === 'req' ? (order === 'asc' ? '1' : '2') : '3')}
+									</TableCell>
+								)}
+								{title === 'Audio' && (
+									<TableCell
+										onClick={() => tablesorter('avgreq', 'number')}
+										style={{ cursor: 'pointer' }}
+									>
+										Avg Requests{' '}
+										{arrowRetuner(sa === 'avgreq' ? (order === 'asc' ? '1' : '2') : '3')}
+									</TableCell>
+								)}
 								<TableCell
 									onClick={() => tablesorter('impression', 'number')}
 									style={{ cursor: 'pointer' }}
 								>
 									Total Impressions Delivered till date{' '}
 									{arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('avgimpre', 'number')}
+									style={{ cursor: 'pointer' }}
+								>
+									Average Impressions
+									{arrowRetuner(sa === 'avgimpre' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('unique', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									Unique Users {arrowRetuner(sa === 'unique' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('uniquef', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									Average Frequency
+									{arrowRetuner(sa === 'uniquef' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell onClick={() => tablesorter('click', 'number')} style={{ cursor: 'pointer' }}>
 									Total Clicks Delivered till date{' '}
@@ -121,7 +187,13 @@ function PublisherConsoleTable({
 											<TableCell>{log.publisherName}</TableCell>
 											<TableCell>{log.ssp}</TableCell>
 											<TableCell>{log.fede}</TableCell>
+											{title === 'Audio' && <TableCell>{log.useage}</TableCell>}
+											{title === 'Audio' && <TableCell>{log.req}</TableCell>}
+											{title === 'Audio' && <TableCell>{log.avgreq}</TableCell>}
 											<TableCell>{log.impression}</TableCell>
+											<TableCell>{log.avgimpre}</TableCell>
+											<TableCell>{log.unique}</TableCell>
+											<TableCell>{log.uniquef}</TableCell>
 											<TableCell>{log.click}</TableCell>
 											<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>
 										</TableRow>
@@ -130,6 +202,20 @@ function PublisherConsoleTable({
 							) : (
 								''
 							)}
+							<TableRow>
+								<TableCell className="boldClass">Total</TableCell>
+								<TableCell />
+								<TableCell />
+								{title === 'Audio' && <TableCell className="boldClass" />}
+								{title === 'Audio' && <TableCell className="boldClass">{cr}</TableCell>}
+								{title === 'Audio' && <TableCell className="boldClass" />}
+								<TableCell className="boldClass">{ci}</TableCell>
+								<TableCell />
+								<TableCell className="boldClass">{cu}</TableCell>
+								<TableCell />
+								<TableCell className="boldClass">{cc}</TableCell>
+								<TableCell className="boldClass">{Math.round(cc * 100 / ci * 100) / 100}%</TableCell>
+							</TableRow>
 						</TableBody>
 					</Table>
 				</TableContainer>
