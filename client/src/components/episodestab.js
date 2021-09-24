@@ -304,7 +304,7 @@ export default function EpisodeTab(){
 							</TableRow>
 						</TableHead>
 						<TableBody >
-							{(rows ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+							{(searchedData.length !== 0 ? searchedData : rows ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
 								<TableRow key={row.name}>
 									<TableCell component="th" scope="row">
 										{row.episodename ? row.episodename : ''}
