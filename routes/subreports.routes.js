@@ -2041,7 +2041,7 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 
 router.post('/get_server_report', adminauth, async (req, res) => {
 	try {
-		let res = await Serverreport.aggregate([
+		let result = await Serverreport.aggregate([
 			{ $sort: { createdOn: -1 } },
 			{ $limit: 3 },
 			{
@@ -2054,7 +2054,7 @@ router.post('/get_server_report', adminauth, async (req, res) => {
 				}
 			}
 		])
-		res.status(200).json(res);
+		res.status(200).json(result);
 	} catch (err) {
 		console.log(err.message);
 		res.status(400).json({ error: err.message });
