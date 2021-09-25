@@ -4,6 +4,7 @@ var podcastepisodesSchema = new Schema({
     publisherid: String,
     episodename: String,
     category: String,
+    publishername:String,
     // date: { type: String },
     requests: Number,
     displayname:String,

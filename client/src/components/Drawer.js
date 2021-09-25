@@ -251,6 +251,23 @@ export default function TemporaryDrawer() {
 									</ListItem>
 								</React.Fragment>
 							)}
+							{state &&
+							state.usertype === 'admin' && (
+								<React.Fragment>
+									<ListItem
+										className={classes.nested}
+										onClick={() => {
+											setopen(false);
+											history.push('/serverreport');
+										}}
+									>
+										<ListItemIcon>
+											<i className="material-icons">keyboard_arrow_right</i>
+										</ListItemIcon>
+										<ListItemText>Server Report</ListItemText>
+									</ListItem>
+								</React.Fragment>
+							)}
 						</List>
 					</Collapse>
 				</div>

@@ -11,7 +11,7 @@ export default function Episodedataform({ props, setShow, setsuccess, data1, set
 	const [ requests, setrequests ] = useState(props.requests ? props.requests : '');
 	const [ displayname, setdisplayname ] = useState(props.displayname ? props.displayname : '');
 	const [ hostPosssibility, sethostPosssibility ] = useState(props.hostPosssibility ? props.hostPosssibility : '');
-	
+	const [ publishername, setpublishername ] = useState(props.publishername ? props.publishername : '');
 	//load()
 	function editEpisodedata() {
 		fetch('/rtbreq/editepisodedata', {
@@ -28,7 +28,7 @@ export default function Episodedataform({ props, setShow, setsuccess, data1, set
 				requests,
 				displayname,
 				hostPosssibility,
-				
+				publishername
 			})
 		})
 			.then((res) => res.json())
@@ -44,24 +44,13 @@ export default function Episodedataform({ props, setShow, setsuccess, data1, set
 			});
 	}
 
-	// function load() {
-	// 	setMake_model(props.make_model);
-	// 	setrelease(props.release);
-	// 	setcompany(props.company);
-	// 	setcost(props.cost);
-	// 	setcumulative(props.cumulative);
-	// 	setmodel(props.model);
-	// 	settotal_percent(props.total_percent);
-	// 	settype(props.type);
-	// }
-
 	return (
 		<div>
 			<form style={{ margin: '2%' }}>
 				<TextField
-					placeholder="Publisher"
+					placeholder="Host"
 					margin="dense"
-					label="Publisher"
+					label="Host"
 					required={true}
 					value={publisher ? publisher : ''}
 					style={{ width: '60%' }}
@@ -73,10 +62,13 @@ export default function Episodedataform({ props, setShow, setsuccess, data1, set
 				<TextField
 					placeholder="Episode Name"
 					margin="dense"
-					label="Episode Name (No Change)"
+					label="Episode Name"
 					required={true}
 					style={{ width: '60%' }}
-					value={episodename ? episodename : ''}
+					value={displayname ? displayname : ''}
+					onChange={(e)=>{
+						setdisplayname(e.target.value)
+					}}
 				/>
 				<br />
 				<TextField
@@ -109,9 +101,9 @@ export default function Episodedataform({ props, setShow, setsuccess, data1, set
 					required={true}
 					label="Display Name"
 					style={{ width: '60%' }}
-					value={displayname ? displayname : ''}
+					value={episodename ? episodename : ''}
 					onChange={(e) => {
-						setdisplayname(e.target.value);
+						setepisodename(e.target.value);
 					}}
 				/>
 				<br />
@@ -127,6 +119,17 @@ export default function Episodedataform({ props, setShow, setsuccess, data1, set
 					}}
 				/>
 				<br />
+				<TextField
+					placeholder="Publisher Name"
+					margin="dense"
+					required={true}
+					label="Publisher Name"
+					style={{ width: '60%' }}
+					value={publishername ? publishername : ''}
+					onChange={(e) => {
+						setpublishername(e.target.value);
+					}}
+				/>
 			</form>
 			<button className="btn" style={{ marginBottom: '2%' }} onClick={editEpisodedata}>
 				Edit Info

@@ -246,7 +246,7 @@ router.get(
 
 router.get(
     '/getepisodewise_report',
-    // adminauth,
+    adminauth,
     async (req, res) => {
         try {
 
@@ -284,6 +284,7 @@ router.get(
                     $project: {
                         episodename: 1,
                         category: 1,
+                        publishername:1,
                         publisherid: 1,
                         requests: 1,
                         displayname: 1,
@@ -298,7 +299,8 @@ router.get(
                         request: { $sum: "$requests" },
                         displayname: { $first: "$displayname" },
                         hostPossibility: { $first: "$hostPossibility" },
-                        category_details: { $first: "$extra_details" }
+                        category_details: { $first: "$extra_details" },
+                        publishername: { $first: "$publishername" }
                     }
                 },
                 {
@@ -322,8 +324,8 @@ router.get(
                         tier1:"$category_details.tier1",
                         tier2:"$category_details.tier2",
                         tier3:"$category_details.tier3",
-                        new_taxonamy:"$category_details.new_taxonamy"
-                        
+                        new_taxonamy:"$category_details.new_taxonamy",
+                        publishername:"$publishername"
                     }
                 },
                 {$sort:{avgrequest:-1}}
@@ -372,12 +374,15 @@ router.post(
                 requests,
                 displayname,
                 hostPossibility,
+                publishername
             } = req.body;
             let updates = {
-                displayname,
+                episodename:displayname,
                 hostPossibility,
+                publishername,
+                displayname:episodename
             };
-            const updated = await EpisodeModel2.findOneAndUpdate({ episodename,category }, { $set: updates });
+            const updated = await EpisodeModel2.findOneAndUpdate({ displayname,category }, { $set: updates });
             if (!updated) {
                 return res.status(400).json({ error: "Couldn't Update !" });
             }

@@ -13,6 +13,7 @@ const spentreports = mongoose.model('spentreports');
 const phonemodel2 = mongoose.model('phonemodel2reports');
 const Zipreports2 = mongoose.model('zipreports2');
 const CategoryReports2 = require('../models/categoryreports2');
+const Serverreport =require('../models/serverreport')
 const Campaignwisereports = mongoose.model('campaignwisereports');
 // const CategoryReports = mongoose.model('categoryreports');
 const CategoryReports = require('../models/categoryreports');
@@ -2037,5 +2038,24 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 		res.status(400).json({ error: err });
 	}
 });
+
+router.post('/get_server_report',adminauth,async(req,res)=>{
+	try{
+		let res=await Serverreport.aggregate([
+			{$sort:{createdOn:-1}},
+			{$limit:3},
+			{$project:
+				{test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+				name:"$servername",
+				status:"$runningstatus",
+				date:"$test"
+			}}
+		])
+		res.status(200).json(res);
+	}catch(err){
+		console.log(err.message);
+		res.status(400).json({ error: err });
+	}
+})
 
 module.exports = router;
