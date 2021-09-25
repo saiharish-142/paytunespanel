@@ -377,12 +377,12 @@ router.post(
                 publishername
             } = req.body;
             let updates = {
-                episodename:displayname,
+                displayname,
                 hostPossibility,
                 publishername,
-                displayname:episodename
+                episodename
             };
-            const updated = await EpisodeModel2.findOneAndUpdate({ displayname,category }, { $set: updates });
+            const updated = await EpisodeModel2.findOneAndUpdate({ episodename:displayname,category }, { $set: updates });
             if (!updated) {
                 return res.status(400).json({ error: "Couldn't Update !" });
             }
