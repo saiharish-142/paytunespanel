@@ -13,7 +13,7 @@ const spentreports = mongoose.model('spentreports');
 const phonemodel2 = mongoose.model('phonemodel2reports');
 const Zipreports2 = mongoose.model('zipreports2');
 const CategoryReports2 = require('../models/categoryreports2');
-const Serverreport =require('../models/serverreport')
+const Serverreport = require('../models/serverreport')
 const Campaignwisereports = mongoose.model('campaignwisereports');
 // const CategoryReports = mongoose.model('categoryreports');
 const CategoryReports = require('../models/categoryreports');
@@ -192,7 +192,7 @@ router.put('/zipbycampids', adminauth, (req, res) => {
 					zip: '$_id.zip',
 					campaignId: '$_id.campaignId',
 					impression: 1,
-					clicks: { $sum: [ '$CompanionClickTracking', '$SovClickTracking' ] },
+					clicks: { $sum: ['$CompanionClickTracking', '$SovClickTracking'] },
 					createdOn: 1,
 					_id: 0,
 					area: '$extra.area',
@@ -797,7 +797,7 @@ router.put('/phoneModelbycampids', adminauth, (req, res) => {
 				}
 			});
 			var solu = [];
-			for (const [ x, y ] of Object.entries(store)) {
+			for (const [x, y] of Object.entries(store)) {
 				solu.push({
 					type: x,
 					impression: y.impression,
@@ -1044,7 +1044,7 @@ router.put('/uniqueusersbycampids2', adminauth, (req, res) => {
 	const dumd = [];
 	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
 	uniqueuserreports
-		.aggregate([ { $match: { campaignId: { $in: ids } } } ])
+		.aggregate([{ $match: { campaignId: { $in: ids } } }])
 		.then((result) => res.json(result))
 		.catch((err) => res.status(422).json(err));
 });
@@ -1111,7 +1111,7 @@ router.put('/categorywiseids', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
 				}
 			},
 			{
@@ -1119,7 +1119,7 @@ router.put('/categorywiseids', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', [] ] }
+					extra_details: { $ifNull: ['$extra_details', []] }
 				}
 			}
 		]).allowDiskUse(true);
@@ -1145,7 +1145,7 @@ router.put('/categorywiseids', adminauth, async (req, res) => {
 			}
 		});
 		var sender = [];
-		for (const [ y, z ] of Object.entries(soul)) {
+		for (const [y, z] of Object.entries(soul)) {
 			sender.push({
 				Name: y,
 				impressions: z.impressions,
@@ -1209,7 +1209,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
 				}
 			},
 			{
@@ -1217,7 +1217,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', [] ] }
+					extra_details: { $ifNull: ['$extra_details', []] }
 				}
 			}
 			// {
@@ -1263,7 +1263,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
 				}
 			},
 			{
@@ -1271,7 +1271,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', [] ] }
+					extra_details: { $ifNull: ['$extra_details', []] }
 				}
 			}
 		]).allowDiskUse(true);
@@ -1309,7 +1309,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
 				}
 			},
 			{
@@ -1317,7 +1317,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: [ '$extra_details', [] ] }
+					extra_details: { $ifNull: ['$extra_details', []] }
 				}
 			}
 		]).allowDiskUse(true);
@@ -1404,13 +1404,13 @@ router.get('/publisherComplete2', adminauth, async (req, res) => {
 	let display = await publisherwiseConsole.find({ type: 'display' }).catch((err) => console.log(err));
 	let video = await publisherwiseConsole.find({ type: 'video' }).catch((err) => console.log(err));
 	let uadata = await uareqreports
-		.aggregate([ { $group: { _id: '$publisherid', request: { $sum: '$ads' }, userAgent: { $push: '$ua' } } } ])
+		.aggregate([{ $group: { _id: '$publisherid', request: { $sum: '$ads' }, userAgent: { $push: '$ua' } } }])
 		.catch((err) => console.log(err));
 	var sol = {};
 	var sola = {};
 	uadata.map((x) => {
 		sol[x._id] = x.request;
-		sola[x._id] = [ ...new Set(x.userAgent) ];
+		sola[x._id] = [...new Set(x.userAgent)];
 	});
 	var compo = {
 		impression: 0,
@@ -1515,7 +1515,7 @@ router.get('/phonedata', adminauth, async (req, res) => {
 
 		const phone = await phonemodel2.aggregate([
 			{ $sort: { impression: -1 } },
-			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } }
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } }
 		]);
 		res.status(200).json(phone);
 	} catch (err) {
@@ -1539,7 +1539,7 @@ router.get('/phonedata_audio', adminauth, async (req, res) => {
 
 		const phone = await phonemodel2.aggregate([
 			{ $sort: { impression: -1 } },
-			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
 			{ $match: { rtbType: 'audio' } }
 		]);
 		res.status(200).json(phone);
@@ -1564,7 +1564,7 @@ router.get('/phonedata_video', adminauth, async (req, res) => {
 
 		const phone = await phonemodel2.aggregate([
 			{ $sort: { impression: -1 } },
-			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
 			{ $match: { rtbType: 'video' } }
 		]);
 		res.status(200).json(phone);
@@ -1588,8 +1588,8 @@ router.get('/zipdata', adminauth, async (req, res) => {
 		}
 		const result = await Zipreports2.aggregate([
 			{ $match: { requests: { $exists: true } } },
-			{ $addFields: { avgrequest: { $divide: [ '$requests', days ] } } },
-			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
+			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
 			{ $sort: { impression: -1 } }
 		]);
 
@@ -1613,8 +1613,8 @@ router.get('/zipdata_audio', adminauth, async (req, res) => {
 		}
 		const result = await Zipreports2.aggregate([
 			{ $match: { requests: { $exists: true } } },
-			{ $addFields: { avgrequest: { $divide: [ '$requests', days ] } } },
-			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
+			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
 			{ $sort: { impression: -1 } },
 			{ $match: { rtbType: 'audio' } }
 		]);
@@ -1640,8 +1640,8 @@ router.get('/zipdata_video', adminauth, async (req, res) => {
 		}
 		const result = await Zipreports2.aggregate([
 			{ $match: { requests: { $exists: true } } },
-			{ $addFields: { avgrequest: { $divide: [ '$requests', days ] } } },
-			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
+			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
 			{ $sort: { impression: -1 } },
 			{ $match: { rtbType: 'video' } }
 		]);
@@ -1667,8 +1667,8 @@ router.get('/zipdata_banner', adminauth, async (req, res) => {
 		}
 		const result = await Zipreports2.aggregate([
 			{ $match: { requests: { $exists: true } } },
-			{ $addFields: { avgrequest: { $divide: [ '$requests', days ] } } },
-			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
+			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
 			{ $sort: { impression: -1 } },
 			{ $match: { rtbType: 'display' } }
 		]);
@@ -1748,7 +1748,7 @@ router.get('/categorydata', adminauth, async (req, res) => {
 
 		const result = await CategoryReports2.aggregate([
 			{ $match: { impression: { $exists: true }, click: { $exists: true } } },
-			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } }
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } }
 		]);
 		res.status(200).json(result);
 	} catch (err) {
@@ -1803,7 +1803,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 			{ $match: { campaignId: { $in: ids } } },
 			{
 				$project: {
-					creativeid: { $ifNull: [ '$creativesetId', null ] },
+					creativeid: { $ifNull: ['$creativesetId', null] },
 					campaignId: 1,
 					impression: 1,
 					CompanionClickTracking: 1,
@@ -1817,7 +1817,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 			},
 			{
 				$project: {
-					creative_id: { $cond: [ { $eq: [ '$creativeid', '' ] }, null, '$creativeid' ] },
+					creative_id: { $cond: [{ $eq: ['$creativeid', ''] }, null, '$creativeid'] },
 					campaignId: 1,
 					impression: 1,
 					CompanionClickTracking: 1,
@@ -1831,7 +1831,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 			},
 			{
 				$project: {
-					creativeids: { $cond: [ { $eq: [ '$creative_id', 'null' ] }, null, '$creative_id' ] },
+					creativeids: { $cond: [{ $eq: ['$creative_id', 'null'] }, null, '$creative_id'] },
 					campaignId: 1,
 					impression: 1,
 					CompanionClickTracking: 1,
@@ -1907,7 +1907,7 @@ router.post('/categorydata_podcast', adminauth, async (req, res) => {
 					new_taxonamy: '$new_taxonamy'
 				}
 			},
-			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
 			{ $match: { feed: '3' } }
 		]);
 		res.status(200).json(result);
@@ -1946,7 +1946,7 @@ router.post('/categorydata_ondemand', adminauth, async (req, res) => {
 					new_taxonamy: '$new_taxonamy'
 				}
 			},
-			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
+			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
 			{ $match: { feed: '' } }
 		]);
 		res.status(200).json(result);
@@ -2018,7 +2018,7 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 					extra_details1: { $first: '$extra_details1' }
 				}
 			},
-			{ $addFields: { avgimpression: { $divide: [ '$impressions', days ] } } },
+			{ $addFields: { avgimpression: { $divide: ['$impressions', days] } } },
 			{
 				$project: {
 					rtbType: '$_id.rtbType',
@@ -2027,7 +2027,7 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 					SovClickTracking: 1,
 					impressions: 1,
 					avgimpression: 1,
-					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
 				}
 			},
 			{ $match: { rtbType: 'video' } }
@@ -2039,22 +2039,25 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 	}
 });
 
-router.post('/get_server_report',adminauth,async(req,res)=>{
-	try{
-		let res=await Serverreport.aggregate([
-			{$sort:{createdOn:-1}},
-			{$limit:3},
-			{$project:
-				{test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-				name:"$servername",
-				status:"$runningstatus",
-				date:"$test"
-			}}
+router.post('/get_server_report', adminauth, async (req, res) => {
+	try {
+		let res = await Serverreport.aggregate([
+			{ $sort: { createdOn: -1 } },
+			{ $limit: 3 },
+			{
+				$project:
+				{
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					name: "$servername",
+					status: "$runningstatus",
+					date: "$test"
+				}
+			}
 		])
 		res.status(200).json(res);
-	}catch(err){
+	} catch (err) {
 		console.log(err.message);
-		res.status(400).json({ error: err });
+		res.status(400).json({ error: err.message });
 	}
 })
 
