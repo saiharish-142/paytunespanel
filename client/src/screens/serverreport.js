@@ -121,7 +121,7 @@ export default function ServerReport() {
 						{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,i) => (
 							<TableRow key={i}>
 								<TableCell component="th" scope="row">
-									{row.date}
+									{row.test}
 								</TableCell>
 								<TableCell>{row.name}</TableCell>
 								<TableCell>{row.status}</TableCell>
