@@ -26,7 +26,7 @@ export default function ServerReport() {
 	const [ rows, setrows ] = useState([]);
 	const [ rowsPerPage, setRowsPerPage ] = useState(7);
 	
-	const [sortconfig,setsortconfig]=useState({key:'appName',direction:'descending'})
+	// const [sortconfig,setsortconfig]=useState({key:'appName',direction:'descending'})
 
 	const [ page, setPage ] = useState(0);
 
@@ -46,8 +46,7 @@ export default function ServerReport() {
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + localStorage.getItem('jwt')
-			},
-			body: JSON.stringify({ ssp: 'Rubicon' })
+			}
 		})
 			.then((res) => res.json())
 			.then((data) => {
@@ -61,46 +60,46 @@ export default function ServerReport() {
 
 	
 
-	React.useMemo(() => {
-		let sortedProducts = publisherbids;
-		if (sortconfig !== null) {
-		  sortedProducts.sort((a, b) => {
-			if (a[sortconfig.key] < b[sortconfig.key]) {
-			  return sortconfig.direction === 'ascending' ? -1 : 1;
-			}
-			if (a[sortconfig.key] > b[sortconfig.key]) {
-			  return sortconfig.direction === 'ascending' ? 1 : -1;
-			}
-			return 0;
-		  });
-		}
-		return sortedProducts;
-	  }, [rows, sortconfig]);
+	// React.useMemo(() => {
+	// 	let sortedProducts = publisherbids;
+	// 	if (sortconfig !== null) {
+	// 	  sortedProducts.sort((a, b) => {
+	// 		if (a[sortconfig.key] < b[sortconfig.key]) {
+	// 		  return sortconfig.direction === 'ascending' ? -1 : 1;
+	// 		}
+	// 		if (a[sortconfig.key] > b[sortconfig.key]) {
+	// 		  return sortconfig.direction === 'ascending' ? 1 : -1;
+	// 		}
+	// 		return 0;
+	// 	  });
+	// 	}
+	// 	return sortedProducts;
+	//   }, [rows, sortconfig]);
 	
 	
-	const requestSort=(key)=>{
-		let direction = 'ascending';
-		if (sortconfig && sortconfig.key === key && sortconfig.direction === 'ascending') {
-		  direction = 'descending';
-		}
-		setsortconfig({ key, direction });
-	}
+	// const requestSort=(key)=>{
+	// 	let direction = 'ascending';
+	// 	if (sortconfig && sortconfig.key === key && sortconfig.direction === 'ascending') {
+	// 	  direction = 'descending';
+	// 	}
+	// 	setsortconfig({ key, direction });
+	// }
 
-	const getClassNamesFor = (name) => {
-		if (!sortconfig) {
-		  return;
-		}
-		return sortconfig.key === name ? sortconfig.direction : undefined;
-	  };
-	  const arrowRetuner = (mode) => {
-		if (mode === '1') {
-			return <ArrowUpwardRoundedIcon fontSize="small" />;
-		} else if (mode === '2') {
-			return <ArrowDownwardRoundedIcon fontSize="small" />;
-		} else {
-			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
-		}
-	};
+	// const getClassNamesFor = (name) => {
+	// 	if (!sortconfig) {
+	// 	  return;
+	// 	}
+	// 	return sortconfig.key === name ? sortconfig.direction : undefined;
+	//   };
+	//   const arrowRetuner = (mode) => {
+	// 	if (mode === '1') {
+	// 		return <ArrowUpwardRoundedIcon fontSize="small" />;
+	// 	} else if (mode === '2') {
+	// 		return <ArrowDownwardRoundedIcon fontSize="small" />;
+	// 	} else {
+	// 		return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
+	// 	}
+	// };
 
 
 
@@ -134,7 +133,7 @@ export default function ServerReport() {
 			<TablePagination
 				rowsPerPageOptions={[ 7, 100, 1000, 10000 ]}
 				component="div"
-				count={bids ? bids.length : 0}
+				count={rows ? rows.length : 0}
 				rowsPerPage={rowsPerPage}
 				//style={{float:'left'}}
 				page={page}
