@@ -382,7 +382,7 @@ router.post(
                 publishername,
                 episodename
             };
-            const updated = await EpisodeModel2.findOneAndUpdate({ episodename:displayname,category }, { $set: updates });
+            const updated = await EpisodeModel2.findOneAndUpdate({ episodename,category }, { $set: updates });
             if (!updated) {
                 return res.status(400).json({ error: "Couldn't Update !" });
             }
