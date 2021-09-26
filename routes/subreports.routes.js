@@ -1574,7 +1574,7 @@ router.get('/phonedata_video', adminauth, async (req, res) => {
 	}
 });
 
-router.get('/zipdata', adminauth, async (req, res) => {
+router.get('/zipdata',  async (req, res) => {
 	try {
 		let startdate = new Date();
 		startdate.setDate(01);
@@ -1588,9 +1588,50 @@ router.get('/zipdata', adminauth, async (req, res) => {
 		}
 		const result = await Zipreports2.aggregate([
 			{ $match: { requests: { $exists: true } } },
+			{
+				$group: { _id: "$pincode" ,
+				requests: { $sum: "$requests" },
+				impression: { $sum: "$impression" },
+				click:{$sum:"$click"},
+				area:{$first:"$area"},
+				lowersubcity:{$first:"$lowersubcity"},
+				subcity:{$first:"$subcity"},
+				city:{$first:"$city"},
+				grandcity:{$first:"$grandcity"},
+				district:{$first:"$district"},
+				state:{$first:"$state"},
+				grandstate:{$first:"$grandcity"},
+				latitude:{$first:"$latitude"},
+				longitude:{$first:"$longitude"},
+			},
+				
+			},
 			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
 			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
-			{ $sort: { impression: -1 } }
+			{ $sort: { impression: -1 } },
+			{
+				$project: {
+					pincode: "$_id",
+					area: 1,
+					click:1,
+					lowersubcity: 1,
+					subcity: 1,
+					city: 1,
+					grandcity: 1,
+					district: 1,
+					comparison: 1,
+					state: 1,
+					grandstate: 1,
+					latitude: 1,
+					longitude: 1,
+					avgimpression: 1,
+					avgrequest: 1,
+					requests:1,
+					impression:1
+				}
+			}
+
+
 		]);
 
 		res.status(200).json(result);
@@ -2115,7 +2156,7 @@ router.put('/podcastepisodereports', async (req, res) => {
 					episode: 1,
 					impressions: 1,
 					click: 1,
-					ctr: { $cond: [{ $ne:["$impressions",0] }, { $divide: ["$click", "$impressions"] }, 0] },
+					ctr: { $cond: [{ $ne: ["$impressions", 0] }, { $divide: ["$click", "$impressions"] }, 0] },
 				}
 			},
 			{
@@ -2124,7 +2165,7 @@ router.put('/podcastepisodereports', async (req, res) => {
 					episode: 1,
 					impressions: 1,
 					click: 1,
-					ctr: { $round:{$multiply:["$ctr",100] }} 
+					ctr: { $round: { $multiply: ["$ctr", 100] } }
 				}
 			},
 			{
@@ -2133,10 +2174,10 @@ router.put('/podcastepisodereports', async (req, res) => {
 					episode: 1,
 					impressions: 1,
 					click: 1,
-					ctr: { $divide:["$ctr",100]} 
+					ctr: { $divide: ["$ctr", 100] }
 				}
 			},
-			{$sort:{"impressions":-1}}
+			{ $sort: { "impressions": -1 } }
 		])
 		res.status(200).json(result);
 	} catch (err) {
