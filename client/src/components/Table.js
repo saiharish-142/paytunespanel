@@ -87,7 +87,7 @@ export default function BasicTable({ singlead }) {
 				IbaDataPuller(singlead.ids);
 				FrequencyPuller(singlead.ids);
 				Creativedata(singlead.id);
-				PodcastData(singlead.ids)
+				PodcastData(singlead.id)
 			}
 		},
 		[ singlead ]

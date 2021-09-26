@@ -43,7 +43,8 @@ const useStyles = makeStyles((theme) => ({
 export default function ZipAudiodata() {
 	const classes = useStyles();
 	const [open, setOpen] = React.useState(false);
-
+	const [search1, setsearch] = useState('');
+	const [searchedData, setsearchedData] = useState([]);
 	const handleOpen = (data) => {
 		setOpen(true);
 		setShow(true)
@@ -96,7 +97,27 @@ export default function ZipAudiodata() {
 				console.log(dat);
 			});
 	};
+	function SearchData() {
+		let arr = [];
 
+		arr = rows.filter(
+			(row) =>{
+				if((row.pincode?row.pincode:"").toString().replace(/\s+/g, '') ===
+				search1.replace(/\s+/g, '')){
+					return row
+				}
+				
+			}
+				
+		);
+		console.log(arr)
+		if (arr.length === 0) {
+			setsearchedData('No Data Found!');
+		} else {		
+			setsearchedData(arr);
+			console.log('jvhvhvhv', arr);
+		}
+	}
 	useEffect(() => {
 		fetch('/subrepo/zipdata_audio', {
 			method: 'get',
@@ -186,7 +207,24 @@ export default function ZipAudiodata() {
 
 	return (
 		<div>
-			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Pincode Audio Data </h4>
+			<div>
+				<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Pincode Audio Data </h4>
+				<input
+					placeholder="Search Pincode"
+					onChange={(e) => setsearch(e.target.value)}
+					style={{
+						textAlign: 'center',
+						width: '20%',
+						padding: '0.1%',
+						border: '1px solid rgba(61, 61, 64, .25)',
+						background: '#ffffff'
+					}}
+				/>
+				<button className="btn" style={{ marginLeft: '1%' }} onClick={SearchData}>
+					Search
+				</button>
+			</div>
+			
 			<div className={classes.root}>
 				{success ? (
 					<Alert
@@ -218,6 +256,9 @@ export default function ZipAudiodata() {
 
 			<Paper>
 			<CSVLink {...csvReport}  >Download Table</CSVLink>
+			{searchedData === 'No Data Found!' ? (
+					<h7>{searchedData}</h7>
+				) : (
 				<TableContainer style={{ maxHeight: 440 }}>
 					<Table stickyHeader aria-label="sticky table">
 						<TableHead>
@@ -246,9 +287,8 @@ export default function ZipAudiodata() {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{rows &&
-								rows.length &&
-								rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+							{
+								(searchedData.length !== 0 ? searchedData : rows).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
 									<TableRow key={row.name}>
 										<TableCell component="th" scope="row">
 											{row.pincode ? row.pincode : ''}
@@ -282,6 +322,7 @@ export default function ZipAudiodata() {
 						</TableBody>
 					</Table>
 				</TableContainer>
+				)}
 				<TablePagination
 					rowsPerPageOptions={[10, 100, 1000, 10000]}
 					component="div"

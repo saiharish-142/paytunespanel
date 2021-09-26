@@ -43,7 +43,8 @@ const useStyles = makeStyles((theme) => ({
 export default function ZipBannerdata() {
 	const classes = useStyles();
 	const [open, setOpen] = React.useState(false);
-
+	const [search1, setsearch] = useState('');
+	const [searchedData, setsearchedData] = useState([]);
 	const handleOpen = (data) => {
 		setOpen(true);
 		setShow(true)
@@ -75,7 +76,27 @@ export default function ZipBannerdata() {
 	// 	settempdata(data);
 	// };
 	//const [make_model,setmakemodel]=useState("")
+	function SearchData() {
+		let arr = [];
 
+		arr = rows.filter(
+			(row) =>{
+				if((row.pincode?row.pincode:"").toString().replace(/\s+/g, '') ===
+				search1.replace(/\s+/g, '')){
+					return row
+				}
+				
+			}
+				
+		);
+		console.log(arr)
+		if (arr.length === 0) {
+			setsearchedData('No Data Found!');
+		} else {		
+			setsearchedData(arr);
+			console.log('jvhvhvhv', arr);
+		}
+	}
 	const data = () => {
 		fetch('/subrepo/zipdata_banner', {
 			method: 'get',
@@ -186,7 +207,24 @@ export default function ZipBannerdata() {
 
 	return (
 		<div>
-			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Pincode Banner Data </h4>
+			<div>
+				<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Pincode Banner Data </h4>
+				<input
+					placeholder="Search Pincode"
+					onChange={(e) => setsearch(e.target.value)}
+					style={{
+						textAlign: 'center',
+						width: '20%',
+						padding: '0.1%',
+						border: '1px solid rgba(61, 61, 64, .25)',
+						background: '#ffffff'
+					}}
+				/>
+				<button className="btn" style={{ marginLeft: '1%' }} onClick={SearchData}>
+					Search
+				</button>
+			</div>
+			
 			<div className={classes.root}>
 				{success ? (
 					<Alert
@@ -218,6 +256,9 @@ export default function ZipBannerdata() {
 
 			<Paper>
 			<CSVLink {...csvReport}  >Download Table</CSVLink>
+			{searchedData === 'No Data Found!' ? (
+					<h7>{searchedData}</h7>
+				) : (
 				<TableContainer style={{ maxHeight: 440 }}>
 					<Table stickyHeader aria-label="sticky table">
 						<TableHead>
@@ -246,9 +287,8 @@ export default function ZipBannerdata() {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{rows &&
-								rows.length &&
-								rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+							{
+								(searchedData.length !== 0 ? searchedData : rows).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
 									<TableRow key={row.name}>
 										<TableCell component="th" scope="row">
 											{row.pincode ? row.pincode : ''}
@@ -282,6 +322,7 @@ export default function ZipBannerdata() {
 						</TableBody>
 					</Table>
 				</TableContainer>
+				)}
 				<TablePagination
 					rowsPerPageOptions={[10, 100, 1000, 10000]}
 					component="div"

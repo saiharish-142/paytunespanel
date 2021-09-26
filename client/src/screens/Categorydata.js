@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 		border: '2px solid #000',
 		boxShadow: theme.shadows[5],
 		padding: '2% 2% 2% 6%',
-	  }
+	}
 }));
 
 export default function Categorydata() {
@@ -49,20 +49,20 @@ export default function Categorydata() {
 	const [open, setOpen] = React.useState(false);
 
 	const handleOpen = (data) => {
-	  setOpen(true);
-	  setShow(true)
-	  settempdata(data);
+		setOpen(true);
+		setShow(true)
+		settempdata(data);
 	};
-  
+
 	const handleClose = () => {
-	  setOpen(false);
+		setOpen(false);
 	};
-	const [ error, seterror ] = useState('');
-	const [ success, setsuccess ] = useState('');
-	const [ rows, setrows ] = useState([]);
-	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
-	const [ rowsPerPage, setRowsPerPage ] = useState(10);
-	const [ page, setPage ] = useState(0);
+	const [error, seterror] = useState('');
+	const [success, setsuccess] = useState('');
+	const [rows, setrows] = useState([]);
+	const [sortconfig, setsortconfig] = useState({ key: 'impression', direction: 'descending' })
+	const [rowsPerPage, setRowsPerPage] = useState(10);
+	const [page, setPage] = useState(0);
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
@@ -70,9 +70,10 @@ export default function Categorydata() {
 		setRowsPerPage(+event.target.value);
 		setPage(0);
 	};
-	const [ show, setShow ] = useState(false);
-	const [ tempdata, settempdata ] = useState({});
-
+	const [show, setShow] = useState(false);
+	const [tempdata, settempdata] = useState({});
+	const [search1, setsearch] = useState('');
+	const [searchedData, setsearchedData] = useState([]);
 	// const handleShow = (data) => {
 	// 	setShow(true);
 	// 	settempdata(data);
@@ -99,7 +100,27 @@ export default function Categorydata() {
 				console.log(dat);
 			});
 	};
+	function SearchData() {
+		let arr = [];
 
+		arr = rows.filter(
+			(row) => {
+				if ((row.category ? row.category : "").toString().replace(/\s+/g, '') ===
+					search1.replace(/\s+/g, '')) {
+					return row
+				}
+
+			}
+
+		);
+		console.log(arr)
+		if (arr.length === 0) {
+			setsearchedData('No Data Found!');
+		} else {
+			setsearchedData(arr);
+			console.log('jvhvhvhv', arr);
+		}
+	}
 	useEffect(() => {
 		fetch('/subrepo/categorydata', {
 			method: 'get',
@@ -143,36 +164,36 @@ export default function Categorydata() {
 	React.useMemo(() => {
 		let sortedProducts = rows;
 		if (sortconfig !== null) {
-		  sortedProducts.sort((a, b) => {
-			if (a[sortconfig.key] < b[sortconfig.key]) {
-			  return sortconfig.direction === 'ascending' ? -1 : 1;
-			}
-			if (a[sortconfig.key] > b[sortconfig.key]) {
-			  return sortconfig.direction === 'ascending' ? 1 : -1;
-			}
-			return 0;
-		  });
+			sortedProducts.sort((a, b) => {
+				if (a[sortconfig.key] < b[sortconfig.key]) {
+					return sortconfig.direction === 'ascending' ? -1 : 1;
+				}
+				if (a[sortconfig.key] > b[sortconfig.key]) {
+					return sortconfig.direction === 'ascending' ? 1 : -1;
+				}
+				return 0;
+			});
 		}
 		return sortedProducts;
-	  }, [rows, sortconfig]);
-	
-	
-	const requestSort=(key)=>{
+	}, [rows, sortconfig]);
+
+
+	const requestSort = (key) => {
 		let direction = 'ascending';
 		if (sortconfig && sortconfig.key === key && sortconfig.direction === 'ascending') {
-		  direction = 'descending';
+			direction = 'descending';
 		}
 		setsortconfig({ key, direction });
 	}
 
 	const getClassNamesFor = (name) => {
 		if (!sortconfig) {
-		  return;
+			return;
 		}
 		return sortconfig.key === name ? sortconfig.direction : undefined;
-	  };
+	};
 
-	  const arrowRetuner = (mode) => {
+	const arrowRetuner = (mode) => {
 		if (mode === '1') {
 			return <ArrowUpwardRoundedIcon fontSize="small" />;
 		} else if (mode === '2') {
@@ -184,7 +205,24 @@ export default function Categorydata() {
 
 	return (
 		<div>
-			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Category data </h4>
+			<div>
+				<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Category data </h4>
+				<input
+					placeholder="Search Category"
+					onChange={(e) => setsearch(e.target.value)}
+					style={{
+						textAlign: 'center',
+						width: '20%',
+						padding: '0.1%',
+						border: '1px solid rgba(61, 61, 64, .25)',
+						background: '#ffffff'
+					}}
+				/>
+				<button className="btn" style={{ marginLeft: '1%' }} onClick={SearchData}>
+					Search
+				</button>
+			</div>
+
 			<div className={classes.root}>
 				{success ? (
 					<Alert
@@ -215,54 +253,58 @@ export default function Categorydata() {
 			</div>
 
 			<Paper>
-			<CSVLink {...csvReport}  >Download Table</CSVLink>
-				<TableContainer style={{maxHeight:440}}>
-					<Table stickyHeader aria-label="sticky table">
-						<TableHead>
-							<TableRow>
-								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('category')} className={getClassNamesFor('category')}>Category {arrowRetuner( sortconfig.key==='category'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('impression')} className={getClassNamesFor('impression')}>Impressions {arrowRetuner( sortconfig.key==='impression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('avgimpression')} className={getClassNamesFor('avgimpression')}>Avg Impressions {arrowRetuner( sortconfig.key==='avgimpression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('click')} className={getClassNamesFor('click')}>Clicks {arrowRetuner( sortconfig.key==='click'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier1')} className={getClassNamesFor('tier1')}>Tier1 {arrowRetuner( sortconfig.key==='tier1'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
-								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier2')} className={getClassNamesFor('tier2')}>Tier2 {arrowRetuner( sortconfig.key==='tier2'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
-								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier3')} className={getClassNamesFor('tier3')}>Tier3 {arrowRetuner( sortconfig.key==='tier3'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier4')} className={getClassNamesFor('tier4')}>Tier4 {arrowRetuner( sortconfig.key==='tier4'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('genderCategory')} className={getClassNamesFor('genderCategory')}>Gender Category {arrowRetuner( sortconfig.key==='genderCategory'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('AgeCategory')} className={getClassNamesFor('AgeCategory')}>Age category {arrowRetuner( sortconfig.key==='AgeCategory'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('new_taxonamy')} className={getClassNamesFor('new_taxonmay')}>New Taxonamy {arrowRetuner( sortconfig.key==='new_taxonamy'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell />}
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-								<TableRow key={row.name}>
-									<TableCell component="th" scope="row">
-										{row.category ? row.category : ''}
-									</TableCell>
-									<TableCell>{row.impression ? row.impression : ''}</TableCell>
-									<TableCell>{row.impression ? Math.round(row.avgimpression)  : ''}</TableCell>
-									<TableCell>{row.click?row.click:''}</TableCell>
-									<TableCell>{row.tier1 ? row.tier1 : ''}</TableCell>
-									<TableCell>{row.tier2 ? row.tier2 : ''}</TableCell>
-									<TableCell>{row.tier3 ? row.tier3 : ''}</TableCell>
-									<TableCell>{row.tier4 ? row.tier4 : ''}</TableCell>
-									<TableCell>{row.genderCategory ? row.genderCategory : ''}</TableCell>
-									<TableCell>{row.AgeCategory ? row.AgeCategory : ''}</TableCell>
-									<TableCell>{row.new_taxonamy ? row.new_taxonamy : ''}</TableCell>
-									<TableCell>
-										<button className="btn" onClick={() =>  handleOpen(row)}>
-											Edit{' '}
-										</button>
-									</TableCell>
+				<CSVLink {...csvReport}  >Download Table</CSVLink>
+				{searchedData === 'No Data Found!' ? (
+					<h7>{searchedData}</h7>
+				) : (
+					<TableContainer style={{ maxHeight: 440 }}>
+						<Table stickyHeader aria-label="sticky table">
+							<TableHead>
+								<TableRow>
+									{/* <TableCell>{title}</TableCell> */}
+									{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('category')} className={getClassNamesFor('category')}>Category {arrowRetuner(sortconfig.key === 'category' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('impression')} className={getClassNamesFor('impression')}>Impressions {arrowRetuner(sortconfig.key === 'impression' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('avgimpression')} className={getClassNamesFor('avgimpression')}>Avg Impressions {arrowRetuner(sortconfig.key === 'avgimpression' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('click')} className={getClassNamesFor('click')}>Clicks {arrowRetuner(sortconfig.key === 'click' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('tier1')} className={getClassNamesFor('tier1')}>Tier1 {arrowRetuner(sortconfig.key === 'tier1' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
+									<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('tier2')} className={getClassNamesFor('tier2')}>Tier2 {arrowRetuner(sortconfig.key === 'tier2' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
+									<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('tier3')} className={getClassNamesFor('tier3')}>Tier3 {arrowRetuner(sortconfig.key === 'tier3' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
+									{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('tier4')} className={getClassNamesFor('tier4')}>Tier4 {arrowRetuner(sortconfig.key === 'tier4' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('genderCategory')} className={getClassNamesFor('genderCategory')}>Gender Category {arrowRetuner(sortconfig.key === 'genderCategory' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('AgeCategory')} className={getClassNamesFor('AgeCategory')}>Age category {arrowRetuner(sortconfig.key === 'AgeCategory' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('new_taxonamy')} className={getClassNamesFor('new_taxonmay')}>New Taxonamy {arrowRetuner(sortconfig.key === 'new_taxonamy' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell />}
 								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</TableContainer>
+							</TableHead>
+							<TableBody>
+								{(searchedData.length !== 0 ? searchedData : rows).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+									<TableRow key={row.name}>
+										<TableCell component="th" scope="row">
+											{row.category ? row.category : ''}
+										</TableCell>
+										<TableCell>{row.impression ? row.impression : ''}</TableCell>
+										<TableCell>{row.impression ? Math.round(row.avgimpression) : ''}</TableCell>
+										<TableCell>{row.click ? row.click : ''}</TableCell>
+										<TableCell>{row.tier1 ? row.tier1 : ''}</TableCell>
+										<TableCell>{row.tier2 ? row.tier2 : ''}</TableCell>
+										<TableCell>{row.tier3 ? row.tier3 : ''}</TableCell>
+										<TableCell>{row.tier4 ? row.tier4 : ''}</TableCell>
+										<TableCell>{row.genderCategory ? row.genderCategory : ''}</TableCell>
+										<TableCell>{row.AgeCategory ? row.AgeCategory : ''}</TableCell>
+										<TableCell>{row.new_taxonamy ? row.new_taxonamy : ''}</TableCell>
+										<TableCell>
+											<button className="btn" onClick={() => handleOpen(row)}>
+												Edit{' '}
+											</button>
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</TableContainer>
+				)}
 				<TablePagination
-					rowsPerPageOptions={[ 10, 100, 1000, 10000 ]}
+					rowsPerPageOptions={[10, 100, 1000, 10000]}
 					component="div"
 					count={rows ? rows.length : 0}
 					rowsPerPage={rowsPerPage}
@@ -272,26 +314,26 @@ export default function Categorydata() {
 					onChangeRowsPerPage={handleChangeRowsPerPage}
 				/>
 				<PodcastCategorydata />
-				<OndemandCategorydata/>
-				<VideoCategorydata/>
+				<OndemandCategorydata />
+				<VideoCategorydata />
 				{show ? (
 					<div>
 						<Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-		  		<div style={{maxHeight:'100vh','overflow-y':'auto'}} className={classes.paper}>
-						<h4>Edit Category Data</h4>
-						<Categorydataform
-							props={tempdata}
-							setShow={setShow}
-							setsuccess={setsuccess}
-							data1={data}
-							seterror={seterror}
-						/>
-						</div>
+							open={open}
+							onClose={handleClose}
+							aria-labelledby="simple-modal-title"
+							aria-describedby="simple-modal-description"
+						>
+							<div style={{ maxHeight: '100vh', 'overflow-y': 'auto' }} className={classes.paper}>
+								<h4>Edit Category Data</h4>
+								<Categorydataform
+									props={tempdata}
+									setShow={setShow}
+									setsuccess={setsuccess}
+									data1={data}
+									seterror={seterror}
+								/>
+							</div>
 						</Modal>
 					</div>
 				) : (

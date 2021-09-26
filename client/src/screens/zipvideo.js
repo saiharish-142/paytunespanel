@@ -68,7 +68,8 @@ export default function ZipVideodata() {
 	};
 	const [show, setShow] = useState(false);
 	const [tempdata, settempdata] = useState({});
-
+	const [search1, setsearch] = useState('');
+	const [searchedData, setsearchedData] = useState([]);
 	// const handleShow = (data) => {
 	// 	setShow(true);
 	// 	console.log(data);
@@ -117,7 +118,26 @@ export default function ZipVideodata() {
 				console.log(dat);
 			});
 	}, []);
+	function SearchData() {
+		let arr = [];
 
+		arr = rows.filter(
+			(row) =>{
+				if((row.pincode?row.pincode:"").toString().replace(/\s+/g, '') ===
+				search1.replace(/\s+/g, '')){
+					return row
+				}
+			}
+				
+		);
+		console.log(arr)
+		if (arr.length === 0) {
+			setsearchedData('No Data Found!');
+		} else {		
+			setsearchedData(arr);
+			console.log('jvhvhvhv', arr);
+		}
+	}
 	const headers = [
 		{ key: 'pincode', label: 'Pincode' },
 		{ key: 'requests', label: 'Requests' },
@@ -186,7 +206,23 @@ export default function ZipVideodata() {
 
 	return (
 		<div>
-			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Pincode Video data </h4>
+			<div>
+				<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Pincode Video Data </h4>
+				<input
+					placeholder="Search Pincode"
+					onChange={(e) => setsearch(e.target.value)}
+					style={{
+						textAlign: 'center',
+						width: '20%',
+						padding: '0.1%',
+						border: '1px solid rgba(61, 61, 64, .25)',
+						background: '#ffffff'
+					}}
+				/>
+				<button className="btn" style={{ marginLeft: '1%' }} onClick={SearchData}>
+					Search
+				</button>
+			</div>
 			<div className={classes.root}>
 				{success ? (
 					<Alert
@@ -218,6 +254,9 @@ export default function ZipVideodata() {
 
 			<Paper>
 			<CSVLink {...csvReport}  >Download Table</CSVLink>
+			{searchedData === 'No Data Found!' ? (
+					<h7>{searchedData}</h7>
+				) : (
 				<TableContainer style={{ maxHeight: 440 }}>
 					<Table stickyHeader aria-label="sticky table">
 						<TableHead>
@@ -246,9 +285,7 @@ export default function ZipVideodata() {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{rows &&
-								rows.length &&
-								rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+							{(searchedData.length !== 0 ? searchedData : rows).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
 									<TableRow key={row.name}>
 										<TableCell component="th" scope="row">
 											{row.pincode ? row.pincode : ''}
@@ -282,6 +319,7 @@ export default function ZipVideodata() {
 						</TableBody>
 					</Table>
 				</TableContainer>
+				)}
 				<TablePagination
 					rowsPerPageOptions={[10, 100, 1000, 10000]}
 					component="div"
