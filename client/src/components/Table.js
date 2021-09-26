@@ -19,6 +19,7 @@ import PublisherAdmin from './PublisherAdmin';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import CreativeReport from './creative_report';
+import Episode_Report from './podcastepisode';
 import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles({
@@ -86,6 +87,7 @@ export default function BasicTable({ singlead }) {
 				IbaDataPuller(singlead.ids);
 				FrequencyPuller(singlead.ids);
 				Creativedata(singlead.id);
+				PodcastData(singlead.ids)
 			}
 		},
 		[ singlead ]
@@ -203,7 +205,7 @@ export default function BasicTable({ singlead }) {
 				.then((res) => res.json())
 				.then((result) => {
 					console.log(result);
-					setpodcastreports(result);
+					setcreative(result);
 				})
 				.catch((err) => console.log(err));
 		}
@@ -1333,7 +1335,7 @@ export default function BasicTable({ singlead }) {
 			</div>
 			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
 			{/* {PincodeTable('audio', pincodereports && pincodereports.audio)} */}
-			<CreativeReport
+			<Episode_Report
 				// title="Audio"
 				state1={state1}
 				tablesorter={tablesorter}
