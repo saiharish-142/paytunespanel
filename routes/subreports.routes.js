@@ -2061,4 +2061,88 @@ router.post('/get_server_report', adminauth, async (req, res) => {
 	}
 })
 
+router.put('/podcastepisodereports', async (req, res) => {
+	try {
+		const { campaignId } = req.body;
+		var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : [];
+		let result = await Campaignwisereports.aggregate([
+			{ $match: { campaignId: { $in: ids } } },
+			{
+				$group: {
+					_id: { episode: "$bundlename", publisher: "$appId" },
+					impressions: { $sum: "$impression" },
+					CompanionClickTracking: { $sum: "$CompanionClickTracking" },
+					SovClickTracking: { $sum: "$SovClickTracking" }
+				}
+			},
+			{
+				$lookup: {
+					from: 'podcastepisodes2',
+					localField: '_id.episode',
+					foreignField: 'episodename',
+					as: 'episode_details'
+				}
+			},
+			{ $addFields: { "new_appid": { "$toObjectId": "$_id.publisher" } } },
+			{
+				$lookup: {
+					from: 'publisherapps',
+					localField: 'new_appid',
+					foreignField: '_id',
+					as: 'publisher_details'
+				}
+			},
+			{
+				$project: {
+					publisher: { $first: "$publisher_details" },
+					episode: { $first: "$episode_details" },
+					impressions: 1,
+					CompanionClickTracking: "$CompanionClickTracking",
+					SovClickTracking: "$SovClickTracking"
+				}
+			},
+			{
+				$project: {
+					publishername: "$publisher.AppName",
+					episode: "$episode_details.episodename",
+					impressions: 1,
+					click: { $add: ["$CompanionClickTracking", "$SovClickTracking"] },
+				}
+			},
+			{
+				$project: {
+					publishername: 1,
+					episode: 1,
+					impressions: 1,
+					click: 1,
+					ctr: { $cond: [{ $ne:["$impressions",0] }, { $divide: ["$click", "$impressions"] }, 0] },
+				}
+			},
+			{
+				$project: {
+					publishername: 1,
+					episode: 1,
+					impressions: 1,
+					click: 1,
+					ctr: { $round:{$multiply:["$ctr",100] }} 
+				}
+			},
+			{
+				$project: {
+					publishername: 1,
+					episode: 1,
+					impressions: 1,
+					click: 1,
+					ctr: { $divide:["$ctr",100]} 
+				}
+			},
+			{$sort:{"impressions":-1}}
+		])
+		res.status(200).json(result);
+	} catch (err) {
+		console.log(err.message);
+		res.status(400).json({ error: err.message });
+	}
+})
+
 module.exports = router;

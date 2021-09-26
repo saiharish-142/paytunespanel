@@ -869,7 +869,8 @@ async function PodcastEpisodeRefresher() {
 				category: podcast.category,
 				requests: podcast.request,
 				displayname: podcast.displayname,
-				hostPossibility: podcast.hostPossibility
+				hostPossibility: podcast.hostPossibility,
+				publishername:""
 			});
 			await episode.save();
 		} else {

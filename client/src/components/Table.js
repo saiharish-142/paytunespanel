@@ -45,6 +45,7 @@ export default function BasicTable({ singlead }) {
 	const [ ibaReports, setibaReports ] = useState([]);
 	const [ frequencyReport, setfrequencyReport ] = useState([]);
 	const [ creativereports, setcreative ] = useState([]);
+	const [podcastreports,setpodcastreports]=useState([]);
 	// const [logs, setlogs] = useState([])
 	const [ spentdata, setspentdata ] = useState([]);
 	const [ ids, setids ] = useState({});
@@ -189,7 +190,7 @@ export default function BasicTable({ singlead }) {
 	const Creativedata = (idsa) => {
 		console.log(idsa);
 		if (idsa) {
-			fetch('/subrepo/creativewisereports', {
+			fetch('/subrepo/creativewisereports',{
 				method: 'put',
 				headers: {
 					'Content-Type': 'application/json',
@@ -202,11 +203,33 @@ export default function BasicTable({ singlead }) {
 				.then((res) => res.json())
 				.then((result) => {
 					console.log(result);
-					setcreative(result);
+					setpodcastreports(result);
 				})
 				.catch((err) => console.log(err));
 		}
 	};
+
+	const PodcastData=(idsa)=>{
+		if (idsa) {
+			fetch('/subrepo/podcastepisodereports', {
+				method: 'put',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: 'Bearer ' + localStorage.getItem('jwt')
+				},
+				body: JSON.stringify({
+					campaignId: idsa
+				})
+			})
+				.then((res) => res.json())
+				.then((result) => {
+					console.log(result);
+					setpodcastreports(result);
+				})
+				.catch((err) => console.log(err));
+		}
+	}
+
 	// iba data of all data
 	const FrequencyPuller = (idsa) => {
 		console.log(idsa);
@@ -1297,6 +1320,26 @@ export default function BasicTable({ singlead }) {
 			) : (
 				''
 			)}
+			<div
+				style={{
+					margin: '10px auto',
+					fontSize: 'larger',
+					width: 'fit-content',
+					fontWeight: '500',
+					borderBottom: '1px solid black'
+				}}
+			>
+				Podcast Episode Wise Report
+			</div>
+			<div>last updated at - {lastUpdated ? updatedatetimeseter(lastUpdated) : 'Not found'}</div>
+			{/* {PincodeTable('audio', pincodereports && pincodereports.audio)} */}
+			<CreativeReport
+				// title="Audio"
+				state1={state1}
+				tablesorter={tablesorter}
+				arrowRetuner={arrowRetuner}
+				report={podcastreports}
+			/>
 			<div
 				style={{
 					margin: '10px auto',
