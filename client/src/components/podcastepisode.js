@@ -76,7 +76,7 @@ function Episode_Report({ title, report, state1 }) {
 		<Paper>
 			<TableContainer style={{ margin: '20px 0' }}>
 				{/* <div style={{ margin: '5px', fontWeight: 'bolder' }}>{title} Report</div> */}
-				{adss && adss.length > 0 ? (
+				{report && report.length > 0 ? (
 					<Table className={classes.table} aria-label="simple table">
 						<TableHead>
 							<TableRow>
@@ -86,7 +86,7 @@ function Episode_Report({ title, report, state1 }) {
 								<TableCell>Clicks</TableCell>
 								<TableCell>CTR</TableCell>
 								<TableCell>
-									{adss && adss.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
+									{report && report.length ? <CSVLink {...csvReport}>Download Table</CSVLink> : ''}
 								</TableCell>
 							</TableRow>
 						</TableHead>
