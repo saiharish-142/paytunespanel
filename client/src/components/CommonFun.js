@@ -87,6 +87,13 @@ export const CreativeHead = [
 	{ title: 'Clicks' },
 	{ title: 'CTR' }
 ];
+export const PodcastHead = [
+	{ title: 'Episode Name' },
+	{ title: 'Publisher Name' },
+	{ title: 'Impressions' },
+	{ title: 'Clicks' },
+	{ title: 'CTR' }
+];
 export const Consoleheaders = [
 	{ title: 'Publisher' },
 	{ title: 'SSP' },
@@ -258,6 +265,25 @@ export const CreativeBody = (report1) => {
 		return [
 			{ value: creativeset },
 			{ value: log.status ? log.status : '' },
+			{ value: impression ? impression : 0 },
+			{ value: clicks ? clicks : 0 },
+			{ value: ctr ? ctr : 0 }
+		];
+	});
+};
+export const PodcastBody = (report1) => {
+	return report1.map((log, index) => {
+		var episode = log.episode ? log.episode : '';
+		var publishername = log.publishername ? log.publishername : '';
+		var impression = log ? log.impressions : 0;
+		var clicks = parseInt(log.click);
+		var ctr =
+			Math.round(
+				(parseInt(log.click)) * 100 / parseInt(log.impression)
+			) + '%';
+		return [
+			{ value: episode },
+			{ value: publishername ? publishername : '' },
 			{ value: impression ? impression : 0 },
 			{ value: clicks ? clicks : 0 },
 			{ value: ctr ? ctr : 0 }

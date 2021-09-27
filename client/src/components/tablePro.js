@@ -13,6 +13,7 @@ import FrequencyAdmin from './frequencyAdmin';
 import IbaReportAdmin from './ibaReportAdmin';
 import PincodeAdmin from './pincodeAdmin';
 import Creative_Report from './creative_report';
+import Episode_Report from './podcastepisode';
 // import { ExcelSheet, ExcelFile, ExcelColumn } from 'react-data-export';
 import ReactExport from 'react-data-export';
 import {
@@ -29,7 +30,9 @@ import {
 	PincodeHead,
 	PincodeBody,
 	CreativeHead,
-	CreativeBody
+	CreativeBody,
+	PodcastBody,
+	PodcastHead
 } from './CommonFun';
 
 const ExcelFile = ReactExport.ExcelFile;
@@ -59,6 +62,7 @@ function TablePro() {
 	const [ ibaReports, setibaReports ] = useState([]);
 	const [ frequencyReport, setfrequencyReport ] = useState([]);
 	const [ creativereports, setcreative ] = useState([]);
+	const [podcastreports,setpodcastreports]=useState([]);
 	const [ uniqueData, setuniqueData ] = useState({ complete: 0, audio: 0, display: 0, video: 0 });
 	// const [ languageDownloadA, setlanguageDownloadA ] = useState([]);
 	// const [ languageDownloadD, setlanguageDownloadD ] = useState([]);
@@ -89,6 +93,7 @@ function TablePro() {
 				IbaDataPuller(report.ids);
 				FrequencyPuller(report.ids);
 				Creativedata(report.combine_ids);
+				PodcastData(report.combine_ids);
 			}
 		},
 		[ report ]
@@ -307,6 +312,27 @@ function TablePro() {
 				.catch((err) => console.log(err));
 		}
 	};
+	// podcast data puller
+	const PodcastData=(idsa)=>{
+		if (idsa) {
+			fetch('/subrepo/podcastepisodereports', {
+				method: 'put',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: 'Bearer ' + localStorage.getItem('jwt')
+				},
+				body: JSON.stringify({
+					campaignId: idsa
+				})
+			})
+				.then((res) => res.json())
+				.then((result) => {
+					console.log(result);
+					setpodcastreports(result);
+				})
+				.catch((err) => console.log(err));
+		}
+	}
 	// time finder for two date
 	const timefinder = (da1, da2) => {
 		var d1 = new Date(da1);
@@ -1121,6 +1147,12 @@ function TablePro() {
 			data: report.ids && creativereports && creativereports.length && CreativeBody(creativereports)
 		}
 	];
+	const PodcastDown = [
+		{
+			columns: PodcastHead,
+			data: report.ids && podcastreports && podcastreports.length && PodcastBody(podcastreports)
+		}
+	];
 	const CompeleteSheetGen = () => {
 		var vamp = [];
 		OverallDataDown.complete.map((x) => vamp.push(x));
@@ -1200,6 +1232,7 @@ function TablePro() {
 				<ExcelSheet dataSet={PincodeDown.display} name="Pincode Display Wise" />
 				<ExcelSheet dataSet={PincodeDown.video} name="Pincode Video Wise" />
 				<ExcelSheet dataSet={CreativeDown} name="Creative Wise" />
+				<ExcelSheet dataSet={PodcastDown} name="Podcast Wise" />
 			</ExeclDownload>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
@@ -1503,6 +1536,19 @@ function TablePro() {
 			) : (
 				''
 			)}
+			<div className="titleReport">Podcast Episode Wise Report</div>
+			<ExeclDownload filename={`Podcast Episode Wise Report ${report.title}`}>
+				<ExcelSheet dataSet={CreativeDown} name="Podcast Report" />
+			</ExeclDownload>
+			<div>
+				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
+			</div>
+			<Episode_Report
+				// title="Audio"
+				state1={report.req_id}
+				arrowRetuner={arrowRetuner}
+				report={podcastreports}
+			/>
 			<div className="titleReport">Creative Wise Summary Report</div>
 			<ExeclDownload filename={`Creative Wise Report ${report.title}`}>
 				<ExcelSheet dataSet={CreativeDown} name="Creative Wise" />

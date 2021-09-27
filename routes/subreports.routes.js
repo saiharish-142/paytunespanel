@@ -1630,8 +1630,6 @@ router.get('/zipdata',  async (req, res) => {
 					impression:1
 				}
 			}
-
-
 		]);
 
 		res.status(200).json(result);
