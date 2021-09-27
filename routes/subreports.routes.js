@@ -2106,6 +2106,7 @@ router.put('/podcastepisodereports', async (req, res) => {
 		var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : [];
 		let result = await Campaignwisereports.aggregate([
 			{ $match: { campaignId: { $in: ids } } },
+			{$match:{bundlename:{$exists:true}}},
 			{
 				$group: {
 					_id: { episode: "$bundlename", publisher: "$appId" },
