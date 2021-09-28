@@ -20,7 +20,7 @@ import Biddata from './screens/biddata';
 import Phonedata from './screens/phonedata';
 import Zipdata from './screens/zipdata';
 import EpisodeTab from './components/episodestab';
-import Serverreport from './screens/serverreport'
+import Serverreport from './screens/serverreport';
 import { loadUser, networkError } from './redux/actions/authAction';
 import { useDispatch, useSelector } from 'react-redux';
 import Categorydata from './screens/Categorydata';
@@ -29,6 +29,7 @@ import { loadRatio } from './redux/actions/currencyAction';
 import PublisherConsole from './screens/PublisherConsole';
 // import FrequencyConsole from './screens/FrequencyConsole';
 import SummaryClientDep from './screens/SummaryClientDep';
+import Useragentdata from './screens/useragentdata';
 
 export const IdContext = createContext();
 
@@ -126,7 +127,8 @@ function App() {
 							<Route path="/categorydata" exact render={() => <Categorydata />} />
 							<Route path="/zipdata" exact render={() => <Zipdata />} />
 							<Route path="/episodetabdata" exact render={() => <EpisodeTab />} />
-							<Route path="/serverreport" exact render={() => < Serverreport/>} />
+							<Route path="/serverreport" exact render={() => <Serverreport />} />
+							<Route path="/useragentdata" exact render={() => <Useragentdata />} />
 							<Route path="/clientSideCamp" exact render={() => <Dashboard clientview={true} />} />
 							<Route
 								path="/clientSideCamp/:campname"

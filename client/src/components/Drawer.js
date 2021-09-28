@@ -268,6 +268,23 @@ export default function TemporaryDrawer() {
 									</ListItem>
 								</React.Fragment>
 							)}
+							{state &&
+							state.usertype === 'admin' && (
+								<React.Fragment>
+									<ListItem
+										className={classes.nested}
+										onClick={() => {
+											setopen(false);
+											history.push('/useragentdata');
+										}}
+									>
+										<ListItemIcon>
+											<i className="material-icons">keyboard_arrow_right</i>
+										</ListItemIcon>
+										<ListItemText>User Agent Data</ListItemText>
+									</ListItem>
+								</React.Fragment>
+							)}
 						</List>
 					</Collapse>
 				</div>
