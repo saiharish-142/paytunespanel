@@ -11,7 +11,6 @@ router.get('/getuseragentdata', adminauth, async (req, res) => {
 		startdate.setDate(01);
 		startdate.setMonth(06);
 		startdate.setFullYear(2021);
-
 		let date = new Date();
 		let days = Math.round((date.getTime() - startdate.getTime()) / 86400000);
 		if (days === 0) {
@@ -30,8 +29,9 @@ router.get('/getuseragentdata', adminauth, async (req, res) => {
 			if (data[j] && data[j]._id)
 				solu.push({
 					ua: data[j]._id,
-					display: temp[data[j]._id] ? temp[data[j]._id] : 0,
-					requests: data[j].requests
+					display: temp[data[j]._id] ? temp[data[j]._id] : '',
+					requests: data[j].requests,
+					avgreq: data[j].requests / days
 				});
 		}
 		res.json(solu);
