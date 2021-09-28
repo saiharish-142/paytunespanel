@@ -66,6 +66,7 @@ require('./models/frequencyConsole.model');
 require('./models/campaignsClientmanage');
 require('./models/freqencypublishcount.model');
 require('./models/uareqreports.models');
+require('./models/useragent.model');
 
 app.use('/auth', require('./routes/user.routes'));
 app.use('/streamingads', require('./routes/streamingads.routes'));
@@ -81,6 +82,7 @@ app.use('/rtbreq', require('./routes/rtbrequest.routes'));
 app.use('/bundle', require('./routes/bundlenamereports.routes'));
 app.use('/subrepo', require('./routes/subreports.routes'));
 app.use('/bundles', require('./routes/bundling.routes'));
+app.use('/useragent', require('./routes/useragent.routes'));
 
 if (process.env.NODE_ENV === 'production') {
 	app.use(express.static('client/build'));
@@ -870,7 +872,7 @@ async function PodcastEpisodeRefresher() {
 				requests: podcast.request,
 				displayname: podcast.displayname,
 				hostPossibility: podcast.hostPossibility,
-				publishername:""
+				publishername: ''
 			});
 			await episode.save();
 		} else {
