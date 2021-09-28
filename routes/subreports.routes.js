@@ -2107,6 +2107,7 @@ router.put('/podcastepisodereports', async (req, res) => {
 		let result = await Campaignwisereports.aggregate([
 			{ $match: { campaignId: { $in: ids } } },
 			{$match:{bundlename:{$exists:true}}},
+			{$match:{feed:"3"}},
 			{
 				$group: {
 					_id: { episode: "$bundlename", publisher: "$appId" },
