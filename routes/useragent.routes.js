@@ -8,8 +8,8 @@ const uareqreports = mongoose.model('uareqreports');
 router.get('/getuseragentdata', adminauth, async (req, res) => {
 	try {
 		let startdate = new Date();
-		startdate.setDate(01);
-		startdate.setMonth(06);
+		startdate.setDate(05);
+		startdate.setMonth(09);
 		startdate.setFullYear(2021);
 		let date = new Date();
 		let days = Math.round((date.getTime() - startdate.getTime()) / 86400000);
