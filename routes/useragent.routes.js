@@ -27,11 +27,11 @@ router.get('/getuseragentdata', adminauth, async (req, res) => {
 			temp[final[i].ua] = final[i].display;
 		}
 		for (var j = 0; j < data.length; j++) {
-			if (data[i] && data[i]._id)
+			if (data[j] && data[j]._id)
 				solu.push({
-					ua: data[i]._id,
-					display: temp[data[i]._id] ? temp[data[i]._id] : 0,
-					requests: data[i].requests
+					ua: data[j]._id,
+					display: temp[data[j]._id] ? temp[data[j]._id] : 0,
+					requests: data[j].requests
 				});
 		}
 		res.json({ solu, data, temp });
