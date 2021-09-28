@@ -285,12 +285,12 @@ export default function EpisodeTab(){
 			{/* {searchedData==='No Data Found!'? <h7>{searchedData}</h7>:   */}
 			{searchedData === 'No Data Found!' ? (
 					<h7>{searchedData}</h7>
-				) :(<TableContainer style={{maxHeight:440}}>
+				) :(<TableContainer style={{maxHeight:440,maxWidth:'100%'}}>
 					<Table stickyHeader aria-label="sticky table" >
 						<TableHead  style={{position:"sticky",top:0}}>
 							<TableRow >
 								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('episodename')} className={getClassNamesFor('episodename')}>  Episode Name {arrowRetuner( sortconfig.key==='episodename'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('displayname')} className={getClassNamesFor('displayname')}> Display Name {arrowRetuner( sortconfig.key==='displayname'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('request')} className={getClassNamesFor('request')}> Request {arrowRetuner( sortconfig.key==='request'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('avgrequest')} className={getClassNamesFor('avgrequest')}>Avg Request {arrowRetuner( sortconfig.key==='avgrequest'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('publisher')} className={getClassNamesFor('publisher')}> Host {arrowRetuner( sortconfig.key==='publisher'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
@@ -298,9 +298,10 @@ export default function EpisodeTab(){
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier1')} className={getClassNamesFor('tier1')}> Tier1 {arrowRetuner( sortconfig.key==='tier1'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier2')} className={getClassNamesFor('tier2')}> Tier2 {arrowRetuner( sortconfig.key==='tier2'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier3')} className={getClassNamesFor('tier3')}> Tier3 {arrowRetuner( sortconfig.key==='tier3'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('displayname')} className={getClassNamesFor('displayname')}> Display Name {arrowRetuner( sortconfig.key==='displayname'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('hostPossibility')} className={getClassNamesFor('hostPossibility')}> Host Possibility {arrowRetuner( sortconfig.key==='hostPossibility'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('episodename')} className={getClassNamesFor('episodename')}>  Episode Name {arrowRetuner( sortconfig.key==='episodename'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('publishername')} className={getClassNamesFor('publishername')}> Publisher Name {arrowRetuner( sortconfig.key==='publishername'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('hostPossibility')} className={getClassNamesFor('hostPossibility')}> Host Possibility {arrowRetuner( sortconfig.key==='hostPossibility'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								
 								{<TableCell />}
 							</TableRow>
 						</TableHead>
@@ -308,7 +309,7 @@ export default function EpisodeTab(){
 							{(searchedData.length !== 0 ? searchedData : rows ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
 								<TableRow key={row.name}>
 									<TableCell component="th" scope="row">
-										{row.displayname ? row.displayname : ''}
+										{row.episodename ? row.episodename : ''}
 									</TableCell>
 									<TableCell>{row.request ? row.request : ''}</TableCell>
 									<TableCell>{row.avgrequest ? Math.round(row.avgrequest)  : ''}</TableCell>
@@ -317,9 +318,10 @@ export default function EpisodeTab(){
 									<TableCell>{row.tier1 ? row.tier1 : ''}</TableCell>
 									<TableCell>{row.tier2 ? row.tier2 : ''}</TableCell>
 									<TableCell>{row.tier3 ? row.tier3 : ''}</TableCell>
-									<TableCell>{row.episodename ? row.episodename : ''}</TableCell>
-									<TableCell>{row.hostPossibility ? row.hostPossibility : ''}</TableCell>
+									<TableCell>{row.displayname ? row.displayname : ''}</TableCell>
 									<TableCell>{row.publishername ? row.publishername : ''}</TableCell>
+									<TableCell>{row.hostPossibility ? row.hostPossibility : ''}</TableCell>
+									
 									<TableCell>
 										<button className="btn" onClick={() => handleOpen(row)}>  
 											Edit{' '}
