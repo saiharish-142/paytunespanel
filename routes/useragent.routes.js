@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const adminauth = require('../authenMiddleware/adminauth');
 const useragentdata = mongoose.model('useragentdata');
 const uareqreports = mongoose.model('uareqreports');
