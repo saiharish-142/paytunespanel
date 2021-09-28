@@ -18,19 +18,22 @@ router.get('/getuseragentdata', adminauth, async (req, res) => {
 			days = 1;
 		}
 		let data = await uareqreports.aggregate([ { $group: { _id: '$ua', requests: { $sum: '$ads' } } } ]);
-		let final = await useragentdata.find({ ua: { $in: data } });
+		var search = [];
+		data.map((x) => search.push(x._id));
+		let final = await useragentdata.find({ ua: { $in: search } });
 		var solu = [];
 		var temp = {};
 		for (var i = 0; i < final.length; i++) {
 			temp[final[i].ua] = final[i].display;
 		}
 		for (var j = 0; j < data.length; j++) {
-			solu.push({ ua: data[i]._id, display: temp[data[i]._id], requests: data[i].requests });
+			if (data[i] && data[i]._id)
+				solu.push({ ua: data[i]._id, display: temp[data[i]._id], requests: data[i].requests });
 		}
 		res.json(solu);
 	} catch (err) {
-		res.status(400).json({ error: err.message });
-		console.log(err.message);
+		console.log(err);
+		res.status(400).json({ error: err });
 	}
 });
 
