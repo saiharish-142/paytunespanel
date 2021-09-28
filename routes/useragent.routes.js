@@ -34,7 +34,7 @@ router.get('/getuseragentdata', adminauth, async (req, res) => {
 					requests: data[j].requests
 				});
 		}
-		res.json({ solu, data, temp });
+		res.json(solu);
 	} catch (err) {
 		console.log(err);
 		res.status(400).json({ error: err });
