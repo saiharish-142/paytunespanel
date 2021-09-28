@@ -290,7 +290,7 @@ export default function EpisodeTab(){
 						<TableHead  style={{position:"sticky",top:0}}>
 							<TableRow >
 								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('displayname')} className={getClassNamesFor('displayname')}> Display Name {arrowRetuner( sortconfig.key==='displayname'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer',maxWidth:'30%' }} onClick={()=>requestSort('episodename')} className={getClassNamesFor('episodename')}> Display Name {arrowRetuner( sortconfig.key==='episodename'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('request')} className={getClassNamesFor('request')}> Request {arrowRetuner( sortconfig.key==='request'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('avgrequest')} className={getClassNamesFor('avgrequest')}>Avg Request {arrowRetuner( sortconfig.key==='avgrequest'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('publisher')} className={getClassNamesFor('publisher')}> Host {arrowRetuner( sortconfig.key==='publisher'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
@@ -298,7 +298,7 @@ export default function EpisodeTab(){
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier1')} className={getClassNamesFor('tier1')}> Tier1 {arrowRetuner( sortconfig.key==='tier1'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier2')} className={getClassNamesFor('tier2')}> Tier2 {arrowRetuner( sortconfig.key==='tier2'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier3')} className={getClassNamesFor('tier3')}> Tier3 {arrowRetuner( sortconfig.key==='tier3'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('episodename')} className={getClassNamesFor('episodename')}>  Episode Name {arrowRetuner( sortconfig.key==='episodename'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('displayename')} className={getClassNamesFor('displayename')}>  Episode Name {arrowRetuner( sortconfig.key==='displayename'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('publishername')} className={getClassNamesFor('publishername')}> Publisher Name {arrowRetuner( sortconfig.key==='publishername'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('hostPossibility')} className={getClassNamesFor('hostPossibility')}> Host Possibility {arrowRetuner( sortconfig.key==='hostPossibility'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
 								
