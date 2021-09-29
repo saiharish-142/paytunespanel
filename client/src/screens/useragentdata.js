@@ -3,7 +3,10 @@ import { useEffect, useState } from 'react';
 import PreLoader from '../components/loaders/PreLoader';
 import {
 	Button,
+	Checkbox,
 	CircularProgress,
+	FormControlLabel,
+	FormGroup,
 	Modal,
 	Paper,
 	TableBody,
@@ -13,6 +16,7 @@ import {
 	TablePagination,
 	TableRow
 } from '@material-ui/core';
+import Switch from '@material-ui/core/Switch';
 import SearchIcon from '@material-ui/icons/Search';
 
 function getModalStyle() {
@@ -40,6 +44,7 @@ function Useragentdata() {
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
 	const [ datatrus, setdatatrus ] = useState([]);
+	const [ datafilterstatus, setdatafilterstatus ] = useState({ A: true, B: true });
 	const [ data, setdata ] = useState([]);
 	const [ dataloading, setdataloading ] = useState(true);
 	const [ dataerror, setdataerror ] = useState(false);
@@ -105,9 +110,19 @@ function Useragentdata() {
 					}
 				});
 				setdatatrus(manage);
+				seteditload(false);
 				seteditdata({ ua: '', display: '' });
 				setOpen(false);
 			});
+	};
+	const filterManger = (A, B) => {
+		var manage = datatrus.filter(
+			(x) =>
+				(!text || x.ua.toLowerCase().indexOf(text.toLowerCase()) > -1) &&
+				((A && x.display != '') || (B && x.display === ''))
+		);
+		// console.log(manage);
+		setdata(manage);
 	};
 	if (dataloading) {
 		return (
@@ -131,11 +146,30 @@ function Useragentdata() {
 						placeholder="Search User Agent"
 						value={text}
 						onChange={(e) => {
-							var maange = datatrus.filter(
-								(x) => x.ua.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1
-							);
-							setdata(maange);
-							settext(e.target.value);
+							if (datafilterstatus.A && datafilterstatus.B) {
+								var maange = datatrus.filter(
+									(x) => x.ua.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1
+								);
+								setdata(maange);
+								settext(e.target.value);
+							} else if (datafilterstatus.A) {
+								var maange = datatrus.filter(
+									(x) =>
+										x.ua.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1 && x.display != ''
+								);
+								setdata(maange);
+								settext(e.target.value);
+							} else if (datafilterstatus.B) {
+								var maange = datatrus.filter(
+									(x) =>
+										x.ua.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1 &&
+										x.display === ''
+								);
+								setdata(maange);
+								settext(e.target.value);
+							} else {
+								settext(e.target.value);
+							}
 						}}
 					/>
 				</div>
@@ -148,7 +182,36 @@ function Useragentdata() {
 							<TableCell style={{ width: '10%' }}>Requests</TableCell>
 							<TableCell style={{ width: '10%' }}>Average Requests</TableCell>
 							<TableCell style={{ width: '30%' }}>Display Name</TableCell>
-							<TableCell style={{ width: '10%' }} />
+							<TableCell style={{ width: '10%' }}>
+								<FormGroup>
+									<FormControlLabel
+										control={
+											<Checkbox
+												size="small"
+												checked={datafilterstatus.B}
+												onChange={(e) => {
+													setdatafilterstatus({ ...datafilterstatus, B: e.target.checked });
+													filterManger(datafilterstatus.A, e.target.checked);
+												}}
+											/>
+										}
+										label="Without Display"
+									/>
+									<FormControlLabel
+										control={
+											<Checkbox
+												size="small"
+												checked={datafilterstatus.A}
+												onChange={(e) => {
+													setdatafilterstatus({ ...datafilterstatus, A: e.target.checked });
+													filterManger(e.target.checked, datafilterstatus.B);
+												}}
+											/>
+										}
+										label="With Display"
+									/>
+								</FormGroup>
+							</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -166,9 +229,7 @@ function Useragentdata() {
 											seteditdata({ ua: row.ua, display: row.display });
 										}}
 									>
-										<Button variant="contained" color="primary">
-											Edit Name
-										</Button>
+										<Button color="secondary">Edit Name</Button>
 									</TableCell>
 								</TableRow>
 							);
@@ -204,7 +265,18 @@ function Useragentdata() {
 						value={editdata.display}
 						onChange={(e) => seteditdata({ ...editdata, display: e.target.value })}
 					/>
-					{editload ? <CircularProgress /> : <Button onClick={() => submitEdit()}>Submit</Button>}
+					{editload ? (
+						<CircularProgress />
+					) : (
+						<Button
+							onClick={() => {
+								seteditload(true);
+								submitEdit();
+							}}
+						>
+							Submit
+						</Button>
+					)}
 				</Paper>
 			</Modal>
 		</div>
