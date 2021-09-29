@@ -16,7 +16,7 @@ import {
 	TablePagination,
 	TableRow
 } from '@material-ui/core';
-import Switch from '@material-ui/core/Switch';
+// import Switch from '@material-ui/core/Switch';
 import SearchIcon from '@material-ui/icons/Search';
 
 function getModalStyle() {
