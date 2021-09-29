@@ -64,6 +64,12 @@ export const IBAHead = [
 	{ title: 'Clicks' },
 	{ title: 'CTR' }
 ];
+export const UserAgentHead = [
+	{ title: 'User Agent' },
+	{ title: 'Requests' },
+	{ title: 'Average Requests' },
+	{ title: 'Display Name' }
+];
 export const IBAClientHead = [ { title: 'Name' }, { title: 'Impressions' }, { title: 'Clicks' }, { title: 'CTR' } ];
 
 export const SumDetClientHead = [
@@ -413,6 +419,16 @@ export const SumDetClientBody = (report1, impressionR, clicksR) => {
 			{ value: impression ? impression : 0 },
 			{ value: clicks ? clicks : 0 },
 			{ value: ctr ? ctr + '%' : 0 }
+		];
+	});
+};
+export const UserAgentBody = (report1) => {
+	return report1.map((log, index) => {
+		return [
+			{ value: log.ua ? log.ua : '' },
+			{ value: log.requests ? log.requests : 0 },
+			{ value: log.avgreq ? Math.round(log.avgreq * 100) / 100 : 0 },
+			{ value: log.display ? log.display : '' }
 		];
 	});
 };

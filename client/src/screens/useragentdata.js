@@ -18,8 +18,11 @@ import {
 } from '@material-ui/core';
 // import Switch from '@material-ui/core/Switch';
 import SearchIcon from '@material-ui/icons/Search';
-import { arrowRetuner } from '../components/CommonFun';
+import { arrowRetuner, UserAgentBody, UserAgentHead } from '../components/CommonFun';
 import { orderSetter } from '../redux/actions/manageadsAction';
+import ReactExport from 'react-data-export';
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 
 function getModalStyle() {
 	const top = 50;
@@ -153,9 +156,55 @@ function Useragentdata() {
 	if (dataerror) {
 		return <h2>Something went Wrong Try again..</h2>;
 	}
+	const Download = [
+		{
+			columns: UserAgentHead,
+			data: datatrus.length && UserAgentBody(datatrus)
+		}
+	];
+	const DownloadDisplay = [
+		{
+			columns: UserAgentHead,
+			data: data.length && UserAgentBody(data)
+		}
+	];
+	function ExeclDownload(props) {
+		// console.log(props);
+		const data = React.Children.map(props.children, (child) => {
+			// console.log(child);
+			if (child.props.dataSet && child.props.dataSet[0].data) {
+				return child;
+			} else {
+				// console.log(child);
+			}
+		});
+		// console.log(data);
+		// console.log(data);
+		return (
+			<ExcelFile
+				filename={props.filename}
+				element={
+					<Button variant="outlined" color="primary">
+						{props.title}
+					</Button>
+				}
+			>
+				{/* <ExcelSheet dataSet={OverallDataDown.complete} name="Over all Summary Data" /> */}
+				{data.map((child) => {
+					return child;
+				})}
+			</ExcelFile>
+		);
+	}
 	return (
 		<div>
 			<div className="heading">User Agent Data</div>
+			<ExeclDownload filename={`User Agent Data`} title="Download Data">
+				<ExcelSheet dataSet={Download} name="User Agent Data" />
+			</ExeclDownload>
+			<ExeclDownload filename={`User Agent Filtered Data`} title="Download Filtered Data">
+				<ExcelSheet dataSet={DownloadDisplay} name="User Agent Data" />
+			</ExeclDownload>
 			<Paper className="tableCont">
 				<div style={{ display: 'flex', alignItems: 'center', padding: '0px 20px 5px 20px' }}>
 					<SearchIcon color="primary" fontSize="large" />
