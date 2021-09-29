@@ -1,3 +1,6 @@
+import React from 'react';
+import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
+import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 export const PublishHead = [
 	{ title: 'Publisher' },
 	{ title: 'SSP' },
@@ -277,10 +280,7 @@ export const PodcastBody = (report1) => {
 		var publishername = log.publishername ? log.publishername : '';
 		var impression = log ? log.impressions : 0;
 		var clicks = parseInt(log.click);
-		var ctr =
-			Math.round(
-				(parseInt(log.click)) * 100 / parseInt(log.impression)
-			) + '%';
+		var ctr = Math.round(parseInt(log.click) * 100 / parseInt(log.impression)) + '%';
 		return [
 			{ value: episode },
 			{ value: publishername ? publishername : '' },
@@ -415,4 +415,13 @@ export const SumDetClientBody = (report1, impressionR, clicksR) => {
 			{ value: ctr ? ctr + '%' : 0 }
 		];
 	});
+};
+export const arrowRetuner = (mode) => {
+	if (mode === '1') {
+		return <ArrowUpwardRoundedIcon fontSize="small" />;
+	} else if (mode === '2') {
+		return <ArrowDownwardRoundedIcon fontSize="small" />;
+	} else {
+		return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
+	}
 };

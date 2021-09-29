@@ -18,6 +18,8 @@ import {
 } from '@material-ui/core';
 // import Switch from '@material-ui/core/Switch';
 import SearchIcon from '@material-ui/icons/Search';
+import { arrowRetuner } from '../components/CommonFun';
+import { orderSetter } from '../redux/actions/manageadsAction';
 
 function getModalStyle() {
 	const top = 50;
@@ -50,6 +52,8 @@ function Useragentdata() {
 	const [ dataerror, setdataerror ] = useState(false);
 	const [ editload, seteditload ] = useState(false);
 	const [ editdata, seteditdata ] = useState({ ua: '', display: '' });
+	const [ sa, setsa ] = React.useState('requests');
+	const [ order, setorder ] = React.useState('desc');
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
@@ -71,9 +75,13 @@ function Useragentdata() {
 				if (result.error) {
 					return setdataerror(true);
 				}
+				var sad = result;
+				sad.sort(function(a, b) {
+					return b.requests - a.requests;
+				});
 				setdataloading(false);
-				setdata(result);
-				setdatatrus(result);
+				setdata(sad);
+				setdatatrus(sad);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -96,20 +104,21 @@ function Useragentdata() {
 			.then((res) => res.json())
 			.then((result) => {
 				console.log(result);
-				var manage = data;
-				manage.map((x) => {
-					if (x.ua === result.result.ua) {
-						x.display = result.result.display;
-					}
-				});
-				setdata(manage);
+				// var manage = data;
+				// manage.map((x) => {
+				// 	if (x.ua === result.result.ua) {
+				// 		x.display = result.result.display;
+				// 	}
+				// });
+				// setdata(manage);
 				var managetr = datatrus;
 				managetr.map((x) => {
 					if (x.ua === result.result.ua) {
 						x.display = result.result.display;
 					}
 				});
-				setdatatrus(manage);
+				setdatatrus(managetr);
+				filterManger(datafilterstatus.a, datafilterstatus.B);
 				seteditload(false);
 				seteditdata({ ua: '', display: '' });
 				setOpen(false);
@@ -123,6 +132,15 @@ function Useragentdata() {
 		);
 		// console.log(manage);
 		setdata(manage);
+	};
+	const tablesorter = (column, type) => {
+		var orde = sa === column ? (order === 'asc' ? 'desc' : 'asc') : 'asc';
+		setorder(orde);
+		setsa(column);
+		var setData = orderSetter(orde, column, data, type);
+		var setDatatrus = orderSetter(orde, column, datatrus, type);
+		setdata(setData);
+		setdatatrus(setDatatrus);
 	};
 	if (dataloading) {
 		return (
@@ -178,10 +196,34 @@ function Useragentdata() {
 				<TableContainer>
 					<TableHead>
 						<TableRow>
-							<TableCell style={{ width: '40%' }}>User Agent</TableCell>
-							<TableCell style={{ width: '10%' }}>Requests</TableCell>
-							<TableCell style={{ width: '10%' }}>Average Requests</TableCell>
-							<TableCell style={{ width: '30%' }}>Display Name</TableCell>
+							<TableCell
+								style={{ width: '40%' }}
+								onClick={() => tablesorter('ua', 'string')}
+								style={{ cursor: 'pointer' }}
+							>
+								User Agent{arrowRetuner(sa === 'ua' ? (order === 'asc' ? '1' : '2') : '3')}
+							</TableCell>
+							<TableCell
+								style={{ width: '10%' }}
+								onClick={() => tablesorter('requests', 'number')}
+								style={{ cursor: 'pointer' }}
+							>
+								Requests{arrowRetuner(sa === 'requests' ? (order === 'asc' ? '1' : '2') : '3')}
+							</TableCell>
+							<TableCell
+								style={{ width: '10%' }}
+								onClick={() => tablesorter('avgreq', 'number')}
+								style={{ cursor: 'pointer' }}
+							>
+								Average Requests{arrowRetuner(sa === 'avgreq' ? (order === 'asc' ? '1' : '2') : '3')}
+							</TableCell>
+							<TableCell
+								style={{ width: '30%' }}
+								onClick={() => tablesorter('display', 'string')}
+								style={{ cursor: 'pointer' }}
+							>
+								Display Name{arrowRetuner(sa === 'display' ? (order === 'asc' ? '1' : '2') : '3')}
+							</TableCell>
 							<TableCell style={{ width: '10%' }}>
 								<FormGroup>
 									<FormControlLabel
