@@ -16,7 +16,14 @@ import PublisherConsoleTable from '../components/PublisherConsoleTable';
 import QuartilePublisherCon from '../components/QuartileCon';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
-import { ConsolePhoneBody, Consoleheaders, QuartileHead, QuartileBodyCon } from '../components/CommonFun';
+import {
+	ConsolePhoneBody,
+	Consoleheaders,
+	ConsoleheadersAudio,
+	QuartileHead,
+	QuartileBodyCon,
+	ConsolePhoneBodyAudio
+} from '../components/CommonFun';
 import ReactExport from 'react-data-export';
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -57,6 +64,7 @@ function PublisherConsole() {
 		{ key: 'avgreq', label: 'Average Requests' },
 		{ key: 'unique', label: 'Unique Users' },
 		{ key: 'uniquef', label: 'Average Frequency' },
+		{ key: 'overlap', label: '% Over Lap' },
 		{ key: 'impression', label: 'Total Impressions Delivered till date' },
 		{ key: 'avgimpre', label: 'Average Impressions' },
 		{ key: 'click', label: 'Total Clicks Delivered till date' },
@@ -68,6 +76,7 @@ function PublisherConsole() {
 		{ key: 'fede', label: 'Feed' },
 		{ key: 'unique', label: 'Unique Users' },
 		{ key: 'uniquef', label: 'Average Frequency' },
+		{ key: 'overlap', label: '% Over Lap' },
 		{ key: 'impression', label: 'Total Impressions Delivered till date' },
 		{ key: 'avgimpre', label: 'Average Impressions' },
 		{ key: 'click', label: 'Total Clicks Delivered till date' },
@@ -178,8 +187,8 @@ function PublisherConsole() {
 	const PhonComp = {
 		audio: [
 			{
-				columns: Consoleheaders,
-				data: consoledata.audiopublisherData && ConsolePhoneBody(consoledata.audiopublisherData)
+				columns: ConsoleheadersAudio,
+				data: consoledata.audiopublisherData && ConsolePhoneBodyAudio(consoledata.audiopublisherData)
 			}
 		],
 		display: [
@@ -274,17 +283,19 @@ function PublisherConsole() {
 							<TableCell>Total Impresions</TableCell>
 						</TableRow>
 					</TableHead>
-					<TableBody>
-						<TableRow>
-							<TableCell>Impressions</TableCell>
-							<TableCell>{consoledata.CompletepublisherData.start}</TableCell>
-							<TableCell>{consoledata.CompletepublisherData.firstQuartile}</TableCell>
-							<TableCell>{consoledata.CompletepublisherData.midpoint}</TableCell>
-							<TableCell>{consoledata.CompletepublisherData.thirdQuartile}</TableCell>
-							<TableCell>{consoledata.CompletepublisherData.complete}</TableCell>
-							<TableCell>{consoledata.CompletepublisherData.impression}</TableCell>
-						</TableRow>
-					</TableBody>
+					{consoledata.CompletepublisherData && (
+						<TableBody>
+							<TableRow>
+								<TableCell>Impressions</TableCell>
+								<TableCell>{consoledata.CompletepublisherData.start}</TableCell>
+								<TableCell>{consoledata.CompletepublisherData.firstQuartile}</TableCell>
+								<TableCell>{consoledata.CompletepublisherData.midpoint}</TableCell>
+								<TableCell>{consoledata.CompletepublisherData.thirdQuartile}</TableCell>
+								<TableCell>{consoledata.CompletepublisherData.complete}</TableCell>
+								<TableCell>{consoledata.CompletepublisherData.impression}</TableCell>
+							</TableRow>
+						</TableBody>
+					)}
 				</Table>
 			</TableContainer>
 			<QuartilePublisherCon title={'Audio'} report={quat.audio} arrowRetuner={arrowRetuner} />

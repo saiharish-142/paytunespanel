@@ -158,17 +158,24 @@ function PublisherConsoleTable({
 									{arrowRetuner(sa === 'avgimpre' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
-									onClick={() => tablesorter('unique', 'string')}
+									onClick={() => tablesorter('unique', 'number')}
 									style={{ cursor: 'pointer' }}
 								>
 									Unique Users {arrowRetuner(sa === 'unique' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
-									onClick={() => tablesorter('uniquef', 'string')}
+									onClick={() => tablesorter('uniquef', 'number')}
 									style={{ cursor: 'pointer' }}
 								>
 									Average Frequency
 									{arrowRetuner(sa === 'uniquef' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('overlap', 'number')}
+									style={{ cursor: 'pointer' }}
+								>
+									% Over Lap Users{' '}
+									{arrowRetuner(sa === 'overlap' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell onClick={() => tablesorter('click', 'number')} style={{ cursor: 'pointer' }}>
 									Total Clicks Delivered till date{' '}
@@ -194,6 +201,7 @@ function PublisherConsoleTable({
 											<TableCell>{log.avgimpre}</TableCell>
 											<TableCell>{log.unique}</TableCell>
 											<TableCell>{log.uniquef}</TableCell>
+											<TableCell>{log.overlap}%</TableCell>
 											<TableCell>{log.click}</TableCell>
 											<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>
 										</TableRow>
@@ -212,6 +220,7 @@ function PublisherConsoleTable({
 								<TableCell className="boldClass">{ci}</TableCell>
 								<TableCell />
 								<TableCell className="boldClass">{cu}</TableCell>
+								<TableCell />
 								<TableCell />
 								<TableCell className="boldClass">{cc}</TableCell>
 								<TableCell className="boldClass">{Math.round(cc * 100 / ci * 100) / 100}%</TableCell>
