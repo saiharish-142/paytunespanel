@@ -44,6 +44,7 @@ function PublisherAdmin({
 		{ key: 'ssp', label: 'SSP' },
 		{ key: 'unique', label: 'Unique Users' },
 		{ key: 'freq', label: 'Average Frequency' },
+		{ key: 'overlap', label: '% Over lap Users' },
 		{ key: 'target', label: 'Total Impressions to be delivered' },
 		{ key: 'impressions', label: 'Total Impressions Delivered till date' },
 		{ key: 'spent', label: 'Total spent' },
@@ -66,12 +67,13 @@ function PublisherAdmin({
 					cliom = 0,
 					spentdd = 0,
 					uniqea = 0;
+				data.map((x) => (uniqea += x.unique));
 				data.map((ad) => {
 					var publishbid = ad.PublisherSplit;
 					// console.log(publishbid);
 					ad.freq = Math.round(ad.impressions / ad.unique * 100) / 100;
+					ad.overlap = Math.round(ad.unique * 100 / uniqea * 100) / 100;
 					imoop += ad.impressions;
-					uniqea += ad.unique;
 					cliom += ad.clicks;
 					spentdd += ad.spent ? parseFloat(ad.spent) : 0;
 					ad.spent =
@@ -152,14 +154,21 @@ function PublisherAdmin({
 									{arrowRetuner(sa === 'impressions' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
-									onClick={() => tablesorter('unique', 'string')}
+									onClick={() => tablesorter('unique', 'number')}
 									style={{ cursor: 'pointer' }}
 								>
 									Unique Users {arrowRetuner(sa === 'unique' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
-								<TableCell onClick={() => tablesorter('freq', 'string')} style={{ cursor: 'pointer' }}>
+								<TableCell onClick={() => tablesorter('freq', 'number')} style={{ cursor: 'pointer' }}>
 									Average Frequency{' '}
 									{arrowRetuner(sa === 'freq' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('overlap', 'number')}
+									style={{ cursor: 'pointer' }}
+								>
+									% Over Lap Users{' '}
+									{arrowRetuner(sa === 'overlap' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
 									onClick={() => tablesorter('clicks', 'number')}
@@ -208,6 +217,7 @@ function PublisherAdmin({
 										<TableCell>{log.impressions}</TableCell>
 										<TableCell>{log.unique}</TableCell>
 										<TableCell>{log.freq}</TableCell>
+										<TableCell>{log.overlap}</TableCell>
 										<TableCell>{log.clicks}</TableCell>
 										<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>
 										<TableCell>{Math.round(log.spent * 1) / 1}</TableCell>

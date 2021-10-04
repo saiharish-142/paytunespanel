@@ -34,12 +34,17 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 				dataA.sort(function(a, b) {
 					return b.impression - a.impression;
 				});
+				var uniqueTotalAudio = 0;
+				var uniqueTotalDisplay = 0;
+				var uniqueTotalVideo = 0;
+				dataA.map((x) => (uniqueTotalAudio += x.unique));
 				dataA.map((x) => {
 					x.ctr = x.click * 100 / x.impression;
 					// x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					// console.log(x.feed);
 					x.fede = x.feed === 3 ? 'Podcast' : 'Ondemand and Streaming';
 					x.avgimpre = Math.round(x.impression / x.days * 100) / 100;
+					x.overlap = x.unique ? Math.trunc(x.unique * 100 / uniqueTotalAudio * 100) / 100 : 0;
 					if (x.fede === 'Podcast') {
 						x.req = result.sol[x.apppubid];
 						// x.useage = result.sola[x.apppubid];
@@ -59,10 +64,12 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 				dataD.sort(function(a, b) {
 					return b.impression - a.impression;
 				});
+				dataD.map((x) => (uniqueTotalDisplay += x.unique));
 				dataD.map((x) => {
 					x.ctr = x.click * 100 / x.impression;
 					// console.log(x.feed);
 					x.fede = x.feed === 3 ? 'Podcast' : 'Ondemand and Streaming';
+					x.overlap = x.unique ? Math.trunc(x.unique * 100 / uniqueTotalDisplay * 100) / 100 : 0;
 					// console.log(x.fede);
 					// x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';
@@ -72,10 +79,12 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 				dataV.sort(function(a, b) {
 					return b.impression - a.impression;
 				});
+				dataV.map((x) => (uniqueTotalVideo += x.unique));
 				dataV.map((x) => {
 					x.ctr = x.click * 100 / x.impression;
 					// console.log(x.feed);
 					x.fede = x.feed === 3 ? 'Podcast' : 'Ondemand and Streaming';
+					x.overlap = x.unique ? Math.trunc(x.unique * 100 / uniqueTotalVideo * 100) / 100 : 0;
 					// console.log(x.fede);
 					// x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';

@@ -1,12 +1,18 @@
+import React from 'react';
+import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
+import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 export const PublishHead = [
 	{ title: 'Publisher' },
+	{ title: 'Feed' },
 	{ title: 'SSP' },
+	{ title: 'Unique Users' },
+	{ title: 'Average Frequency' },
+	{ title: '% Over lap Users' },
 	{ title: 'Tagret Impressions' },
 	{ title: 'Impressions Delivered' },
 	{ title: 'Total spent' },
 	{ title: 'Clicks Delivered' },
-	{ title: 'CTR' },
-	{ title: 'Feed' }
+	{ title: 'CTR' }
 ];
 export const QuartileHead = [
 	{ title: 'Publisher' },
@@ -61,6 +67,12 @@ export const IBAHead = [
 	{ title: 'Clicks' },
 	{ title: 'CTR' }
 ];
+export const UserAgentHead = [
+	{ title: 'User Agent' },
+	{ title: 'Requests' },
+	{ title: 'Average Requests' },
+	{ title: 'Display Name' }
+];
 export const IBAClientHead = [ { title: 'Name' }, { title: 'Impressions' }, { title: 'Clicks' }, { title: 'CTR' } ];
 
 export const SumDetClientHead = [
@@ -98,7 +110,26 @@ export const Consoleheaders = [
 	{ title: 'Publisher' },
 	{ title: 'SSP' },
 	{ title: 'Feed' },
+	{ title: 'Unique Users' },
+	{ title: 'Average Frequency' },
+	{ title: '% Over Lap' },
 	{ title: 'Total Impressions Delivered till date' },
+	{ title: 'Average Impressions' },
+	{ title: 'Total Clicks Delivered till date' },
+	{ title: 'CTR' }
+];
+export const ConsoleheadersAudio = [
+	{ title: 'Publisher' },
+	{ title: 'SSP' },
+	{ title: 'Feed' },
+	{ title: 'User Agent' },
+	{ title: 'Requests' },
+	{ title: 'Average Requests' },
+	{ title: 'Unique Users' },
+	{ title: 'Average Frequency' },
+	{ title: '% Over Lap' },
+	{ title: 'Total Impressions Delivered till date' },
+	{ title: 'Average Impressions' },
 	{ title: 'Total Clicks Delivered till date' },
 	{ title: 'CTR' }
 ];
@@ -106,6 +137,8 @@ export const PublishBody = (type, report1, spentfinder, report) => {
 	var spentOffline = report.audiospentOffline ? report.audiospentOffline : 0;
 	var spentOfflined = report.displayspentOffline ? report.displayspentOffline : 0;
 	var spentOfflinev = report.videospentOffline ? report.videospentOffline : 0;
+	var uniqea = 0;
+	report1.map((x) => (uniqea += x.unique));
 	return report1.map((log, index) => {
 		var spent =
 			spentfinder(log.Publisher._id, log.campaignId._id, log.impressions) +
@@ -114,15 +147,18 @@ export const PublishBody = (type, report1, spentfinder, report) => {
 			parseInt(type === 'Video' ? (spentOfflinev ? spentOfflinev : 0) : 0);
 		return [
 			{ value: log.publishername ? log.publishername : '' },
+			{
+				value: log.feed === '3' ? 'Podcast' : log.feed === '' ? 'Ondemand and Streaming' : ''
+			},
 			{ value: log.ssp ? log.ssp : '' },
+			{ value: log.unique ? log.unique : '' },
+			{ value: log.unique ? Math.round(log.impressions / log.unique * 100) / 100 : '' },
+			{ value: log.unique ? Math.round(log.unique * 100 / uniqea * 100) / 100 : '' },
 			{ value: parseInt(log.target) ? parseInt(log.target) : '' },
 			{ value: log.impressions ? log.impressions : 0 },
 			{ value: spent ? Math.round(spent * 1) / 1 : 0 },
 			{ value: log.clicks ? log.clicks : 0 },
-			{ value: log.ctr ? Math.round(log.ctr * 100) / 100 + '%' : 0 },
-			{
-				value: log.feed === '3' ? 'Podcast' : log.feed === '' ? 'Ondemand and Streaming' : ''
-			}
+			{ value: log.ctr ? Math.round(log.ctr * 100) / 100 + '%' : 0 }
 		];
 	});
 };
@@ -277,10 +313,7 @@ export const PodcastBody = (report1) => {
 		var publishername = log.publishername ? log.publishername : '';
 		var impression = log ? log.impressions : 0;
 		var clicks = parseInt(log.click);
-		var ctr =
-			Math.round(
-				(parseInt(log.click)) * 100 / parseInt(log.impression)
-			) + '%';
+		var ctr = Math.round(parseInt(log.click) * 100 / parseInt(log.impression)) + '%';
 		return [
 			{ value: episode },
 			{ value: publishername ? publishername : '' },
@@ -300,6 +333,27 @@ export const ConsolePhoneBody = (report1) => {
 			{ value: log.fede ? log.fede : '' },
 			{ value: log.unique ? log.unique : '' },
 			{ value: uniquef ? uniquef : '' },
+			{ value: log.overlap ? log.overlap : 0 + '%' },
+			{ value: log.impression ? log.impression : 0 },
+			{ value: log.click ? log.click : 0 },
+			{ value: ctr ? ctr : 0 + '%' }
+		];
+	});
+};
+export const ConsolePhoneBodyAudio = (report1) => {
+	return report1.map((log, index) => {
+		var ctr = log.ctr + '%';
+		var uniquef = Math.round(log.impression / log.unique * 100) / 100;
+		return [
+			{ value: log.publisherName ? log.publisherName : '' },
+			{ value: log.ssp ? log.ssp : '' },
+			{ value: log.fede ? log.fede : '' },
+			{ value: log.useage ? log.useage : '' },
+			{ value: log.req ? log.req : '' },
+			{ value: log.avgreq ? log.avgreq : '' },
+			{ value: log.unique ? log.unique : '' },
+			{ value: uniquef ? uniquef : '' },
+			{ value: log.overlap ? log.overlap : 0 + '%' },
 			{ value: log.impression ? log.impression : 0 },
 			{ value: log.click ? log.click : 0 },
 			{ value: ctr ? ctr : 0 + '%' }
@@ -415,4 +469,23 @@ export const SumDetClientBody = (report1, impressionR, clicksR) => {
 			{ value: ctr ? ctr + '%' : 0 }
 		];
 	});
+};
+export const UserAgentBody = (report1) => {
+	return report1.map((log, index) => {
+		return [
+			{ value: log.ua ? log.ua : '' },
+			{ value: log.requests ? log.requests : 0 },
+			{ value: log.avgreq ? Math.round(log.avgreq * 100) / 100 : 0 },
+			{ value: log.display ? log.display : '' }
+		];
+	});
+};
+export const arrowRetuner = (mode) => {
+	if (mode === '1') {
+		return <ArrowUpwardRoundedIcon fontSize="small" />;
+	} else if (mode === '2') {
+		return <ArrowDownwardRoundedIcon fontSize="small" />;
+	} else {
+		return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
+	}
 };

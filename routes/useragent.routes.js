@@ -7,10 +7,7 @@ const uareqreports = mongoose.model('uareqreports');
 
 router.get('/getuseragentdata', adminauth, async (req, res) => {
 	try {
-		let startdate = new Date();
-		startdate.setDate(05);
-		startdate.setMonth(09);
-		startdate.setFullYear(2021);
+		let startdate = new Date('2021-09-05');
 		let date = new Date();
 		let days = Math.round((date.getTime() - startdate.getTime()) / 86400000);
 		if (days === 0) {
@@ -41,7 +38,7 @@ router.get('/getuseragentdata', adminauth, async (req, res) => {
 	}
 });
 
-router.post('adddisplay', adminauth, async (req, res) => {
+router.post('/adddisplay', adminauth, async (req, res) => {
 	try {
 		const { display, ua } = req.body;
 		let match = await useragentdata.findOne({ ua: ua });
