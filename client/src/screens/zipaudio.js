@@ -99,11 +99,10 @@ export default function ZipAudiodata() {
 	};
 	function SearchData() {
 		let arr = [];
-
+		let search=new RegExp(search1);
 		arr = rows.filter(
 			(row) =>{
-				if((row.pincode?row.pincode:"").toString().replace(/\s+/g, '') ===
-				search1.replace(/\s+/g, '')){
+				if ((row.pincode ? row.pincode : "").toString().match(search,'ig')   ) {
 					return row
 				}
 				

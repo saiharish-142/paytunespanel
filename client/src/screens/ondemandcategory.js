@@ -98,11 +98,10 @@ export default function OndemandCategorydata() {
 	// };
 	function SearchData() {
 		let arr = [];
-
+		let search=new RegExp(search1);
 		arr = rows.filter(
 			(row) => {
-				if ((row.category ? row.category : "").toString().replace(/\s+/g, '') ===
-					search1.replace(/\s+/g, '')) {
+				if ((row.category ? row.category : "").toString().match(search,'ig')   ) {
 					return row
 				}
 

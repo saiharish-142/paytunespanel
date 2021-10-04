@@ -187,11 +187,15 @@ export default function Phonedata() {
 
 	function SearchData() {
 		let arr = [];
-
+		let search=new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase()) 
 		arr = rows.filter(
-			(row) =>
-				row.make_model.toString().replace(/\s+/g, '').trim().toLowerCase() ===
-				search1.replace(/\s+/g, '').trim().toLowerCase()
+			(row) =>{
+				if ((row.make_model ? row.make_model : "").toString().replace(/\s+/g, '').trim().toLowerCase().match(search,'ig')   ) {
+					return row
+				}
+			}
+				// row.make_model.toString().replace(/\s+/g, '').trim().toLowerCase() ===
+				// search1.replace(/\s+/g, '').trim().toLowerCase()
 		);
 		if (arr.length === 0) {
 			setsearchedData('No Data Found!');
