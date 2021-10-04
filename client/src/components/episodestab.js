@@ -86,10 +86,10 @@ export default function EpisodeTab(){
 
 	function SearchData() {
 		let arr = [];
-		let search=new RegExp(search1);
+		let search=new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase());
 		arr = rows.filter(
 			(row) =>{
-				if ((row.episodename ? row.episodename : "").toString().match(search,'ig')   ) {
+				if ((row.episodename ? row.episodename : "").toString().replace(/\s+/g, '').trim().toLowerCase().match(search,'ig')   ) {
 					return row
 				}
 			}

@@ -184,8 +184,13 @@ export default function PhoneVideodata() {
 
 	function SearchData(){
 		let arr=[]
-		
-		arr=rows.filter((row)=> row.make_model.toString().replace(/\s+/g, '').trim().toLowerCase()=== search1.replace(/\s+/g, '').trim().toLowerCase())
+		let search=new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase())
+		arr=rows.filter((row)=>
+		{
+			if ((row.make_model ? row.make_model : "").toString().replace(/\s+/g, '').trim().toLowerCase().match(search,'ig')   ) {
+				return row
+			}
+		})
 		if(arr.length===0){
 			setsearchedData('No Data Found!')
 		}else{

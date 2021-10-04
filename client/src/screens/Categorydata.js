@@ -102,10 +102,10 @@ export default function Categorydata() {
 	};
 	function SearchData() {
 		let arr = [];
-		let search=new RegExp(search1);
+		let search=new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase())
 		arr = rows.filter(
 			(row) => {
-				if ((row.category ? row.category : "").toString().match(search,'ig')   ) {
+				if ((row.category ? row.category : "").toString().replace(/\s+/g, '').trim().toLowerCase().match(search,'ig')   ) {
 					return row
 				}
 

@@ -78,15 +78,13 @@ export default function ZipBannerdata() {
 	//const [make_model,setmakemodel]=useState("")
 	function SearchData() {
 		let arr = [];
-		let search=new RegExp(search1);
+		let search=new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase())
 		arr = rows.filter(
 			(row) =>{
-				if ((row.pincode ? row.pincode : "").toString().match(search,'ig')   ) {
+				if ((row.pincode ? row.pincode : "").toString().replace(/\s+/g, '').trim().toLowerCase().match(search,'ig')   ) {
 					return row
 				}
-				
 			}
-				
 		);
 		console.log(arr)
 		if (arr.length === 0) {

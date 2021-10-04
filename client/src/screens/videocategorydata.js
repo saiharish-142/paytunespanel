@@ -98,11 +98,10 @@ export default function VideoCategorydata() {
 	// };
 	function SearchData() {
 		let arr = [];
-
+		let search=new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase())
 		arr = rows.filter(
 			(row) => {
-				if ((row._id.category ? row._id.category : "").toString().replace(/\s+/g, '') ===
-					search1.replace(/\s+/g, '')) {
+				if ((row.category ? row.category : "").toString().replace(/\s+/g, '').trim().toLowerCase().match(search,'ig')   ) {
 					return row
 				}
 
