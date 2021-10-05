@@ -623,7 +623,7 @@ export const ClientSummDet = () => async (dispatch, getState) => {
 							var dlogs = result;
 							// console.log(result,'re')
 							// dlogs = dlogs.concat(logs)
-							// dlogs = dlogs.filter((x) => x.impressions > 0);
+							dlogs = dlogs.filter((x) => x.impressions >= 10);
 							dlogs = dlogs.sort(function(a, b) {
 								var d1 = new Date(a.date);
 								var d2 = new Date(b.date);
