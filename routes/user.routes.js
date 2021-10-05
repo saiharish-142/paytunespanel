@@ -320,7 +320,10 @@ router.delete('/deletecampaign', adminauth, (req, res) => {
 	}
 	campaignClient
 		.findByIdAndDelete(id)
-		.then((resu) => res.json({ message: 'campagin deleted successfully' }))
+		.then(async (resu) => {
+			let delta = await campaignClient.deleteMany({ userid: id }).catch((err) => console.log(err));
+			res.json({ message: 'campagin deleted successfully', delta });
+		})
 		.catch((err) => {
 			res.status(404).json({ error: 'something went wrong', err });
 			console.log(err);
