@@ -599,7 +599,7 @@ function uniqueValuefinder(array, id) {
 	}
 }
 
-router.put('/sumreportofcamall2',  (req, res) => {
+router.put('/sumreportofcamall2', adminauth, (req, res) => {
 	const { campaignId } = req.body;
 	console.log(campaignId)
 	// var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
