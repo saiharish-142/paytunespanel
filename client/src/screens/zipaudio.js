@@ -164,20 +164,20 @@ export default function ZipAudiodata() {
 	};
 
 	React.useMemo(() => {
-		let sortedProducts = rows;
+		let sortedProducts =  searchedData?searchedData: rows;
 		if (sortconfig !== null) {
-			sortedProducts.sort((a, b) => {
-				if (a[sortconfig.key] < b[sortconfig.key]) {
-					return sortconfig.direction === 'ascending' ? -1 : 1;
-				}
-				if (a[sortconfig.key] > b[sortconfig.key]) {
-					return sortconfig.direction === 'ascending' ? 1 : -1;
-				}
-				return 0;
-			});
+		  sortedProducts.sort((a, b) => {
+			if (a[sortconfig.key] < b[sortconfig.key]) {
+			  return sortconfig.direction === 'ascending' ? -1 : 1;
+			}
+			if (a[sortconfig.key] > b[sortconfig.key]) {
+			  return sortconfig.direction === 'ascending' ? 1 : -1;
+			}
+			return 0;
+		  });
 		}
 		return sortedProducts;
-	}, [rows, sortconfig]);
+	  }, [rows, searchedData,sortconfig]);
 
 
 	const requestSort = (key) => {

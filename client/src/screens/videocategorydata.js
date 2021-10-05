@@ -157,7 +157,7 @@ export default function VideoCategorydata() {
 	};
 
 	React.useMemo(() => {
-		let sortedProducts = rows;
+		let sortedProducts =  searchedData?searchedData: rows;
 		if (sortconfig !== null) {
 		  sortedProducts.sort((a, b) => {
 			if (a[sortconfig.key] < b[sortconfig.key]) {
@@ -170,7 +170,7 @@ export default function VideoCategorydata() {
 		  });
 		}
 		return sortedProducts;
-	  }, [rows, sortconfig]);
+	  }, [rows, searchedData,sortconfig]);
 	
 	
 	const requestSort=(key)=>{
