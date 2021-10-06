@@ -2255,7 +2255,7 @@ async function FrequencyPublisherRefresher() {
 
 // pincodesumreport();
 async function pincodesumreport() {
-	var datee = new Date('2021-07-01').toISOString();
+	var datee = '2021-07-01';
 	var cdate, cmonth, cyear;
 	var cdatee = new Date(new Date());
 	cdate = cdatee.getDate();
@@ -2263,14 +2263,14 @@ async function pincodesumreport() {
 	cmonth = cdatee.getMonth() + 1;
 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
 	cyear = cdatee.getFullYear();
-	var chevk2 = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	var chevk2 = `${cyear}-${cmonth}-${cdate}`;
 	cdatee.setDate(cdatee.getDate() - 1);
 	cdate = cdatee.getDate();
 	cdate = cdate < 10 ? '0' + cdate : cdate;
 	cmonth = cdatee.getMonth() + 1;
 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
 	cyear = cdatee.getFullYear();
-	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	var chevk = `${cyear}-${cmonth}-${cdate}`;
 	console.log(chevk, chevk2);
 	// console.log(new Date(chevk));
 	zipreports
@@ -2303,6 +2303,7 @@ async function pincodesumreport() {
 		.allowDiskUse(true)
 		.then(async (result) => {
 			console.log(result.length);
+			var co = result.length;
 			if (result.length) {
 				for (var i = 0; i < result.length; i++) {
 					const storeClick = result[i].clicks;
@@ -2311,7 +2312,7 @@ async function pincodesumreport() {
 						.catch((err) => console.log(err));
 					if (match) {
 						if (match.createdOn === chevk2) {
-							console.log('Already Done');
+							console.log('Already Done', co--);
 						} else {
 							match.impression += result[i].impression;
 							match.clicks += storeClick;
@@ -2319,7 +2320,7 @@ async function pincodesumreport() {
 							match
 								.save()
 								.then((rs) => {
-									console.log('updated');
+									console.log('updated', co--);
 								})
 								.catch((err) => console.log(err));
 						}
@@ -2334,7 +2335,7 @@ async function pincodesumreport() {
 						zipmac
 							.save()
 							.then((sda) => {
-								console.log('created');
+								console.log('created', co--);
 							})
 							.catch((err) => console.log(err));
 					}
