@@ -1126,6 +1126,7 @@ router.put('/groupedsingleClient', adminauth, (req, res) => {
 				// data.TargetImpressions = tottar
 				res.json(data);
 			} else {
+				console.log(respo);
 				res.status(422).json({ error: 'somthing went wrong try again' });
 			}
 		})
