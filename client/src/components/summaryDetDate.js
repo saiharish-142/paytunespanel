@@ -152,6 +152,9 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 									{Math.round(totalClickS * 100 / totalImpreS * 100) / 100}
 								</TableCell>
 								<TableCell className="boldClass">{totalCompS}</TableCell>
+								<TableCell className="boldClass">
+									{Math.round(totalCompS * 100 / totalImpreS * 100) / 100}
+								</TableCell>
 							</TableRow>
 						</TableBody>
 					</Table>
