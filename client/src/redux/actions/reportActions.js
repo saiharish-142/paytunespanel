@@ -283,7 +283,7 @@ export const ShowReport = () => (dispatch, getState) => {
 export const ClientReport = () => async (dispatch, getState) => {
 	const data = getState().report.data;
 	const data2 = getState().report.ids;
-	// console.log(data2);
+	console.log(data2);
 	var dass = [];
 	var puller = {};
 	var pullerCate = {};
@@ -523,7 +523,7 @@ export const clientReportBase = () => async (dispatch, getState) => {
 							Authorization: 'Bearer ' + localStorage.getItem('jwt')
 						},
 						body: JSON.stringify({
-							adtitle: result.campaignName,
+							adtitle: result.searchName,
 							podcast: result.podcast,
 							onDemand: result.onDemand,
 							musicapps: result.musicapps
@@ -558,7 +558,7 @@ export const clientReportBase = () => async (dispatch, getState) => {
 							Authorization: 'Bearer ' + localStorage.getItem('jwt')
 						},
 						body: JSON.stringify({
-							id: result.campaignName,
+							id: result.searchName,
 							podcast: result.podcast,
 							onDemand: result.onDemand,
 							musicapps: result.musicapps
@@ -623,7 +623,7 @@ export const ClientSummDet = () => async (dispatch, getState) => {
 							var dlogs = result;
 							// console.log(result,'re')
 							// dlogs = dlogs.concat(logs)
-							// dlogs = dlogs.filter((x) => x.impressions > 0);
+							dlogs = dlogs.filter((x) => x.impressions >= 10);
 							dlogs = dlogs.sort(function(a, b) {
 								var d1 = new Date(a.date);
 								var d2 = new Date(b.date);

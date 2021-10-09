@@ -163,6 +163,7 @@ function Dashboard({ clientview, clientdirect }) {
 			</div>
 		);
 	}
+	console.log(clientmanageads.searchedmanageads);
 	return <h2>Error Occured... Try again</h2>;
 	// return (
 	// 	<div className="dashboard">

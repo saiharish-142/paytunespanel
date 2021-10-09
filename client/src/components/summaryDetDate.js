@@ -70,6 +70,7 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 					closk1 += cliol;
 					clomp1 += cmpu;
 					row.ctr = cliol * 100 / impre;
+					row.ltr = cmpu * 100 / impre;
 					return row;
 				});
 				console.log(data);
@@ -119,6 +120,15 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 								<TableCell onClick={() => tablesorter('ctr', 'number')} style={{ cursor: 'pointer' }}>
 									CTR{arrowRetuner(sa === 'ctr' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('complete', 'number')}
+									style={{ cursor: 'pointer' }}
+								>
+									Complete{arrowRetuner(sa === 'complete' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell onClick={() => tablesorter('ltr', 'number')} style={{ cursor: 'pointer' }}>
+									LTR{arrowRetuner(sa === 'ltr' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -129,6 +139,8 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 										<TableCell>{row.impressions}</TableCell>
 										<TableCell>{row.clicks}</TableCell>
 										<TableCell>{Math.round(row.ctr * 100) / 100 + '%'}</TableCell>
+										<TableCell>{row.complete}</TableCell>
+										<TableCell>{Math.round(row.ltr * 100) / 100 + '%'}</TableCell>
 									</TableRow>
 								);
 							})}
@@ -137,9 +149,12 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 								<TableCell className="boldClass">{totalImpreS}</TableCell>
 								<TableCell className="boldClass">{totalClickS}</TableCell>
 								<TableCell className="boldClass">
-									{Math.round(totalClickS * 100 / totalImpreS * 100) / 100}
+									{Math.round(totalClickS * 100 / totalImpreS * 100) / 100}%
 								</TableCell>
 								<TableCell className="boldClass">{totalCompS}</TableCell>
+								<TableCell className="boldClass">
+									{Math.round(totalCompS * 100 / totalImpreS * 100) / 100}%
+								</TableCell>
 							</TableRow>
 						</TableBody>
 					</Table>

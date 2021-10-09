@@ -206,26 +206,30 @@ export const loadClientAAds = () => (dispatch, getState) => {
 			.then((res) => res.json())
 			.then((res) => {
 				console.log(res);
-				var con = res;
-				con.map((ad) => {
-					var remainingdays = 0;
-					var d1 = new Date(ad.endDate);
-					var d2 = new Date(Date.now());
-					// console.log(d1,d2)
-					var show = d1.getTime() - d2.getTime();
-					remainingdays = show / (1000 * 3600 * 24);
-					if (remainingdays < 0) {
-						remainingdays = 'completed campaign';
-					}
-					ad.userid = ad.userid.username;
-					ad.remainingDays = remainingdays;
-					return ad;
-				});
-				dispatch({
-					type: CLIENT_MANAGEADS_LOADDED,
-					payload: res
-				});
-				dispatch(clientorderManager('asc', 'remainingDays', 'number'));
+				try {
+					var con = res;
+					con.map((ad) => {
+						var remainingdays = 0;
+						var d1 = new Date(ad.endDate);
+						var d2 = new Date(Date.now());
+						// console.log(d1,d2)
+						var show = d1.getTime() - d2.getTime();
+						remainingdays = show / (1000 * 3600 * 24);
+						if (remainingdays < 0) {
+							remainingdays = 'completed campaign';
+						}
+						ad.userid = ad.userid ? ad.userid.username : '';
+						ad.remainingDays = remainingdays;
+						return ad;
+					});
+					dispatch({
+						type: CLIENT_MANAGEADS_LOADDED,
+						payload: con
+					});
+					dispatch(clientorderManager('asc', 'remainingDays', 'number'));
+				} catch (e) {
+					console.log(e);
+				}
 			})
 			.catch((err) => {
 				dispatch({

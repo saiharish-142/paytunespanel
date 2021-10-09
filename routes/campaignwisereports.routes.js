@@ -111,7 +111,7 @@ router.put('/detreportcambydat', adminauth, (req, res) => {   // overall
 					_id: { date: '$date' },
 					updatedAt: { $push: '$createdOn' },
 					impressions: { $sum: '$impression' },
-					complete: { $sum: '$completedAudioImpressions' },
+					complete: { $sum: '$complete' },
 					clicks: { $sum: '$CompanionClickTracking' },
 					region: { $push: '$region' }
 				}
@@ -607,7 +607,7 @@ function uniqueValuefinder(array, id) {
 
 router.put('/sumreportofcamall2', adminauth, (req, res) => {
 	const { campaignId } = req.body;
-	console.log(campaignId)
+	console.log(campaignId);
 	// var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
 	var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
 	var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
@@ -890,7 +890,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				response.video.map((x) => {
 					videoCompleteReport.unique.push(x.PublisherSplit);
 				});
-			console.log('jkh', audioCompleteReport.unique)
+			console.log('jkh', audioCompleteReport.unique);
 			// audioCompleteReport.unique = removeDuplicates(audioCompleteReport.unique);
 			datmaaudio = await freqpublishreports
 				.aggregate([
@@ -899,7 +899,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				])
 				.catch((err) => console.log(err));
 			var tempaudio = {};
-			console.log('datamaudio', datmaaudio)
+			console.log('datamaudio', datmaaudio);
 			if (datmaaudio.length) {
 				for (var i = 0; i < datmaaudio.length; i++) {
 					audioCompleteReport.uniqueValue += parseInt(datmaaudio[i].users);
