@@ -21,6 +21,10 @@ import Phonedata from './screens/phonedata';
 import Zipdata from './screens/zipdata';
 import EpisodeTab from './components/episodestab';
 import Serverreport from './screens/serverreport';
+import DetailedAudio from './components/detailedoverallaudio';
+import DetailedVideo from './components/detailedoverallvideo';
+import DetailedDisplay from './components/detailedoveralldisplay';
+import DetailedPublisher from './components/detailedpublisher';
 import { loadUser, networkError } from './redux/actions/authAction';
 import { useDispatch, useSelector } from 'react-redux';
 import Categorydata from './screens/Categorydata';
@@ -108,7 +112,11 @@ function App() {
 							<Route path="/" exact render={() => <Home />} />
 							<Route path="/manageAds" exact render={() => <Dashboard />} />
 							<Route path="/manageAds/:campname" exact render={() => <Report />} />
-							<Route path="/manageAds/:campname/detailed" exact render={() => <DetailedTable />} />
+							<Route path="/manageAds/:campname/detailedoverallreport" exact render={() => <DetailedTable />} />
+							<Route path="/manageAds/:campname/detailedoverallaudioreport" exact render={() => <DetailedAudio />} />
+							<Route path="/manageAds/:campname/detailedoverallvideoreport" exact render={() => <DetailedVideo />} />
+							<Route path="/manageAds/:campname/detailedoveralldisplayreport" exact render={() => <DetailedDisplay />} />
+							<Route path="/manageAds/:campname/detailedoverallpublisherreport/:pubname" exact render={() => <DetailedPublisher />} />
 							<Route path="/manageBundles" exact render={() => <DashboardBundle />} />
 							<Route path="/manageBundles/:campname" exact render={() => <ReportBundle />} />
 							<Route

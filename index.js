@@ -584,7 +584,7 @@ async function PincodeRequestsRefresher() {
 			let val = await Zipreports2.findOne({ pincode: parseInt(pincode._id.zip), rtbType: { $exists: false } });
 			const newzip = new Zipreports2({
 				area: val ? val.area : '',
-				pincode: parseInt(pincode._id.zip),
+				pincode: pincode._id.zip? parseInt(pincode._id.zip):null,
 				rtbType: pincode._id.rtbType,
 				lowersubcity: val ? val.lowersubcity : '',
 				subcity: val ? val.subcity : '',

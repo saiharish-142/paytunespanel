@@ -10,22 +10,25 @@ import { useHistory, useParams } from 'react-router-dom';
 import { IdContext } from '../App';
 import { Typography } from '@material-ui/core';
 import IconBreadcrumbs from '../components/breadBreed';
+import { StrikethroughSTwoTone } from '@material-ui/icons';
 
 export default function DetailedTable() {
 	const history = useHistory();
 	const { state1, dispatch1 } = useContext(IdContext);
+    const [rows,setrows]=useState([]);
 	const { campname } = useParams();
 	const [ ids, setids ] = useState({});
 	const [ title, settitle ] = useState('');
 	const [ datelogs, setdatelogs ] = useState([]);
 	const [ publishlogs, setpublishlogs ] = useState([]);
-	const [ rows, setrows ] = useState([]);
 	const [ datelogsd, setdatelogsd ] = useState([]);
 	const [ publishlogsd, setpublishlogsd ] = useState([]);
 	const [ datelogsv, setdatelogsv ] = useState([]);
 	const [ publishlogsv, setpublishlogsv ] = useState([]);
 	const [ phonedata, setphonedata ] = useState([]);
 	const [ currentad, setcurrentad ] = useState('');
+    const {pubname}=useParams();
+    console.log(pubname)
 	// id pusher to redux
 	useEffect(
 		() => {
@@ -80,7 +83,6 @@ export default function DetailedTable() {
 									})
 										.then((res) => res.json())
 										.then((resuda) => {
-
 											setids(result);
 											console.log(result.audio);
 											console.log(result);
@@ -96,27 +98,6 @@ export default function DetailedTable() {
 		},
 		[ campname ]
 	);
-
-		useEffect(()=>{
-			if(ids){
-				console.log('hjh',ids)
-				fetch('/offreport/detreportcambydat',{
-					method: 'put',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: 'Bearer ' + localStorage.getItem('jwt')
-					},
-					body: JSON.stringify({
-						campaignId: ids,
-						type:"Overall"
-					})
-				}).then(res=>res.json()).then(result=>{
-					setrows(result);
-				}).catch((err)=>console.log(err))
-			}
-		})
-
-
 	// useEffect(
 	// 	() => {
 	// 		if (ids && ids.audio) {
@@ -133,7 +114,7 @@ export default function DetailedTable() {
 	// 				.then((res) => res.json())
 	// 				.then((result) => {
 	// 					// setpublishlogs(result)
-	// 					offlinereportspublisher(result);
+	// 					// offlinereportspublisher(result);
 	// 					// console.log(result)
 	// 				})
 	// 				.catch((err) => {
@@ -143,48 +124,73 @@ export default function DetailedTable() {
 	// 	},
 	// 	[ ids ]
 	// );
-	// const offlinereportspublisher = (logs) => {
-	// 	fetch('/offreport/reportbycamp', {
-	// 		method: 'put',
-	// 		headers: {
-	// 			'Content-Type': 'application/json',
-	// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
-	// 		},
-	// 		body: JSON.stringify({
-	// 			campaignId: ids.audio
-	// 		})
-	// 	})
-	// 		.then((res) => res.json())
-	// 		.then((result) => {
-	// 			var plogs = result;
-	// 			result.map((adad) => {
-	// 				if (
-	// 					adad.appId._id.toString() === '5b2210af504f3097e73e0d8b' ||
-	// 					adad.appId._id.toString() === '5d10c405844dd970bf41e2af'
-	// 				) {
-	// 					adad.appId.AppName += ' offline';
-	// 				}
-	// 			});
-	// 			// console.log(result)
-	// 			// plogs = plogs.concat(logs)
-	// 			plogs = plogs.sort(function(a, b) {
-	// 				var d1 = new Date(a.date);
-	// 				var d2 = new Date(b.date);
-	// 				return d2 - d1;
-	// 			});
-	// 			plogs = plogs.sort(function(a, b) {
-	// 				var d1 = new Date(a.createdAt ? a.createdAt : a.createdOn);
-	// 				var d2 = new Date(b.createdAt ? b.createdAt : b.createdOn);
-	// 				if (a.date === b.date) return d2 - d1;
-	// 			});
-	// 			console.log(plogs);
-	// 			setpublishlogs(plogs);
-	// 			// console.log(result)
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log(err);
-	// 		});
-	// };
+
+        // useEffect(()=>{
+        //     if(ids){
+        //         fetch('/report/reportbycamp', {
+		// 			method: 'put',
+		// 			headers: {
+		// 				'Content-Type': 'application/json',
+		// 				Authorization: 'Bearer ' + localStorage.getItem('jwt')
+		// 			},
+		// 			body: JSON.stringify({
+		// 				campaignId: ids.audio
+		// 			})
+		// 		})
+		// 			.then((res) => res.json())
+		// 			.then((result) => {
+		// 				setrows(result);
+		// 			})
+		// 			.catch((err) => {
+		// 				console.log(err);
+		// 			});
+        //     }
+        // })
+
+	useEffect (() => {
+        if(ids){
+            console.log('hhh',ids)
+		fetch('/offreport/reportbycamp', {
+			method: 'put',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('jwt')
+			},
+			body: JSON.stringify({
+				campaignId: ids,
+                pubname
+			})
+		})
+			.then((res) => res.json())
+			.then((result) => {
+				var plogs = result;
+				result.map((adad) => {
+					if (
+						adad.appId._id.toString() === '5b2210af504f3097e73e0d8b' ||
+						adad.appId._id.toString() === '5d10c405844dd970bf41e2af'
+					) {
+						adad.appId.AppName += ' offline';
+					}
+				});
+				plogs = plogs.sort(function(a, b) {
+					var d1 = new Date(a.date);
+					var d2 = new Date(b.date);
+					return d2 - d1;
+				});
+				plogs = plogs.sort(function(a, b) {
+					var d1 = new Date(a.createdAt ? a.createdAt : a.createdOn);
+					var d2 = new Date(b.createdAt ? b.createdAt : b.createdOn);
+					if (a.date === b.date) return d2 - d1;
+				});
+				console.log(plogs);
+				setpublishlogs(plogs);
+				// console.log(result)
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+        }
+	},[ids]);
 	// useEffect(
 	// 	() => {
 	// 		if (ids && ids.display) {
@@ -612,65 +618,65 @@ export default function DetailedTable() {
 			}
 		}
 	};
-	// const datefinderpublisher = () => {
-	// 	if (publishlogs.length) {
-	// 		if (publishlogs[0].createdOn) {
-	// 			return updatedatetimeseter(publishlogs[0].createdOn);
-	// 		} else {
-	// 			if (publishlogsd.length) {
-	// 				if (publishlogsd[0].createdOn) {
-	// 					return updatedatetimeseter(publishlogsd[0].createdOn);
-	// 				} else {
-	// 					if (publishlogsv.length) {
-	// 						if (publishlogsv[0].createdOn) {
-	// 							return updatedatetimeseter(publishlogsv[0].createdOn);
-	// 						} else {
-	// 							return 'not found';
-	// 						}
-	// 					} else {
-	// 						return 'not found';
-	// 					}
-	// 				}
-	// 			} else {
-	// 				if (publishlogsv.length) {
-	// 					if (publishlogsv[0].createdOn) {
-	// 						return updatedatetimeseter(publishlogsv[0].createdOn);
-	// 					} else {
-	// 						return 'not found';
-	// 					}
-	// 				} else {
-	// 					return 'not found';
-	// 				}
-	// 			}
-	// 		}
-	// 	} else {
-	// 		if (publishlogsd.length) {
-	// 			if (publishlogsd[0].createdOn) {
-	// 				return updatedatetimeseter(publishlogsd[0].createdOn);
-	// 			} else {
-	// 				if (publishlogsv.length) {
-	// 					if (publishlogsv[0].createdOn) {
-	// 						return updatedatetimeseter(publishlogsv[0].createdOn);
-	// 					} else {
-	// 						return 'not found';
-	// 					}
-	// 				} else {
-	// 					return 'not found';
-	// 				}
-	// 			}
-	// 		} else {
-	// 			if (publishlogsv.length) {
-	// 				if (publishlogsv[0].createdOn) {
-	// 					return updatedatetimeseter(publishlogsv[0].createdOn);
-	// 				} else {
-	// 					return 'not found';
-	// 				}
-	// 			} else {
-	// 				return 'not found';
-	// 			}
-	// 		}
-	// 	}
-	// };
+	const datefinderpublisher = () => {
+		if (publishlogs.length) {
+			if (publishlogs[0].createdOn) {
+				return updatedatetimeseter(publishlogs[0].createdOn);
+			} else {
+				if (publishlogsd.length) {
+					if (publishlogsd[0].createdOn) {
+						return updatedatetimeseter(publishlogsd[0].createdOn);
+					} else {
+						if (publishlogsv.length) {
+							if (publishlogsv[0].createdOn) {
+								return updatedatetimeseter(publishlogsv[0].createdOn);
+							} else {
+								return 'not found';
+							}
+						} else {
+							return 'not found';
+						}
+					}
+				} else {
+					if (publishlogsv.length) {
+						if (publishlogsv[0].createdOn) {
+							return updatedatetimeseter(publishlogsv[0].createdOn);
+						} else {
+							return 'not found';
+						}
+					} else {
+						return 'not found';
+					}
+				}
+			}
+		} else {
+			if (publishlogsd.length) {
+				if (publishlogsd[0].createdOn) {
+					return updatedatetimeseter(publishlogsd[0].createdOn);
+				} else {
+					if (publishlogsv.length) {
+						if (publishlogsv[0].createdOn) {
+							return updatedatetimeseter(publishlogsv[0].createdOn);
+						} else {
+							return 'not found';
+						}
+					} else {
+						return 'not found';
+					}
+				}
+			} else {
+				if (publishlogsv.length) {
+					if (publishlogsv[0].createdOn) {
+						return updatedatetimeseter(publishlogsv[0].createdOn);
+					} else {
+						return 'not found';
+					}
+				} else {
+					return 'not found';
+				}
+			}
+		}
+	};
 	return (
 		<div style={{ paddingBottom: '50px' }}>
 			<div style={{ width: '10vw' }}>
@@ -708,7 +714,7 @@ export default function DetailedTable() {
 			</div>
 			<TableContainer style={{ margin: '10px auto', width: 'fit-content' }} component={Paper}>
 				<Typography variant="h6" id="tableTitle" component="div">
-				Overall Summary Report
+				Publisher Detailed Report
 				</Typography>
 				<div>last updated at - {datefinder()}</div>
 				{/* <div style={{ margin: '5px', fontWeight: 'bolder' }}></div> */}
@@ -718,28 +724,49 @@ export default function DetailedTable() {
 				>
 					<TableHead>
 						<TableRow>
-							<TableCell>Date</TableCell>
+                        <TableCell>Date</TableCell>
+							<TableCell>Publisher</TableCell>
 							<TableCell>Media Type</TableCell>
+							<TableCell>Deal Id</TableCell>
 							<TableCell>impressions</TableCell>
 							<TableCell>Clicks</TableCell>
 							<TableCell>CTR</TableCell>
 							<TableCell>Spend</TableCell>
-							
+							<TableCell>
+								Avg spend per<br /> impression
+							</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{rows.length ? (
-							rows.map((row, i) => (
+						{publishlogs.length ? (
+							publishlogs.map((row, i) => (
 								<TableRow key={i}>
 									<TableCell component="th" scope="row">
-										{dateformatchanger(row.date)}
-									</TableCell>
-									<TableCell />
-									<TableCell>{row.impressions}</TableCell>
-									<TableCell>{row.clicks}</TableCell>
-									<TableCell>{Math.round(row.clicks * 100 / row.impressions * 100) / 100}%</TableCell>
-									<TableCell>{row.impressions}</TableCell>
-									<TableCell />
+												{dateformatchanger(row.date)}
+											</TableCell>
+											<TableCell>
+												{row.Publisher ? row.Publisher.AppName : row.appId.AppName}{' '}
+												{row.nameads && row.nameads}
+											</TableCell>
+											<TableCell />
+											<TableCell />
+											<TableCell>
+												{row.impressions >= 0 ? row.impressions : row.impression}
+											</TableCell>
+											<TableCell>
+												{row.clicks >= 0 ? row.clicks : row.CompanionClickTracking}
+											</TableCell>
+											<TableCell>
+												{row.clicks >= 0 ? (
+													Math.round(row.clicks * 100 / row.impressions * 100) / 100
+												) : (
+													Math.round(
+														row.CompanionClickTracking * 100 / row.impression * 100
+													) / 100
+												)}%
+											</TableCell>
+											<TableCell>{row.impressions ? row.impressions : row.impression}</TableCell>
+											<TableCell />
 								</TableRow>
 							))
 						) : (

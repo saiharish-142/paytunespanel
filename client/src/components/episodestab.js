@@ -36,23 +36,25 @@ const useStyles = makeStyles((theme) => ({
 		border: '2px solid #000',
 		boxShadow: theme.shadows[5],
 		padding: '2% 2% 2% 6%',
-	  }
+	}
 }));
 
 
 
-export default function EpisodeTab(){
+export default function EpisodeTab() {
 
-    const [rows,setrows]=useState([])
+	const [rows, setrows] = useState([])
 	const [search1, setsearch] = useState('');
 	const [searchedData, setsearchedData] = useState([]);
-	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
-	const [ error, seterror ] = useState('');
-	const [ success, setsuccess ] = useState('');
-	const [ rowsPerPage, setRowsPerPage ] = useState(100);
-	const [ page, setPage ] = useState(0);
-	const [ tempdata, settempdata ] = useState({});
-	const classes=useStyles()
+	const [sortconfig, setsortconfig] = useState({ key: 'impression', direction: 'descending' })
+	const [error, seterror] = useState('');
+	const [success, setsuccess] = useState('');
+	const [rowsPerPage, setRowsPerPage] = useState(100);
+	const [page, setPage] = useState(0);
+	const [ischecked, setchecked] = useState(false);
+	const [ischecked1, setchecked1] = useState(false);
+	const [tempdata, settempdata] = useState({});
+	const classes = useStyles()
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
@@ -61,15 +63,15 @@ export default function EpisodeTab(){
 		setPage(0);
 	};
 	const [open, setOpen] = React.useState(false);
-	const [ show, setShow ] = useState(false);
+	const [show, setShow] = useState(false);
 	const handleOpen = (data) => {
-	  setOpen(true);
-	  setShow(true)
-	  settempdata(data);
+		setOpen(true);
+		setShow(true)
+		settempdata(data);
 	};
-  
+
 	const handleClose = () => {
-	  setOpen(false);
+		setOpen(false);
 	};
 	const headers = [
 		{ key: 'episodename', label: 'Episode Name' },
@@ -84,21 +86,28 @@ export default function EpisodeTab(){
 		{ key: 'hostPossibility', label: 'Host Possibility' },
 	];
 
+	const handlechange = () => {
+		setchecked(!ischecked);
+	}
+	const handlechange1 = () => {
+		setchecked1(!ischecked1);
+	}
+
 	function SearchData() {
 		let arr = [];
-		let search=new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase());
+		let search = new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase());
 		arr = rows.filter(
-			(row) =>{
-				if ((row.episodename ? row.episodename : "").toString().replace(/\s+/g, '').trim().toLowerCase().match(search,'ig')   ) {
+			(row) => {
+				if ((row.episodename ? row.episodename : "").toString().replace(/\s+/g, '').trim().toLowerCase().match(search, 'ig')) {
 					return row
 				}
 			}
-				
+
 		);
 		console.log(arr)
 		if (arr.length === 0) {
 			setsearchedData('No Data Found!');
-		} else {		
+		} else {
 			setsearchedData(arr);
 			console.log('jvhvhvhv', arr);
 		}
@@ -110,7 +119,7 @@ export default function EpisodeTab(){
 		data: rows
 	};
 
-    useEffect(() => {
+	useEffect(() => {
 		fetch('/rtbreq/getepisodewise_report', {
 			method: 'GET',
 			headers: {
@@ -152,38 +161,38 @@ export default function EpisodeTab(){
 			});
 	};
 
-    React.useMemo(() => {
-		let sortedProducts =  searchedData?searchedData: rows;
+	React.useMemo(() => {
+		let sortedProducts = searchedData ? searchedData : rows;
 		if (sortconfig !== null) {
-		  sortedProducts.sort((a, b) => {
-			if (a[sortconfig.key] < b[sortconfig.key]) {
-			  return sortconfig.direction === 'ascending' ? -1 : 1;
-			}
-			if (a[sortconfig.key] > b[sortconfig.key]) {
-			  return sortconfig.direction === 'ascending' ? 1 : -1;
-			}
-			return 0;
-		  });
+			sortedProducts.sort((a, b) => {
+				if (a[sortconfig.key] < b[sortconfig.key]) {
+					return sortconfig.direction === 'ascending' ? -1 : 1;
+				}
+				if (a[sortconfig.key] > b[sortconfig.key]) {
+					return sortconfig.direction === 'ascending' ? 1 : -1;
+				}
+				return 0;
+			});
 		}
 		return sortedProducts;
-	  }, [rows, searchedData,sortconfig]);
+	}, [rows, searchedData, sortconfig]);
 
-      const requestSort=(key)=>{
+	const requestSort = (key) => {
 		let direction = 'ascending';
 		if (sortconfig && sortconfig.key === key && sortconfig.direction === 'ascending') {
-		  direction = 'descending';
+			direction = 'descending';
 		}
 		setsortconfig({ key, direction });
 	}
 
 	const getClassNamesFor = (name) => {
 		if (!sortconfig) {
-		  return;
+			return;
 		}
 		return sortconfig.key === name ? sortconfig.direction : undefined;
-	  };
+	};
 
-	  const arrowRetuner = (mode) => {
+	const arrowRetuner = (mode) => {
 		if (mode === '1') {
 			return <ArrowUpwardRoundedIcon fontSize="small" />;
 		} else if (mode === '2') {
@@ -193,19 +202,19 @@ export default function EpisodeTab(){
 		}
 	};
 
-	 function fetchcategory(category){
-		let array=[]
-		category.map(cat=>{
-			if(cat.split(',').length>1 ){
-				let categ=cat.split(',')
-				categ.map(cat1=>{
+	function fetchcategory(category) {
+		let array = []
+		category.map(cat => {
+			if (cat.split(',').length > 1) {
+				let categ = cat.split(',')
+				categ.map(cat1 => {
 					fetch('/rtbreq/getcategory', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
 							Authorization: 'Bearer ' + localStorage.getItem('jwt')
 						},
-						body:JSON.stringify({category:cat1})
+						body: JSON.stringify({ category: cat1 })
 					})
 						.then((data) => data.json())
 						.then((dat) => {
@@ -213,19 +222,19 @@ export default function EpisodeTab(){
 								//seterror(dat.error)
 								return console.log(dat.error);
 							}
-			
+
 							// setsuccess(dat)
 							array.push(dat.category)
 						});
 				})
-			}else{
+			} else {
 				fetch('/rtbreq/getcategory', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 						Authorization: 'Bearer ' + localStorage.getItem('jwt')
 					},
-					body:JSON.stringify({category:cat})
+					body: JSON.stringify({ category: cat })
 				})
 					.then((data) => data.json())
 					.then((dat) => {
@@ -233,7 +242,7 @@ export default function EpisodeTab(){
 							//seterror(dat.error)
 							return console.log(dat.error);
 						}
-		
+
 						// setsuccess(dat)
 						array.push(dat.category)
 					});
@@ -244,12 +253,16 @@ export default function EpisodeTab(){
 		return array
 	}
 
-    return (
-        <div>
+	return (
+		<div>
 			<div>
-			<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Episode Data Tab</h4>
-			<input placeholder="Search Episode Name"  onChange={(e)=>setsearch(e.target.value)} style={{textAlign:'center',width:'20%',padding:'0.1%', border:'1px solid rgba(61, 61, 64, .25)', background:'#ffffff' }} />
-			<button className="btn" style={{marginLeft:'1%'}} onClick={ SearchData } >Search</button>
+				<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Episode Data Tab</h4>
+				<input placeholder="Search Episode Name" onChange={(e) => setsearch(e.target.value)} style={{ textAlign: 'center', width: '20%', padding: '0.1%', border: '1px solid rgba(61, 61, 64, .25)', background: '#ffffff' }} />
+				<button className="btn" style={{ marginLeft: '1%' }} onClick={SearchData} >Search</button>
+				
+
+
+
 			</div>
 			<div className={classes.root}>
 				{success ? (
@@ -279,50 +292,60 @@ export default function EpisodeTab(){
 					''
 				)}
 			</div>
-            <Paper>
-				<CSVLink {...csvReport} style={{padding:'10px',marginTop:'20px'}} >Download Table</CSVLink>
-			{/* {searchedData==='No Data Found!'? <h7>{searchedData}</h7>:   */}
-			{searchedData === 'No Data Found!' ? (
+			<Paper>
+				<CSVLink {...csvReport} style={{ padding: '10px', marginTop: '20px' }} >Download Table</CSVLink>
+				{/* <div style={{ flexDirection: 'column', display: 'flex',marginLeft:'40%',padding:'10px' }} >
+					<div style={{ flexDirection: 'row', display: 'flex' }}>
+						<input type="checkbox" id="check1" style={{maxWidth: '40%', height: '40%', marginTop: '5px',opacity:"1"}}  checked={ischecked} onChange={handlechange} />
+						<label for="check1" style={{ marginLeft: '0%',fontSize:'15px' }} > With Entry</label>
+					</div>
+					<div style={{ flexDirection: 'row', display: 'flex' }} >
+						<input type="checkbox" id="check2" style={{maxWidth: '40%', height: '40%', marginTop: '5px',opacity:"1"}}  checked={ischecked1} onChange={handlechange1} />
+						<label for="check2" style={{ marginLeft: '10%',fontSize:'15px' }} > Without Entry</label>
+					</div>
+				</div> */}
+				{/* {searchedData==='No Data Found!'? <h7>{searchedData}</h7>:   */}
+				{searchedData === 'No Data Found!' ? (
 					<h7>{searchedData}</h7>
-				) :(<TableContainer style={{maxHeight:440,maxWidth:'100%'}}>
+				) : (<TableContainer style={{ maxHeight: 440, maxWidth: '100%' }}>
 					<Table stickyHeader aria-label="sticky table" >
-						<TableHead  style={{position:"sticky",top:0}}>
+						<TableHead style={{ position: "sticky", top: 0 }}>
 							<TableRow >
 								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell style={{ cursor: 'pointer',width:30 }} onClick={()=>requestSort('episodename')} className={getClassNamesFor('episodename')}> Display Name {arrowRetuner( sortconfig.key==='episodename'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('request')} className={getClassNamesFor('request')}> Request {arrowRetuner( sortconfig.key==='request'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('avgrequest')} className={getClassNamesFor('avgrequest')}>Avg Request {arrowRetuner( sortconfig.key==='avgrequest'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('publisher')} className={getClassNamesFor('publisher')}> Host {arrowRetuner( sortconfig.key==='publisher'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('category')} className={getClassNamesFor('category')}> Category {arrowRetuner( sortconfig.key==='category'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier1')} className={getClassNamesFor('tier1')}> Tier1 {arrowRetuner( sortconfig.key==='tier1'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier2')} className={getClassNamesFor('tier2')}> Tier2 {arrowRetuner( sortconfig.key==='tier2'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier3')} className={getClassNamesFor('tier3')}> Tier3 {arrowRetuner( sortconfig.key==='tier3'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('displayename')} className={getClassNamesFor('displayename')}>  Episode Name {arrowRetuner( sortconfig.key==='displayename'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('publishername')} className={getClassNamesFor('publishername')}> Publisher Name {arrowRetuner( sortconfig.key==='publishername'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('hostPossibility')} className={getClassNamesFor('hostPossibility')}> Host Possibility {arrowRetuner( sortconfig.key==='hostPossibility'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								
+								{<TableCell style={{ cursor: 'pointer', width: 30 }} onClick={() => requestSort('episodename')} className={getClassNamesFor('episodename')}> Display Name {arrowRetuner(sortconfig.key === 'episodename' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('request')} className={getClassNamesFor('request')}> Request {arrowRetuner(sortconfig.key === 'request' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('avgrequest')} className={getClassNamesFor('avgrequest')}>Avg Request {arrowRetuner(sortconfig.key === 'avgrequest' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('publisher')} className={getClassNamesFor('publisher')}> Host {arrowRetuner(sortconfig.key === 'publisher' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('category')} className={getClassNamesFor('category')}> Category {arrowRetuner(sortconfig.key === 'category' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('tier1')} className={getClassNamesFor('tier1')}> Tier1 {arrowRetuner(sortconfig.key === 'tier1' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('tier2')} className={getClassNamesFor('tier2')}> Tier2 {arrowRetuner(sortconfig.key === 'tier2' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('tier3')} className={getClassNamesFor('tier3')}> Tier3 {arrowRetuner(sortconfig.key === 'tier3' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('displayename')} className={getClassNamesFor('displayename')}>  Episode Name {arrowRetuner(sortconfig.key === 'displayename' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('publishername')} className={getClassNamesFor('publishername')}> Publisher Name {arrowRetuner(sortconfig.key === 'publishername' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('hostPossibility')} className={getClassNamesFor('hostPossibility')}> Host Possibility {arrowRetuner(sortconfig.key === 'hostPossibility' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
+
 								{<TableCell />}
 							</TableRow>
 						</TableHead>
 						<TableBody >
-							{(searchedData.length !== 0 ? searchedData : rows ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+							{(searchedData.length !== 0 ? searchedData : rows).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
 								<TableRow key={row.name}>
 									<TableCell component="th" scope="row">
 										{row.episodename ? row.episodename : ''}
 									</TableCell>
 									<TableCell>{row.request ? row.request : ''}</TableCell>
-									<TableCell>{row.avgrequest ? Math.round(row.avgrequest)  : ''}</TableCell>
-									<TableCell>{row.publisher ? row.publisher: ''}</TableCell>
-									<TableCell>{row.category==="#N/A" ? row.new_taxonamy : row.category}</TableCell>
+									<TableCell>{row.avgrequest ? Math.round(row.avgrequest) : ''}</TableCell>
+									<TableCell>{row.publisher ? row.publisher : ''}</TableCell>
+									<TableCell>{row.category === "#N/A" ? row.new_taxonamy : row.category}</TableCell>
 									<TableCell>{row.tier1 ? row.tier1 : ''}</TableCell>
 									<TableCell>{row.tier2 ? row.tier2 : ''}</TableCell>
 									<TableCell>{row.tier3 ? row.tier3 : ''}</TableCell>
 									<TableCell>{row.displayname ? row.displayname : ''}</TableCell>
 									<TableCell>{row.publishername ? row.publishername : ''}</TableCell>
 									<TableCell>{row.hostPossibility ? row.hostPossibility : ''}</TableCell>
-									
+
 									<TableCell>
-										<button className="btn" onClick={() => handleOpen(row)}>  
+										<button className="btn" onClick={() => handleOpen(row)}>
 											Edit{' '}
 										</button>
 									</TableCell>
@@ -332,10 +355,10 @@ export default function EpisodeTab(){
 					</Table>
 				</TableContainer>
 				)}
-              
-				
+
+
 				<TablePagination
-					rowsPerPageOptions={[ 100, 1000, 10000 ]}
+					rowsPerPageOptions={[100, 1000, 10000]}
 					component="div"
 					count={rows ? rows.length : 0}
 					rowsPerPage={rowsPerPage}
@@ -346,32 +369,32 @@ export default function EpisodeTab(){
 				/>
 				{show ? (
 					<div>
-						 <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-		  <div style={{maxHeight:'100vh','overflow-y':'auto'}} className={classes.paper}>
-		  <h4>Edit Episode Data</h4>
-						<Episodedataform
-							props={tempdata}
-							setShow={setShow}
-							setsuccess={setsuccess}
-							data1={data}
-							seterror={seterror}
-						/>
-		  </div>
-        				
-      </Modal>
-						
+						<Modal
+							open={open}
+							onClose={handleClose}
+							aria-labelledby="simple-modal-title"
+							aria-describedby="simple-modal-description"
+						>
+							<div style={{ maxHeight: '100vh', 'overflow-y': 'auto' }} className={classes.paper}>
+								<h4>Edit Episode Data</h4>
+								<Episodedataform
+									props={tempdata}
+									setShow={setShow}
+									setsuccess={setsuccess}
+									data1={data}
+									seterror={seterror}
+								/>
+							</div>
+
+						</Modal>
+
 					</div>
 				) : (
 					<React.Fragment />
 				)}
 			</Paper>
-        </div>
-    )
+		</div>
+	)
 
 
 

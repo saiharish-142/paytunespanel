@@ -56,14 +56,14 @@ function TablePro() {
 	const report = useSelector((state) => state.report);
 	const spentdata = useSelector((state) => state.report.spent);
 	const stateratio = useSelector((state) => state.ratio.ratio);
-	const [ usinr, setusinr ] = useState(74.94715);
-	const [ pincodereports, setpincodereports ] = useState([]);
-	const [ phoneModelReports, setphoneModelReports ] = useState([]);
-	const [ ibaReports, setibaReports ] = useState([]);
-	const [ frequencyReport, setfrequencyReport ] = useState([]);
-	const [ creativereports, setcreative ] = useState([]);
-	const [podcastreports,setpodcastreports]=useState([]);
-	const [ uniqueData, setuniqueData ] = useState({ complete: 0, audio: 0, display: 0, video: 0 });
+	const [usinr, setusinr] = useState(74.94715);
+	const [pincodereports, setpincodereports] = useState([]);
+	const [phoneModelReports, setphoneModelReports] = useState([]);
+	const [ibaReports, setibaReports] = useState([]);
+	const [frequencyReport, setfrequencyReport] = useState([]);
+	const [creativereports, setcreative] = useState([]);
+	const [podcastreports, setpodcastreports] = useState([]);
+	const [uniqueData, setuniqueData] = useState({ complete: 0, audio: 0, display: 0, video: 0 });
 	// const [ languageDownloadA, setlanguageDownloadA ] = useState([]);
 	// const [ languageDownloadD, setlanguageDownloadD ] = useState([]);
 	// const [ languageDownloadV, setlanguageDownloadV ] = useState([]);
@@ -74,14 +74,14 @@ function TablePro() {
 				setusinr(stateratio);
 			}
 		},
-		[ stateratio ]
+		[stateratio]
 	);
 	// spentdata refresher
 	useEffect(
 		() => {
 			console.log(spentdata);
 		},
-		[ spentdata ]
+		[spentdata]
 	);
 	// data puller effect
 	useEffect(
@@ -96,7 +96,7 @@ function TablePro() {
 				PodcastData(report.combine_ids);
 			}
 		},
-		[ report ]
+		[report]
 	);
 	// colorfinder
 	const colorfinder = (totaltime, lefttime, tobeimpress, impress) => {
@@ -118,7 +118,7 @@ function TablePro() {
 	};
 	async function uniqueSetter(idsa) {
 		console.log(idsa);
-		var sets = [ 'audio', 'display', 'video' ];
+		var sets = ['audio', 'display', 'video'];
 		var ids = idsa;
 		var data = {};
 		data['complete'] = 0;
@@ -313,7 +313,7 @@ function TablePro() {
 		}
 	};
 	// podcast data puller
-	const PodcastData=(idsa)=>{
+	const PodcastData = (idsa) => {
 		if (idsa) {
 			fetch('/subrepo/podcastepisodereports', {
 				method: 'put',
@@ -432,7 +432,7 @@ function TablePro() {
 								)}
 								<TableCell
 									className="mangeads__report"
-									onClick={() => history.push(`/manageAds/${report.req_id}/detailed`)}
+									onClick={() => history.push(`/manageAds/${report.req_id}/${title === "Summary" ? "detailedoverallreport" : title === "Audio" ? "detailedoverallaudioreport" : title==="Video"?"detailedoverallvideoreport":"detailedoveralldisplayreport"}`)}
 								>
 									Detailed Report
 								</TableCell>
@@ -559,8 +559,8 @@ function TablePro() {
 		complete: [
 			{
 				xSteps: 5,
-				columns: [ { title: 'Overall Summery Report' } ],
-				data: [ [ { value: '' } ] ]
+				columns: [{ title: 'Overall Summery Report' }],
+				data: [[{ value: '' }]]
 			},
 			{
 				columns: [
@@ -603,25 +603,25 @@ function TablePro() {
 							value:
 								Math.round(
 									report.report.summaryCompleteReport.clicks /
-										report.report.summaryCompleteReport.impressions *
-										100
+									report.report.summaryCompleteReport.impressions *
+									100
 								) / 100
 						},
 						{
 							value:
 								Math.round(
 									report.ids &&
-										report.ids.audimpression +
-											report.ids.disimpression +
-											report.ids.vidimpression / timefinder(report.endDate, report.startDate) * 10
+									report.ids.audimpression +
+									report.ids.disimpression +
+									report.ids.vidimpression / timefinder(report.endDate, report.startDate) * 10
 								) / 10
 						},
 						{
 							value:
 								Math.round(
 									report.report.summaryCompleteReport.impressions /
-										timefinder(Date.now(), report.startDate) *
-										10
+									timefinder(Date.now(), report.startDate) *
+									10
 								) / 10
 						},
 						{
@@ -635,9 +635,9 @@ function TablePro() {
 							value:
 								report.ids &&
 								report.ids.audimpression +
-									report.ids.disimpression +
-									report.ids.vidimpression -
-									report.report.summaryCompleteReport.impressions
+								report.ids.disimpression +
+								report.ids.vidimpression -
+								report.report.summaryCompleteReport.impressions
 						},
 						{ value: timefinder(report.endDate, Date.now()) }
 					]
@@ -648,8 +648,8 @@ function TablePro() {
 			{
 				ySteps: 1,
 				xSteps: 5,
-				columns: [ { title: 'Audio Wise Summery Report' } ],
-				data: [ [ { value: '' } ] ]
+				columns: [{ title: 'Audio Wise Summery Report' }],
+				data: [[{ value: '' }]]
 			},
 			{
 				columns: [
@@ -682,23 +682,23 @@ function TablePro() {
 							value:
 								Math.round(
 									report.report.audioCompleteReport.clicks /
-										report.report.audioCompleteReport.impressions *
-										100
+									report.report.audioCompleteReport.impressions *
+									100
 								) / 100
 						},
 						{
 							value:
 								Math.round(
 									report.ids &&
-										report.ids.audimpression / timefinder(report.endDate, report.startDate) * 10
+									report.ids.audimpression / timefinder(report.endDate, report.startDate) * 10
 								) / 10
 						},
 						{
 							value:
 								Math.round(
 									report.report.audioCompleteReport.impressions /
-										timefinder(Date.now(), report.startDate) *
-										10
+									timefinder(Date.now(), report.startDate) *
+									10
 								) / 10
 						},
 						{
@@ -719,8 +719,8 @@ function TablePro() {
 			{
 				ySteps: 1,
 				xSteps: 5,
-				columns: [ { title: 'Display Wise Summery Report' } ],
-				data: [ [ { value: '' } ] ]
+				columns: [{ title: 'Display Wise Summery Report' }],
+				data: [[{ value: '' }]]
 			},
 			{
 				columns: [
@@ -755,23 +755,23 @@ function TablePro() {
 							value:
 								Math.round(
 									report.report.displayCompleteReport.clicks /
-										report.report.displayCompleteReport.impressions *
-										100
+									report.report.displayCompleteReport.impressions *
+									100
 								) / 100
 						},
 						{
 							value:
 								Math.round(
 									report.ids &&
-										report.ids.disimpression / timefinder(report.endDate, report.startDate) * 10
+									report.ids.disimpression / timefinder(report.endDate, report.startDate) * 10
 								) / 10
 						},
 						{
 							value:
 								Math.round(
 									report.report.displayCompleteReport.impressions /
-										timefinder(Date.now(), report.startDate) *
-										10
+									timefinder(Date.now(), report.startDate) *
+									10
 								) / 10
 						},
 						{
@@ -792,8 +792,8 @@ function TablePro() {
 			{
 				ySteps: 1,
 				xSteps: 5,
-				columns: [ { title: 'Video Wise Summery Report' } ],
-				data: [ [ { value: '' } ] ]
+				columns: [{ title: 'Video Wise Summery Report' }],
+				data: [[{ value: '' }]]
 			},
 			{
 				columns: [
@@ -826,23 +826,23 @@ function TablePro() {
 							value:
 								Math.round(
 									report.report.videoCompleteReport.clicks /
-										report.report.videoCompleteReport.impressions *
-										100
+									report.report.videoCompleteReport.impressions *
+									100
 								) / 100
 						},
 						{
 							value:
 								Math.round(
 									report.ids &&
-										report.ids.vidimpression / timefinder(report.endDate, report.startDate) * 10
+									report.ids.vidimpression / timefinder(report.endDate, report.startDate) * 10
 								) / 10
 						},
 						{
 							value:
 								Math.round(
 									report.report.videoCompleteReport.impressions /
-										timefinder(Date.now(), report.startDate) *
-										10
+									timefinder(Date.now(), report.startDate) *
+									10
 								) / 10
 						},
 						{
@@ -863,8 +863,8 @@ function TablePro() {
 			{
 				ySteps: 1,
 				xSteps: 5,
-				columns: [ { title: 'Quartile Summery Report' } ],
-				data: [ [ { value: '' } ] ]
+				columns: [{ title: 'Quartile Summery Report' }],
+				data: [[{ value: '' }]]
 			},
 			{
 				columns: [
@@ -901,12 +901,12 @@ function TablePro() {
 						{
 							value:
 								report.report.summaryCompleteReport.complete /
-								report.report.summaryCompleteReport.impressions
+									report.report.summaryCompleteReport.impressions
 									? Math.round(
-											report.report.summaryCompleteReport.complete /
-												report.report.summaryCompleteReport.impressions *
-												100
-										) / 100
+										report.report.summaryCompleteReport.complete /
+										report.report.summaryCompleteReport.impressions *
+										100
+									) / 100
 									: 0
 						}
 					]
@@ -1123,10 +1123,10 @@ function TablePro() {
 				columns: PincodeHead,
 				data:
 					report.ids &&
-					report.ids.display &&
-					report.ids.display.length &&
-					pincodereports &&
-					pincodereports.display
+						report.ids.display &&
+						report.ids.display.length &&
+						pincodereports &&
+						pincodereports.display
 						? PincodeBody(pincodereports.display)
 						: null
 			}
@@ -1242,9 +1242,9 @@ function TablePro() {
 				report.report.summaryCompleteReport,
 				report.ids && report.ids.audimpression + report.ids.disimpression + report.ids.vidimpression,
 				completespentfider('all') +
-					(report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0) +
-					(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0) +
-					(report.videospentOffline ? parseFloat(report.videospentOffline) : 0),
+				(report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0) +
+				(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0) +
+				(report.videospentOffline ? parseFloat(report.videospentOffline) : 0),
 				uniqueData.complete ? uniqueData.complete : 0
 			)}
 			{report.ids && report.ids.audio && report.ids.audio.length ? (
@@ -1266,7 +1266,7 @@ function TablePro() {
 					report.report.displayCompleteReport,
 					report.ids && report.ids.disimpression,
 					completespentfider('display') +
-						(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0),
+					(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0),
 					uniqueData.display ? uniqueData.display : 0
 				)
 			) : (
