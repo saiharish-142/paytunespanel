@@ -214,7 +214,10 @@ function PublisherAdmin({
 										<TableCell>{Math.round(log.spent * 1) / 1}</TableCell>
 										<TableCell
 											className="mangeads__report"
-											onClick={() => history.push(`/manageAds/${state1}/detailed`)}
+											onClick={() =>
+												history.push(
+													`/manageAds/${state1}/detailedoverallpublisherreport/${log.publishername}`
+												)}
 										>
 											Detailed Report
 										</TableCell>
