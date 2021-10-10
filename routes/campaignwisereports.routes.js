@@ -60,7 +60,7 @@ router.put('/reportbydate', adminauth, (req, res) => {
 		.then((reports) => {
 			var data = reports;
 			data = data.filter((x) => x.appId !== '');
-			publisherapps.populate(data, { path: 'appId' }, function (err, populatedreports) {
+			publisherapps.populate(data, { path: 'appId' }, function(err, populatedreports) {
 				if (err) {
 					res.status(422).json(err);
 				}
@@ -79,7 +79,7 @@ router.put('/reportbydatereq', adminauth, (req, res) => {
 		.then((reports) => {
 			var data = reports;
 			data = data.filter((x) => x.appId !== '');
-			publisherapps.populate(data, { path: 'appId' }, function (err, populatedreports) {
+			publisherapps.populate(data, { path: 'appId' }, function(err, populatedreports) {
 				if (err) {
 					res.status(422).json(err);
 				}
@@ -89,13 +89,14 @@ router.put('/reportbydatereq', adminauth, (req, res) => {
 		.catch((err) => console.log(err));
 });
 
-router.put('/detreportcambydat', adminauth, (req, res) => {   // overall 
+router.put('/detreportcambydat', adminauth, (req, res) => {
+	// overall
 	const { campaignId, type } = req.body;
 	var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
 	var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
 	var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
-	let ids = [...audio, ...video, ...display];
-	ids = type === "Audio" ? audio : type === "Video" ? video : type === "Display" ? display : ids;
+	let ids = [ ...audio, ...video, ...display ];
+	ids = type === 'Audio' ? audio : type === 'Video' ? video : type === 'Display' ? display : ids;
 	console.log(ids);
 	// var ids = campaignId.map((id) => mongoose.Types.ObjectId(id));
 	var resu = [];
@@ -133,10 +134,10 @@ router.put('/detreportcambydat', adminauth, (req, res) => {   // overall
 			resu = reports;
 			resu.map((det) => {
 				var resregion = [].concat.apply([], det.region);
-				resregion = [...new Set(resregion)];
+				resregion = [ ...new Set(resregion) ];
 				det.region = resregion;
 				var updatedDate = det.updatedAt;
-				updatedDate.sort(function (a, b) {
+				updatedDate.sort(function(a, b) {
 					return new Date(b) - new Date(a);
 				});
 				det.updatedAt = updatedDate;
@@ -188,7 +189,7 @@ router.put('/sumreportofcam22', adminauth, (req, res) => {
 		.then((reports) => {
 			var data = reports;
 			data = data.filter((x) => x.Publisher !== '');
-			publisherapps.populate(data, { path: 'Publisher' }, function (err, populatedreports) {
+			publisherapps.populate(data, { path: 'Publisher' }, function(err, populatedreports) {
 				if (err) {
 					return res.status(422).json(err);
 				}
@@ -196,18 +197,18 @@ router.put('/sumreportofcam22', adminauth, (req, res) => {
 				// console.log(populatedreports)
 				resu.map((det) => {
 					var resregion = [].concat.apply([], det.region);
-					resregion = [...new Set(resregion)];
+					resregion = [ ...new Set(resregion) ];
 					det.region = resregion;
 					var rescampaignId = [].concat.apply([], det.campaignId);
-					rescampaignId = [...new Set(rescampaignId)];
+					rescampaignId = [ ...new Set(rescampaignId) ];
 					det.campaignId = rescampaignId[0];
 					var updatedDate = det.updatedAt;
-					updatedDate.sort(function (a, b) {
+					updatedDate.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					det.updatedAt = updatedDate;
 				});
-				StreamingAds.populate(resu, { path: 'campaignId' }, function (err, populatedres) {
+				StreamingAds.populate(resu, { path: 'campaignId' }, function(err, populatedres) {
 					if (err) {
 						return res.status(422).json(resu);
 					}
@@ -260,7 +261,7 @@ router.put('/sumreportofcamtest', adminauth, (req, res) => {
 		.then((reports) => {
 			var data = reports;
 			data = data.filter((x) => x.Publisher !== '');
-			publisherapps.populate(data, { path: 'Publisher' }, function (err, populatedreports) {
+			publisherapps.populate(data, { path: 'Publisher' }, function(err, populatedreports) {
 				if (err) {
 					return res.status(422).json(err);
 				}
@@ -268,18 +269,18 @@ router.put('/sumreportofcamtest', adminauth, (req, res) => {
 				// console.log(populatedreports)
 				resu.map((det) => {
 					var resregion = [].concat.apply([], det.region);
-					resregion = [...new Set(resregion)];
+					resregion = [ ...new Set(resregion) ];
 					det.region = resregion;
 					var rescampaignId = [].concat.apply([], det.campaignId);
-					rescampaignId = [...new Set(rescampaignId)];
+					rescampaignId = [ ...new Set(rescampaignId) ];
 					det.campaignId = rescampaignId[0];
 					var updatedDate = det.updatedAt;
-					updatedDate.sort(function (a, b) {
+					updatedDate.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					det.updatedAt = updatedDate;
 				});
-				StreamingAds.populate(resu, { path: 'campaignId' }, function (err, populatedres) {
+				StreamingAds.populate(resu, { path: 'campaignId' }, function(err, populatedres) {
 					if (err) {
 						return res.status(422).json(resu);
 					}
@@ -479,7 +480,7 @@ router.put('/sumreportofcamall', adminauth, (req, res) => {
 			}).catch((err) => console.log(err));
 			response.audio &&
 				response.audio.map((x) => {
-					x.updatedAt = [...new Set(x.updatedAt)];
+					x.updatedAt = [ ...new Set(x.updatedAt) ];
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
 					audioCompleteReport.impressions += parseInt(x.impressions);
 					audioCompleteReport.clicks += parseInt(x.clicks);
@@ -487,7 +488,7 @@ router.put('/sumreportofcamall', adminauth, (req, res) => {
 					audioCompleteReport.midpoint += parseInt(x.midpoint);
 					audioCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					audioCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
-					x.updatedAt.sort(function (a, b) {
+					x.updatedAt.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					x.updatedAt = x.updatedAt[0];
@@ -496,7 +497,7 @@ router.put('/sumreportofcamall', adminauth, (req, res) => {
 				});
 			response.display &&
 				response.display.map((x) => {
-					x.updatedAt = [...new Set(x.updatedAt)];
+					x.updatedAt = [ ...new Set(x.updatedAt) ];
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId);
 					displayCompleteReport.impressions += parseInt(x.impressions);
 					displayCompleteReport.clicks += parseInt(x.clicks);
@@ -504,7 +505,7 @@ router.put('/sumreportofcamall', adminauth, (req, res) => {
 					displayCompleteReport.midpoint += parseInt(x.midpoint);
 					displayCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					displayCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
-					x.updatedAt.sort(function (a, b) {
+					x.updatedAt.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					x.updatedAt = x.updatedAt[0];
@@ -513,7 +514,7 @@ router.put('/sumreportofcamall', adminauth, (req, res) => {
 				});
 			response.video &&
 				response.video.map((x) => {
-					x.updatedAt = [...new Set(x.updatedAt)];
+					x.updatedAt = [ ...new Set(x.updatedAt) ];
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId);
 					videoCompleteReport.impressions += parseInt(x.impressions);
 					videoCompleteReport.clicks += parseInt(x.clicks);
@@ -521,14 +522,14 @@ router.put('/sumreportofcamall', adminauth, (req, res) => {
 					videoCompleteReport.midpoint += parseInt(x.midpoint);
 					videoCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					videoCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
-					x.updatedAt.sort(function (a, b) {
+					x.updatedAt.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					x.updatedAt = x.updatedAt[0];
 					x.campaignId = x.campaignId[0];
 					updatedAtTimes.push(x.updatedAt);
 				});
-			updatedAtTimes.sort(function (a, b) {
+			updatedAtTimes.sort(function(a, b) {
 				return new Date(b) - new Date(a);
 			});
 			var summaryCompleteReport = { impressions: 0, clicks: 0, complete: 0 };
@@ -890,7 +891,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				response.video.map((x) => {
 					videoCompleteReport.unique.push(x.PublisherSplit);
 				});
-			console.log('jkh', audioCompleteReport.unique);
+			// console.log('jkh', audioCompleteReport.unique);
 			// audioCompleteReport.unique = removeDuplicates(audioCompleteReport.unique);
 			datmaaudio = await freqpublishreports
 				.aggregate([
@@ -899,7 +900,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				])
 				.catch((err) => console.log(err));
 			var tempaudio = {};
-			console.log('datamaudio', datmaaudio);
+			// console.log('datamaudio', datmaaudio);
 			if (datmaaudio.length) {
 				for (var i = 0; i < datmaaudio.length; i++) {
 					audioCompleteReport.uniqueValue += parseInt(datmaaudio[i].users);
@@ -979,9 +980,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 			// }
 			response.audio &&
 				response.audio.map((x) => {
-					x.updatedAt = [...new Set(x.updatedAt)];
-					x.Publisher = [...new Set(x.Publisher)];
-					x.ssp = [...new Set(x.ssp)];
+					x.updatedAt = [ ...new Set(x.updatedAt) ];
+					x.Publisher = [ ...new Set(x.Publisher) ];
+					x.ssp = [ ...new Set(x.ssp) ];
 					x.unique = 0;
 					var testappubid = x.apppubidpo;
 					var forda;
@@ -1005,7 +1006,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					audioCompleteReport.start += parseInt(x.start);
 					audioCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					audioCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
-					x.updatedAt.sort(function (a, b) {
+					x.updatedAt.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					x.Publisher = x.Publisher[0];
@@ -1028,9 +1029,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				});
 			response.display &&
 				response.display.map((x) => {
-					x.updatedAt = [...new Set(x.updatedAt)];
-					x.Publisher = [...new Set(x.Publisher)];
-					x.ssp = [...new Set(x.ssp)];
+					x.updatedAt = [ ...new Set(x.updatedAt) ];
+					x.Publisher = [ ...new Set(x.Publisher) ];
+					x.ssp = [ ...new Set(x.ssp) ];
 					var testappubid = x.apppubidpo;
 					var forda;
 					if (testappubid && testappubid.length)
@@ -1054,7 +1055,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					displayCompleteReport.start += parseInt(x.start);
 					displayCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					displayCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
-					x.updatedAt.sort(function (a, b) {
+					x.updatedAt.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					x.updatedAt = x.updatedAt[0];
@@ -1077,9 +1078,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				});
 			response.video &&
 				response.video.map((x) => {
-					x.updatedAt = [...new Set(x.updatedAt)];
-					x.Publisher = [...new Set(x.Publisher)];
-					x.ssp = [...new Set(x.ssp)];
+					x.updatedAt = [ ...new Set(x.updatedAt) ];
+					x.Publisher = [ ...new Set(x.Publisher) ];
+					x.ssp = [ ...new Set(x.ssp) ];
 					var testappubid = x.apppubidpo;
 					var forda;
 					if (testappubid && testappubid.length)
@@ -1103,7 +1104,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					videoCompleteReport.start += parseInt(x.start);
 					videoCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					videoCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
-					x.updatedAt.sort(function (a, b) {
+					x.updatedAt.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					x.updatedAt = x.updatedAt[0];
@@ -1124,7 +1125,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					x.campaignId = x.campaignId[0];
 					updatedAtTimes.push(x.updatedAt);
 				});
-			updatedAtTimes.sort(function (a, b) {
+			updatedAtTimes.sort(function(a, b) {
 				return new Date(b) - new Date(a);
 			});
 			var summaryCompleteReport = {
@@ -1206,8 +1207,8 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 		.then(async (reports) => {
 			if (reports.length) {
 				var response = reports[0];
-				response.updatedAt = [...new Set(response.updatedAt)];
-				response.updatedAt.sort(function (a, b) {
+				response.updatedAt = [ ...new Set(response.updatedAt) ];
+				response.updatedAt.sort(function(a, b) {
 					return new Date(b) - new Date(a);
 				});
 				response.updatedAt = response.updatedAt[0];
@@ -1222,44 +1223,45 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 
 // db.getCollection('campaignwisereports').find({campaignId:ObjectId("60c175048473711b21db0804")}).sort({_id:-1})
 
-router.put('/reportbycamp', adminauth,async (req, res) => {  //publisher
-	try{
+router.put('/reportbycamp', adminauth, async (req, res) => {
+	//publisher
+	try {
 		const { campaignId, pubname } = req.body;
 		var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
 		var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
 		var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
-		let ids = [...audio, ...video, ...display];
-		
-		let reports = await campaignwisereports.aggregate([
-			{ $match: { campaignId: { $in: ids } } },
-			{
-				$lookup: {
-					from: 'apppublishers',
-					localField: 'apppubid',
-					foreignField: 'publisherid',
-					as: 'appdet'
-				}
-			},
-			{ $unwind: "$appdet" },
-			{ $match: { "appdet.publishername": pubname } },
-			{ $sort: { "date": -1 } }
-		]).allowDiskUse(true)
+		let ids = [ ...audio, ...video, ...display ];
+		let reports = await campaignwisereports
+			.aggregate([
+				{ $match: { campaignId: { $in: ids } } },
+				{
+					$lookup: {
+						from: 'apppublishers',
+						localField: 'apppubid',
+						foreignField: 'publisherid',
+						as: 'appdet'
+					}
+				},
+				{ $unwind: '$appdet' },
+				{ $match: { 'appdet.publishername': pubname } },
+				{ $sort: { date: -1 } }
+			])
+			.allowDiskUse(true);
 		let data = reports;
 		let data2 = [];
 		data = data.filter((x) => x.appId !== '');
 		data2 = reports.filter((x) => !data.includes(x));
-		publisherapps.populate(data, { path: 'appId' }, function (err, populatedreports) {
+		publisherapps.populate(data, { path: 'appId' }, function(err, populatedreports) {
 			if (err) {
 				console.log(err);
 				res.status(422).json({ err, data, data2 });
 			}
 			res.json(populatedreports);
 		});
-	}catch(err){
+	} catch (err) {
 		console.log(err);
-		res.status(400).json({error:err.message})
+		res.status(400).json({ error: err.message });
 	}
-	
 
 	// campaignwisereports
 	// 	.find({ campaignId: { $in: ids }, bundlename: pubname })
@@ -1290,7 +1292,7 @@ router.put('/detreportbycamp', adminauth, (req, res) => {
 			var data = reports;
 			var data2 = [];
 			data = data.filter((x) => x.appId !== '');
-			publisherapps.populate(data, { path: 'appId' }, function (err, populatedreports) {
+			publisherapps.populate(data, { path: 'appId' }, function(err, populatedreports) {
 				if (err) {
 					res.status(422).json(err);
 				}
