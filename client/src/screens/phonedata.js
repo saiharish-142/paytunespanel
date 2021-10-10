@@ -16,7 +16,10 @@ import {
 	TableRow,
 	TablePagination,
 	Paper,
-	Modal
+	Modal,
+	FormControlLabel,
+	FormGroup,
+	Checkbox
 } from '@material-ui/core';
 
 import Phonedataform from '../components/phonedataform';
@@ -44,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Phonedata() {
 	const classes = useStyles();
-	const [ open, setOpen ] = React.useState(false);
+	const [open, setOpen] = React.useState(false);
 
 	const handleOpen = (data) => {
 		setOpen(true);
@@ -55,16 +58,18 @@ export default function Phonedata() {
 	const handleClose = () => {
 		setOpen(false);
 	};
-	const [ error, seterror ] = useState('');
-	const [ success, setsuccess ] = useState('');
-	const [ rows, setrows ] = useState([]);
-	const [ rowsPerPage, setRowsPerPage ] = useState(100);
-	const [ ci, setci ] = useState(0);
-	const [ cc, setcc ] = useState(0);
-	const [ search1, setsearch ] = useState('');
-	const [ searchedData, setsearchedData ] = useState([]);
-	const [ page, setPage ] = useState(0);
-	const [ sortconfig, setsortconfig ] = useState({ key: 'impression', direction: 'descending' });
+	const [error, seterror] = useState('');
+	const [success, setsuccess] = useState('');
+	const [datatrus, setdatatrus] = useState([]);
+	const [datafilterstatus, setdatafilterstatus] = useState({ A: true, B: true });
+	const [rows, setrows] = useState([]);
+	const [rowsPerPage, setRowsPerPage] = useState(100);
+	const [ci, setci] = useState(0);
+	const [cc, setcc] = useState(0);
+	const [search1, setsearch] = useState('');
+	const [searchedData, setsearchedData] = useState([]);
+	const [page, setPage] = useState(0);
+	const [sortconfig, setsortconfig] = useState({ key: 'impression', direction: 'descending' });
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
@@ -72,8 +77,8 @@ export default function Phonedata() {
 		setRowsPerPage(+event.target.value);
 		setPage(0);
 	};
-	const [ show, setShow ] = useState(false);
-	const [ tempdata, settempdata ] = useState({});
+	const [show, setShow] = useState(false);
+	const [tempdata, settempdata] = useState({});
 
 	const handleShow = (data) => {
 		setShow(true);
@@ -101,6 +106,17 @@ export default function Phonedata() {
 			});
 	};
 
+	const filterManger = (A, B) => {
+		var manage = datatrus.filter(
+			(x) =>
+				(A && x.release !== "" || B && x.release === "")
+			// (!text || x.ua.toLowerCase().indexOf(text.toLowerCase()) > -1) &&
+			// ((A && x.display != '') || (B && x.display === ''))
+		);
+		// console.log(manage);
+		setrows(manage);
+	};
+
 	useEffect(() => {
 		fetch('/subrepo/phonedata', {
 			method: 'get',
@@ -118,6 +134,7 @@ export default function Phonedata() {
 
 				// setsuccess(dat)
 				setrows(dat);
+				setdatatrus(dat);
 				console.log(dat);
 			});
 	}, []);
@@ -142,20 +159,20 @@ export default function Phonedata() {
 	};
 
 	React.useMemo(() => {
-		let sortedProducts =  searchedData?searchedData: rows;
+		let sortedProducts = searchedData ? searchedData : rows;
 		if (sortconfig !== null) {
-		  sortedProducts.sort((a, b) => {
-			if (a[sortconfig.key] < b[sortconfig.key]) {
-			  return sortconfig.direction === 'ascending' ? -1 : 1;
-			}
-			if (a[sortconfig.key] > b[sortconfig.key]) {
-			  return sortconfig.direction === 'ascending' ? 1 : -1;
-			}
-			return 0;
-		  });
+			sortedProducts.sort((a, b) => {
+				if (a[sortconfig.key] < b[sortconfig.key]) {
+					return sortconfig.direction === 'ascending' ? -1 : 1;
+				}
+				if (a[sortconfig.key] > b[sortconfig.key]) {
+					return sortconfig.direction === 'ascending' ? 1 : -1;
+				}
+				return 0;
+			});
 		}
 		return sortedProducts;
-	  }, [rows, searchedData,sortconfig]);
+	}, [rows, searchedData, sortconfig]);
 
 	const requestSort = (key) => {
 		let direction = 'ascending';
@@ -184,15 +201,15 @@ export default function Phonedata() {
 
 	function SearchData() {
 		let arr = [];
-		let search=new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase()) 
+		let search = new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase())
 		arr = rows.filter(
-			(row) =>{
-				if ((row.make_model ? row.make_model : "").toString().replace(/\s+/g, '').trim().toLowerCase().match(search,'ig')   ) {
+			(row) => {
+				if ((row.make_model ? row.make_model : "").toString().replace(/\s+/g, '').trim().toLowerCase().match(search, 'ig')) {
 					return row
 				}
 			}
-				// row.make_model.toString().replace(/\s+/g, '').trim().toLowerCase() ===
-				// search1.replace(/\s+/g, '').trim().toLowerCase()
+			// row.make_model.toString().replace(/\s+/g, '').trim().toLowerCase() ===
+			// search1.replace(/\s+/g, '').trim().toLowerCase()
 		);
 		if (arr.length === 0) {
 			setsearchedData('No Data Found!');
@@ -402,7 +419,36 @@ export default function Phonedata() {
 											)}{' '}
 										</TableCell>
 									}
-
+									<TableCell style={{ width: '10%' }}>
+										<FormGroup>
+											<FormControlLabel
+												control={
+													<Checkbox
+														size="small"
+														checked={datafilterstatus.B}
+														onChange={(e) => {
+															setdatafilterstatus({ ...datafilterstatus, B: e.target.checked });
+															filterManger(datafilterstatus.A, e.target.checked);
+														}}
+													/>
+												}
+												label="Without Release"
+											/>
+											<FormControlLabel
+												control={
+													<Checkbox
+														size="small"
+														checked={datafilterstatus.A}
+														onChange={(e) => {
+															setdatafilterstatus({ ...datafilterstatus, A: e.target.checked });
+															filterManger(e.target.checked, datafilterstatus.B);
+														}}
+													/>
+												}
+												label="With Release"
+											/>
+										</FormGroup>
+									</TableCell>
 									{<TableCell />}
 								</TableRow>
 							</TableHead>
@@ -452,7 +498,7 @@ export default function Phonedata() {
 				)}
 
 				<TablePagination
-					rowsPerPageOptions={[ 100, 1000, 10000 ]}
+					rowsPerPageOptions={[100, 1000, 10000]}
 					component="div"
 					count={rows ? rows.length : 0}
 					rowsPerPage={rowsPerPage}

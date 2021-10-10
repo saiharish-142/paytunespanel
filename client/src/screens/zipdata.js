@@ -17,7 +17,10 @@ import {
 	TableRow,
 	TablePagination,
 	Paper,
-	Modal
+	Modal,
+	FormControlLabel,
+	FormGroup,
+	Checkbox
 } from '@material-ui/core';
 
 import Zipdataform from '../components/zipformdata';
@@ -58,6 +61,8 @@ export default function Zipdata() {
 	};
 	const [search1, setsearch] = useState('');
 	const [searchedData, setsearchedData] = useState([]);
+	const [ datatrus, setdatatrus ] = useState([]);
+	const [ datafilterstatus, setdatafilterstatus ] = useState({ A: true, B: true });
 	const [error, seterror] = useState('');
 	const [success, setsuccess] = useState('');
 	const [rows, setrows] = useState([]);
@@ -101,6 +106,19 @@ export default function Zipdata() {
 				console.log(dat);
 			});
 	};
+
+	const filterManger = (A, B) => {
+		var manage = datatrus.filter(
+			(x) =>
+				(A && x.area!==""|| B && x.area==="" )
+				// (!text || x.ua.toLowerCase().indexOf(text.toLowerCase()) > -1) &&
+				// ((A && x.display != '') || (B && x.display === ''))
+		);
+		// console.log(manage);
+		setrows(manage);
+	};
+
+
 	function SearchData() {
 		let arr = [];
 		let search=new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase())
@@ -136,6 +154,7 @@ export default function Zipdata() {
 
 				// setsuccess(dat)
 				setrows(dat);
+				setdatatrus(dat);
 				console.log(dat);
 			});
 	}, []);
@@ -282,7 +301,36 @@ export default function Zipdata() {
 									{<TableCell onClick={() => requestSort('grandstate')} className={getClassNamesFor('grandstate')} style={{ cursor: 'pointer' }}> Grand State {arrowRetuner(sortconfig.key === 'grandstate' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
 									{<TableCell onClick={() => requestSort('latitude')} className={getClassNamesFor('latitude')} style={{ cursor: 'pointer' }}> Latitude {arrowRetuner(sortconfig.key === 'latitude' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
 									{<TableCell onClick={() => requestSort('longitude')} className={getClassNamesFor('longitude')} style={{ cursor: 'pointer' }}> Longitude {arrowRetuner(sortconfig.key === 'longitude' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-
+									<TableCell style={{ width: '10%' }}>
+								<FormGroup>
+									<FormControlLabel
+										control={
+											<Checkbox
+												size="small"
+												checked={datafilterstatus.B}
+												onChange={(e) => {
+													setdatafilterstatus({ ...datafilterstatus, B: e.target.checked });
+													filterManger(datafilterstatus.A, e.target.checked);
+												}}
+											/>
+										}
+										label="Without Area"
+									/>
+									<FormControlLabel
+										control={
+											<Checkbox
+												size="small"
+												checked={datafilterstatus.A}
+												onChange={(e) => {
+													setdatafilterstatus({ ...datafilterstatus, A: e.target.checked });
+													filterManger(e.target.checked, datafilterstatus.B);
+												}}
+											/>
+										}
+										label="With Area"
+									/>
+								</FormGroup>
+							</TableCell>
 									{<TableCell />}
 								</TableRow>
 							</TableHead>

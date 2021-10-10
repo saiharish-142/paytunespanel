@@ -14,7 +14,10 @@ import {
 	TableRow,
 	TablePagination,
 	Paper,
-	Modal
+	Modal,
+	FormControlLabel,
+	FormGroup,
+	Checkbox
 } from '@material-ui/core';
 
 import Phonedataform from '../components/phonedataform';
@@ -59,6 +62,8 @@ export default function PhoneVideodata() {
 	const [ success, setsuccess ] = useState('');
 	const [ rows, setrows ] = useState([]);
 	const [ rowsPerPage, setRowsPerPage ] = useState(100);
+	const [datatrus, setdatatrus] = useState([]);
+	const [datafilterstatus, setdatafilterstatus] = useState({ A: true, B: true });
 	const [search1,setsearch ] = useState('')
 	const [searchedData, setsearchedData ]=useState([])
 	const [ page, setPage ] = useState(0);
@@ -100,6 +105,17 @@ export default function PhoneVideodata() {
 			});
 	};
 
+	const filterManger = (A, B) => {
+		var manage = datatrus.filter(
+			(x) =>
+				(A && x.release !== "" || B && x.release === "")
+			// (!text || x.ua.toLowerCase().indexOf(text.toLowerCase()) > -1) &&
+			// ((A && x.display != '') || (B && x.display === ''))
+		);
+		// console.log(manage);
+		setrows(manage);
+	};
+
 	useEffect(() => {
 		fetch('/subrepo/phonedata_video', {
 			method: 'get',
@@ -117,6 +133,7 @@ export default function PhoneVideodata() {
 
 				// setsuccess(dat)
 				setrows(dat);
+				setdatatrus(dat);
 				console.log(dat);
 			});
 	}, []);
@@ -267,7 +284,36 @@ export default function PhoneVideodata() {
 								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('company')} className={getClassNamesFor('company')}>  Company Name {arrowRetuner( sortconfig.key==='company'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>
 								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('model')} className={getClassNamesFor('model')}>  Model {arrowRetuner( sortconfig.key==='model'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>
 								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('type')} className={getClassNamesFor('type')}> Type of Device {arrowRetuner( sortconfig.key==='type'?(sortconfig.direction==='ascending'?'1':'2'):'3' )} </TableCell>}
-								
+								<TableCell style={{ width: '10%' }}>
+										<FormGroup>
+											<FormControlLabel
+												control={
+													<Checkbox
+														size="small"
+														checked={datafilterstatus.B}
+														onChange={(e) => {
+															setdatafilterstatus({ ...datafilterstatus, B: e.target.checked });
+															filterManger(datafilterstatus.A, e.target.checked);
+														}}
+													/>
+												}
+												label="Without Release"
+											/>
+											<FormControlLabel
+												control={
+													<Checkbox
+														size="small"
+														checked={datafilterstatus.A}
+														onChange={(e) => {
+															setdatafilterstatus({ ...datafilterstatus, A: e.target.checked });
+															filterManger(e.target.checked, datafilterstatus.B);
+														}}
+													/>
+												}
+												label="With Release"
+											/>
+										</FormGroup>
+									</TableCell>
 								{<TableCell />}
 							</TableRow>
 						</TableHead>

@@ -15,7 +15,10 @@ import {
 	TableRow,
 	TablePagination,
 	Paper,
-	Modal
+	Modal,
+	FormControlLabel,
+	FormGroup,
+	Checkbox
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -48,6 +51,8 @@ export default function EpisodeTab() {
 	const [searchedData, setsearchedData] = useState([]);
 	const [sortconfig, setsortconfig] = useState({ key: 'impression', direction: 'descending' })
 	const [error, seterror] = useState('');
+	const [ datatrus, setdatatrus ] = useState([]);
+	const [ datafilterstatus, setdatafilterstatus ] = useState({ A: true, B: true });
 	const [success, setsuccess] = useState('');
 	const [rowsPerPage, setRowsPerPage] = useState(100);
 	const [page, setPage] = useState(0);
@@ -73,6 +78,18 @@ export default function EpisodeTab() {
 	const handleClose = () => {
 		setOpen(false);
 	};
+
+	const filterManger = (A, B) => {
+		var manage = datatrus.filter(
+			(x) =>
+				(A && x.displayname!==""|| B && x.displayname==="" )
+				// (!text || x.ua.toLowerCase().indexOf(text.toLowerCase()) > -1) &&
+				// ((A && x.display != '') || (B && x.display === ''))
+		);
+		// console.log(manage);
+		setrows(manage);
+	};
+
 	const headers = [
 		{ key: 'episodename', label: 'Episode Name' },
 		{ key: 'request', label: 'Request' },
@@ -136,6 +153,7 @@ export default function EpisodeTab() {
 
 				// setsuccess(dat)
 				setrows(dat);
+				setdatatrus(dat);
 				console.log(dat);
 			});
 	}, []);
@@ -296,11 +314,11 @@ export default function EpisodeTab() {
 				<CSVLink {...csvReport} style={{ padding: '10px', marginTop: '20px' }} >Download Table</CSVLink>
 				{/* <div style={{ flexDirection: 'column', display: 'flex',marginLeft:'40%',padding:'10px' }} >
 					<div style={{ flexDirection: 'row', display: 'flex' }}>
-						<input type="checkbox" id="check1" style={{maxWidth: '40%', height: '40%', marginTop: '5px',opacity:"1"}}  checked={ischecked} onChange={handlechange} />
+						<input type="checkbox" id="check1" style={{maxWidth: '40%', height: '40%', marginTop: '5px'}}  checked={ischecked} onChange={handlechange} />
 						<label for="check1" style={{ marginLeft: '0%',fontSize:'15px' }} > With Entry</label>
 					</div>
 					<div style={{ flexDirection: 'row', display: 'flex' }} >
-						<input type="checkbox" id="check2" style={{maxWidth: '40%', height: '40%', marginTop: '5px',opacity:"1"}}  checked={ischecked1} onChange={handlechange1} />
+						<input type="checkbox" id="check2" style={{maxWidth: '40%', height: '40%', marginTop: '5px'}}  checked={ischecked1} onChange={handlechange1} />
 						<label for="check2" style={{ marginLeft: '10%',fontSize:'15px' }} > Without Entry</label>
 					</div>
 				</div> */}
@@ -323,7 +341,36 @@ export default function EpisodeTab() {
 								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('displayename')} className={getClassNamesFor('displayename')}>  Episode Name {arrowRetuner(sortconfig.key === 'displayename' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('publishername')} className={getClassNamesFor('publishername')}> Publisher Name {arrowRetuner(sortconfig.key === 'publishername' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('hostPossibility')} className={getClassNamesFor('hostPossibility')}> Host Possibility {arrowRetuner(sortconfig.key === 'hostPossibility' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
-
+								<TableCell style={{ width: '10%' }}>
+								<FormGroup>
+									<FormControlLabel
+										control={
+											<Checkbox
+												size="small"
+												checked={datafilterstatus.B}
+												onChange={(e) => {
+													setdatafilterstatus({ ...datafilterstatus, B: e.target.checked });
+													filterManger(datafilterstatus.A, e.target.checked);
+												}}
+											/>
+										}
+										label="Without Display"
+									/>
+									<FormControlLabel
+										control={
+											<Checkbox
+												size="small"
+												checked={datafilterstatus.A}
+												onChange={(e) => {
+													setdatafilterstatus({ ...datafilterstatus, A: e.target.checked });
+													filterManger(e.target.checked, datafilterstatus.B);
+												}}
+											/>
+										}
+										label="With Display"
+									/>
+								</FormGroup>
+							</TableCell>
 								{<TableCell />}
 							</TableRow>
 						</TableHead>
