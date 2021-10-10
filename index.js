@@ -584,7 +584,7 @@ async function PincodeRequestsRefresher() {
 			let val = await Zipreports2.findOne({ pincode: parseInt(pincode._id.zip), rtbType: { $exists: false } });
 			const newzip = new Zipreports2({
 				area: val ? val.area : '',
-				pincode: pincode._id.zip? parseInt(pincode._id.zip):null,
+				pincode: pincode._id.zip ? parseInt(pincode._id.zip) : null,
 				rtbType: pincode._id.rtbType,
 				lowersubcity: val ? val.lowersubcity : '',
 				subcity: val ? val.subcity : '',
@@ -1679,11 +1679,12 @@ const campaignifareports = mongoose.model('campaignifareports');
 const zipreports = mongoose.model('zipreports');
 const zipsumreport = mongoose.model('zipsumreport');
 
-async function PublisherConsoleLoaderTypeWise(array, type, chevk2) {
+async function PublisherConsoleLoaderTypeWise(array, type) {
 	// console.log(array.length, array[0]);
 	// for (var z = 0; z < array.length; z++) {
 	// 	console.log(array[z]);
 	// }
+	var contda = array ? array.length : 0;
 	if (array && array.length)
 		array.map(async (publis) => {
 			// console.log(publisherB.PublisherSplit);
@@ -1752,7 +1753,7 @@ async function PublisherConsoleLoaderTypeWise(array, type, chevk2) {
 							: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
 					});
 					var suc = await newzip.save().catch((err) => console.log(err));
-					console.log('created');
+					console.log('created', contda--);
 				} else {
 					const newzip = new publisherwiseConsole({
 						apppubid: publisherBit.PublisherSplit,
@@ -1778,15 +1779,15 @@ async function PublisherConsoleLoaderTypeWise(array, type, chevk2) {
 							: 0 + publisherBit.clicks1 ? publisherBit.clicks1 : 0
 					});
 					var suc = await newzip.save().catch((err) => console.log(err));
-					console.log('created');
+					console.log('created', contda--);
 				}
 			} else {
 				if (match.createdOn === publisherBit.test && match.days === daysCount) {
-					console.log('Already Done');
+					console.log('Already Done', contda--);
 				} else if (type === 'display') {
-					console.log(match.appubid);
+					// console.log(match.appubid);
 					match.createdOn = publisherBit.test;
-					match.unique = numbr;
+					if (match.unique && match.unique < numbr) match.unique = numbr;
 					match.impression = publisherBit.impressions;
 					match.click = publisherBit.clicks
 						? publisherBit.clicks
@@ -1795,13 +1796,13 @@ async function PublisherConsoleLoaderTypeWise(array, type, chevk2) {
 					match
 						.save()
 						.then((d) => {
-							console.log('updated');
+							console.log('updated', contda--);
 						})
 						.catch((err) => console.log('err'));
 				} else {
-					console.log(match.appubid);
+					// console.log(match.appubid);
 					match.createdOn = publisherBit.test;
-					match.unique = numbr;
+					if (match.unique && match.unique < numbr) match.unique = numbr;
 					match.impression = publisherBit.impressions;
 					match.start = publisherBit.start;
 					match.firstQuartile = publisherBit.firstQuartile;
@@ -1815,7 +1816,7 @@ async function PublisherConsoleLoaderTypeWise(array, type, chevk2) {
 					match
 						.save()
 						.then((d) => {
-							console.log('updated');
+							console.log('updated', contda--);
 						})
 						.catch((err) => console.log('err'));
 				}
@@ -1844,14 +1845,14 @@ async function PublisherDataRefresher() {
 	cmonth = cdatee.getMonth() + 1;
 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
 	cyear = cdatee.getFullYear();
-	var chevk2 = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	var chevk2 = `${cyear}-${cmonth}-${cdate}`;
 	cdatee.setDate(cdatee.getDate() - 1);
 	cdate = cdatee.getDate();
 	cdate = cdate < 10 ? '0' + cdate : cdate;
 	cmonth = cdatee.getMonth() + 1;
 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
 	cyear = cdatee.getFullYear();
-	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	var chevk = `${cyear}-${cmonth}-${cdate}`;
 	console.log(datee, chevk, chevk2);
 	const adsetting = mongoose.model('adsetting');
 	const StreamingAds = mongoose.model('streamingads');
@@ -2087,7 +2088,7 @@ async function PublisherDataRefresher() {
 	// 	.catch((err) => console.log('err'));
 	console.log('started');
 	console.log(publisherDataAudio.length, publisherDataDisplay.length, publisherDataVideo.length);
-	await PublisherConsoleLoaderTypeWise(publisherDataAudio, 'audio', chevk2);
+	await PublisherConsoleLoaderTypeWise(publisherDataAudio, 'audio');
 	await PublisherConsoleLoaderTypeWise(publisherDataDisplay, 'display');
 	await PublisherConsoleLoaderTypeWise(publisherDataVideo, 'video');
 }
@@ -2216,6 +2217,7 @@ async function FrequencyPublisherRefresher() {
 		])
 		.catch((err) => console.log(err));
 	console.log(frequency.length);
+	var coo = frequency.length;
 	frequency.forEach(async (frequenct) => {
 		const match = await freqpublishreports.findOne({
 			campaignId: frequenct._id.campaignId,
@@ -2233,10 +2235,10 @@ async function FrequencyPublisherRefresher() {
 				users: frequenct.users
 			});
 			await newzip.save().catch((err) => console.log(err));
-			console.log('created');
+			console.log('created', coo--);
 		} else {
 			if (match.createdOn === chevk2) {
-				console.log('Null');
+				console.log('Already Done', coo--);
 			} else {
 				match.impression += frequenct.impressions;
 				match.click += frequenct.click;
@@ -2245,7 +2247,7 @@ async function FrequencyPublisherRefresher() {
 				match
 					.save()
 					.then((ss) => {
-						console.log('updated');
+						console.log('updated', coo--);
 					})
 					.catch((err) => console.log(err));
 			}
