@@ -5,6 +5,9 @@ import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import { Alert } from '@material-ui/lab';
 import { CSVLink } from 'react-csv';
+import { arrowRetuner } from '../components/CommonFun';
+import { orderSetter } from '../redux/actions/manageadsAction';
+
 import {
 	Table,
 	TableBody,
@@ -43,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function ZipVideodata() {
+export default function ZipdataVideo() {
 	const classes = useStyles();
 	const [open, setOpen] = React.useState(false);
 
@@ -56,11 +59,15 @@ export default function ZipVideodata() {
 	const handleClose = () => {
 		setOpen(false);
 	};
-	const [error, seterror] = useState('');
-	const [success, setsuccess] = useState('');
+	const [search1, setsearch] = useState('');
+	const [searchedData, setsearchedData] = useState([]);
 	const [ datatrus, setdatatrus ] = useState([]);
 	const [ datafilterstatus, setdatafilterstatus ] = useState({ A: true, B: true });
+	const [error, seterror] = useState('');
+	const [success, setsuccess] = useState('');
 	const [rows, setrows] = useState([]);
+	const [ sa, setsa ] = React.useState('impression');
+	const [ order, setorder ] = React.useState('desc');
 	const [rowsPerPage, setRowsPerPage] = useState(7);
 	const [page, setPage] = useState(0);
 	const [sortconfig, setsortconfig] = useState({ key: 'impression', direction: 'descending' })
@@ -73,8 +80,7 @@ export default function ZipVideodata() {
 	};
 	const [show, setShow] = useState(false);
 	const [tempdata, settempdata] = useState({});
-	const [search1, setsearch] = useState('');
-	const [searchedData, setsearchedData] = useState([]);
+
 	// const handleShow = (data) => {
 	// 	setShow(true);
 	// 	console.log(data);
@@ -83,7 +89,7 @@ export default function ZipVideodata() {
 	//const [make_model,setmakemodel]=useState("")
 
 	const data = () => {
-		fetch('/subrepo/zipdata', {
+		fetch('/subrepo/zipdata_video', {
 			method: 'get',
 			headers: {
 				'Content-Type': 'application/json',
@@ -114,6 +120,25 @@ export default function ZipVideodata() {
 		setrows(manage);
 	};
 
+
+	function SearchData() {
+		let arr = [];
+		let search=new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase())
+		arr = rows.filter(
+			(row) =>{
+				if ((row.pincode ? row.pincode : "").toString().replace(/\s+/g, '').trim().toLowerCase().match(search,'ig')   ) {
+					return row
+				}
+			}	
+		);
+		console.log(arr)
+		if (arr.length === 0) {
+			setsearchedData('No Data Found!');
+		} else {		
+			setsearchedData(arr);
+			console.log('jvhvhvhv', arr);
+		}
+	}
 	useEffect(() => {
 		fetch('/subrepo/zipdata_video', {
 			method: 'get',
@@ -135,25 +160,7 @@ export default function ZipVideodata() {
 				console.log(dat);
 			});
 	}, []);
-	function SearchData() {
-		let arr = [];
-		let search=new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase())
-		arr = rows.filter(
-			(row) =>{
-				if ((row.pincode ? row.pincode : "").toString().replace(/\s+/g, '').trim().toLowerCase().match(search,'ig')   ) {
-					return row
-				}
-			}
-				
-		);
-		console.log(arr)
-		if (arr.length === 0) {
-			setsearchedData('No Data Found!');
-		} else {		
-			setsearchedData(arr);
-			console.log('jvhvhvhv', arr);
-		}
-	}
+
 	const headers = [
 		{ key: 'pincode', label: 'Pincode' },
 		{ key: 'requests', label: 'Requests' },
@@ -174,56 +181,43 @@ export default function ZipVideodata() {
 		{ key: 'longitude', label: 'Longitude' },
 	];
 	var csvReport = {
-		filename: `PincodeVideoData.csv`,
+		filename: `PincodeDataVideo.csv`,
 		headers: headers,
 		data: rows
 	};
 
-	React.useMemo(() => {
-		let sortedProducts =  searchedData?searchedData: rows;
-		if (sortconfig !== null) {
-		  sortedProducts.sort((a, b) => {
-			if (a[sortconfig.key] < b[sortconfig.key]) {
-			  return sortconfig.direction === 'ascending' ? -1 : 1;
-			}
-			if (a[sortconfig.key] > b[sortconfig.key]) {
-			  return sortconfig.direction === 'ascending' ? 1 : -1;
-			}
-			return 0;
-		  });
-		}
-		return sortedProducts;
-	  }, [rows, searchedData,sortconfig]);
-
-
-	const requestSort = (key) => {
-		let direction = 'ascending';
-		if (sortconfig && sortconfig.key === key && sortconfig.direction === 'ascending') {
-			direction = 'descending';
-		}
-		setsortconfig({ key, direction });
-	}
-
-	const getClassNamesFor = (name) => {
-		if (!sortconfig) {
-			return;
-		}
-		return sortconfig.key === name ? sortconfig.direction : undefined;
+	const tablesorter = (column, type) => {
+		var orde = sa === column ? (order === 'asc' ? 'desc' : 'asc') : 'asc';
+		setorder(orde);
+		setsa(column);
+		var setData = orderSetter(orde, column, rows, type);
+		var setDatatrus = orderSetter(orde, column, datatrus, type);
+		setrows(setData);
+		setdatatrus(setDatatrus);
 	};
-	const arrowRetuner = (mode) => {
-		if (mode === '1') {
-			return <ArrowUpwardRoundedIcon fontSize="small" />;
-		} else if (mode === '2') {
-			return <ArrowDownwardRoundedIcon fontSize="small" />;
-		} else {
-			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
-		}
-	};
+
+	// React.useMemo(() => {
+	// 	let sortedProducts =  searchedData?searchedData: rows;
+	// 	if (sortconfig !== null) {
+	// 	  sortedProducts.sort((a, b) => {
+	// 		if (a[sortconfig.key] < b[sortconfig.key]) {
+	// 		  return sortconfig.direction === 'ascending' ? -1 : 1;
+	// 		}
+	// 		if (a[sortconfig.key] > b[sortconfig.key]) {
+	// 		  return sortconfig.direction === 'ascending' ? 1 : -1;
+	// 		}
+	// 		return 0;
+	// 	  });
+	// 	}
+	// 	return sortedProducts;
+	//   }, [rows, searchedData,sortconfig]);
+
+
 
 	return (
 		<div>
 			<div>
-				<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Pincode Video Data </h4>
+				<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Pincode Video data </h4>
 				<input
 					placeholder="Search Pincode"
 					onChange={(e) => setsearch(e.target.value)}
@@ -269,34 +263,34 @@ export default function ZipVideodata() {
 			</div>
 
 			<Paper>
-			<CSVLink {...csvReport}  >Download Table</CSVLink>
-			{searchedData === 'No Data Found!' ? (
+				<CSVLink {...csvReport}  >Download Table</CSVLink>
+				{searchedData === 'No Data Found!' ? (
 					<h7>{searchedData}</h7>
 				) : (
-				<TableContainer style={{ maxHeight: 440 }}>
-					<Table stickyHeader aria-label="sticky table">
-						<TableHead>
-							<TableRow>
-								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell onClick={() => requestSort('pincode')} className={getClassNamesFor('pincode')} style={{ cursor: 'pointer' }}> Pincode {arrowRetuner(sortconfig.key === 'pincode' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('requests')} className={getClassNamesFor('requests')} style={{ cursor: 'pointer' }}> Requests {arrowRetuner(sortconfig.key === 'requests' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('avgrequest')} className={getClassNamesFor('avgrequest')} style={{ cursor: 'pointer' }}> Avg Requests {arrowRetuner(sortconfig.key === 'avgrequest' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('impression')} className={getClassNamesFor('impression')} style={{ cursor: 'pointer' }}> Impressions {arrowRetuner(sortconfig.key === 'impression' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('avgimpression')} className={getClassNamesFor('avgimpression')} style={{ cursor: 'pointer' }}>Avg Impressions {arrowRetuner(sortconfig.key === 'avgimpression' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('click')} className={getClassNamesFor('click')} style={{ cursor: 'pointer' }}> Click {arrowRetuner(sortconfig.key === 'click' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell>CTR</TableCell>}
-								{<TableCell onClick={() => requestSort('area')} className={getClassNamesFor('area')} style={{ cursor: 'pointer' }}> Urban/Rural {arrowRetuner(sortconfig.key === 'area' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('lowersubcity')} className={getClassNamesFor('lowersubcity')} style={{ cursor: 'pointer' }}> Lower Sub City {arrowRetuner(sortconfig.key === 'lowersubcity' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								<TableCell onClick={() => requestSort('subcity')} className={getClassNamesFor('subcity')} style={{ cursor: 'pointer' }}> SubCity {arrowRetuner(sortconfig.key === 'subcity' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
-								<TableCell onClick={() => requestSort('city')} className={getClassNamesFor('city')} style={{ cursor: 'pointer' }}> City {arrowRetuner(sortconfig.key === 'city' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
-								<TableCell onClick={() => requestSort('grandcity')} className={getClassNamesFor('grandcity')} style={{ cursor: 'pointer' }}> Grand City {arrowRetuner(sortconfig.key === 'grandcity' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
-								{<TableCell onClick={() => requestSort('district')} className={getClassNamesFor('district')} style={{ cursor: 'pointer' }}> District {arrowRetuner(sortconfig.key === 'district' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('comparison')} className={getClassNamesFor('comparison')} style={{ cursor: 'pointer' }}> Comparison {arrowRetuner(sortconfig.key === 'comparison' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('state')} className={getClassNamesFor('state')} style={{ cursor: 'pointer' }}>  State {arrowRetuner(sortconfig.key === 'state' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('grandstate')} className={getClassNamesFor('grandstate')} style={{ cursor: 'pointer' }}> Grand State {arrowRetuner(sortconfig.key === 'grandstate' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell onClick={() => requestSort('latitude')} className={getClassNamesFor('latitude')} style={{ cursor: 'pointer' }}> Latitude {arrowRetuner(sortconfig.key === 'latitude' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								{<TableCell onClick={() => requestSort('longitude')} className={getClassNamesFor('longitude')} style={{ cursor: 'pointer' }}> Longitude {arrowRetuner(sortconfig.key === 'longitude' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-								<TableCell style={{ width: '10%' }}>
+					<TableContainer style={{ maxHeight: 440 }}>
+						<Table stickyHeader aria-label="sticky table">
+							<TableHead>
+								<TableRow>
+									{/* <TableCell>{title}</TableCell> */}
+									{<TableCell onClick={() => tablesorter('pincode', 'number')}  style={{ cursor: 'pointer' }}> Pincode {arrowRetuner(sa === 'pincode' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('requests', 'number')}  style={{ cursor: 'pointer' }}> Requests {arrowRetuner(sa === 'requests' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('avgrequest', 'number')}  style={{ cursor: 'pointer' }}> Avg Requests {arrowRetuner(sa === 'avgrequest' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('impression', 'number')} style={{ cursor: 'pointer' }}> Impressions {arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('avgimpression', 'number')}  style={{ cursor: 'pointer' }}>Avg Impressions {arrowRetuner(sa === 'avgimpression' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('click', 'number')}  style={{ cursor: 'pointer' }}> Click {arrowRetuner(sa === 'click' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell>CTR</TableCell>}
+									{<TableCell onClick={() => tablesorter('area', 'string')}  style={{ cursor: 'pointer' }}> Urban/Rural {arrowRetuner(sa === 'area' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('lowersubcity', 'string')}  style={{ cursor: 'pointer' }}> Lower Sub City {arrowRetuner(sa === 'lowersubcity' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									<TableCell onClick={() => tablesorter('subcity', 'string')}  style={{ cursor: 'pointer' }}> SubCity{arrowRetuner(sa === 'subcity' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
+									<TableCell onClick={() => tablesorter('city', 'string')}  style={{ cursor: 'pointer' }}> City {arrowRetuner(sa === 'city' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
+									<TableCell onClick={() => tablesorter('grandcity', 'string')}  style={{ cursor: 'pointer' }}> Grand City {arrowRetuner(sa === 'grandcity' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
+									{<TableCell onClick={() => tablesorter('district', 'string')} style={{ cursor: 'pointer' }}> District {arrowRetuner(sa === 'district' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('comparison', 'string')}  style={{ cursor: 'pointer' }}> Comparison {arrowRetuner(sa === 'comparison' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('state', 'string')}  style={{ cursor: 'pointer' }}>  State {arrowRetuner(sa === 'state' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('grandstate', 'string')}  style={{ cursor: 'pointer' }}> Grand State {arrowRetuner(sa === 'grandstate' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+									{<TableCell onClick={() => tablesorter('latitude', 'number')}  style={{ cursor: 'pointer' }}> Latitude {arrowRetuner(sa === 'latitude' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('longitude', 'number')}  style={{ cursor: 'pointer' }}> Longitude {arrowRetuner(sa === 'longitude' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									<TableCell style={{ width: '10%' }}>
 								<FormGroup>
 									<FormControlLabel
 										control={
@@ -326,45 +320,47 @@ export default function ZipVideodata() {
 									/>
 								</FormGroup>
 							</TableCell>
-								{<TableCell />}
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{(searchedData.length !== 0 ? searchedData : rows).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-									<TableRow key={row.name}>
-										<TableCell component="th" scope="row">
-											{row.pincode ? row.pincode : ''}
-										</TableCell>
-										<TableCell>{row.requests ? row.requests : ''}</TableCell>
-										<TableCell>{row.avgrequest ? Math.round(row.avgrequest)  : ''}</TableCell>
-										<TableCell>{row.impression ? row.impression : ''}</TableCell>
-										<TableCell>{row.impression ? Math.round(row.avgimpression)  : ''}</TableCell>
-										<TableCell>{row.click ? row.click : 0}</TableCell>
-										<TableCell>{row.impression!==0 ? Math.round(((row.click/row.impression)*100))/100 : 0}%</TableCell>
-										
-										<TableCell>{row.area ? row.area : ''}</TableCell>
-										<TableCell>{row.lowersubcity ? row.lowersubcity : ''}</TableCell>
-										<TableCell>{row.subcity ? row.subcity : ''}</TableCell>
-										<TableCell>{row.city ? row.city : ''}</TableCell>
-										<TableCell>{row.grandcity ? row.grandcity : ''}</TableCell>
-										<TableCell>{row.district ? row.district : ''}</TableCell>
-										<TableCell>{row.comparison ? row.comparison : ''}</TableCell>
-										<TableCell>{row.state ? row.state : ''}</TableCell>
-										<TableCell>{row.grandstate ? row.grandstate : ''}</TableCell>
-										<TableCell>{row.latitude ? row.latitude : ''}</TableCell>
-										<TableCell>{row.longitude ? row.longitude : ''}</TableCell>
+									{<TableCell />}
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								
+									{(searchedData.length !== 0 ? searchedData : rows).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+										<TableRow key={row.name}>
+											<TableCell component="th" scope="row">
+												{row.pincode ? row.pincode : ''}
+											</TableCell>
+											<TableCell>{row.requests ? row.requests : ''}</TableCell>
+											<TableCell>{row.avgrequest ? Math.round(row.avgrequest) : ''}</TableCell>
+											<TableCell>{row.impression ? row.impression : ''}</TableCell>
+											<TableCell>{row.impression ? Math.round(row.avgimpression) : ''}</TableCell>
+											<TableCell>{row.click ? row.click : 0}</TableCell>
+											<TableCell>{row.impression !== 0 ? Math.round(((row.click / row.impression) * 100)) / 100 : 0}%</TableCell>
 
-										<TableCell>
-											<button className="btn" onClick={() => handleOpen(row)}>
-												Edit{' '}
-											</button>
-										</TableCell>
-									</TableRow>
-								))}
-						</TableBody>
-					</Table>
-				</TableContainer>
+											<TableCell>{row.area ? row.area : ''}</TableCell>
+											<TableCell>{row.lowersubcity ? row.lowersubcity : ''}</TableCell>
+											<TableCell>{row.subcity ? row.subcity : ''}</TableCell>
+											<TableCell>{row.city ? row.city : ''}</TableCell>
+											<TableCell>{row.grandcity ? row.grandcity : ''}</TableCell>
+											<TableCell>{row.district ? row.district : ''}</TableCell>
+											<TableCell>{row.comparison ? row.comparison : ''}</TableCell>
+											<TableCell>{row.state ? row.state : ''}</TableCell>
+											<TableCell>{row.grandstate ? row.grandstate : ''}</TableCell>
+											<TableCell>{row.latitude ? row.latitude : ''}</TableCell>
+											<TableCell>{row.longitude ? row.longitude : ''}</TableCell>
+
+											<TableCell>
+												<button className="btn" onClick={() => handleOpen(row)}>
+													Edit{' '}
+												</button>
+											</TableCell>
+										</TableRow>
+									))}
+							</TableBody>
+						</Table>
+					</TableContainer>
 				)}
+
 				<TablePagination
 					rowsPerPageOptions={[10, 100, 1000, 10000]}
 					component="div"
@@ -375,7 +371,8 @@ export default function ZipVideodata() {
 					onChangePage={handleChangePage}
 					onChangeRowsPerPage={handleChangeRowsPerPage}
 				/>
-				{/* {show ? (
+				
+				{show ? (
 					<div>
 						<Modal
 							open={open}
@@ -398,7 +395,7 @@ export default function ZipVideodata() {
 					</div>
 				) : (
 					<React.Fragment />
-				)} */}
+				)}
 			</Paper>
 		</div>
 	);

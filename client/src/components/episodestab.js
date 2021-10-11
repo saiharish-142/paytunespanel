@@ -6,6 +6,8 @@ import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import { Alert } from '@material-ui/lab';
 import { CSVLink } from 'react-csv';
 import Episodedataform from '../screens/episodedataform';
+import { arrowRetuner } from '../components/CommonFun';
+import { orderSetter } from '../redux/actions/manageadsAction';
 import {
 	Table,
 	TableBody,
@@ -56,6 +58,8 @@ export default function EpisodeTab() {
 	const [success, setsuccess] = useState('');
 	const [rowsPerPage, setRowsPerPage] = useState(100);
 	const [page, setPage] = useState(0);
+	const [ sa, setsa ] = React.useState('impression');
+	const [ order, setorder ] = React.useState('desc');
 	const [ischecked, setchecked] = useState(false);
 	const [ischecked1, setchecked1] = useState(false);
 	const [tempdata, settempdata] = useState({});
@@ -179,46 +183,43 @@ export default function EpisodeTab() {
 			});
 	};
 
-	React.useMemo(() => {
-		let sortedProducts = searchedData ? searchedData : rows;
-		if (sortconfig !== null) {
-			sortedProducts.sort((a, b) => {
-				if (a[sortconfig.key] < b[sortconfig.key]) {
-					return sortconfig.direction === 'ascending' ? -1 : 1;
-				}
-				if (a[sortconfig.key] > b[sortconfig.key]) {
-					return sortconfig.direction === 'ascending' ? 1 : -1;
-				}
-				return 0;
-			});
-		}
-		return sortedProducts;
-	}, [rows, searchedData, sortconfig]);
+	// React.useMemo(() => {
+	// 	let sortedProducts = searchedData ? searchedData : rows;
+	// 	if (sortconfig !== null) {
+	// 		sortedProducts.sort((a, b) => {
+	// 			if (a[sortconfig.key] < b[sortconfig.key]) {
+	// 				return sortconfig.direction === 'ascending' ? -1 : 1;
+	// 			}
+	// 			if (a[sortconfig.key] > b[sortconfig.key]) {
+	// 				return sortconfig.direction === 'ascending' ? 1 : -1;
+	// 			}
+	// 			return 0;
+	// 		});
+	// 	}
+	// 	return sortedProducts;
+	// }, [rows, searchedData, sortconfig]);
 
-	const requestSort = (key) => {
-		let direction = 'ascending';
-		if (sortconfig && sortconfig.key === key && sortconfig.direction === 'ascending') {
-			direction = 'descending';
-		}
-		setsortconfig({ key, direction });
-	}
-
-	const getClassNamesFor = (name) => {
-		if (!sortconfig) {
-			return;
-		}
-		return sortconfig.key === name ? sortconfig.direction : undefined;
+	const tablesorter = (column, type) => {
+		var orde = sa === column ? (order === 'asc' ? 'desc' : 'asc') : 'asc';
+		setorder(orde);
+		setsa(column);
+		var setData = orderSetter(orde, column, rows, type);
+		var setDatatrus = orderSetter(orde, column, datatrus, type);
+		setrows(setData);
+		setdatatrus(setDatatrus);
 	};
 
-	const arrowRetuner = (mode) => {
-		if (mode === '1') {
-			return <ArrowUpwardRoundedIcon fontSize="small" />;
-		} else if (mode === '2') {
-			return <ArrowDownwardRoundedIcon fontSize="small" />;
-		} else {
-			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
-		}
-	};
+	
+
+	// const arrowRetuner = (mode) => {
+	// 	if (mode === '1') {
+	// 		return <ArrowUpwardRoundedIcon fontSize="small" />;
+	// 	} else if (mode === '2') {
+	// 		return <ArrowDownwardRoundedIcon fontSize="small" />;
+	// 	} else {
+	// 		return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
+	// 	}
+	// };
 
 	function fetchcategory(category) {
 		let array = []
@@ -312,17 +313,7 @@ export default function EpisodeTab() {
 			</div>
 			<Paper>
 				<CSVLink {...csvReport} style={{ padding: '10px', marginTop: '20px' }} >Download Table</CSVLink>
-				{/* <div style={{ flexDirection: 'column', display: 'flex',marginLeft:'40%',padding:'10px' }} >
-					<div style={{ flexDirection: 'row', display: 'flex' }}>
-						<input type="checkbox" id="check1" style={{maxWidth: '40%', height: '40%', marginTop: '5px'}}  checked={ischecked} onChange={handlechange} />
-						<label for="check1" style={{ marginLeft: '0%',fontSize:'15px' }} > With Entry</label>
-					</div>
-					<div style={{ flexDirection: 'row', display: 'flex' }} >
-						<input type="checkbox" id="check2" style={{maxWidth: '40%', height: '40%', marginTop: '5px'}}  checked={ischecked1} onChange={handlechange1} />
-						<label for="check2" style={{ marginLeft: '10%',fontSize:'15px' }} > Without Entry</label>
-					</div>
-				</div> */}
-				{/* {searchedData==='No Data Found!'? <h7>{searchedData}</h7>:   */}
+				
 				{searchedData === 'No Data Found!' ? (
 					<h7>{searchedData}</h7>
 				) : (<TableContainer style={{ maxHeight: 440, maxWidth: '100%' }}>
@@ -330,17 +321,17 @@ export default function EpisodeTab() {
 						<TableHead style={{ position: "sticky", top: 0 }}>
 							<TableRow >
 								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell style={{ cursor: 'pointer', width: 30 }} onClick={() => requestSort('episodename')} className={getClassNamesFor('episodename')}> Display Name {arrowRetuner(sortconfig.key === 'episodename' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('request')} className={getClassNamesFor('request')}> Request {arrowRetuner(sortconfig.key === 'request' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('avgrequest')} className={getClassNamesFor('avgrequest')}>Avg Request {arrowRetuner(sortconfig.key === 'avgrequest' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('publisher')} className={getClassNamesFor('publisher')}> Host {arrowRetuner(sortconfig.key === 'publisher' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('category')} className={getClassNamesFor('category')}> Category {arrowRetuner(sortconfig.key === 'category' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('tier1')} className={getClassNamesFor('tier1')}> Tier1 {arrowRetuner(sortconfig.key === 'tier1' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('tier2')} className={getClassNamesFor('tier2')}> Tier2 {arrowRetuner(sortconfig.key === 'tier2' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('tier3')} className={getClassNamesFor('tier3')}> Tier3 {arrowRetuner(sortconfig.key === 'tier3' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('displayename')} className={getClassNamesFor('displayename')}>  Episode Name {arrowRetuner(sortconfig.key === 'displayename' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('publishername')} className={getClassNamesFor('publishername')}> Publisher Name {arrowRetuner(sortconfig.key === 'publishername' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => requestSort('hostPossibility')} className={getClassNamesFor('hostPossibility')}> Host Possibility {arrowRetuner(sortconfig.key === 'hostPossibility' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer', width: 30 }} onClick={() => tablesorter('episodename', 'string')} > Display Name {arrowRetuner(sa === 'episodename' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }}onClick={() => tablesorter('request', 'number')} > Request {arrowRetuner(sa === 'request' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('avgrequest', 'number')} >Avg Request {arrowRetuner(sa === 'avgrequest' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('publisher', 'string')} > Host {arrowRetuner(sa === 'publisher' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('category', 'string')} > Category {arrowRetuner(sa === 'category' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('tier1', 'string')} > Tier1 {arrowRetuner(sa === 'tier1' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('tier2', 'string')} > Tier2 {arrowRetuner(sa === 'tier2' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('tier3', 'string')} > Tier3 {arrowRetuner(sa === 'tier3' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('displayname', 'string')} >  Episode Name {arrowRetuner(sa === 'displayname' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('publishername', 'string')} > Publisher Name {arrowRetuner(sa === 'publishername' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('hostPossibility', 'string')} > Host Possibility {arrowRetuner(sa === 'hostPossibility' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
 								<TableCell style={{ width: '10%' }}>
 								<FormGroup>
 									<FormControlLabel

@@ -5,6 +5,8 @@ import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import { Alert } from '@material-ui/lab';
 import { CSVLink } from 'react-csv';
+import { arrowRetuner } from '../components/CommonFun';
+import { orderSetter } from '../redux/actions/manageadsAction';
 import PhoneAudiodata from './phonemodelaudio';
 import PhoneVideodata from './phonemodelvideo';
 import {
@@ -68,6 +70,8 @@ export default function Phonedata() {
 	const [cc, setcc] = useState(0);
 	const [search1, setsearch] = useState('');
 	const [searchedData, setsearchedData] = useState([]);
+	const [ sa, setsa ] = React.useState('impressions');
+	const [ order, setorder ] = React.useState('desc');
 	const [page, setPage] = useState(0);
 	const [sortconfig, setsortconfig] = useState({ key: 'impression', direction: 'descending' });
 	const handleChangePage = (event, newPage) => {
@@ -158,46 +162,24 @@ export default function Phonedata() {
 		data: rows
 	};
 
-	React.useMemo(() => {
-		let sortedProducts = searchedData ? searchedData : rows;
-		if (sortconfig !== null) {
-			sortedProducts.sort((a, b) => {
-				if (a[sortconfig.key] < b[sortconfig.key]) {
-					return sortconfig.direction === 'ascending' ? -1 : 1;
-				}
-				if (a[sortconfig.key] > b[sortconfig.key]) {
-					return sortconfig.direction === 'ascending' ? 1 : -1;
-				}
-				return 0;
-			});
-		}
-		return sortedProducts;
-	}, [rows, searchedData, sortconfig]);
+	// React.useMemo(() => {
+	// 	let sortedProducts = searchedData ? searchedData : rows;
+	// 	if (sortconfig !== null) {
+	// 		sortedProducts.sort((a, b) => {
+	// 			if (a[sortconfig.key] < b[sortconfig.key]) {
+	// 				return sortconfig.direction === 'ascending' ? -1 : 1;
+	// 			}
+	// 			if (a[sortconfig.key] > b[sortconfig.key]) {
+	// 				return sortconfig.direction === 'ascending' ? 1 : -1;
+	// 			}
+	// 			return 0;
+	// 		});
+	// 	}
+	// 	return sortedProducts;
+	// }, [rows, searchedData, sortconfig]);
 
-	const requestSort = (key) => {
-		let direction = 'ascending';
-		if (sortconfig && sortconfig.key === key && sortconfig.direction === 'ascending') {
-			direction = 'descending';
-		}
-		setsortconfig({ key, direction });
-	};
+	
 
-	const getClassNamesFor = (name) => {
-		if (!sortconfig) {
-			return;
-		}
-		return sortconfig.key === name ? sortconfig.direction : undefined;
-	};
-
-	const arrowRetuner = (mode) => {
-		if (mode === '1') {
-			return <ArrowUpwardRoundedIcon fontSize="small" />;
-		} else if (mode === '2') {
-			return <ArrowDownwardRoundedIcon fontSize="small" />;
-		} else {
-			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
-		}
-	};
 
 	function SearchData() {
 		let arr = [];
@@ -228,6 +210,15 @@ export default function Phonedata() {
 			console.log('jvhvhvhv', arr);
 		}
 	}
+	const tablesorter = (column, type) => {
+		var orde = sa === column ? (order === 'asc' ? 'desc' : 'asc') : 'asc';
+		setorder(orde);
+		setsa(column);
+		var setData = orderSetter(orde, column, rows, type);
+		var setDatatrus = orderSetter(orde, column, datatrus, type);
+		setrows(setData);
+		setdatatrus(setDatatrus);
+	};
 
 	return (
 		<div>
@@ -293,130 +284,85 @@ export default function Phonedata() {
 									{
 										<TableCell
 											style={{ cursor: 'pointer' }}
-											onClick={() => requestSort('make_model')}
-											className={getClassNamesFor('make_model')}
+											onClick={() => tablesorter('make_model', 'string')}
+											// className={getClassNamesFor('make_model')}
 										>
 											{' '}
-											Make_And_Model{' '}
-											{arrowRetuner(
-												sortconfig.key === 'make_model'
-													? sortconfig.direction === 'ascending' ? '1' : '2'
-													: '3'
-											)}{' '}
+											Make_And_Model{arrowRetuner(sa === 'make_model' ? (order === 'asc' ? '1' : '2') : '3')}
 										</TableCell>
 									}
 									{
 										<TableCell
 											style={{ cursor: 'pointer' }}
-											onClick={() => requestSort('impression')}
-											className={getClassNamesFor('impression')}
+											onClick={() => tablesorter('impression', 'number')}
+											// className={getClassNamesFor('impression')}
 										>
 											{' '}
-											Impressions{' '}
-											{arrowRetuner(
-												sortconfig.key === 'impression'
-													? sortconfig.direction === 'ascending' ? '1' : '2'
-													: '3'
-											)}{' '}
+											Impressions{arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}
 										</TableCell>
 									}
 									{
 										<TableCell
 											style={{ cursor: 'pointer' }}
-											onClick={() => requestSort('avgimpression')}
-											className={getClassNamesFor('avgimpression')}
+											onClick={() => tablesorter('avgimpression', 'number')}
+											// className={getClassNamesFor('avgimpression')}
 										>
 											{' '}
-											Avg Impressions{' '}
-											{arrowRetuner(
-												sortconfig.key === 'avgimpression'
-													? sortconfig.direction === 'ascending' ? '1' : '2'
-													: '3'
-											)}{' '}
+											Avg Impression{arrowRetuner(sa === 'avgimpression' ? (order === 'asc' ? '1' : '2') : '3')}
 										</TableCell>
 									}
 									{
 										<TableCell
 											style={{ cursor: 'pointer' }}
-											onClick={() => requestSort('click')}
-											className={getClassNamesFor('click')}
+											onClick={() => tablesorter('click', 'number')}
+											// className={getClassNamesFor('click')}
 										>
 											{' '}
-											Clicks{' '}
-											{arrowRetuner(
-												sortconfig.key === 'click'
-													? sortconfig.direction === 'ascending' ? '1' : '2'
-													: '3'
-											)}{' '}
+											Click{arrowRetuner(sa === 'click' ? (order === 'asc' ? '1' : '2') : '3')}
 										</TableCell>
 									}
 									{
 										<TableCell
 											style={{ cursor: 'pointer' }}
-											onClick={() => requestSort('release')}
-											className={getClassNamesFor('release')}
+											onClick={() => tablesorter('release', 'string')}
+											// className={getClassNamesFor('release')}
 										>
 											{' '}
-											Release Month And Year{' '}
-											{arrowRetuner(
-												sortconfig.key === 'release'
-													? sortconfig.direction === 'ascending' ? '1' : '2'
-													: '3'
-											)}{' '}
+											Release Month And Year{arrowRetuner(sa === 'release' ? (order === 'asc' ? '1' : '2') : '3')}
 										</TableCell>
 									}
 									<TableCell
 										style={{ cursor: 'pointer' }}
-										onClick={() => requestSort('cost')}
-										className={getClassNamesFor('cost')}
+										onClick={() => tablesorter('cost', 'number')}
+										// className={getClassNamesFor('cost')}
 									>
 										{' '}
-										Release Cost or MRP{' '}
-										{arrowRetuner(
-											sortconfig.key === 'cost'
-												? sortconfig.direction === 'ascending' ? '1' : '2'
-												: '3'
-										)}{' '}
+											Release Cost And Mrp{arrowRetuner(sa === 'cost' ? (order === 'asc' ? '1' : '2') : '3')}
 									</TableCell>
 									<TableCell
 										style={{ cursor: 'pointer' }}
-										onClick={() => requestSort('company')}
-										className={getClassNamesFor('company')}
+										onClick={() => tablesorter('company', 'string')}
+										// className={getClassNamesFor('company')}
 									>
 										{' '}
-										Company Name{' '}
-										{arrowRetuner(
-											sortconfig.key === 'company'
-												? sortconfig.direction === 'ascending' ? '1' : '2'
-												: '3'
-										)}{' '}
+											Company Name{arrowRetuner(sa === 'company' ? (order === 'asc' ? '1' : '2') : '3')}
 									</TableCell>
 									<TableCell
 										style={{ cursor: 'pointer' }}
-										onClick={() => requestSort('model')}
-										className={getClassNamesFor('model')}
+										onClick={() => tablesorter('model', 'string')}
+										// className={getClassNamesFor('model')}
 									>
 										{' '}
-										Model{' '}
-										{arrowRetuner(
-											sortconfig.key === 'model'
-												? sortconfig.direction === 'ascending' ? '1' : '2'
-												: '3'
-										)}{' '}
+											Model{arrowRetuner(sa === 'model' ? (order === 'asc' ? '1' : '2') : '3')}
 									</TableCell>
 									{
 										<TableCell
 											style={{ cursor: 'pointer' }}
-											onClick={() => requestSort('type')}
-											className={getClassNamesFor('type')}
+											onClick={() => tablesorter('type', 'string')}
+											// className={getClassNamesFor('type')}
 										>
 											{' '}
-											Type of Device{' '}
-											{arrowRetuner(
-												sortconfig.key === 'type'
-													? sortconfig.direction === 'ascending' ? '1' : '2'
-													: '3'
-											)}{' '}
+											Type{arrowRetuner(sa === 'type' ? (order === 'asc' ? '1' : '2') : '3')}
 										</TableCell>
 									}
 									<TableCell style={{ width: '10%' }}>

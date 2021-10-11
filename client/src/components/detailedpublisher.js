@@ -745,8 +745,8 @@ export default function DetailedTable() {
 												{dateformatchanger(row.date)}
 											</TableCell>
 											<TableCell>
-												{row.Publisher ? row.Publisher.AppName : row.appId.AppName}{' '}
-												{row.nameads && row.nameads}
+												{row.pubname ? row.pubname.publishername : ""}
+												{/* {row.nameads && row.nameads} */}
 											</TableCell>
 											<TableCell />
 											<TableCell />

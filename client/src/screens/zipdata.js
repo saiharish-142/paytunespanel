@@ -5,6 +5,8 @@ import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import { Alert } from '@material-ui/lab';
 import { CSVLink } from 'react-csv';
+import { arrowRetuner } from '../components/CommonFun';
+import { orderSetter } from '../redux/actions/manageadsAction';
 import ZipAudiodata from './zipaudio';
 import ZipVideodata from './zipvideo';
 import ZipBannerdata from './zipbanner';
@@ -66,6 +68,8 @@ export default function Zipdata() {
 	const [error, seterror] = useState('');
 	const [success, setsuccess] = useState('');
 	const [rows, setrows] = useState([]);
+	const [ sa, setsa ] = React.useState('impression');
+	const [ order, setorder ] = React.useState('desc');
 	const [rowsPerPage, setRowsPerPage] = useState(7);
 	const [page, setPage] = useState(0);
 	const [sortconfig, setsortconfig] = useState({ key: 'impression', direction: 'descending' })
@@ -184,6 +188,16 @@ export default function Zipdata() {
 		data: rows
 	};
 
+	const tablesorter = (column, type) => {
+		var orde = sa === column ? (order === 'asc' ? 'desc' : 'asc') : 'asc';
+		setorder(orde);
+		setsa(column);
+		var setData = orderSetter(orde, column, rows, type);
+		var setDatatrus = orderSetter(orde, column, datatrus, type);
+		setrows(setData);
+		setdatatrus(setDatatrus);
+	};
+
 	React.useMemo(() => {
 		let sortedProducts =  searchedData?searchedData: rows;
 		if (sortconfig !== null) {
@@ -201,29 +215,6 @@ export default function Zipdata() {
 	  }, [rows, searchedData,sortconfig]);
 
 
-	const requestSort = (key) => {
-		let direction = 'ascending';
-		if (sortconfig && sortconfig.key === key && sortconfig.direction === 'ascending') {
-			direction = 'descending';
-		}
-		setsortconfig({ key, direction });
-	}
-
-	const getClassNamesFor = (name) => {
-		if (!sortconfig) {
-			return;
-		}
-		return sortconfig.key === name ? sortconfig.direction : undefined;
-	};
-	const arrowRetuner = (mode) => {
-		if (mode === '1') {
-			return <ArrowUpwardRoundedIcon fontSize="small" />;
-		} else if (mode === '2') {
-			return <ArrowDownwardRoundedIcon fontSize="small" />;
-		} else {
-			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
-		}
-	};
 
 	return (
 		<div>
@@ -283,24 +274,24 @@ export default function Zipdata() {
 							<TableHead>
 								<TableRow>
 									{/* <TableCell>{title}</TableCell> */}
-									{<TableCell onClick={() => requestSort('pincode')} className={getClassNamesFor('pincode')} style={{ cursor: 'pointer' }}> Pincode {arrowRetuner(sortconfig.key === 'pincode' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell onClick={() => requestSort('requests')} className={getClassNamesFor('requests')} style={{ cursor: 'pointer' }}> Requests {arrowRetuner(sortconfig.key === 'requests' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell onClick={() => requestSort('avgrequest')} className={getClassNamesFor('avgrequest')} style={{ cursor: 'pointer' }}> Avg Requests {arrowRetuner(sortconfig.key === 'avgrequest' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell onClick={() => requestSort('impression')} className={getClassNamesFor('impression')} style={{ cursor: 'pointer' }}> Impressions {arrowRetuner(sortconfig.key === 'impression' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell onClick={() => requestSort('avgimpression')} className={getClassNamesFor('avgimpression')} style={{ cursor: 'pointer' }}>Avg Impressions {arrowRetuner(sortconfig.key === 'avgimpression' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell onClick={() => requestSort('click')} className={getClassNamesFor('click')} style={{ cursor: 'pointer' }}> Click {arrowRetuner(sortconfig.key === 'click' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('pincode', 'number')}  style={{ cursor: 'pointer' }}> Pincode {arrowRetuner(sa === 'pincode' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('requests', 'number')}  style={{ cursor: 'pointer' }}> Requests {arrowRetuner(sa === 'requests' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('avgrequest', 'number')}  style={{ cursor: 'pointer' }}> Avg Requests {arrowRetuner(sa === 'avgrequest' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('impression', 'number')} style={{ cursor: 'pointer' }}> Impressions {arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('avgimpression', 'number')}  style={{ cursor: 'pointer' }}>Avg Impressions {arrowRetuner(sa === 'avgimpression' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('click', 'number')}  style={{ cursor: 'pointer' }}> Click {arrowRetuner(sa === 'click' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
 									{<TableCell>CTR</TableCell>}
-									{<TableCell onClick={() => requestSort('area')} className={getClassNamesFor('area')} style={{ cursor: 'pointer' }}> Urban/Rural {arrowRetuner(sortconfig.key === 'area' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell onClick={() => requestSort('lowersubcity')} className={getClassNamesFor('lowersubcity')} style={{ cursor: 'pointer' }}> Lower Sub City {arrowRetuner(sortconfig.key === 'lowersubcity' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-									<TableCell onClick={() => requestSort('subcity')} className={getClassNamesFor('subcity')} style={{ cursor: 'pointer' }}> SubCity {arrowRetuner(sortconfig.key === 'subcity' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
-									<TableCell onClick={() => requestSort('city')} className={getClassNamesFor('city')} style={{ cursor: 'pointer' }}> City {arrowRetuner(sortconfig.key === 'city' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
-									<TableCell onClick={() => requestSort('grandcity')} className={getClassNamesFor('grandcity')} style={{ cursor: 'pointer' }}> Grand City {arrowRetuner(sortconfig.key === 'grandcity' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>
-									{<TableCell onClick={() => requestSort('district')} className={getClassNamesFor('district')} style={{ cursor: 'pointer' }}> District {arrowRetuner(sortconfig.key === 'district' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell onClick={() => requestSort('comparison')} className={getClassNamesFor('comparison')} style={{ cursor: 'pointer' }}> Comparison {arrowRetuner(sortconfig.key === 'comparison' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell onClick={() => requestSort('state')} className={getClassNamesFor('state')} style={{ cursor: 'pointer' }}>  State {arrowRetuner(sortconfig.key === 'state' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell onClick={() => requestSort('grandstate')} className={getClassNamesFor('grandstate')} style={{ cursor: 'pointer' }}> Grand State {arrowRetuner(sortconfig.key === 'grandstate' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')} </TableCell>}
-									{<TableCell onClick={() => requestSort('latitude')} className={getClassNamesFor('latitude')} style={{ cursor: 'pointer' }}> Latitude {arrowRetuner(sortconfig.key === 'latitude' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell onClick={() => requestSort('longitude')} className={getClassNamesFor('longitude')} style={{ cursor: 'pointer' }}> Longitude {arrowRetuner(sortconfig.key === 'longitude' ? (sortconfig.direction === 'ascending' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('area', 'string')}  style={{ cursor: 'pointer' }}> Urban/Rural {arrowRetuner(sa === 'area' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('lowersubcity', 'string')}  style={{ cursor: 'pointer' }}> Lower Sub City {arrowRetuner(sa === 'lowersubcity' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									<TableCell onClick={() => tablesorter('subcity', 'string')}  style={{ cursor: 'pointer' }}> SubCity{arrowRetuner(sa === 'subcity' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
+									<TableCell onClick={() => tablesorter('city', 'string')}  style={{ cursor: 'pointer' }}> City {arrowRetuner(sa === 'city' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
+									<TableCell onClick={() => tablesorter('grandcity', 'string')}  style={{ cursor: 'pointer' }}> Grand City {arrowRetuner(sa === 'grandcity' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
+									{<TableCell onClick={() => tablesorter('district', 'string')} style={{ cursor: 'pointer' }}> District {arrowRetuner(sa === 'district' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('comparison', 'string')}  style={{ cursor: 'pointer' }}> Comparison {arrowRetuner(sa === 'comparison' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('state', 'string')}  style={{ cursor: 'pointer' }}>  State {arrowRetuner(sa === 'state' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('grandstate', 'string')}  style={{ cursor: 'pointer' }}> Grand State {arrowRetuner(sa === 'grandstate' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+									{<TableCell onClick={() => tablesorter('latitude', 'number')}  style={{ cursor: 'pointer' }}> Latitude {arrowRetuner(sa === 'latitude' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+									{<TableCell onClick={() => tablesorter('longitude', 'number')}  style={{ cursor: 'pointer' }}> Longitude {arrowRetuner(sa === 'longitude' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
 									<TableCell style={{ width: '10%' }}>
 								<FormGroup>
 									<FormControlLabel

@@ -1222,7 +1222,7 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 
 // db.getCollection('campaignwisereports').find({campaignId:ObjectId("60c175048473711b21db0804")}).sort({_id:-1})
 
-router.put('/reportbycamp', adminauth,async (req, res) => {  //publisher
+router.put('/reportbycamp',adminauth,async (req, res) => {  //publisher
 	try{
 		const { campaignId, pubname } = req.body;
 		var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
@@ -1240,8 +1240,9 @@ router.put('/reportbycamp', adminauth,async (req, res) => {  //publisher
 					as: 'appdet'
 				}
 			},
-			{ $unwind: "$appdet" },
-			{ $match: { "appdet.publishername": pubname } },
+			// { $unwind: "$appdet" },
+			{$addFields:{pubname:{$first:"$appdet"}}},
+			{ $match: { "pubname.publishername": pubname } },
 			{ $sort: { "date": -1 } }
 		]).allowDiskUse(true)
 		let data = reports;
