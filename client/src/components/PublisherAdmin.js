@@ -44,7 +44,6 @@ function PublisherAdmin({
 		{ key: 'ssp', label: 'SSP' },
 		{ key: 'unique', label: 'Unique Users' },
 		{ key: 'freq', label: 'Average Frequency' },
-		{ key: 'overlap', label: '% Over lap Users' },
 		{ key: 'target', label: 'Total Impressions to be delivered' },
 		{ key: 'impressions', label: 'Total Impressions Delivered till date' },
 		{ key: 'spent', label: 'Total spent' },
@@ -164,13 +163,6 @@ function PublisherAdmin({
 									{arrowRetuner(sa === 'freq' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
-									onClick={() => tablesorter('overlap', 'number')}
-									style={{ cursor: 'pointer' }}
-								>
-									% Over Lap Users{' '}
-									{arrowRetuner(sa === 'overlap' ? (order === 'asc' ? '1' : '2') : '3')}
-								</TableCell>
-								<TableCell
 									onClick={() => tablesorter('clicks', 'number')}
 									style={{ cursor: 'pointer' }}
 								>
@@ -217,13 +209,15 @@ function PublisherAdmin({
 										<TableCell>{log.impressions}</TableCell>
 										<TableCell>{log.unique}</TableCell>
 										<TableCell>{log.freq}</TableCell>
-										<TableCell>{log.overlap}</TableCell>
 										<TableCell>{log.clicks}</TableCell>
 										<TableCell>{Math.round(log.ctr * 100) / 100}%</TableCell>
 										<TableCell>{Math.round(log.spent * 1) / 1}</TableCell>
 										<TableCell
 											className="mangeads__report"
-											onClick={() => history.push(`/manageAds/${state1}/detailedoverallpublisherreport/${log.publishername}`)}
+											onClick={() =>
+												history.push(
+													`/manageAds/${state1}/detailedoverallpublisherreport/${log.publishername}`
+												)}
 										>
 											Detailed Report
 										</TableCell>

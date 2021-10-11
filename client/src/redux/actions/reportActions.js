@@ -128,6 +128,9 @@ export const loadReport = () => (dispatch, getState) => {
 				var audiospentOffline = 0;
 				var displayspentOffline = 0;
 				var videospentOffline = 0;
+				var audiouniquePublisher = 0;
+				var displayuniquePublisher = 0;
+				var videouniquePublisher = 0;
 				if (!data.audio) {
 					data.audio = [];
 				}
@@ -153,6 +156,7 @@ export const loadReport = () => (dispatch, getState) => {
 							: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
 						// re.ssp = re.ssp.length ? re.ssp[0] : re.apppubidpo.length ? re.apppubidpo[0].ssp : null;
 						re.target = re.targetimpre;
+						audiouniquePublisher += parseInt(re.unique);
 						re.avgreq = parseInt(re.target) / parseInt(wholeTime);
 						re.avgach = parseInt(re.impressions) / parseInt(leftTime);
 						re.click = parseInt(re.clicks) + parseInt(re.clicks1);
@@ -177,6 +181,7 @@ export const loadReport = () => (dispatch, getState) => {
 							? re.apppubidpo.publishername ? re.apppubidpo.publishername : re.PublisherSplit
 							: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
 						// re.ssp = re.ssp.length ? re.ssp[0] : re.apppubidpo.length ? re.apppubidpo[0].ssp : null;
+						displayuniquePublisher += parseInt(re.unique);
 						re.target = datast.ids.disimpression;
 						re.avgreq = parseInt(re.target) / parseInt(wholeTime);
 						re.avgach = parseInt(re.impressions) / parseInt(leftTime);
@@ -203,6 +208,7 @@ export const loadReport = () => (dispatch, getState) => {
 							: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
 						// re.ssp = re.ssp.length ? re.ssp[0] : re.apppubidpo.length ? re.apppubidpo[0].ssp : null;
 						re.target = datast.ids.vidimpression;
+						videouniquePublisher += parseInt(re.unique);
 						re.avgreq = parseInt(re.target) / parseInt(wholeTime);
 						re.avgach = parseInt(re.impressions) / parseInt(leftTime);
 						re.click = parseInt(re.clicks) + parseInt(re.clicks1);
@@ -224,6 +230,13 @@ export const loadReport = () => (dispatch, getState) => {
 				data.audiospentOffline = audiospentOffline;
 				data.displayspentOffline = displayspentOffline;
 				data.videospentOffline = videospentOffline;
+				data.audiouniquePublisher = audiouniquePublisher;
+				data.displayuniquePublisher = displayuniquePublisher;
+				data.videouniquePublisher = videouniquePublisher;
+				// console.log('bhag');
+				// console.log(audiouniquePublisher);
+				// console.log(displayuniquePublisher);
+				// console.log(videouniquePublisher);
 				dispatch({
 					type: REPORT_LOADED,
 					payload: data
