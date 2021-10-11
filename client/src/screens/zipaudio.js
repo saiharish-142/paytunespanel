@@ -303,7 +303,7 @@ export default function ZipdataAudio() {
 												}}
 											/>
 										}
-										label="Without Area"
+										label="Entries Not Done"
 									/>
 									<FormControlLabel
 										control={
@@ -316,7 +316,7 @@ export default function ZipdataAudio() {
 												}}
 											/>
 										}
-										label="With Area"
+										label="Entries Done"
 									/>
 								</FormGroup>
 							</TableCell>

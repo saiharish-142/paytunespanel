@@ -305,7 +305,7 @@ export default function Zipdata() {
 												}}
 											/>
 										}
-										label="Without Area"
+										label="Entries Not Done"
 									/>
 									<FormControlLabel
 										control={
@@ -318,7 +318,7 @@ export default function Zipdata() {
 												}}
 											/>
 										}
-										label="With Area"
+										label="Entries Done"
 									/>
 								</FormGroup>
 							</TableCell>

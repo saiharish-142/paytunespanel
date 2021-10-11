@@ -345,7 +345,7 @@ export default function EpisodeTab() {
 												}}
 											/>
 										}
-										label="Without Display"
+										label="Entries Not Done"
 									/>
 									<FormControlLabel
 										control={
@@ -358,7 +358,7 @@ export default function EpisodeTab() {
 												}}
 											/>
 										}
-										label="With Display"
+										label="Entries Done"
 									/>
 								</FormGroup>
 							</TableCell>

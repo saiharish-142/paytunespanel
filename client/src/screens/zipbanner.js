@@ -303,7 +303,7 @@ export default function ZipdataBanner() {
 												}}
 											/>
 										}
-										label="Without Area"
+										label="Entries Not Done"
 									/>
 									<FormControlLabel
 										control={
@@ -316,7 +316,7 @@ export default function ZipdataBanner() {
 												}}
 											/>
 										}
-										label="With Area"
+										label="Entries Done"
 									/>
 								</FormGroup>
 							</TableCell>

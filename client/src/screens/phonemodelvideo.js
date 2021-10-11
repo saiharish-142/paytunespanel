@@ -378,7 +378,7 @@ export default function PhoneVideodata() {
 														}}
 													/>
 												}
-												label="Without Release"
+												label="Entries Not Done"
 											/>
 											<FormControlLabel
 												control={
@@ -391,7 +391,7 @@ export default function PhoneVideodata() {
 														}}
 													/>
 												}
-												label="With Release"
+												label="Entries Done"
 											/>
 										</FormGroup>
 									</TableCell>

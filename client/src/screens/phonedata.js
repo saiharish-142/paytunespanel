@@ -378,7 +378,7 @@ export default function Phonedata() {
 														}}
 													/>
 												}
-												label="Without Release"
+												label="Entries Not Done"
 											/>
 											<FormControlLabel
 												control={
@@ -391,7 +391,7 @@ export default function Phonedata() {
 														}}
 													/>
 												}
-												label="With Release"
+												label="Entries Done"
 											/>
 										</FormGroup>
 									</TableCell>
