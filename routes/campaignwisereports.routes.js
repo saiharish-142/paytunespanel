@@ -1242,8 +1242,8 @@ router.put('/reportbycamp', adminauth, async (req, res) => {
 						as: 'appdet'
 					}
 				},
-				{ $unwind: '$appdet' },
-				{ $match: { 'appdet.publishername': pubname } },
+				{$addFields:{pubname:{"$first":"$appdet"}}},
+				{ $match: { 'pubname.publishername': pubname } },
 				{ $sort: { date: -1 } }
 			])
 			.allowDiskUse(true);
