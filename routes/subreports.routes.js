@@ -1651,7 +1651,7 @@ router.get('/zipdata_audio', adminauth, async (req, res) => {
 			days = 1;
 		}
 		const result = await Zipreports2.aggregate([
-			{ $match: { requests: { $exists: true } } },
+			{ $match: { requests: { $exists: true },pincode:{$gt:99999} } },
 			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
 			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
 			{ $sort: { impression: -1 } },
@@ -1678,7 +1678,7 @@ router.get('/zipdata_video', adminauth, async (req, res) => {
 			days = 1;
 		}
 		const result = await Zipreports2.aggregate([
-			{ $match: { requests: { $exists: true } } },
+			{ $match: { requests: { $exists: true },pincode:{$gt:99999}} },
 			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
 			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
 			{ $sort: { impression: -1 } },
@@ -1705,7 +1705,7 @@ router.get('/zipdata_banner', adminauth, async (req, res) => {
 			days = 1;
 		}
 		const result = await Zipreports2.aggregate([
-			{ $match: { requests: { $exists: true } } },
+			{ $match: { requests: { $exists: true } ,pincode:{$gt:99999}} },
 			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
 			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
 			{ $sort: { impression: -1 } },
