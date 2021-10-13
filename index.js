@@ -480,7 +480,7 @@ async function PincodeRefresher() {
 				SovClickTracking: 1
 			}
 		},
-		{ $match: { test: yesterday ,zip:{$gt:99999} } },
+		{ $match: { test: yesterday ,zip:{$gt:99999,$lt:1000000} } },
 		{
 			$group: {
 				_id: { zip: '$zip', rtbType: '$rtbType' },
