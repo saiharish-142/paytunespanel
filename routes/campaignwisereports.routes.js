@@ -92,19 +92,19 @@ router.put('/reportbydatereq', adminauth, (req, res) => {
 router.put('/detreportcambydat', adminauth, (req, res) => {
 	// overall
 	const { campaignId, type } = req.body;
-	var audio = campaignId.map((id) => mongoose.Types.ObjectId(id));
-	// var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
-	// var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
-	// let ids = [ ...audio, ...video, ...display ];
-	// ids = type === 'Audio' ? audio : type === 'Video' ? video : type === 'Display' ? display : ids;
-	console.log(audio);
+	var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
+	var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
+	var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
+	let ids = [ ...audio, ...video, ...display ];
+	ids = type === 'Audio' ? audio : type === 'Video' ? video : type === 'Display' ? display : ids;
+	console.log(ids);
 	// var ids = campaignId.map((id) => mongoose.Types.ObjectId(id));
 	var resu = [];
 	campaignwisereports
 		.aggregate([
 			{
 				$match: {
-					campaignId: { $in: audio }
+					campaignId: { $in: ids }
 				}
 			},
 			{
@@ -1242,7 +1242,7 @@ router.put('/reportbycamp', adminauth, async (req, res) => {
 						as: 'appdet'
 					}
 				},
-				{ $addFields: { pubname: { $first: '$appdet' } } },
+				{$addFields:{pubname:{"$first":"$appdet"}}},
 				{ $match: { 'pubname.publishername': pubname } },
 				{ $sort: { date: -1 } }
 			])
