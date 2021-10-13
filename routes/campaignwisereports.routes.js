@@ -92,70 +92,12 @@ router.put('/reportbydatereq', adminauth, (req, res) => {
 router.put('/detreportcambydat', adminauth, (req, res) => {
 	// overall
 	const { campaignId, type } = req.body;
-	var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
-	var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
-	var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
-	let ids = [ ...audio, ...video, ...display ];
-	ids = type === 'Audio' ? audio : type === 'Video' ? video : type === 'Display' ? display : ids;
-	console.log(ids);
-	// var ids = campaignId.map((id) => mongoose.Types.ObjectId(id));
-	var resu = [];
-	campaignwisereports
-		.aggregate([
-			{
-				$match: {
-					campaignId: { $in: ids }
-				}
-			},
-			{
-				$group: {
-					_id: { date: '$date' },
-					updatedAt: { $push: '$createdOn' },
-					impressions: { $sum: '$impression' },
-					complete: { $sum: '$complete' },
-					clicks: { $sum: '$CompanionClickTracking' },
-					region: { $push: '$region' }
-				}
-			},
-			{
-				$project: {
-					date: '$_id.date',
-					updatedAt: '$updatedAt',
-					impressions: '$impressions',
-					complete: '$complete',
-					clicks: '$clicks',
-					region: '$region',
-					_id: 0
-				}
-			},
-			{ $sort: { date: -1 } }
-		])
-		.then((reports) => {
-			resu = reports;
-			resu.map((det) => {
-				var resregion = [].concat.apply([], det.region);
-				resregion = [ ...new Set(resregion) ];
-				det.region = resregion;
-				var updatedDate = det.updatedAt;
-				updatedDate.sort(function(a, b) {
-					return new Date(b) - new Date(a);
-				});
-				det.updatedAt = updatedDate;
-			});
-			res.json(resu);
-		})
-		.catch((err) => console.log(err));
-});
-
-router.put('/detrepocambydat', adminauth, (req, res) => {
-	// overall sai
-	const { campaignId } = req.body;
 	var audio = campaignId.map((id) => mongoose.Types.ObjectId(id));
 	// var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
 	// var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
 	// let ids = [ ...audio, ...video, ...display ];
 	// ids = type === 'Audio' ? audio : type === 'Video' ? video : type === 'Display' ? display : ids;
-	// console.log(ids);
+	console.log(audio);
 	// var ids = campaignId.map((id) => mongoose.Types.ObjectId(id));
 	var resu = [];
 	campaignwisereports
@@ -1300,8 +1242,8 @@ router.put('/reportbycamp', adminauth, async (req, res) => {
 						as: 'appdet'
 					}
 				},
-				{ $unwind: '$appdet' },
-				{ $match: { 'appdet.publishername': pubname } },
+				{ $addFields: { pubname: { $first: '$appdet' } } },
+				{ $match: { 'pubname.publishername': pubname } },
 				{ $sort: { date: -1 } }
 			])
 			.allowDiskUse(true);
