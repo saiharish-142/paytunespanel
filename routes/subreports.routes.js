@@ -1587,7 +1587,7 @@ router.get('/zipdata',  async (req, res) => {
 			days = 1;
 		}
 		const result = await Zipreports2.aggregate([
-			{ $match: { requests: { $exists: true } } },
+			{ $match: { requests: { $exists: true }, pincode:{$gt:99999} } },
 			{
 				$group: { _id: "$pincode" ,
 				requests: { $sum: "$requests" },

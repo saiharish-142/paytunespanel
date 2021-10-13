@@ -480,7 +480,7 @@ async function PincodeRefresher() {
 				SovClickTracking: 1
 			}
 		},
-		{ $match: { test: yesterday } },
+		{ $match: { test: yesterday ,zip:{$gt:99999} } },
 		{
 			$group: {
 				_id: { zip: '$zip', rtbType: '$rtbType' },
@@ -512,7 +512,7 @@ async function PincodeRefresher() {
 				longitude: val ? val.longitude : '',
 				impression: 0,
 				click: 0,
-				requests: pincode.ads
+				requests: 0
 			});
 			await newzip.save();
 		} else {
@@ -606,7 +606,7 @@ async function PincodeRequestsRefresher() {
 				{ pincode: parseInt(pincode._id.zip), rtbType: pincode._id.rtbType },
 				{
 					$inc: {
-						requests: 0
+						requests: pincode.ads
 					}
 				},
 				{ new: true }
