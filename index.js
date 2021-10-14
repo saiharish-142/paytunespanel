@@ -1683,6 +1683,17 @@ const freqpublishreports = mongoose.model('freqpublishreports');
 const campaignifareports = mongoose.model('campaignifareports');
 const zipreports = mongoose.model('zipreports');
 const zipsumreport = mongoose.model('zipsumreport');
+const campaignClient = mongoose.model('campaignClient');
+const StreamingAds = mongoose.model('streamingads');
+const adsetting = mongoose.model('adsetting');
+const campaignwisereports = mongoose.model('campaignwisereports');
+var email = 'support@paytunes.in';
+var aws = require('aws-sdk');
+aws.config.loadFromPath(__dirname + '/config.json');
+
+cron.schedule('00 09 * * *', function() {
+	DailyReportMailer();
+});
 
 async function PublisherConsoleLoaderTypeWise(array, type) {
 	// console.log(array.length, array[0]);
@@ -2350,6 +2361,528 @@ async function pincodesumreport() {
 			}
 		})
 		.catch((err) => console.log(err));
+}
+
+const removeDuplicates = (inputArray) => {
+	const ids = [];
+	return inputArray.reduce((sum, element) => {
+		if (!ids.includes(element.toString())) {
+			sum.push(element);
+			ids.push(element.toString());
+		}
+		return sum;
+	}, []);
+};
+
+function remove_duplicates_arrayobject(gotarray, unique) {
+	var obj = {};
+	var array = gotarray;
+	// console.log(array)
+	for (var i = 0, len = array.length; i < len; i++) obj[array[i][unique]] = array[i];
+
+	array = new Array();
+	for (var key in obj) array.push(obj[key]);
+
+	return array;
+}
+
+const idfindspilter = async (respo, onDemand, podcast, audio, display, video, musicapps) => {
+	// const { adtitle, onDemand, podcast, audio, display, video, musicapps } = req.body;
+	var data;
+	data = respo.length && respo[0];
+	if (data) {
+		var ids =
+			typeof campaignId !== 'undefined' && typeof campaignId !== 'string' && typeof campaignId !== 'object'
+				? data.id.map((id) => mongoose.Types.ObjectId(id))
+				: data.id;
+		let id_spliter = await adsetting
+			.find({ campaignId: { $in: ids } }, { campaignId: 1, type: 1, targetImpression: 1 })
+			.catch((err) => console.log(err));
+		data.ids = {
+			onDemand: [],
+			podcast: [],
+			musicapps: [],
+			audio: [],
+			subimpression: { dem: 0, mus: 0, pod: 0 },
+			audimpression: 0,
+			display: [],
+			disimpression: 0,
+			video: [],
+			vidimpression: 0
+		};
+		data.ids['combined'] = ids;
+		// data.TargetImpressions = [ ...new Set(data.TargetImpressions) ];
+		id_spliter = remove_duplicates_arrayobject(id_spliter, 'campaignId');
+		var ids_cam = [];
+		id_spliter.map((x) => {
+			if (x.campaignId) ids_cam.push(x.campaignId.toString());
+		});
+		var left_cam = arr_diff(data.id, ids_cam);
+		if (left_cam && left_cam.length) {
+			await left_cam.map((id) => data.ids.audio.push(id));
+			// data.ids.audio = [ ...new Set(data.ids.audio) ];
+			data.ids.audio = removeDuplicates(data.ids.audio);
+			// data.ids.audio = [ ...new Set(data.ids.audio) ];
+		}
+		if (id_spliter.length) {
+			var audioids = id_spliter.filter((x) => x.type === 'audio');
+			audioids.map((x) => {
+				data.ids.audio.push(x.campaignId.toString());
+				data.ids.audimpression += parseInt(x.targetImpression);
+			});
+			data.ids.audio = [ ...new Set(data.ids.audio) ];
+			if (!(onDemand === podcast && onDemand === musicapps)) {
+				// var dads = { onDemand: [], podcast: [], musicapps: [] };
+				const outcome = await idsreturnspliter(data.ids.audio);
+				data.ids.onDemand = outcome.dem;
+				data.ids.podcast = outcome.pod;
+				data.ids['musicapps'] = outcome.mus;
+				if (data.ids.onDemand.length) {
+					var dataonDem = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.onDemand));
+					dataonDem.map((im) => {
+						data.ids.subimpression.dem += parseInt(im.targetImpression);
+					});
+				}
+				if (data.ids.podcast.length) {
+					var datapodcast = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.podcast));
+					datapodcast.map((im) => {
+						data.ids.subimpression.pod += parseInt(im.targetImpression);
+					});
+				}
+				if (data.ids.musicapps.length) {
+					var datamusic = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.musicapps));
+					datamusic.map((im) => {
+						data.ids.subimpression.mus += parseInt(im.targetImpression);
+					});
+				}
+				// data.ids['new'] = outcome;
+			}
+			var displayids = id_spliter.filter((x) => x.type === 'display');
+			displayids.map((x) => {
+				data.ids.display.push(x.campaignId.toString());
+				data.ids.disimpression += parseInt(x.targetImpression);
+			});
+			data.ids.display = [ ...new Set(data.ids.display) ];
+			var videoids = id_spliter.filter((x) => x.type === 'video');
+			videoids.map((x) => {
+				data.ids.video.push(x.campaignId.toString());
+				data.ids.vidimpression += parseInt(x.targetImpression);
+			});
+			data.ids.video = [ ...new Set(data.ids.video) ];
+		} else {
+			data.ids.audio = ids;
+			var dattarget = data.TargetImpressions;
+			dattarget.map((ar) => {
+				data.ids.audimpression += parseInt(ar.TR);
+			});
+		}
+		// var resstartDate = [].concat.apply([], data.startDate);
+		// resstartDate = [ ...new Set(resstartDate) ];
+		// data.startDate = resstartDate;
+		// var resendDate = [].concat.apply([], data.endDate);
+		// resendDate = [ ...new Set(resendDate) ];
+		// data.endDate = resendDate;
+		// data.splendid = id_spliter
+		// var tottar = 0;
+		// data.TargetImpressions.forEach(num=> tottar += parseInt(num))
+		// data.TargetImpressions = tottar
+		// res.json(data);
+		// console.log(data);
+		// return data;
+		var dass = [];
+		var puller = {};
+		var pullerData = {};
+		pullerData['complete'] = {
+			target: 0,
+			clicks: 0,
+			clicks1: 0,
+			complete: 0,
+			firstQuartile: 0,
+			impressions: 0,
+			midpoint: 0,
+			ltr: 0,
+			start: 0,
+			thirdQuartile: 0,
+			updatedAt: []
+		};
+		if (audio) {
+			dass.push(audio);
+			if (puller[audio]) {
+				data.ids.audio.map((x) => puller[audio].push(x));
+				// puller[`${audio}target`] += data.ids.audimpression;
+				pullerData[`complete`].target += data.ids.audimpression;
+			} else {
+				puller[audio] = [];
+				// puller[`${audio}target`] = 0;
+				// puller[`${audio}target`] += data.ids.audimpression;
+				pullerData[`complete`].target += data.ids.audimpression;
+				data.ids.audio.map((x) => puller[audio].push(x));
+			}
+		}
+		if (!(onDemand === podcast && onDemand === musicapps)) {
+			if (onDemand) {
+				dass.push(onDemand);
+				if (puller[onDemand]) {
+					data.ids.onDemand.map((x) => puller[onDemand].push(x));
+					pullerData[`complete`].target += data.ids.subimpression.dem;
+					// puller[`${onDemand}target`] += data.ids.subimpression.dem;
+				} else {
+					puller[onDemand] = [];
+					// puller[`${onDemand}target`] = 0;
+					pullerData[`complete`].target += data.ids.subimpression.dem;
+					// puller[`${onDemand}target`] += data.ids.subimpression.dem;
+					data.ids.onDemand.map((x) => puller[onDemand].push(x));
+				}
+			}
+			if (podcast) {
+				dass.push(podcast);
+				if (puller[podcast]) {
+					data.ids.podcast.map((x) => puller[podcast].push(x));
+					pullerData[`complete`].target += data.ids.subimpression.pod;
+					// puller[`${podcast}target`] += data.ids.subimpression.pod;
+				} else {
+					puller[podcast] = [];
+					// puller[`${podcast}target`] = 0;
+					pullerData[`complete`].target += data.ids.subimpression.pod;
+					// puller[`${podcast}target`] += data.ids.subimpression.pod;
+					data.ids.podcast.map((x) => puller[podcast].push(x));
+				}
+			}
+			if (musicapps) {
+				dass.push(musicapps);
+				if (puller[musicapps]) {
+					data.ids.musicapps.map((x) => puller[musicapps].push(x));
+					pullerData[`complete`].target += data.ids.subimpression.mus;
+					// puller[`${musicapps}target`] += data.ids.subimpression.mus;
+				} else {
+					puller[musicapps] = [];
+					// puller[`${musicapps}target`] = 0;
+					pullerData[`complete`].target += data.ids.subimpression.mus;
+					// puller[`${musicapps}target`] += data.ids.subimpression.mus;
+					data.ids.musicapps.map((x) => puller[musicapps].push(x));
+				}
+			}
+		}
+		if (display) {
+			dass.push(display);
+			if (puller[display]) {
+				data.ids.display.map((x) => puller[display].push(x));
+				pullerData[`complete`].target += data.ids.disimpression;
+				// puller[`${display}target`] += data.ids.disimpression;
+			} else {
+				puller[display] = [];
+				// puller[`${display}target`] = 0;
+				pullerData[`complete`].target += data.ids.disimpression;
+				// puller[`${display}target`] += data.ids.disimpression;
+				data.ids.display.map((x) => puller[display].push(x));
+			}
+		}
+		if (video) {
+			dass.push(video);
+			if (puller[video]) {
+				data.ids.video.map((x) => puller[video].push(x));
+				pullerData[`complete`].target += data.ids.vidimpression;
+				// puller[`${video}target`] += data.ids.vidimpression;
+			} else {
+				puller[video] = [];
+				// puller[`${video}target`] = 0;
+				// puller[`${video}target`] += data.ids.vidimpression;
+				pullerData[`complete`].target += data.ids.vidimpression;
+				data.ids.video.map((x) => puller[video].push(x));
+			}
+		}
+		dass = [ ...new Set(dass) ];
+		puller['das'] = dass;
+		return puller;
+	} else {
+		console.log(respo);
+		return 'error';
+		// res.status(422).json({ error: 'somthing went wrong try again' });
+	}
+};
+
+// DailyReportMailer();
+async function DailyReportMailer() {
+	var users = await admin.find({ usertype: 'client' }).select('email').catch((err) => console.log(err));
+	// const HTTP = new XMLHttpRequest();
+	// HTTP.open('put', 'http://23.98.35.74:5000/streamingads/groupedsingleClient');
+	var ses = new aws.SES();
+	for (var i = 0; i < users.length; i++) {
+		var mail = users[i].email;
+		var id = users[i]._id;
+		console.log(mail, id);
+		let campaignss = await campaignClient.find({ userid: id }).catch((err) => console.log(err));
+		try {
+			console.log(campaignss.length);
+			campaignss.map(async (x) => {
+				console.log(x.type);
+				if (x.type === 'campaign') {
+					let formdata = await StreamingAds.aggregate([
+						{
+							$project: {
+								id: '$_id',
+								AdTitle: { $toLower: '$AdTitle' }
+							}
+						},
+						{
+							$match: {
+								AdTitle: { $regex: x.searchName.toLowerCase() }
+							}
+						},
+						{
+							$group: {
+								_id: null,
+								id: { $push: '$id' },
+								Adtitle: { $push: '$AdTitle' }
+							}
+						}
+					]);
+					// console.log(formdata);
+					let mashh = await idfindspilter(
+						formdata,
+						x.onDemand,
+						x.podcast,
+						x.audio,
+						x.display,
+						x.video,
+						x.musicapps
+					);
+					// console.log(mashh);
+					var totaldataCount = {};
+					for (var j = 0; j < mashh.das.length; j++) {
+						var idsa = mashh[mashh.das[j]]
+							? mashh[mashh.das[j]].map((x) => mongoose.Types.ObjectId(x))
+							: [];
+						let totalcom = await campaignwisereports.aggregate([
+							{ $match: { campaignId: { $in: idsa } } },
+							{
+								$group: {
+									_id: null,
+									impressions: { $sum: '$impression' },
+									complete: { $sum: '$complete' },
+									clicks: { $sum: '$CompanionClickTracking' },
+									clicks1: { $sum: '$SovClickTracking' },
+									thirdQuartile: { $sum: '$thirdQuartile' },
+									start: { $sum: '$start' },
+									firstQuartile: { $sum: '$firstQuartile' },
+									midpoint: { $sum: '$midpoint' }
+								}
+							}
+						]);
+						totalcom = totalcom && totalcom[0];
+						let reportdaily = await campaignwisereports.aggregate([
+							{ $match: { campaignId: { $in: idsa } } },
+							{
+								$group: {
+									_id: { date: '$date' },
+									impressions: { $sum: '$impression' },
+									complete: { $sum: '$complete' },
+									clicks: { $sum: '$CompanionClickTracking' },
+									region: { $push: '$region' }
+								}
+							},
+							{
+								$project: {
+									date: '$_id.date',
+									impressions: '$impressions',
+									complete: '$complete',
+									clicks: '$clicks',
+									region: '$region',
+									_id: 0
+								}
+							},
+							{ $sort: { date: -1 } }
+						]);
+						reportdaily = reportdaily.filter((x) => x.impressions >= 10);
+						var totImp = 0,
+							totCli = 0,
+							totCom = 0;
+						var totImp1 = 0,
+							totCli1 = 0,
+							totCom1 = 0;
+						reportdaily.map((dax) => {
+							totImp += dax.impressions;
+							totCli += dax.clicks;
+							totCom += dax.complete;
+						});
+						reportdaily.map((dax) => {
+							dax.impressions = totImp ? Math.trunc(dax.impressions / totImp * totalcom.impressions) : 0;
+							dax.clicks = totCli
+								? Math.trunc(dax.clicks / totCli * (totalcom.clicks + totalcom.clicks1))
+								: 0;
+							dax.complete = totCom ? Math.trunc(dax.complete / totCom * totalcom.complete) : 0;
+							totImp1 += dax.impressions;
+							totCli1 += dax.clicks;
+							totCom1 += dax.complete;
+						});
+						if (totImp > totImp1)
+							reportdaily.push({
+								date: '',
+								impressions: totImp - totImp1,
+								clicks: totCli - totCli1,
+								complete: totCom - totCom1
+							});
+						totaldataCount[mashh.das[j]] = reportdaily;
+						// console.log(totalcom, totImp, totCli, totCom, reportdaily);
+						// ses.sendEmail()
+					}
+					var params = {
+						Destination: {
+							BccAddresses: [],
+							CcAddresses: [],
+							ToAddresses: [
+								'saiharishmedam@gmail.com',
+								'tiwarigaurav1@gmail.com',
+								'phool.k@paytunes.in'
+							]
+						},
+						Message: {
+							Body: {
+								Html: {
+									Charset: 'UTF-8',
+									Data: `
+									<head>
+									<style>
+									table {
+									font-family: arial, sans-serif;
+									border-collapse: collapse;
+									width: 100%;
+									}
+
+									td, th {
+									border: 1px solid #dddddd;
+									text-align: center;
+									padding: 4px;
+									}
+
+									tr:nth-child(even) {
+									background-color: #dddddd;
+									}
+									</style>
+									</head>
+									<body>
+									
+									${mashh.das
+										.map((xas) => {
+											return `
+											<div>
+												<h2>${xas}</h2>
+												<table>
+													<tr>
+														<th>Date</th>
+														<th>Impressions</th>
+														<th>Clicks</th>
+														<th>CTR</th>
+														<th>Complete</th>
+														<th>LTR</th>
+													</tr>
+													${totaldataCount[xas]
+														.map((dalrep) => {
+															return `<tr>
+																<td>${dalrep.date}</td>
+																<td>
+																	${dalrep.impressions}
+																</td>
+																<td>${dalrep.clicks}</td>
+																<td>
+																	${Math.round(dalrep.clicks * 100 * 100 / dalrep.impressions) / 100}%
+																</td>
+																<td>
+																	${dalrep.complete}
+																</td>
+																<td>
+																	${Math.round(dalrep.complete * 100 * 100 / dalrep.impressions) / 100}%
+																</td>
+															</tr>`;
+														})
+														.join('')}
+												</table>
+											</div>`;
+										})
+										.join('')}
+									
+									</body>
+									   `
+								},
+								Text: {
+									Charset: 'UTF-8',
+									Data: 'This is the message if in text if no data found.'
+								}
+							},
+							Subject: {
+								Charset: 'UTF-8',
+								Data: `${x.campaignName} daily report`
+							}
+						},
+						// ReplyToAddresses: [],
+						// ReturnPath: '',
+						// ReturnPathArn: '',
+						// SourceArn: ''
+						Source: email
+					};
+					ses.sendEmail(params, function(err, data) {
+						if (err)
+							console.log(err, err.stack); // an error occurred
+						else console.log(data); // successful response
+						/*
+						data = {
+						MessageId: "EXAMPLE78603177f-7a5433e7-8edb-42ae-af10-f0181f34d6ee-000000"
+						}
+						 */
+					});
+					//
+					// console.log(formdata);
+					// console.log(
+					// 	idfindspilter(x.searchName, x.onDemand, x.podcast, x.audio, x.display, x.video, x.musicapps)
+					// );
+					// let campass = await
+					// request(
+					// 	{
+					// 		url: 'http://23.98.35.74:5000/streamingads/groupedsingleClient',
+					// 		method: 'put',
+					// 		headers: {
+					// 			'Content-Type': 'application/json',
+					// 			Authorization: 'Bearer ' + JWT
+					// 		},
+					// 		body: JSON.stringify({
+					// 			adtitle: x.searchName,
+					// 			podcast: x.podcast,
+					// 			onDemand: x.onDemand,
+					// 			musicapps: x.musicapps
+					// 		})
+					// 	},
+					// 	function(error, response, body) {
+					// 		console.log('error', error);
+					// 		console.log('response', response);
+					// 		console.log('body', body);
+					// 	}
+					// );
+					// fetch('/streamingads/groupedsingleClient', {
+					// 	method: 'put',
+					// 	headers: {
+					// 		'Content-Type': 'application/json',
+					// 		Authorization: 'Bearer ' + JWT
+					// 	},
+					// 	body: JSON.stringify({
+					// 		adtitle: x.searchName,
+					// 		podcast: x.podcast,
+					// 		onDemand: x.onDemand,
+					// 		musicapps: x.musicapps
+					// 	})
+					// })
+					// 	.then((res) => res.json())
+					// 	.then((resul) => {
+					// 		console.log(resul);
+					// 	})
+					// 	.catch((err) => console.log(err));
+				} else if (x.type === 'bundle') {
+					//
+				}
+			});
+		} catch (e) {
+			console.log(e);
+		}
+	}
 }
 
 // result.map(async (zip) => {
