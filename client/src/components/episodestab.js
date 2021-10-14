@@ -5,6 +5,7 @@ import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import { Alert } from '@material-ui/lab';
 import { CSVLink } from 'react-csv';
+import { languagesmap } from '../helper';
 import Episodedataform from '../screens/episodedataform';
 import { arrowRetuner } from '../components/CommonFun';
 import { orderSetter } from '../redux/actions/manageadsAction';
@@ -82,6 +83,7 @@ export default function EpisodeTab() {
 	const handleClose = () => {
 		setOpen(false);
 	};
+	const langmap=new Map(languagesmap)
 
 	const filterManger = (A, B) => {
 		var manage = datatrus.filter(
@@ -322,6 +324,7 @@ export default function EpisodeTab() {
 							<TableRow >
 								{/* <TableCell>{title}</TableCell> */}
 								{<TableCell style={{ cursor: 'pointer', width: 30 }} onClick={() => tablesorter('episodename', 'string')} > Display Name {arrowRetuner(sa === 'episodename' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer', width: 30 }} onClick={() => tablesorter('language', 'string')} > Language {arrowRetuner(sa === 'language' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }}onClick={() => tablesorter('request', 'number')} > Request {arrowRetuner(sa === 'request' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('avgrequest', 'number')} >Avg Request {arrowRetuner(sa === 'avgrequest' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('publisher', 'string')} > Host {arrowRetuner(sa === 'publisher' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
@@ -371,6 +374,7 @@ export default function EpisodeTab() {
 									<TableCell component="th" scope="row">
 										{row.episodename ? row.episodename : ''}
 									</TableCell>
+									<TableCell>{row.language?  langmap.get(row.language) ? langmap.get(row.language) : '':''}</TableCell>
 									<TableCell>{row.request ? row.request : ''}</TableCell>
 									<TableCell>{row.avgrequest ? Math.round(row.avgrequest) : ''}</TableCell>
 									<TableCell>{row.publisher ? row.publisher : ''}</TableCell>

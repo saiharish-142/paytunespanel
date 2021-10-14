@@ -263,6 +263,7 @@ router.get('/getepisodewise_report', adminauth, async (req, res) => {
 					episodename: 1,
 					category: 1,
 					publishername: 1,
+					language:1,
 					publisherid: 1,
 					requests: 1,
 					displayname: 1,
@@ -272,7 +273,7 @@ router.get('/getepisodewise_report', adminauth, async (req, res) => {
 			},
 			{
 				$group: {
-					_id: { episodename: '$episodename', category: '$extra_details.category' },
+					_id: { episodename: '$episodename', category: '$extra_details.category',language:"$language" },
 					publisher: { $addToSet: '$publisherid' },
 					request: { $sum: '$requests' },
 					displayname: { $first: '$displayname' },
@@ -294,6 +295,7 @@ router.get('/getepisodewise_report', adminauth, async (req, res) => {
 				$project: {
 					episodename: '$_id.episodename',
 					category: '$_id.category',
+					language:"$_id.language",
 					publisher: { $setUnion: [ '$publisher_details.publishername', [] ] },
 					request: '$request',
 					avgrequest: '$avgrequest',

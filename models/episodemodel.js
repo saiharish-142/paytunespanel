@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 var podcastepisodesSchema = new Schema({
     publisherid: String,
     episodename: String,
+    language:String,
     category: String,
     date: { type: String },
     requests: Number,

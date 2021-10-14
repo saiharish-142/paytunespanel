@@ -5,7 +5,7 @@ var podcastepisodesSchema = new Schema({
     episodename: String,
     category: String,
     publishername:String,
-    // date: { type: String },
+    language:String,
     requests: Number,
     displayname:String,
     hostPossibility:String
