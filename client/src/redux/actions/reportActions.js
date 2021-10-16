@@ -621,7 +621,7 @@ export const ClientSummDet = () => async (dispatch, getState) => {
 			for (var i = 0; i < repo2.length; i++) {
 				console.log(repo2[i]);
 				if (repo.sets[i].toLowerCase() != 'unselected') {
-					await fetch('/offreport/detreportcambydat', {
+					await fetch('/offreport/detrepocambydat', {
 						method: 'put',
 						headers: {
 							'Content-Type': 'application/json',

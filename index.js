@@ -94,7 +94,7 @@ if (process.env.NODE_ENV === 'production') {
 
 app.listen(port, () => console.log(`app listening on port ${port}!`));
 
-cron.schedule('00 02 * * *', function () {
+cron.schedule('00 02 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -118,7 +118,7 @@ cron.schedule('00 02 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 04 * * *', function () {
+cron.schedule('00 04 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -142,7 +142,7 @@ cron.schedule('00 04 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 06 * * *', function () {
+cron.schedule('00 06 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -166,7 +166,7 @@ cron.schedule('00 06 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 08 * * *', function () {
+cron.schedule('00 08 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -190,7 +190,7 @@ cron.schedule('00 08 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 10 * * *', function () {
+cron.schedule('00 10 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -214,7 +214,7 @@ cron.schedule('00 10 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 12 * * *', function () {
+cron.schedule('00 12 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -238,7 +238,7 @@ cron.schedule('00 12 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 14 * * *', function () {
+cron.schedule('00 14 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -262,7 +262,7 @@ cron.schedule('00 14 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 16 * * *', function () {
+cron.schedule('00 16 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -286,7 +286,7 @@ cron.schedule('00 16 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 18 * * *', function () {
+cron.schedule('00 18 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -310,7 +310,7 @@ cron.schedule('00 18 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 20 * * *', function () {
+cron.schedule('00 20 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -334,7 +334,7 @@ cron.schedule('00 20 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 22 * * *', function () {
+cron.schedule('00 22 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -358,7 +358,7 @@ cron.schedule('00 22 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('10 00 * * *', function () {
+cron.schedule('10 00 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate() - 1);
 	if (d.getDate() < 10) {
@@ -442,7 +442,7 @@ cron.schedule('10 00 * * *', function () {
 
 // }
 
-cron.schedule('00 1 * * *', function () {
+cron.schedule('00 1 * * *', function() {
 	PincodeRefresher();
 });
 
@@ -531,7 +531,7 @@ async function PincodeRefresher() {
 	});
 }
 
-cron.schedule('30 1 * * *', function () {
+cron.schedule('30 1 * * *', function() {
 	PincodeRequestsRefresher();
 });
 
@@ -616,7 +616,7 @@ async function PincodeRequestsRefresher() {
 	});
 }
 
-cron.schedule('00 2 * * *', function () {
+cron.schedule('00 2 * * *', function() {
 	PhoneRefresher();
 });
 
@@ -697,7 +697,7 @@ async function PhoneRefresher() {
 	});
 }
 
-cron.schedule('00 3 * * *', function () {
+cron.schedule('00 3 * * *', function() {
 	CategoryRefresher();
 });
 
@@ -746,13 +746,13 @@ async function CategoryRefresher() {
 	console.log(phones);
 	phones.forEach(async (cat) => {
 		const match = await Categoryreports2.findOne({
-			$or: [{ category: cat._id.category }, { new_taxonamy: cat._id.category }],
+			$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],
 			feed: cat._id.feed
 		});
 
 		if (!match) {
 			const val = await Categoryreports2.findOne({
-				$or: [{ category: cat._id.category }, { new_taxonamy: cat._id.category }]
+				$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ]
 			});
 			const newzip = new Categoryreports2({
 				parent: val ? val.parent : '',
@@ -772,7 +772,7 @@ async function CategoryRefresher() {
 			await newzip.save();
 		} else {
 			await Categoryreports2.findOneAndUpdate(
-				{ $or: [{ category: cat._id.category }, { new_taxonamy: cat._id.category }], feed: cat._id.feed },
+				{ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ], feed: cat._id.feed },
 				{
 					$inc: {
 						impression: cat.impressions,
@@ -786,7 +786,7 @@ async function CategoryRefresher() {
 	// console.log('updated', updateddoc);
 }
 
-cron.schedule('30 1 * * *', function () {
+cron.schedule('30 1 * * *', function() {
 	PodcastEpisodeRefresher();
 });
 // PodcastEpisodeRefresher();
@@ -813,7 +813,6 @@ async function PodcastEpisodeRefresher() {
 
 	const result = await EpisodeModel.aggregate([
 		{
-
 			$project: {
 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
 				episodename: 1,
@@ -839,7 +838,12 @@ async function PodcastEpisodeRefresher() {
 		},
 		{
 			$group: {
-				_id: { episodename: '$episodename', category: '$category', publisher: '$publisherid', language: "$language" },
+				_id: {
+					episodename: '$episodename',
+					category: '$category',
+					publisher: '$publisherid',
+					language: '$language'
+				},
 				request: { $sum: '$requests' },
 				displayname: { $first: '$displayname' },
 				hostPossibility: { $first: '$hostPossibility' }
@@ -850,14 +854,14 @@ async function PodcastEpisodeRefresher() {
 				episodename: '$_id.episodename',
 				category: '$_id.category',
 				publisher: '$_id.publisher',
-				language: "$_id.language",
+				language: '$_id.language',
 				request: '$request',
 				displayname: '$displayname',
 				hostPossibility: '$hostPossibility'
 			}
 		}
 	]);
-	console.log(result)
+	console.log(result);
 
 	result.forEach(async (podcast) => {
 		const ismatch = await EpisodeModel2.findOne({
@@ -882,7 +886,15 @@ async function PodcastEpisodeRefresher() {
 			await episode.save();
 		} else {
 			await EpisodeModel2.findOneAndUpdate(
-				{ $and: [{ episodename: podcast.episodename }, { publisherid: podcast.publisher }, , { category: podcast.category }, { language: podcast.language }] },
+				{
+					$and: [
+						{ episodename: podcast.episodename },
+						{ publisherid: podcast.publisher },
+						,
+						{ category: podcast.category },
+						{ language: podcast.language }
+					]
+				},
 				{
 					$inc: {
 						requests: podcast.request
@@ -901,8 +913,8 @@ async function uniqueMaker({ date }) {
 	let response = await StreamingAds.aggregate([
 		{ $match: { _id: { $in: uniqueids } } },
 		{ $project: { AdTitle: { $toLower: '$AdTitle' } } },
-		{ $project: { AdTitle: { $split: ['$AdTitle', '_'] } } },
-		{ $project: { AdTitle: { $slice: ['$AdTitle', 2] } } },
+		{ $project: { AdTitle: { $split: [ '$AdTitle', '_' ] } } },
+		{ $project: { AdTitle: { $slice: [ '$AdTitle', 2 ] } } },
 		{
 			$project: {
 				AdTitle: {
@@ -910,7 +922,7 @@ async function uniqueMaker({ date }) {
 						input: '$AdTitle',
 						initialValue: '',
 						in: {
-							$concat: ['$$value', { $cond: [{ $eq: ['$$value', ''] }, '', '_'] }, '$$this']
+							$concat: [ '$$value', { $cond: [ { $eq: [ '$$value', '' ] }, '', '_' ] }, '$$this' ]
 						}
 					}
 				},
@@ -1019,7 +1031,7 @@ async function ReportsRefresher(date, credate) {
 				{
 					$facet: {
 						uniquesumdatawise: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId' },
@@ -1039,7 +1051,7 @@ async function ReportsRefresher(date, credate) {
 										$reduce: {
 											input: '$unique',
 											initialValue: [],
-											in: { $concatArrays: ['$$value', '$$this'] }
+											in: { $concatArrays: [ '$$value', '$$this' ] }
 										}
 									}
 								}
@@ -1047,7 +1059,7 @@ async function ReportsRefresher(date, credate) {
 							{ $project: { _id: 0, campaignId: '$_id', unique: { $size: '$unique' }, publishdata: 1 } }
 						],
 						regionwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId', region: '$region' },
@@ -1069,7 +1081,7 @@ async function ReportsRefresher(date, credate) {
 							{ $project: { _id: 0, campaignId: '$_id', results: 1 } }
 						],
 						pinwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId', zip: '$zip' },
@@ -1091,7 +1103,7 @@ async function ReportsRefresher(date, credate) {
 							{ $project: { _id: 0, campaignId: '$_id', results: 1 } }
 						],
 						lanwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId', language: '$language' },
@@ -1268,7 +1280,7 @@ async function ReportsRefresher(date, credate) {
 										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
 										result: {
 											$push: {
-												phoneModel: { $concat: ['$_id.phoneMake', ' - ', '$_id.phoneModel'] },
+												phoneModel: { $concat: [ '$_id.phoneMake', ' - ', '$_id.phoneModel' ] },
 												result: { $arrayToObject: '$result' }
 											}
 										}
@@ -1313,7 +1325,7 @@ async function ReportsRefresher(date, credate) {
 										result: {
 											$push: {
 												platformType: {
-													$concat: ['$_id.platformType', ' - ', '$_id.osVersion']
+													$concat: [ '$_id.platformType', ' - ', '$_id.osVersion' ]
 												},
 												result: { $arrayToObject: '$result' }
 											}
@@ -1608,19 +1620,19 @@ async function ReportsRefresher(date, credate) {
 	// res.json(compr)
 }
 
-cron.schedule('42 00 * * *', function () {
+cron.schedule('42 00 * * *', function() {
 	PublisherDataRefresher();
 });
 
-cron.schedule('45 00 * * *', function () {
+cron.schedule('45 00 * * *', function() {
 	FrequencyDataRefresher();
 });
 
-cron.schedule('55 00 * * *', function () {
+cron.schedule('55 00 * * *', function() {
 	pincodesumreport();
 });
 
-cron.schedule('35 00 * * *', function () {
+cron.schedule('35 00 * * *', function() {
 	FrequencyPublisherRefresher();
 });
 
@@ -1683,6 +1695,18 @@ const freqpublishreports = mongoose.model('freqpublishreports');
 const campaignifareports = mongoose.model('campaignifareports');
 const zipreports = mongoose.model('zipreports');
 const zipsumreport = mongoose.model('zipsumreport');
+const campaignClient = mongoose.model('campaignClient');
+const StreamingAds = mongoose.model('streamingads');
+const adsetting = mongoose.model('adsetting');
+const admin = mongoose.model('admin');
+const campaignwisereports = mongoose.model('campaignwisereports');
+var email = 'support@paytunes.in';
+var aws = require('aws-sdk');
+aws.config.loadFromPath(__dirname + '/config.json');
+
+cron.schedule('00 09 * * *', function() {
+	DailyReportMailer();
+});
 
 async function PublisherConsoleLoaderTypeWise(array, type) {
 	// console.log(array.length, array[0]);
@@ -1695,13 +1719,13 @@ async function PublisherConsoleLoaderTypeWise(array, type) {
 			// console.log(publisherB.PublisherSplit);
 			var publisherBit = publis;
 			// publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
-			publisherBit.ssp = [...new Set(publisherBit.ssp)];
+			publisherBit.ssp = [ ...new Set(publisherBit.ssp) ];
 			var testappubid = publisherBit.apppubidpo;
 			// console.log(publisherBit.test);
 			var daysCount = 1;
 			if (typeof publisherBit.test === 'object') {
-				publisherBit.test = [...new Set(publisherBit.test)];
-				publisherBit.test.sort(function (a, b) {
+				publisherBit.test = [ ...new Set(publisherBit.test) ];
+				publisherBit.test.sort(function(a, b) {
 					var d1 = new Date(a);
 					var d2 = new Date(b);
 					return d1 - d2;
@@ -2288,7 +2312,7 @@ async function pincodesumreport() {
 					zip: '$zip',
 					campaignId: '$campaignId',
 					impression: '$impression',
-					clicks: { $sum: ['$SovClickTracking', '$CompanionClickTracking'] }
+					clicks: { $sum: [ '$SovClickTracking', '$CompanionClickTracking' ] }
 				}
 			},
 			{
@@ -2350,6 +2374,528 @@ async function pincodesumreport() {
 			}
 		})
 		.catch((err) => console.log(err));
+}
+
+const removeDuplicates = (inputArray) => {
+	const ids = [];
+	return inputArray.reduce((sum, element) => {
+		if (!ids.includes(element.toString())) {
+			sum.push(element);
+			ids.push(element.toString());
+		}
+		return sum;
+	}, []);
+};
+
+function remove_duplicates_arrayobject(gotarray, unique) {
+	var obj = {};
+	var array = gotarray;
+	// console.log(array)
+	for (var i = 0, len = array.length; i < len; i++) obj[array[i][unique]] = array[i];
+
+	array = new Array();
+	for (var key in obj) array.push(obj[key]);
+
+	return array;
+}
+
+const idfindspilter = async (respo, onDemand, podcast, audio, display, video, musicapps) => {
+	// const { adtitle, onDemand, podcast, audio, display, video, musicapps } = req.body;
+	var data;
+	data = respo.length && respo[0];
+	if (data) {
+		var ids =
+			typeof campaignId !== 'undefined' && typeof campaignId !== 'string' && typeof campaignId !== 'object'
+				? data.id.map((id) => mongoose.Types.ObjectId(id))
+				: data.id;
+		let id_spliter = await adsetting
+			.find({ campaignId: { $in: ids } }, { campaignId: 1, type: 1, targetImpression: 1 })
+			.catch((err) => console.log(err));
+		data.ids = {
+			onDemand: [],
+			podcast: [],
+			musicapps: [],
+			audio: [],
+			subimpression: { dem: 0, mus: 0, pod: 0 },
+			audimpression: 0,
+			display: [],
+			disimpression: 0,
+			video: [],
+			vidimpression: 0
+		};
+		data.ids['combined'] = ids;
+		// data.TargetImpressions = [ ...new Set(data.TargetImpressions) ];
+		id_spliter = remove_duplicates_arrayobject(id_spliter, 'campaignId');
+		var ids_cam = [];
+		id_spliter.map((x) => {
+			if (x.campaignId) ids_cam.push(x.campaignId.toString());
+		});
+		var left_cam = arr_diff(data.id, ids_cam);
+		if (left_cam && left_cam.length) {
+			await left_cam.map((id) => data.ids.audio.push(id));
+			// data.ids.audio = [ ...new Set(data.ids.audio) ];
+			data.ids.audio = removeDuplicates(data.ids.audio);
+			// data.ids.audio = [ ...new Set(data.ids.audio) ];
+		}
+		if (id_spliter.length) {
+			var audioids = id_spliter.filter((x) => x.type === 'audio');
+			audioids.map((x) => {
+				data.ids.audio.push(x.campaignId.toString());
+				data.ids.audimpression += parseInt(x.targetImpression);
+			});
+			data.ids.audio = [ ...new Set(data.ids.audio) ];
+			if (!(onDemand === podcast && onDemand === musicapps)) {
+				// var dads = { onDemand: [], podcast: [], musicapps: [] };
+				const outcome = await idsreturnspliter(data.ids.audio);
+				data.ids.onDemand = outcome.dem;
+				data.ids.podcast = outcome.pod;
+				data.ids['musicapps'] = outcome.mus;
+				if (data.ids.onDemand.length) {
+					var dataonDem = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.onDemand));
+					dataonDem.map((im) => {
+						data.ids.subimpression.dem += parseInt(im.targetImpression);
+					});
+				}
+				if (data.ids.podcast.length) {
+					var datapodcast = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.podcast));
+					datapodcast.map((im) => {
+						data.ids.subimpression.pod += parseInt(im.targetImpression);
+					});
+				}
+				if (data.ids.musicapps.length) {
+					var datamusic = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.musicapps));
+					datamusic.map((im) => {
+						data.ids.subimpression.mus += parseInt(im.targetImpression);
+					});
+				}
+				// data.ids['new'] = outcome;
+			}
+			var displayids = id_spliter.filter((x) => x.type === 'display');
+			displayids.map((x) => {
+				data.ids.display.push(x.campaignId.toString());
+				data.ids.disimpression += parseInt(x.targetImpression);
+			});
+			data.ids.display = [ ...new Set(data.ids.display) ];
+			var videoids = id_spliter.filter((x) => x.type === 'video');
+			videoids.map((x) => {
+				data.ids.video.push(x.campaignId.toString());
+				data.ids.vidimpression += parseInt(x.targetImpression);
+			});
+			data.ids.video = [ ...new Set(data.ids.video) ];
+		} else {
+			data.ids.audio = ids;
+			var dattarget = data.TargetImpressions;
+			dattarget.map((ar) => {
+				data.ids.audimpression += parseInt(ar.TR);
+			});
+		}
+		// var resstartDate = [].concat.apply([], data.startDate);
+		// resstartDate = [ ...new Set(resstartDate) ];
+		// data.startDate = resstartDate;
+		// var resendDate = [].concat.apply([], data.endDate);
+		// resendDate = [ ...new Set(resendDate) ];
+		// data.endDate = resendDate;
+		// data.splendid = id_spliter
+		// var tottar = 0;
+		// data.TargetImpressions.forEach(num=> tottar += parseInt(num))
+		// data.TargetImpressions = tottar
+		// res.json(data);
+		// console.log(data);
+		// return data;
+		var dass = [];
+		var puller = {};
+		var pullerData = {};
+		pullerData['complete'] = {
+			target: 0,
+			clicks: 0,
+			clicks1: 0,
+			complete: 0,
+			firstQuartile: 0,
+			impressions: 0,
+			midpoint: 0,
+			ltr: 0,
+			start: 0,
+			thirdQuartile: 0,
+			updatedAt: []
+		};
+		if (audio) {
+			dass.push(audio);
+			if (puller[audio]) {
+				data.ids.audio.map((x) => puller[audio].push(x));
+				// puller[`${audio}target`] += data.ids.audimpression;
+				pullerData[`complete`].target += data.ids.audimpression;
+			} else {
+				puller[audio] = [];
+				// puller[`${audio}target`] = 0;
+				// puller[`${audio}target`] += data.ids.audimpression;
+				pullerData[`complete`].target += data.ids.audimpression;
+				data.ids.audio.map((x) => puller[audio].push(x));
+			}
+		}
+		if (!(onDemand === podcast && onDemand === musicapps)) {
+			if (onDemand) {
+				dass.push(onDemand);
+				if (puller[onDemand]) {
+					data.ids.onDemand.map((x) => puller[onDemand].push(x));
+					pullerData[`complete`].target += data.ids.subimpression.dem;
+					// puller[`${onDemand}target`] += data.ids.subimpression.dem;
+				} else {
+					puller[onDemand] = [];
+					// puller[`${onDemand}target`] = 0;
+					pullerData[`complete`].target += data.ids.subimpression.dem;
+					// puller[`${onDemand}target`] += data.ids.subimpression.dem;
+					data.ids.onDemand.map((x) => puller[onDemand].push(x));
+				}
+			}
+			if (podcast) {
+				dass.push(podcast);
+				if (puller[podcast]) {
+					data.ids.podcast.map((x) => puller[podcast].push(x));
+					pullerData[`complete`].target += data.ids.subimpression.pod;
+					// puller[`${podcast}target`] += data.ids.subimpression.pod;
+				} else {
+					puller[podcast] = [];
+					// puller[`${podcast}target`] = 0;
+					pullerData[`complete`].target += data.ids.subimpression.pod;
+					// puller[`${podcast}target`] += data.ids.subimpression.pod;
+					data.ids.podcast.map((x) => puller[podcast].push(x));
+				}
+			}
+			if (musicapps) {
+				dass.push(musicapps);
+				if (puller[musicapps]) {
+					data.ids.musicapps.map((x) => puller[musicapps].push(x));
+					pullerData[`complete`].target += data.ids.subimpression.mus;
+					// puller[`${musicapps}target`] += data.ids.subimpression.mus;
+				} else {
+					puller[musicapps] = [];
+					// puller[`${musicapps}target`] = 0;
+					pullerData[`complete`].target += data.ids.subimpression.mus;
+					// puller[`${musicapps}target`] += data.ids.subimpression.mus;
+					data.ids.musicapps.map((x) => puller[musicapps].push(x));
+				}
+			}
+		}
+		if (display) {
+			dass.push(display);
+			if (puller[display]) {
+				data.ids.display.map((x) => puller[display].push(x));
+				pullerData[`complete`].target += data.ids.disimpression;
+				// puller[`${display}target`] += data.ids.disimpression;
+			} else {
+				puller[display] = [];
+				// puller[`${display}target`] = 0;
+				pullerData[`complete`].target += data.ids.disimpression;
+				// puller[`${display}target`] += data.ids.disimpression;
+				data.ids.display.map((x) => puller[display].push(x));
+			}
+		}
+		if (video) {
+			dass.push(video);
+			if (puller[video]) {
+				data.ids.video.map((x) => puller[video].push(x));
+				pullerData[`complete`].target += data.ids.vidimpression;
+				// puller[`${video}target`] += data.ids.vidimpression;
+			} else {
+				puller[video] = [];
+				// puller[`${video}target`] = 0;
+				// puller[`${video}target`] += data.ids.vidimpression;
+				pullerData[`complete`].target += data.ids.vidimpression;
+				data.ids.video.map((x) => puller[video].push(x));
+			}
+		}
+		dass = [ ...new Set(dass) ];
+		puller['das'] = dass;
+		return puller;
+	} else {
+		console.log(respo);
+		return 'error';
+		// res.status(422).json({ error: 'somthing went wrong try again' });
+	}
+};
+
+// DailyReportMailer();
+async function DailyReportMailer() {
+	var users = await admin.find({ usertype: 'client' }).select('email').catch((err) => console.log(err));
+	// const HTTP = new XMLHttpRequest();
+	// HTTP.open('put', 'http://23.98.35.74:5000/streamingads/groupedsingleClient');
+	var ses = new aws.SES();
+	for (var i = 0; i < users.length; i++) {
+		var mail = users[i].email;
+		var id = users[i]._id;
+		console.log(mail, id);
+		let campaignss = await campaignClient.find({ userid: id }).catch((err) => console.log(err));
+		try {
+			console.log(campaignss.length);
+			campaignss.map(async (x) => {
+				console.log(x.type);
+				if (x.type === 'campaign') {
+					let formdata = await StreamingAds.aggregate([
+						{
+							$project: {
+								id: '$_id',
+								AdTitle: { $toLower: '$AdTitle' }
+							}
+						},
+						{
+							$match: {
+								AdTitle: { $regex: x.searchName.toLowerCase() }
+							}
+						},
+						{
+							$group: {
+								_id: null,
+								id: { $push: '$id' },
+								Adtitle: { $push: '$AdTitle' }
+							}
+						}
+					]);
+					// console.log(formdata);
+					let mashh = await idfindspilter(
+						formdata,
+						x.onDemand,
+						x.podcast,
+						x.audio,
+						x.display,
+						x.video,
+						x.musicapps
+					);
+					// console.log(mashh);
+					var totaldataCount = {};
+					for (var j = 0; j < mashh.das.length; j++) {
+						var idsa = mashh[mashh.das[j]]
+							? mashh[mashh.das[j]].map((x) => mongoose.Types.ObjectId(x))
+							: [];
+						let totalcom = await campaignwisereports.aggregate([
+							{ $match: { campaignId: { $in: idsa } } },
+							{
+								$group: {
+									_id: null,
+									impressions: { $sum: '$impression' },
+									complete: { $sum: '$complete' },
+									clicks: { $sum: '$CompanionClickTracking' },
+									clicks1: { $sum: '$SovClickTracking' },
+									thirdQuartile: { $sum: '$thirdQuartile' },
+									start: { $sum: '$start' },
+									firstQuartile: { $sum: '$firstQuartile' },
+									midpoint: { $sum: '$midpoint' }
+								}
+							}
+						]);
+						totalcom = totalcom && totalcom[0];
+						let reportdaily = await campaignwisereports.aggregate([
+							{ $match: { campaignId: { $in: idsa } } },
+							{
+								$group: {
+									_id: { date: '$date' },
+									impressions: { $sum: '$impression' },
+									complete: { $sum: '$complete' },
+									clicks: { $sum: '$CompanionClickTracking' },
+									region: { $push: '$region' }
+								}
+							},
+							{
+								$project: {
+									date: '$_id.date',
+									impressions: '$impressions',
+									complete: '$complete',
+									clicks: '$clicks',
+									region: '$region',
+									_id: 0
+								}
+							},
+							{ $sort: { date: -1 } }
+						]);
+						reportdaily = reportdaily.filter((x) => x.impressions >= 10);
+						var totImp = 0,
+							totCli = 0,
+							totCom = 0;
+						var totImp1 = 0,
+							totCli1 = 0,
+							totCom1 = 0;
+						reportdaily.map((dax) => {
+							totImp += dax.impressions;
+							totCli += dax.clicks;
+							totCom += dax.complete;
+						});
+						reportdaily.map((dax) => {
+							dax.impressions = totImp ? Math.trunc(dax.impressions / totImp * totalcom.impressions) : 0;
+							dax.clicks = totCli
+								? Math.trunc(dax.clicks / totCli * (totalcom.clicks + totalcom.clicks1))
+								: 0;
+							dax.complete = totCom ? Math.trunc(dax.complete / totCom * totalcom.complete) : 0;
+							totImp1 += dax.impressions;
+							totCli1 += dax.clicks;
+							totCom1 += dax.complete;
+						});
+						if (totImp > totImp1)
+							reportdaily.push({
+								date: '',
+								impressions: totImp - totImp1,
+								clicks: totCli - totCli1,
+								complete: totCom - totCom1
+							});
+						totaldataCount[mashh.das[j]] = reportdaily;
+						// console.log(totalcom, totImp, totCli, totCom, reportdaily);
+						// ses.sendEmail()
+					}
+					var params = {
+						Destination: {
+							BccAddresses: [],
+							CcAddresses: [],
+							ToAddresses: [
+								'saiharishmedam@gmail.com',
+								'tiwarigaurav1@gmail.com',
+								'phool.k@paytunes.in'
+							]
+						},
+						Message: {
+							Body: {
+								Html: {
+									Charset: 'UTF-8',
+									Data: `
+									<head>
+									<style>
+									table {
+									font-family: arial, sans-serif;
+									border-collapse: collapse;
+									width: 100%;
+									}
+
+									td, th {
+									border: 1px solid #dddddd;
+									text-align: center;
+									padding: 4px;
+									}
+
+									tr:nth-child(even) {
+									background-color: #dddddd;
+									}
+									</style>
+									</head>
+									<body>
+									
+									${mashh.das
+										.map((xas) => {
+											return `
+											<div>
+												<h2>${xas}</h2>
+												<table>
+													<tr>
+														<th>Date</th>
+														<th>Impressions</th>
+														<th>Clicks</th>
+														<th>CTR</th>
+														<th>Complete</th>
+														<th>LTR</th>
+													</tr>
+													${totaldataCount[xas]
+														.map((dalrep) => {
+															return `<tr>
+																<td>${dalrep.date}</td>
+																<td>
+																	${dalrep.impressions}
+																</td>
+																<td>${dalrep.clicks}</td>
+																<td>
+																	${Math.round(dalrep.clicks * 100 * 100 / dalrep.impressions) / 100}%
+																</td>
+																<td>
+																	${dalrep.complete}
+																</td>
+																<td>
+																	${Math.round(dalrep.complete * 100 * 100 / dalrep.impressions) / 100}%
+																</td>
+															</tr>`;
+														})
+														.join('')}
+												</table>
+											</div>`;
+										})
+										.join('')}
+									
+									</body>
+									   `
+								},
+								Text: {
+									Charset: 'UTF-8',
+									Data: 'This is the message if in text if no data found.'
+								}
+							},
+							Subject: {
+								Charset: 'UTF-8',
+								Data: `${x.campaignName} daily report`
+							}
+						},
+						// ReplyToAddresses: [],
+						// ReturnPath: '',
+						// ReturnPathArn: '',
+						// SourceArn: ''
+						Source: email
+					};
+					ses.sendEmail(params, function(err, data) {
+						if (err)
+							console.log(err, err.stack); // an error occurred
+						else console.log(data); // successful response
+						/*
+						data = {
+						MessageId: "EXAMPLE78603177f-7a5433e7-8edb-42ae-af10-f0181f34d6ee-000000"
+						}
+						 */
+					});
+					//
+					// console.log(formdata);
+					// console.log(
+					// 	idfindspilter(x.searchName, x.onDemand, x.podcast, x.audio, x.display, x.video, x.musicapps)
+					// );
+					// let campass = await
+					// request(
+					// 	{
+					// 		url: 'http://23.98.35.74:5000/streamingads/groupedsingleClient',
+					// 		method: 'put',
+					// 		headers: {
+					// 			'Content-Type': 'application/json',
+					// 			Authorization: 'Bearer ' + JWT
+					// 		},
+					// 		body: JSON.stringify({
+					// 			adtitle: x.searchName,
+					// 			podcast: x.podcast,
+					// 			onDemand: x.onDemand,
+					// 			musicapps: x.musicapps
+					// 		})
+					// 	},
+					// 	function(error, response, body) {
+					// 		console.log('error', error);
+					// 		console.log('response', response);
+					// 		console.log('body', body);
+					// 	}
+					// );
+					// fetch('/streamingads/groupedsingleClient', {
+					// 	method: 'put',
+					// 	headers: {
+					// 		'Content-Type': 'application/json',
+					// 		Authorization: 'Bearer ' + JWT
+					// 	},
+					// 	body: JSON.stringify({
+					// 		adtitle: x.searchName,
+					// 		podcast: x.podcast,
+					// 		onDemand: x.onDemand,
+					// 		musicapps: x.musicapps
+					// 	})
+					// })
+					// 	.then((res) => res.json())
+					// 	.then((resul) => {
+					// 		console.log(resul);
+					// 	})
+					// 	.catch((err) => console.log(err));
+				} else if (x.type === 'bundle') {
+					//
+				}
+			});
+		} catch (e) {
+			console.log(e);
+		}
+	}
 }
 
 // result.map(async (zip) => {
