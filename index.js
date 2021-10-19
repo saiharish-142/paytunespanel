@@ -13,8 +13,8 @@ app.use(cors());
 const options = {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
-	serverSelectionTimeoutMS: 900000,
-	socketTimeoutMS: 900000,
+	serverSelectionTimeoutMS: 9000000,
+	socketTimeoutMS: 9000000,
 	useCreateIndex: true,
 	useFindAndModify: false
 };
@@ -1708,6 +1708,10 @@ cron.schedule('00 09 * * *', function() {
 	DailyReportMailer();
 });
 
+cron.schedule('30 18 * * *', function() {
+	pincodesumreport();
+});
+
 async function PublisherConsoleLoaderTypeWise(array, type) {
 	// console.log(array.length, array[0]);
 	// for (var z = 0; z < array.length; z++) {
@@ -2304,8 +2308,11 @@ async function pincodesumreport() {
 	var chevk = `${cyear}-${cmonth}-${cdate}`;
 	console.log(chevk, chevk2);
 	// console.log(new Date(chevk));
+	// var urgeids = [ '615d730f7b759a1e607f3396', '615bd1d73ff29a70f6b0338a', '615840d4b9afb134f60dcc94' ];
+	// urgeids = urgeids.map((x) => mongoose.Types.ObjectId(x));
 	zipreports
 		.aggregate([
+			// { $match: { campaignId: { $in: urgeids } } },
 			{
 				$project: {
 					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
@@ -2317,10 +2324,7 @@ async function pincodesumreport() {
 			},
 			{
 				$match: {
-					test: { $gte: chevk, $lt: chevk2 },
-					zip: { $gt: 600 },
-					impression: { $gt: 10 },
-					clicks: { $gt: 10 }
+					test: { $gte: datee, $lt: chevk2 }
 				}
 			},
 			{
@@ -2338,8 +2342,9 @@ async function pincodesumreport() {
 			if (result.length) {
 				for (var i = 0; i < result.length; i++) {
 					const storeClick = result[i].clicks;
+					var id = mongoose.Types.ObjectId(result[i]._id.campaignId);
 					let match = await zipsumreport
-						.findOne({ zip: result[i]._id.zip, campaignId: result[i]._id.campaignId })
+						.findOne({ zip: result[i]._id.zip, campaignId: id })
 						.catch((err) => console.log(err));
 					if (match) {
 						if (match.createdOn === chevk2) {
