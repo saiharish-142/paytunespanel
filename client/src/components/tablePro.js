@@ -179,7 +179,7 @@ function TablePro() {
 							data[sets[i]] = result;
 						})
 						.catch((err) => {
-							setpincodeDataerr(true);
+							// setpincodeDataerr(true);
 							console.log(err);
 						});
 				}
