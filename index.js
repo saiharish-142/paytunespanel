@@ -1708,9 +1708,9 @@ cron.schedule('00 09 * * *', function() {
 	DailyReportMailer();
 });
 
-cron.schedule('30 18 * * *', function() {
-	pincodesumreport();
-});
+// cron.schedule('30 18 * * *', function() {
+// 	pincodesumreport();
+// });
 
 async function PublisherConsoleLoaderTypeWise(array, type) {
 	// console.log(array.length, array[0]);
@@ -2324,7 +2324,7 @@ async function pincodesumreport() {
 			},
 			{
 				$match: {
-					test: { $gte: datee, $lt: chevk2 }
+					test: { $gte: chevk, $lt: chevk2 }
 				}
 			},
 			{
