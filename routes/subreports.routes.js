@@ -215,6 +215,7 @@ router.put('/zipbycampids', adminauth, (req, res) => {
 
 router.put('/pinbycampids', adminauth, (req, res) => {
 	const { campaignId } = req.body;
+	req.setTimeout(6000000);
 	const dumd = [];
 	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
 	zipsumreport
