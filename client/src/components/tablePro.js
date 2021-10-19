@@ -156,6 +156,7 @@ function TablePro() {
 	// pincode data of all data
 	const pincodeDataPuller = async (idsa) => {
 		// console.log(idsa)
+		var data = {};
 		if (idsa) {
 			var sets = [ 'audio', 'display', 'video' ];
 			var ids = idsa;
