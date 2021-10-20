@@ -285,8 +285,8 @@ router.put('/pinbycampidspage/:num', adminauth, (req, res) => {
 				}
 			},
 			{ $sort: { impression: -1 } },
-			{ $skip: 100 * num },
-			{ $limit: 100 },
+			{ $skip: 200 * num },
+			{ $limit: 200 },
 			{
 				$lookup: {
 					from: 'zipreports2',
