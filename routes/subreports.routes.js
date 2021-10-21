@@ -244,9 +244,9 @@ router.put('/pinbycampids', adminauth, (req, res) => {
 			for (var i = 0; i < data.length; i++) {
 				if (data[i].extra && data[i].extra[0]) {
 					data[i].zip = data[i]._id;
-					data[i].impression = data[i].impression;
-					data[i].clicks = data[i].clicks;
-					data[i].campaignId = data[i].campaignId;
+					// data[i].impression = data[i].impression;
+					// data[i].clicks = data[i].clicks;
+					// data[i].campaignId = data[i].campaignId;
 					data[i].area = data[i].extra[0].area;
 					data[i].lowersubcity = data[i].area.lowersubcity;
 					data[i].subcity = data[i].extra[0].subcity;
@@ -262,6 +262,75 @@ router.put('/pinbycampids', adminauth, (req, res) => {
 				}
 			}
 			res.json(data);
+		})
+		.catch((err) => res.status(422).json(err));
+});
+
+router.put('/pinbycampidsraw', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	req.setTimeout(6000000);
+	const dumd = [];
+	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	zipsumreport
+		.aggregate([
+			{ $match: { campaignId: { $in: ids } } },
+			{
+				$group: {
+					_id: '$zip',
+					impression: { $sum: '$impression' },
+					clicks: { $sum: '$clicks' },
+					createdOn: { $push: '$createdOn' }
+				}
+			}
+		])
+		.then((result) => {
+			res.json(result);
+		})
+		.catch((err) => res.status(422).json(err));
+});
+
+router.put('/pinbycampidsrawtre', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	req.setTimeout(6000000);
+	const dumd = [];
+	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	zipsumreport
+		.aggregate([
+			{ $match: { campaignId: { $in: ids } } },
+			{
+				$group: {
+					_id: '$zip',
+					impression: { $sum: '$impression' },
+					clicks: { $sum: '$clicks' },
+					createdOn: { $push: '$createdOn' }
+				}
+			}
+		])
+		.then(async (result) => {
+			var data = result;
+			let pin = await Zipreports2.aggregate([ { $match: { pincode: { $gt: 99999, $lt: 1000000 } } } ]);
+			var pan = {};
+			for (var i = 0; i < pin.length; i++) {
+				if (!pan[pin[i].pincode]) {
+					pan[pin[i].pincode] = pin[i];
+				}
+			}
+			for (var i = 0; i < data.length; i++) {
+				data[i].extra = pan[data[i]._id] ? pan[data[i]._id] : undefined;
+			}
+			res.json({ result, pin });
+		})
+		.catch((err) => res.status(422).json(err));
+});
+
+router.put('/pinbycampidsrawsup', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	req.setTimeout(6000000);
+	const dumd = [];
+	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	Zipreports2.aggregate([ { $match: { pincode: { $gt: 99999, $lt: 1000000 } } } ])
+		.then((result) => {
+			res.json(result);
 		})
 		.catch((err) => res.status(422).json(err));
 });
