@@ -6,6 +6,7 @@ const cors = require('cors');
 const { MONGOURI } = require('./config/keys');
 const cron = require('node-cron');
 const phonemodel2reports = require('./models/phonemodel2reports');
+// var connectTimeout = require('connect-timeout')
 
 app.use(express.json());
 app.use(cors());
@@ -2626,7 +2627,7 @@ async function DailyReportMailer() {
 	// HTTP.open('put', 'http://23.98.35.74:5000/streamingads/groupedsingleClient');
 	var ses = new aws.SES();
 	for (var i = 0; i < users.length; i++) {
-		var mail = users[i].email;
+		var mail = users[i].targetemail ? users[i].targetemail : [];
 		var id = users[i]._id;
 		console.log(mail, id);
 		let campaignss = await campaignClient.find({ userid: id }).catch((err) => console.log(err));
@@ -2634,7 +2635,10 @@ async function DailyReportMailer() {
 			console.log(campaignss.length);
 			campaignss.map(async (x) => {
 				console.log(x.type);
-				if (x.type === 'campaign') {
+				var endStae = new Date() > new Date(x.endDate);
+				if (endStae) {
+					console.log('campaign completed');
+				} else if (x.type === 'campaign') {
 					let formdata = await StreamingAds.aggregate([
 						{
 							$project: {
@@ -2747,7 +2751,7 @@ async function DailyReportMailer() {
 					var params = {
 						Destination: {
 							BccAddresses: [],
-							CcAddresses: [],
+							CcAddresses: mail,
 							ToAddresses: [
 								'saiharishmedam@gmail.com',
 								'tiwarigaurav1@gmail.com',
