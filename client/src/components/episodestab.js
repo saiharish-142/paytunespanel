@@ -367,9 +367,9 @@ export default function EpisodeTab() {
 					</Table>
 				</TableContainer>
 				)}
-				{pages.map((pageindex)=>(
+				{/* {pages.map((pageindex)=>(
 					<button onClick={()=>setpagenumber(pageindex)} > {pageindex+1} </button>
-				))}
+				))} */}
 
 				<TablePagination
 					rowsPerPageOptions={[100, 1000, 10000]}
