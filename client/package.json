@@ -1,9 +1,10 @@
 {
   "name": "admin-app",
   "version": "0.1.0",
-  "proxy":"http://localhost:5000",
+  "proxy": "http://localhost:5000",
   "private": true,
   "dependencies": {
+    "@babel/plugin-transform-modules-umd": "^7.14.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -19,10 +20,11 @@
     "disableHostCheck": true
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy-production": "react-scripts build && scp -r ./build/* ptazurehgktracking@23.98.35.74:/var/www/paytunespanel/client"
   },
   "eslintConfig": {
     "extends": "react-app"

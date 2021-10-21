@@ -59,12 +59,8 @@ function PincodeAdmin({ title, report, state1, arrowRetuner }) {
 					ac = 0;
 				data.map((row) => {
 					ai += row.impression;
-					row.clicks = parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking);
 					ac += row.clicks;
-					row.ctr =
-						(parseInt(row.CompanionClickTracking) + parseInt(row.SovClickTracking)) *
-						100 /
-						parseInt(row.impression);
+					row.ctr = row.clicks * 100 / parseInt(row.impression);
 				});
 				csvReport.data = data;
 				setci(ai);

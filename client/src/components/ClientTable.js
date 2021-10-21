@@ -101,7 +101,7 @@ export default function BasicTable({ title, id, adminView }) {
 		for (var i = 0; i < sets.length; i++) {
 			if (ids[sets[i]].length) {
 				console.log(ids[sets[i]]);
-				await fetch('/subrepo/pinbycampids', {
+				await fetch('/subrepo/pinbycampidsrawtre', {
 					method: 'put',
 					headers: {
 						'Content-Type': 'application/json',
@@ -116,6 +116,7 @@ export default function BasicTable({ title, id, adminView }) {
 						console.log(result);
 						// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
 						data[sets[i]] = result;
+						setpincodeData(data);
 					})
 					.catch((err) => {
 						setpincodeDataerr(true);

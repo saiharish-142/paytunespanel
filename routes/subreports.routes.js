@@ -13,7 +13,7 @@ const spentreports = mongoose.model('spentreports');
 const phonemodel2 = mongoose.model('phonemodel2reports');
 const Zipreports2 = mongoose.model('zipreports2');
 const CategoryReports2 = require('../models/categoryreports2');
-const Serverreport = require('../models/serverreport')
+const Serverreport = require('../models/serverreport');
 const Campaignwisereports = mongoose.model('campaignwisereports');
 // const CategoryReports = mongoose.model('categoryreports');
 const CategoryReports = require('../models/categoryreports');
@@ -192,7 +192,7 @@ router.put('/zipbycampids', adminauth, (req, res) => {
 					zip: '$_id.zip',
 					campaignId: '$_id.campaignId',
 					impression: 1,
-					clicks: { $sum: ['$CompanionClickTracking', '$SovClickTracking'] },
+					clicks: { $sum: [ '$CompanionClickTracking', '$SovClickTracking' ] },
 					createdOn: 1,
 					_id: 0,
 					area: '$extra.area',
@@ -215,6 +215,7 @@ router.put('/zipbycampids', adminauth, (req, res) => {
 
 router.put('/pinbycampids', adminauth, (req, res) => {
 	const { campaignId } = req.body;
+	req.setTimeout(6000000);
 	const dumd = [];
 	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
 	zipsumreport
@@ -229,6 +230,142 @@ router.put('/pinbycampids', adminauth, (req, res) => {
 					createdOn: { $push: '$createdOn' }
 				}
 			},
+			{
+				$lookup: {
+					from: 'zipreports2',
+					localField: '_id',
+					foreignField: 'pincode',
+					as: 'extra'
+				}
+			}
+		])
+		.then((result) => {
+			var data = result;
+			for (var i = 0; i < data.length; i++) {
+				if (data[i].extra && data[i].extra[0]) {
+					data[i].zip = data[i]._id;
+					// data[i].impression = data[i].impression;
+					// data[i].clicks = data[i].clicks;
+					// data[i].campaignId = data[i].campaignId;
+					data[i].area = data[i].extra[0].area;
+					data[i].lowersubcity = data[i].area.lowersubcity;
+					data[i].subcity = data[i].extra[0].subcity;
+					data[i].city = data[i].extra[0].city;
+					data[i].grandcity = data[i].extra[0].grandcity;
+					data[i].district = data[i].extra[0].district;
+					data[i].comparison = data[i].extra[0].comparison;
+					data[i].state = data[i].extra[0].state;
+					data[i].grandstate = data[i].extra[0].grandstate;
+					data[i].latitude = data[i].extra[0].latitude;
+					data[i].longitude = data[i].extra[0].longitude;
+					data[i].extra = data[i].extra[0];
+				}
+			}
+			res.json(data);
+		})
+		.catch((err) => res.status(422).json(err));
+});
+
+router.put('/pinbycampidsraw', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	req.setTimeout(6000000);
+	const dumd = [];
+	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	zipsumreport
+		.aggregate([
+			{ $match: { campaignId: { $in: ids } } },
+			{
+				$group: {
+					_id: '$zip',
+					impression: { $sum: '$impression' },
+					clicks: { $sum: '$clicks' },
+					createdOn: { $push: '$createdOn' }
+				}
+			}
+		])
+		.then((result) => {
+			res.json(result);
+		})
+		.catch((err) => res.status(422).json(err));
+});
+
+router.put('/pinbycampidsrawtre', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	req.setTimeout(6000000);
+	const dumd = [];
+	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	zipsumreport
+		.aggregate([
+			{ $match: { campaignId: { $in: ids } } },
+			{
+				$group: {
+					_id: '$zip',
+					impression: { $sum: '$impression' },
+					clicks: { $sum: '$clicks' },
+					createdOn: { $push: '$createdOn' }
+				}
+			}
+		])
+		.then(async (result) => {
+			var data = result;
+			let pin = await Zipreports2.aggregate([ { $match: { pincode: { $gt: 99999, $lt: 1000000 } } } ]);
+			var pan = {};
+			for (var i = 0; i < pin.length; i++) {
+				if (!pan[pin[i].pincode]) {
+					pan[pin[i].pincode] = pin[i];
+				}
+			}
+			for (var i = 0; i < data.length; i++) {
+				if (pan[data[i]._id]) {
+					data[i].zip = data[i]._id;
+					data[i].area = pan[data[i]._id].area;
+					data[i].lowersubcity = pan[data[i]._id].lowersubcity;
+					data[i].subcity = pan[data[i]._id].subcity;
+					data[i].city = pan[data[i]._id].city;
+					data[i].grandcity = pan[data[i]._id].grandcity;
+					data[i].district = pan[data[i]._id].district;
+					data[i].state = pan[data[i]._id].state;
+					data[i].grandstate = pan[data[i]._id].grandstate;
+				}
+			}
+			res.json(data);
+		})
+		.catch((err) => res.status(422).json(err));
+});
+
+router.put('/pinbycampidsrawsup', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	req.setTimeout(6000000);
+	const dumd = [];
+	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	Zipreports2.aggregate([ { $match: { pincode: { $gt: 99999, $lt: 1000000 } } } ])
+		.then((result) => {
+			res.json(result);
+		})
+		.catch((err) => res.status(422).json(err));
+});
+
+router.put('/pinbycampidspage/:num', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	const { num } = req.params;
+	req.setTimeout(6000000);
+	const dumd = [];
+	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	zipsumreport
+		.aggregate([
+			{ $match: { campaignId: { $in: ids } } },
+			{
+				$group: {
+					_id: '$zip',
+					campaignId: { $push: '$campaignId' },
+					impression: { $sum: '$impression' },
+					clicks: { $sum: '$clicks' },
+					createdOn: { $push: '$createdOn' }
+				}
+			},
+			{ $sort: { impression: -1 } },
+			{ $skip: 200 * num },
+			{ $limit: 200 },
 			{
 				$lookup: {
 					from: 'zipreports2',
@@ -268,174 +405,179 @@ router.put('/pinbycampids', adminauth, (req, res) => {
 router.put('/zipbycampidsallcombo', adminauth, (req, res) => {
 	const { campaignId } = req.body;
 	// var ids = campaignId ? campaignId.map(id=>mongoose.Types.ObjectId(id)) : dumd
-	var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
-	var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
-	var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
-	zipreports
-		.aggregate([
-			{
-				$facet: {
-					audio: [
-						{ $match: { campaignId: { $in: audio } } },
-						{
-							$group: {
-								_id: { zip: '$zip' },
-								campaignId: { $push: '$campaignId' },
-								impression: { $sum: '$impression' },
-								CompanionClickTracking: { $sum: '$CompanionClickTracking' },
-								SovClickTracking: { $sum: '$SovClickTracking' },
-								start: { $sum: '$start' },
-								midpoint: { $sum: '$midpoint' },
-								thirdQuartile: { $sum: '$thirdQuartile' },
-								complete: { $sum: '$complete' },
-								createdOn: { $push: '$createdOn' }
+	try {
+		var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
+		var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
+		var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
+		zipreports
+			.aggregate([
+				{
+					$facet: {
+						audio: [
+							{ $match: { campaignId: { $in: audio }, impression: { $gt: 10 } } },
+							{
+								$group: {
+									_id: { zip: '$zip' },
+									campaignId: { $push: '$campaignId' },
+									impression: { $sum: '$impression' },
+									CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+									SovClickTracking: { $sum: '$SovClickTracking' },
+									start: { $sum: '$start' },
+									midpoint: { $sum: '$midpoint' },
+									thirdQuartile: { $sum: '$thirdQuartile' },
+									complete: { $sum: '$complete' },
+									createdOn: { $push: '$createdOn' }
+								}
+							},
+							{
+								$lookup: {
+									from: 'zipreports2',
+									localField: '_id.zip',
+									foreignField: 'pincode',
+									as: 'extra'
+								}
+							},
+							{ $unwind: { path: '$extra', preserveNullAndEmptyArrays: true } },
+							{
+								$project: {
+									zip: '$_id.zip',
+									campaignId: '$_id.campaignId',
+									impression: 1,
+									CompanionClickTracking: 1,
+									SovClickTracking: 1,
+									start: 1,
+									midpoint: 1,
+									thirdQuartile: 1,
+									complete: 1,
+									createdOn: 1,
+									_id: 0,
+									area: '$extra.area',
+									lowersubcity: '$area.lowersubcity',
+									subcity: '$extra.subcity',
+									city: '$extra.city',
+									grandcity: '$extra.grandcity',
+									district: '$extra.district',
+									comparison: '$extra.comparison',
+									state: '$extra.state',
+									grandstate: '$extra.grandstate',
+									latitude: '$extra.latitude',
+									longitude: '$extra.longitude'
+								}
 							}
-						},
-						{
-							$lookup: {
-								from: 'zipreports2',
-								localField: '_id.zip',
-								foreignField: 'pincode',
-								as: 'extra'
+						],
+						display: [
+							{ $match: { campaignId: { $in: display }, impression: { $gt: 10 } } },
+							{
+								$group: {
+									_id: { zip: '$zip' },
+									campaignId: { $push: '$campaignId' },
+									impression: { $sum: '$impression' },
+									CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+									SovClickTracking: { $sum: '$SovClickTracking' },
+									start: { $sum: '$start' },
+									midpoint: { $sum: '$midpoint' },
+									thirdQuartile: { $sum: '$thirdQuartile' },
+									complete: { $sum: '$complete' },
+									createdOn: { $push: '$createdOn' }
+								}
+							},
+							{
+								$lookup: {
+									from: 'zipreports2',
+									localField: '_id.zip',
+									foreignField: 'pincode',
+									as: 'extra'
+								}
+							},
+							{ $unwind: { path: '$extra', preserveNullAndEmptyArrays: true } },
+							{
+								$project: {
+									zip: '$_id.zip',
+									campaignId: '$_id.campaignId',
+									impression: 1,
+									CompanionClickTracking: 1,
+									SovClickTracking: 1,
+									start: 1,
+									midpoint: 1,
+									thirdQuartile: 1,
+									complete: 1,
+									createdOn: 1,
+									_id: 0,
+									area: '$extra.area',
+									lowersubcity: '$area.lowersubcity',
+									subcity: '$extra.subcity',
+									city: '$extra.city',
+									grandcity: '$extra.grandcity',
+									district: '$extra.district',
+									comparison: '$extra.comparison',
+									state: '$extra.state',
+									grandstate: '$extra.grandstate',
+									latitude: '$extra.latitude',
+									longitude: '$extra.longitude'
+								}
 							}
-						},
-						{ $unwind: { path: '$extra', preserveNullAndEmptyArrays: true } },
-						{
-							$project: {
-								zip: '$_id.zip',
-								campaignId: '$_id.campaignId',
-								impression: 1,
-								CompanionClickTracking: 1,
-								SovClickTracking: 1,
-								start: 1,
-								midpoint: 1,
-								thirdQuartile: 1,
-								complete: 1,
-								createdOn: 1,
-								_id: 0,
-								area: '$extra.area',
-								lowersubcity: '$area.lowersubcity',
-								subcity: '$extra.subcity',
-								city: '$extra.city',
-								grandcity: '$extra.grandcity',
-								district: '$extra.district',
-								comparison: '$extra.comparison',
-								state: '$extra.state',
-								grandstate: '$extra.grandstate',
-								latitude: '$extra.latitude',
-								longitude: '$extra.longitude'
+						],
+						video: [
+							{ $match: { campaignId: { $in: video }, impression: { $gt: 10 } } },
+							{
+								$group: {
+									_id: { zip: '$zip' },
+									campaignId: { $push: '$campaignId' },
+									impression: { $sum: '$impression' },
+									CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+									SovClickTracking: { $sum: '$SovClickTracking' },
+									start: { $sum: '$start' },
+									midpoint: { $sum: '$midpoint' },
+									thirdQuartile: { $sum: '$thirdQuartile' },
+									complete: { $sum: '$complete' },
+									createdOn: { $push: '$createdOn' }
+								}
+							},
+							{
+								$lookup: {
+									from: 'zipreports2',
+									localField: '_id.zip',
+									foreignField: 'pincode',
+									as: 'extra'
+								}
+							},
+							{ $unwind: { path: '$extra', preserveNullAndEmptyArrays: true } },
+							{
+								$project: {
+									zip: '$_id.zip',
+									campaignId: '$_id.campaignId',
+									impression: 1,
+									CompanionClickTracking: 1,
+									SovClickTracking: 1,
+									start: 1,
+									midpoint: 1,
+									thirdQuartile: 1,
+									complete: 1,
+									createdOn: 1,
+									_id: 0,
+									area: '$extra.area',
+									lowersubcity: '$area.lowersubcity',
+									subcity: '$extra.subcity',
+									city: '$extra.city',
+									grandcity: '$extra.grandcity',
+									district: '$extra.district',
+									comparison: '$extra.comparison',
+									state: '$extra.state',
+									grandstate: '$extra.grandstate',
+									latitude: '$extra.latitude',
+									longitude: '$extra.longitude'
+								}
 							}
-						}
-					],
-					display: [
-						{ $match: { campaignId: { $in: display } } },
-						{
-							$group: {
-								_id: { zip: '$zip' },
-								campaignId: { $push: '$campaignId' },
-								impression: { $sum: '$impression' },
-								CompanionClickTracking: { $sum: '$CompanionClickTracking' },
-								SovClickTracking: { $sum: '$SovClickTracking' },
-								start: { $sum: '$start' },
-								midpoint: { $sum: '$midpoint' },
-								thirdQuartile: { $sum: '$thirdQuartile' },
-								complete: { $sum: '$complete' },
-								createdOn: { $push: '$createdOn' }
-							}
-						},
-						{
-							$lookup: {
-								from: 'zipreports2',
-								localField: '_id.zip',
-								foreignField: 'pincode',
-								as: 'extra'
-							}
-						},
-						{ $unwind: { path: '$extra', preserveNullAndEmptyArrays: true } },
-						{
-							$project: {
-								zip: '$_id.zip',
-								campaignId: '$_id.campaignId',
-								impression: 1,
-								CompanionClickTracking: 1,
-								SovClickTracking: 1,
-								start: 1,
-								midpoint: 1,
-								thirdQuartile: 1,
-								complete: 1,
-								createdOn: 1,
-								_id: 0,
-								area: '$extra.area',
-								lowersubcity: '$area.lowersubcity',
-								subcity: '$extra.subcity',
-								city: '$extra.city',
-								grandcity: '$extra.grandcity',
-								district: '$extra.district',
-								comparison: '$extra.comparison',
-								state: '$extra.state',
-								grandstate: '$extra.grandstate',
-								latitude: '$extra.latitude',
-								longitude: '$extra.longitude'
-							}
-						}
-					],
-					video: [
-						{ $match: { campaignId: { $in: video } } },
-						{
-							$group: {
-								_id: { zip: '$zip' },
-								campaignId: { $push: '$campaignId' },
-								impression: { $sum: '$impression' },
-								CompanionClickTracking: { $sum: '$CompanionClickTracking' },
-								SovClickTracking: { $sum: '$SovClickTracking' },
-								start: { $sum: '$start' },
-								midpoint: { $sum: '$midpoint' },
-								thirdQuartile: { $sum: '$thirdQuartile' },
-								complete: { $sum: '$complete' },
-								createdOn: { $push: '$createdOn' }
-							}
-						},
-						{
-							$lookup: {
-								from: 'zipreports2',
-								localField: '_id.zip',
-								foreignField: 'pincode',
-								as: 'extra'
-							}
-						},
-						{ $unwind: { path: '$extra', preserveNullAndEmptyArrays: true } },
-						{
-							$project: {
-								zip: '$_id.zip',
-								campaignId: '$_id.campaignId',
-								impression: 1,
-								CompanionClickTracking: 1,
-								SovClickTracking: 1,
-								start: 1,
-								midpoint: 1,
-								thirdQuartile: 1,
-								complete: 1,
-								createdOn: 1,
-								_id: 0,
-								area: '$extra.area',
-								lowersubcity: '$area.lowersubcity',
-								subcity: '$extra.subcity',
-								city: '$extra.city',
-								grandcity: '$extra.grandcity',
-								district: '$extra.district',
-								comparison: '$extra.comparison',
-								state: '$extra.state',
-								grandstate: '$extra.grandstate',
-								latitude: '$extra.latitude',
-								longitude: '$extra.longitude'
-							}
-						}
-					]
+						]
+					}
 				}
-			}
-		])
-		.then((result) => res.json(result))
-		.catch((err) => res.status(422).json(err));
+			])
+			.then((result) => res.json(result))
+			.catch((err) => res.status(422).json(err));
+	} catch (e) {
+		console.log(e);
+		res.status(422).json(e);
+	}
 });
 
 router.put('/regionbycampids', adminauth, (req, res) => {
@@ -797,7 +939,7 @@ router.put('/phoneModelbycampids', adminauth, (req, res) => {
 				}
 			});
 			var solu = [];
-			for (const [x, y] of Object.entries(store)) {
+			for (const [ x, y ] of Object.entries(store)) {
 				solu.push({
 					type: x,
 					impression: y.impression,
@@ -1044,7 +1186,7 @@ router.put('/uniqueusersbycampids2', adminauth, (req, res) => {
 	const dumd = [];
 	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
 	uniqueuserreports
-		.aggregate([{ $match: { campaignId: { $in: ids } } }])
+		.aggregate([ { $match: { campaignId: { $in: ids } } } ])
 		.then((result) => res.json(result))
 		.catch((err) => res.status(422).json(err));
 });
@@ -1111,7 +1253,7 @@ router.put('/categorywiseids', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
 				}
 			},
 			{
@@ -1119,7 +1261,7 @@ router.put('/categorywiseids', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: ['$extra_details', []] }
+					extra_details: { $ifNull: [ '$extra_details', [] ] }
 				}
 			}
 		]).allowDiskUse(true);
@@ -1145,7 +1287,7 @@ router.put('/categorywiseids', adminauth, async (req, res) => {
 			}
 		});
 		var sender = [];
-		for (const [y, z] of Object.entries(soul)) {
+		for (const [ y, z ] of Object.entries(soul)) {
 			sender.push({
 				Name: y,
 				impressions: z.impressions,
@@ -1209,7 +1351,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
 				}
 			},
 			{
@@ -1217,7 +1359,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: ['$extra_details', []] }
+					extra_details: { $ifNull: [ '$extra_details', [] ] }
 				}
 			}
 			// {
@@ -1263,7 +1405,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
 				}
 			},
 			{
@@ -1271,7 +1413,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: ['$extra_details', []] }
+					extra_details: { $ifNull: [ '$extra_details', [] ] }
 				}
 			}
 		]).allowDiskUse(true);
@@ -1309,7 +1451,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
 				}
 			},
 			{
@@ -1317,7 +1459,7 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 					impressions: 1,
 					CompanionClickTracking: 1,
 					SovClickTracking: 1,
-					extra_details: { $ifNull: ['$extra_details', []] }
+					extra_details: { $ifNull: [ '$extra_details', [] ] }
 				}
 			}
 		]).allowDiskUse(true);
@@ -1404,13 +1546,13 @@ router.get('/publisherComplete2', adminauth, async (req, res) => {
 	let display = await publisherwiseConsole.find({ type: 'display' }).catch((err) => console.log(err));
 	let video = await publisherwiseConsole.find({ type: 'video' }).catch((err) => console.log(err));
 	let uadata = await uareqreports
-		.aggregate([{ $group: { _id: '$publisherid', request: { $sum: '$ads' }, userAgent: { $push: '$ua' } } }])
+		.aggregate([ { $group: { _id: '$publisherid', request: { $sum: '$ads' }, userAgent: { $push: '$ua' } } } ])
 		.catch((err) => console.log(err));
 	var sol = {};
 	var sola = {};
 	uadata.map((x) => {
 		sol[x._id] = x.request;
-		sola[x._id] = [...new Set(x.userAgent)];
+		sola[x._id] = [ ...new Set(x.userAgent) ];
 	});
 	var compo = {
 		impression: 0,
@@ -1515,7 +1657,7 @@ router.get('/phonedata', adminauth, async (req, res) => {
 
 		const phone = await phonemodel2.aggregate([
 			{ $sort: { impression: -1 } },
-			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } }
+			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } }
 		]);
 		res.status(200).json(phone);
 	} catch (err) {
@@ -1539,7 +1681,7 @@ router.get('/phonedata_audio', adminauth, async (req, res) => {
 
 		const phone = await phonemodel2.aggregate([
 			{ $sort: { impression: -1 } },
-			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $match: { rtbType: 'audio' } }
 		]);
 		res.status(200).json(phone);
@@ -1564,7 +1706,7 @@ router.get('/phonedata_video', adminauth, async (req, res) => {
 
 		const phone = await phonemodel2.aggregate([
 			{ $sort: { impression: -1 } },
-			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $match: { rtbType: 'video' } }
 		]);
 		res.status(200).json(phone);
@@ -1574,7 +1716,7 @@ router.get('/phonedata_video', adminauth, async (req, res) => {
 	}
 });
 
-router.get('/zipdata',  async (req, res) => {
+router.get('/zipdata', async (req, res) => {
 	try {
 		let startdate = new Date();
 		startdate.setDate(01);
@@ -1587,33 +1729,33 @@ router.get('/zipdata',  async (req, res) => {
 			days = 1;
 		}
 		const result = await Zipreports2.aggregate([
-			{ $match: { requests: { $exists: true }, pincode:{$gt:99999,$lt:1000000} } },
+			{ $match: { requests: { $exists: true }, pincode: { $gt: 99999, $lt: 1000000 } } },
 			{
-				$group: { _id: "$pincode" ,
-				requests: { $sum: "$requests" },
-				impression: { $sum: "$impression" },
-				click:{$sum:"$click"},
-				area:{$first:"$area"},
-				lowersubcity:{$first:"$lowersubcity"},
-				subcity:{$first:"$subcity"},
-				city:{$first:"$city"},
-				grandcity:{$first:"$grandcity"},
-				district:{$first:"$district"},
-				state:{$first:"$state"},
-				grandstate:{$first:"$grandcity"},
-				latitude:{$first:"$latitude"},
-				longitude:{$first:"$longitude"},
+				$group: {
+					_id: '$pincode',
+					requests: { $sum: '$requests' },
+					impression: { $sum: '$impression' },
+					click: { $sum: '$click' },
+					area: { $first: '$area' },
+					lowersubcity: { $first: '$lowersubcity' },
+					subcity: { $first: '$subcity' },
+					city: { $first: '$city' },
+					grandcity: { $first: '$grandcity' },
+					district: { $first: '$district' },
+					state: { $first: '$state' },
+					grandstate: { $first: '$grandcity' },
+					latitude: { $first: '$latitude' },
+					longitude: { $first: '$longitude' }
+				}
 			},
-				
-			},
-			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
-			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{ $addFields: { avgrequest: { $divide: [ '$requests', days ] } } },
+			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $sort: { impression: -1 } },
 			{
 				$project: {
-					pincode: "$_id",
+					pincode: '$_id',
 					area: 1,
-					click:1,
+					click: 1,
 					lowersubcity: 1,
 					subcity: 1,
 					city: 1,
@@ -1626,8 +1768,8 @@ router.get('/zipdata',  async (req, res) => {
 					longitude: 1,
 					avgimpression: 1,
 					avgrequest: 1,
-					requests:1,
-					impression:1
+					requests: 1,
+					impression: 1
 				}
 			}
 		]);
@@ -1651,9 +1793,9 @@ router.get('/zipdata_audio', adminauth, async (req, res) => {
 			days = 1;
 		}
 		const result = await Zipreports2.aggregate([
-			{ $match: { requests: { $exists: true },pincode:{$gt:99999,$lt:1000000} } },
-			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
-			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{ $match: { requests: { $exists: true }, pincode: { $gt: 99999, $lt: 1000000 } } },
+			{ $addFields: { avgrequest: { $divide: [ '$requests', days ] } } },
+			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $sort: { impression: -1 } },
 			{ $match: { rtbType: 'audio' } }
 		]);
@@ -1678,9 +1820,9 @@ router.get('/zipdata_video', adminauth, async (req, res) => {
 			days = 1;
 		}
 		const result = await Zipreports2.aggregate([
-			{ $match: { requests: { $exists: true },pincode:{$gt:99999,$lt:1000000}  } },
-			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
-			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{ $match: { requests: { $exists: true }, pincode: { $gt: 99999, $lt: 1000000 } } },
+			{ $addFields: { avgrequest: { $divide: [ '$requests', days ] } } },
+			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $sort: { impression: -1 } },
 			{ $match: { rtbType: 'video' } }
 		]);
@@ -1705,9 +1847,9 @@ router.get('/zipdata_banner', adminauth, async (req, res) => {
 			days = 1;
 		}
 		const result = await Zipreports2.aggregate([
-			{ $match: { requests: { $exists: true } ,pincode:{$gt:99999,$lt:1000000}} },
-			{ $addFields: { avgrequest: { $divide: ['$requests', days] } } },
-			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{ $match: { requests: { $exists: true }, pincode: { $gt: 99999, $lt: 1000000 } } },
+			{ $addFields: { avgrequest: { $divide: [ '$requests', days ] } } },
+			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $sort: { impression: -1 } },
 			{ $match: { rtbType: 'display' } }
 		]);
@@ -1787,7 +1929,7 @@ router.get('/categorydata', adminauth, async (req, res) => {
 
 		const result = await CategoryReports2.aggregate([
 			{ $match: { impression: { $exists: true }, click: { $exists: true } } },
-			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } }
+			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } }
 		]);
 		res.status(200).json(result);
 	} catch (err) {
@@ -1842,7 +1984,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 			{ $match: { campaignId: { $in: ids } } },
 			{
 				$project: {
-					creativeid: { $ifNull: ['$creativesetId', null] },
+					creativeid: { $ifNull: [ '$creativesetId', null ] },
 					campaignId: 1,
 					impression: 1,
 					CompanionClickTracking: 1,
@@ -1856,7 +1998,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 			},
 			{
 				$project: {
-					creative_id: { $cond: [{ $eq: ['$creativeid', ''] }, null, '$creativeid'] },
+					creative_id: { $cond: [ { $eq: [ '$creativeid', '' ] }, null, '$creativeid' ] },
 					campaignId: 1,
 					impression: 1,
 					CompanionClickTracking: 1,
@@ -1870,7 +2012,7 @@ router.put('/creativewisereports', adminauth, async (req, res) => {
 			},
 			{
 				$project: {
-					creativeids: { $cond: [{ $eq: ['$creative_id', 'null'] }, null, '$creative_id'] },
+					creativeids: { $cond: [ { $eq: [ '$creative_id', 'null' ] }, null, '$creative_id' ] },
 					campaignId: 1,
 					impression: 1,
 					CompanionClickTracking: 1,
@@ -1946,7 +2088,7 @@ router.post('/categorydata_podcast', adminauth, async (req, res) => {
 					new_taxonamy: '$new_taxonamy'
 				}
 			},
-			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $match: { feed: '3' } }
 		]);
 		res.status(200).json(result);
@@ -1985,7 +2127,7 @@ router.post('/categorydata_ondemand', adminauth, async (req, res) => {
 					new_taxonamy: '$new_taxonamy'
 				}
 			},
-			{ $addFields: { avgimpression: { $divide: ['$impression', days] } } },
+			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $match: { feed: '' } }
 		]);
 		res.status(200).json(result);
@@ -2057,7 +2199,7 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 					extra_details1: { $first: '$extra_details1' }
 				}
 			},
-			{ $addFields: { avgimpression: { $divide: ['$impressions', days] } } },
+			{ $addFields: { avgimpression: { $divide: [ '$impressions', days ] } } },
 			{
 				$project: {
 					rtbType: '$_id.rtbType',
@@ -2066,7 +2208,7 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 					SovClickTracking: 1,
 					impressions: 1,
 					avgimpression: 1,
-					extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
 				}
 			},
 			{ $match: { rtbType: 'video' } }
@@ -2084,21 +2226,20 @@ router.post('/get_server_report', adminauth, async (req, res) => {
 			{ $sort: { createdOn: -1 } },
 			{ $limit: 3 },
 			{
-				$project:
-				{
+				$project: {
 					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-					name: "$servername",
-					status: "$runningstatus",
-					date: "$test"
+					name: '$servername',
+					status: '$runningstatus',
+					date: '$test'
 				}
 			}
-		])
+		]);
 		res.status(200).json(result);
 	} catch (err) {
 		console.log(err.message);
 		res.status(400).json({ error: err.message });
 	}
-})
+});
 
 router.put('/podcastepisodereports', async (req, res) => {
 	try {
@@ -2106,14 +2247,14 @@ router.put('/podcastepisodereports', async (req, res) => {
 		var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : [];
 		let result = await Campaignwisereports.aggregate([
 			{ $match: { campaignId: { $in: ids } } },
-			{$match:{bundlename:{$exists:true}}},
-			{$match:{feed:"3"}},
+			{ $match: { bundlename: { $exists: true } } },
+			{ $match: { feed: '3' } },
 			{
 				$group: {
-					_id: { episode: "$bundlename", publisher: "$appId" },
-					impressions: { $sum: "$impression" },
-					CompanionClickTracking: { $sum: "$CompanionClickTracking" },
-					SovClickTracking: { $sum: "$SovClickTracking" }
+					_id: { episode: '$bundlename', publisher: '$appId' },
+					impressions: { $sum: '$impression' },
+					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+					SovClickTracking: { $sum: '$SovClickTracking' }
 				}
 			},
 			{
@@ -2124,7 +2265,7 @@ router.put('/podcastepisodereports', async (req, res) => {
 					as: 'episode_details'
 				}
 			},
-			{ $addFields: { "new_appid": { "$toObjectId": "$_id.publisher" } } },
+			{ $addFields: { new_appid: { $toObjectId: '$_id.publisher' } } },
 			{
 				$lookup: {
 					from: 'publisherapps',
@@ -2135,28 +2276,19 @@ router.put('/podcastepisodereports', async (req, res) => {
 			},
 			{
 				$project: {
-					publisher: { $first: "$publisher_details" },
-					episode: { $first: "$episode_details" },
+					publisher: { $first: '$publisher_details' },
+					episode: { $first: '$episode_details' },
 					impressions: 1,
-					CompanionClickTracking: "$CompanionClickTracking",
-					SovClickTracking: "$SovClickTracking"
+					CompanionClickTracking: '$CompanionClickTracking',
+					SovClickTracking: '$SovClickTracking'
 				}
 			},
 			{
 				$project: {
-					publishername: "$publisher.AppName",
-					episode: "$episode_details.episodename",
+					publishername: '$publisher.AppName',
+					episode: '$episode_details.episodename',
 					impressions: 1,
-					click: { $add: ["$CompanionClickTracking", "$SovClickTracking"] },
-				}
-			},
-			{
-				$project: {
-					publishername: 1,
-					episode: 1,
-					impressions: 1,
-					click: 1,
-					ctr: { $cond: [{ $ne: ["$impressions", 0] }, { $divide: ["$click", "$impressions"] }, 0] },
+					click: { $add: [ '$CompanionClickTracking', '$SovClickTracking' ] }
 				}
 			},
 			{
@@ -2165,7 +2297,7 @@ router.put('/podcastepisodereports', async (req, res) => {
 					episode: 1,
 					impressions: 1,
 					click: 1,
-					ctr: { $round: { $multiply: ["$ctr", 100] } }
+					ctr: { $cond: [ { $ne: [ '$impressions', 0 ] }, { $divide: [ '$click', '$impressions' ] }, 0 ] }
 				}
 			},
 			{
@@ -2174,16 +2306,25 @@ router.put('/podcastepisodereports', async (req, res) => {
 					episode: 1,
 					impressions: 1,
 					click: 1,
-					ctr: { $divide: ["$ctr", 100] }
+					ctr: { $round: { $multiply: [ '$ctr', 100 ] } }
 				}
 			},
-			{ $sort: { "impressions": -1 } }
-		])
+			{
+				$project: {
+					publishername: 1,
+					episode: 1,
+					impressions: 1,
+					click: 1,
+					ctr: { $divide: [ '$ctr', 100 ] }
+				}
+			},
+			{ $sort: { impressions: -1 } }
+		]);
 		res.status(200).json(result);
 	} catch (err) {
 		console.log(err.message);
 		res.status(400).json({ error: err.message });
 	}
-})
+});
 
 module.exports = router;

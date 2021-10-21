@@ -270,9 +270,8 @@ export const IBABody = (report1) => {
 };
 export const PincodeBody = (report1) => {
 	return report1.map((log, index) => {
-		var clicks = parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking);
-		var ctr =
-			(parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking)) * 100 / parseInt(log.impression);
+		var clicks = parseInt(log.clicks);
+		var ctr = parseInt(log.clicks) * 100 / parseInt(log.impression);
 		return [
 			{ value: log.zip ? log.zip : '' },
 			{ value: log.area ? log.area : '' },

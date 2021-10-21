@@ -57,7 +57,7 @@ function TablePro() {
 	const spentdata = useSelector((state) => state.report.spent);
 	const stateratio = useSelector((state) => state.ratio.ratio);
 	const [ usinr, setusinr ] = useState(74.94715);
-	const [ pincodereports, setpincodereports ] = useState([]);
+	const [ pincodereports, setpincodereports ] = useState({});
 	const [ phoneModelReports, setphoneModelReports ] = useState([]);
 	const [ ibaReports, setibaReports ] = useState([]);
 	const [ frequencyReport, setfrequencyReport ] = useState([]);
@@ -154,38 +154,73 @@ function TablePro() {
 		// setcategoryDataload(false);
 	}
 	// pincode data of all data
-	const pincodeDataPuller = (idsa) => {
+	const pincodeDataPuller = async (idsa) => {
 		// console.log(idsa)
+		var data = {};
 		if (idsa) {
-			fetch('/subrepo/zipbycampidsallcombo', {
-				method: 'put',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: 'Bearer ' + localStorage.getItem('jwt')
-				},
-				body: JSON.stringify({
-					campaignId: idsa
-				})
-			})
-				.then((res) => res.json())
-				.then((result) => {
-					console.log(result[0]);
-					var data = result[0];
-					if (data) {
-						if (data.audio) {
-							data.audio = data.audio.filter((x) => x.impression > 0);
-						}
-						if (data.display) {
-							data.display = data.display.filter((x) => x.impression > 0);
-						}
-						if (data.video) {
-							data.video = data.video.filter((x) => x.impression > 0);
-						}
-					}
-					setpincodereports(data);
-				})
-				.catch((err) => console.log(err));
+			var sets = [ 'audio', 'display', 'video' ];
+			// var setsdatastat = {};
+			// var setsdatastatval = true;
+			// sets.forEach((x) => (setsdatastat[x] = { value: true, count: 0 }));
+			var ids = idsa;
+			for (var i = 0; i < sets.length; i++) {
+				if (ids[sets[i]].length) {
+					console.log(ids[sets[i]]);
+					await fetch('/subrepo/pinbycampidsrawtre', {
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: 'Bearer ' + localStorage.getItem('jwt')
+						},
+						body: JSON.stringify({
+							campaignId: ids[sets[i]]
+						})
+					})
+						.then((res) => res.json())
+						.then((result) => {
+							console.log(result);
+							// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
+							data[sets[i]] = result;
+							setpincodereports(data);
+						})
+						.catch((err) => {
+							// setpincodeDataerr(true);
+							console.log(err);
+						});
+				}
+			}
 		}
+		setpincodereports(data);
+		// if (idsa) {
+		// 	fetch('/subrepo/zipbycampidsallcombo', {
+		// 		method: 'put',
+		// 		headers: {
+		// 			'Content-Type': 'application/json',
+		// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+		// 		},
+		// 		body: JSON.stringify({
+		// 			campaignId: idsa
+		// 		})
+		// 	})
+		// 		.then((res) => res.json())
+		// 		.then((result) => {
+		// 			console.log(result[0]);
+		// 			var data = result[0];
+		// 			if (data) {
+		// 				if (data.audio) {
+		// 					data.audio = data.audio.filter((x) => x.impression > 0);
+		// 				}
+		// 				if (data.display) {
+		// 					data.display = data.display.filter((x) => x.impression > 0);
+		// 				}
+		// 				if (data.video) {
+		// 					data.video = data.video.filter((x) => x.impression > 0);
+		// 				}
+		// 			}
+		// 			setpincodereports(data);
+		// 		})
+		// 		.catch((err) => console.log(err));
+		// }
 	};
 	// phoneModel data of all data
 	const PhoneModelDataPuller = (idsa) => {
