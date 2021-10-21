@@ -316,9 +316,19 @@ router.put('/pinbycampidsrawtre', adminauth, (req, res) => {
 				}
 			}
 			for (var i = 0; i < data.length; i++) {
-				data[i].extra = pan[data[i]._id] ? pan[data[i]._id] : undefined;
+				if (pan[data[i]._id]) {
+					data[i].zip = data[i]._id;
+					data[i].area = pan[data[i]._id].area;
+					data[i].lowersubcity = pan[data[i]._id].lowersubcity;
+					data[i].subcity = pan[data[i]._id].subcity;
+					data[i].city = pan[data[i]._id].city;
+					data[i].grandcity = pan[data[i]._id].grandcity;
+					data[i].district = pan[data[i]._id].district;
+					data[i].state = pan[data[i]._id].state;
+					data[i].grandstate = pan[data[i]._id].grandstate;
+				}
 			}
-			res.json({ result, pin });
+			res.json(data);
 		})
 		.catch((err) => res.status(422).json(err));
 });
