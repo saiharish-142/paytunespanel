@@ -172,7 +172,7 @@ export default function EpisodeTab() {
 
 	const data = () => {
 		fetch('/rtbreq/getepisodewise_report', {
-			method: 'GET',
+			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + localStorage.getItem('jwt')
