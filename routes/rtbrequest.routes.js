@@ -226,7 +226,7 @@ router.get('/spent_data_via_date', adminauth, async (req, res) => {
 	}
 });
 
-router.post('/getepisodewise_report', async (req, res) => {
+router.post('/getepisodewise_report', adminauth,async (req, res) => {
 	try {
 		// let { page, sortField } = req.body;
 		// console.log(sortField)
