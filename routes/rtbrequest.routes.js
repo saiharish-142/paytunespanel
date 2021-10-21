@@ -226,11 +226,15 @@ router.get('/spent_data_via_date', adminauth, async (req, res) => {
 	}
 });
 
-router.get('/getepisodewise_report', adminauth, async (req, res) => {
+router.post('/getepisodewise_report', async (req, res) => {
 	try {
+		// let { page, sortField } = req.body;
+		// console.log(sortField)
+		// let perpage = 200;
+		// let start = page === 0 ? 0 : (page - 1) * perpage;
 		let startdate = new Date();
 		startdate.setDate(01);
-		startdate.setMonth(06);
+		startdate.setMonth(09);
 		startdate.setFullYear(2021);
 
 		let date = new Date();
@@ -238,79 +242,92 @@ router.get('/getepisodewise_report', adminauth, async (req, res) => {
 		if (days === 0) {
 			days = 1;
 		}
+		// let sort = {};
+		// if (sortField) {
+		// 	sort[`${sortField}`] = -1;
+		// } else {
+		// 	sort = { 'avgrequest': -1 };
+		// }
+		// console.log('mg', sort)
+		let findConditions = 
+			[
+				// { $sort: sort },
+				// { $skip: start },
+				// { $limit: perpage },
+				// {
+				// 	$lookup: {
+				// 		from: 'categoryreports2',
+				// 		localField: 'category',
+				// 		foreignField: 'category',
+				// 		as: 'extra_details'
+				// 	}
+				// },
+				// { $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+				// {
+				// 	$lookup: {
+				// 		from: 'categoryreports2',
+				// 		localField: 'category',
+				// 		foreignField: 'new_taxonamy',
+				// 		as: 'extra_details1'
+				// 	}
+				// },
+				// { $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+				// {
+				// 	$project: {
+				// 		episodename: 1,
+				// 		category: 1,
+				// 		publishername: 1,
+				// 		language: 1,
+				// 		publisherid: 1,
+				// 		requests: 1,
+				// 		displayname: 1,
+				// 		hostPossibility: 1,
+				// 		extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
+				// 	}
+				// },
+				 {
+					$group: {
+						_id: { episodename: '$episodename', category: '$category', language: "$language" },
+						publisher: { $addToSet: '$publisher' },
+						request: { $sum: '$requests' },
+						displayname: { $first: '$displayname' },
+						hostPossibility: { $first: '$hostPossibility' },
+						tier1: { $first: '$tier1' },
+						tier2: { $first: '$tier2' },
+						tier3: { $first: '$tier3' },
+						new_taxonamy: { $first: '$new_taxonamy' },
+						publishername: { $first: '$publishername' }
+					}
+				},
+				{ $addFields: { avgrequest: { $divide: ['$request', days] } } },
+				{
+					$project: {
+						episodename: '$_id.episodename',
+						category: '$_id.category',
+						language: "$_id.language",
+						publisher:  "$publisher",
+						request: '$request',
+						avgrequest: '$avgrequest',
+						displayname: '$displayname',
+						hostPossibility: '$hostPossibility',
+						tier1: '$tier1',
+						tier2: '$tier2',
+						tier3: '$tier3',
+						new_taxonamy: '$new_taxonamy',
+						publishername: '$publishername'
+					}
+				},
+				{$sort:{avgrequest:-1}}
+			]
 
-		const result = await EpisodeModel2.aggregate([
-			{
-				$lookup: {
-					from: 'categoryreports2',
-					localField: 'category',
-					foreignField: 'category',
-					as: 'extra_details'
-				}
-			},
-			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
-			{
-				$lookup: {
-					from: 'categoryreports2',
-					localField: 'category',
-					foreignField: 'new_taxonamy',
-					as: 'extra_details1'
-				}
-			},
-			{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
-			{
-				$project: {
-					episodename: 1,
-					category: 1,
-					publishername: 1,
-					language:1,
-					publisherid: 1,
-					requests: 1,
-					displayname: 1,
-					hostPossibility: 1,
-					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
-				}
-			},
-			{
-				$group: {
-					_id: { episodename: '$episodename', category: '$extra_details.category',language:"$language" },
-					publisher: { $addToSet: '$publisherid' },
-					request: { $sum: '$requests' },
-					displayname: { $first: '$displayname' },
-					hostPossibility: { $first: '$hostPossibility' },
-					category_details: { $first: '$extra_details' },
-					publishername: { $first: '$publishername' }
-				}
-			},
-			{
-				$lookup: {
-					from: 'apppublishers',
-					localField: 'publisher',
-					foreignField: 'publisherid',
-					as: 'publisher_details'
-				}
-			},
-			{ $addFields: { avgrequest: { $divide: [ '$request', days ] } } },
-			{
-				$project: {
-					episodename: '$_id.episodename',
-					category: '$_id.category',
-					language:"$_id.language",
-					publisher: { $setUnion: [ '$publisher_details.publishername', [] ] },
-					request: '$request',
-					avgrequest: '$avgrequest',
-					displayname: '$displayname',
-					hostPossibility: '$hostPossibility',
-					tier1: '$category_details.tier1',
-					tier2: '$category_details.tier2',
-					tier3: '$category_details.tier3',
-					new_taxonamy: '$category_details.new_taxonamy',
-					publishername: '$publishername'
-				}
-			},
-			{ $sort: { avgrequest: -1 } }
-		]);
-		res.status(200).json(result);
+		// console.log('da', sortField)
+		const result = await EpisodeModel2.aggregate(findConditions).allowDiskUse(true);
+		let count = await EpisodeModel2.countDocuments({});
+			res.status(200).json(result)
+		// res.status(200).json({
+		// 	pages: count % perpage == 0 ? Math.round(count / perpage) : Math.round(count / perpage) + 1,
+		// 	result
+		// });
 	} catch (err) {
 		res.status(400).json({ error: err.message });
 		console.log(err.message);
@@ -321,7 +338,7 @@ router.post('/getcategory', adminauth, async (req, res) => {
 	try {
 		let { category } = req.body;
 		const match = await CategoryReports2.findOne({
-			$or: [ { category }, { new_taxonamy: category } ]
+			$or: [{ category }, { new_taxonamy: category }]
 		});
 		if (!match) {
 			res.status(200).json({ category: '' });

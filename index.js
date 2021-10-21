@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const { MONGOURI } = require('./config/keys');
 const cron = require('node-cron');
-const phonemodel2reports = require('./models/phonemodel2reports');
+
 
 app.use(express.json());
 app.use(cors());
@@ -786,9 +786,9 @@ async function CategoryRefresher() {
 	// console.log('updated', updateddoc);
 }
 
-cron.schedule('30 1 * * *', function() {
-	PodcastEpisodeRefresher();
-});
+// cron.schedule('30 1 * * *', function() {
+// 	PodcastEpisodeRefresher();
+// });
 // PodcastEpisodeRefresher();
 async function PodcastEpisodeRefresher() {
 	let date = new Date(new Date());
@@ -824,7 +824,7 @@ async function PodcastEpisodeRefresher() {
 				hostPossibility: 1
 			}
 		},
-		{ $match: { test: yesterday } },
+		{ $match: { test: {$gt:'2021-10-10'} } },
 		{
 			$project: {
 				episodename: 1,
@@ -859,7 +859,87 @@ async function PodcastEpisodeRefresher() {
 				displayname: '$displayname',
 				hostPossibility: '$hostPossibility'
 			}
-		}
+		},
+		{
+			$lookup: {
+				from: 'categoryreports2',
+				localField: 'category',
+				foreignField: 'category',
+				as: 'extra_details'
+			}
+		},
+		{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+		{
+			$lookup: {
+				from: 'categoryreports2',
+				localField: 'category',
+				foreignField: 'new_taxonamy',
+				as: 'extra_details1'
+			}
+		},
+		{ $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+		{
+			$project: {
+				episodename: 1,
+				category: 1,
+				publisher: 1,
+				language: 1,
+				request: 1,
+				displayname: 1,
+				hostPossibility: 1,
+				extra_details: { $ifNull: ['$extra_details', '$extra_details1'] }
+			}
+		},
+		{
+			$lookup: {
+				from: 'apppublishers',
+				localField: 'publisher',
+				foreignField: 'publisherid',
+				as: 'publisher_details'
+			}
+		},
+		{
+			$project: {
+				episodename: 1,
+				category: "$extra_details",
+				publisher: { $setUnion: ['$publisher_details.publishername', []] },
+				language: 1,
+				request: 1,
+				displayname: 1,
+				hostPossibility: 1,
+				
+			}
+		},
+		{
+			$project: {
+				episodename: 1,
+				category: 1,
+				publisher: { $filter:{
+					input: "$publisher",
+                   as: "pub",
+                   cond: { $ne:["$$pub",""] }
+				}},
+				language: 1,
+				request: 1,
+				displayname: 1,
+				hostPossibility: 1,
+			}
+		},
+		{
+			$project: {
+				episodename: 1,
+				category: "$category.category",
+				publisher: {$first:"$publisher"},
+				language: 1,
+				request: 1,
+				displayname: 1,
+				hostPossibility: 1,
+				tier1:"$category.tier1",
+				tier2:"$category.tier2",
+				tier3:"$category.tier3",
+				new_taxonamy:"$category.new_taxonamy",
+			}
+		},
 	]);
 	console.log(result);
 
@@ -868,20 +948,25 @@ async function PodcastEpisodeRefresher() {
 			$and: [
 				{ episodename: podcast.episodename },
 				{ category: podcast.category },
-				{ publisherid: podcast.publisher },
+				{ publisher: podcast.publisher },
 				{ language: podcast.language }
 			]
 		});
 		if (!ismatch) {
 			const episode = new EpisodeModel2({
-				publisherid: podcast.publisher,
+				publisher: podcast.publisher,
 				episodename: podcast.episodename,
 				category: podcast.category,
 				requests: podcast.request,
 				language: podcast.language,
 				displayname: podcast.displayname,
 				hostPossibility: podcast.hostPossibility,
-				publishername: ''
+				publishername: '',
+				tier1:podcast.tier1,
+				tier2:podcast.tier2,
+				tier3:podcast.tier3,
+				new_taxonamy:podcast.new_taxonamy,
+				createdOn: Date.now()
 			});
 			await episode.save();
 		} else {
@@ -890,7 +975,6 @@ async function PodcastEpisodeRefresher() {
 					$and: [
 						{ episodename: podcast.episodename },
 						{ publisherid: podcast.publisher },
-						,
 						{ category: podcast.category },
 						{ language: podcast.language }
 					]

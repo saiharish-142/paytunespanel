@@ -52,6 +52,8 @@ export default function EpisodeTab() {
 	const [rows, setrows] = useState([])
 	const [search1, setsearch] = useState('');
 	const [searchedData, setsearchedData] = useState([]);
+	const [pagenumber,setpagenumber]=useState(1);
+	const [numberofpages,setnumberofpages]=useState(0);
 	const [sortconfig, setsortconfig] = useState({ key: 'impression', direction: 'descending' })
 	const [error, seterror] = useState('');
 	const [ datatrus, setdatatrus ] = useState([]);
@@ -72,6 +74,7 @@ export default function EpisodeTab() {
 		setRowsPerPage(+event.target.value);
 		setPage(0);
 	};
+	let pages=new Array(numberofpages).fill(null).map((v,i)=>i);
 	const [open, setOpen] = React.useState(false);
 	const [show, setShow] = useState(false);
 	const handleOpen = (data) => {
@@ -144,11 +147,14 @@ export default function EpisodeTab() {
 
 	useEffect(() => {
 		fetch('/rtbreq/getepisodewise_report', {
-			method: 'GET',
+			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + localStorage.getItem('jwt')
-			}
+			},
+			// body:JSON.stringify({
+			// 	page:pagenumber
+			// })
 		})
 			.then((data) => data.json())
 			.then((dat) => {
@@ -185,6 +191,31 @@ export default function EpisodeTab() {
 			});
 	};
 
+	// const sortrows = (field) => {
+	// 	fetch('/rtbreq/getepisodewise_report', {
+	// 		method: 'POST',
+	// 		headers: {
+	// 			'Content-Type': 'application/json',
+	// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+	// 		},
+	// 		body:JSON.stringify({
+	// 			sortField:field
+	// 		})
+	// 	})
+	// 		.then((data) => data.json())
+	// 		.then((dat) => {
+	// 			if (dat.error) {
+	// 				//seterror(dat.error)
+	// 				return console.log(dat.error);
+	// 			}
+
+	// 			// setsuccess(dat)
+	// 			setrows(dat.result);
+	// 			setnumberofpages(dat.pages);
+	// 			setdatatrus(dat.result);
+	// 		});
+	// };
+
 	// React.useMemo(() => {
 	// 	let sortedProducts = searchedData ? searchedData : rows;
 	// 	if (sortconfig !== null) {
@@ -211,68 +242,7 @@ export default function EpisodeTab() {
 		setdatatrus(setDatatrus);
 	};
 
-	
 
-	// const arrowRetuner = (mode) => {
-	// 	if (mode === '1') {
-	// 		return <ArrowUpwardRoundedIcon fontSize="small" />;
-	// 	} else if (mode === '2') {
-	// 		return <ArrowDownwardRoundedIcon fontSize="small" />;
-	// 	} else {
-	// 		return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
-	// 	}
-	// };
-
-	function fetchcategory(category) {
-		let array = []
-		category.map(cat => {
-			if (cat.split(',').length > 1) {
-				let categ = cat.split(',')
-				categ.map(cat1 => {
-					fetch('/rtbreq/getcategory', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-							Authorization: 'Bearer ' + localStorage.getItem('jwt')
-						},
-						body: JSON.stringify({ category: cat1 })
-					})
-						.then((data) => data.json())
-						.then((dat) => {
-							if (dat.error) {
-								//seterror(dat.error)
-								return console.log(dat.error);
-							}
-
-							// setsuccess(dat)
-							array.push(dat.category)
-						});
-				})
-			} else {
-				fetch('/rtbreq/getcategory', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: 'Bearer ' + localStorage.getItem('jwt')
-					},
-					body: JSON.stringify({ category: cat })
-				})
-					.then((data) => data.json())
-					.then((dat) => {
-						if (dat.error) {
-							//seterror(dat.error)
-							return console.log(dat.error);
-						}
-
-						// setsuccess(dat)
-						array.push(dat.category)
-					});
-			}
-		})
-		console.log(array)
-		// setcategorydata(array)
-		return array
-	}
 
 	return (
 		<div>
@@ -323,18 +293,18 @@ export default function EpisodeTab() {
 						<TableHead style={{ position: "sticky", top: 0 }}>
 							<TableRow >
 								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell style={{ cursor: 'pointer', width: 30 }} onClick={() => tablesorter('episodename', 'string')} > Display Name {arrowRetuner(sa === 'episodename' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer', width: 30 }} onClick={() => tablesorter('language', 'string')} > Language {arrowRetuner(sa === 'language' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }}onClick={() => tablesorter('request', 'number')} > Request {arrowRetuner(sa === 'request' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('avgrequest', 'number')} >Avg Request {arrowRetuner(sa === 'avgrequest' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('publisher', 'string')} > Host {arrowRetuner(sa === 'publisher' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('category', 'string')} > Category {arrowRetuner(sa === 'category' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('tier1', 'string')} > Tier1 {arrowRetuner(sa === 'tier1' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer', width: 30 }} onClick={() =>  tablesorter('episodename', 'string') } > Display Name {arrowRetuner(sa === 'episodename' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer', width: 30 }} onClick={() => tablesorter('language', 'string') } > Language {arrowRetuner(sa === 'language' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }}onClick={() => tablesorter('request', 'number') } > Request {arrowRetuner(sa === 'request' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('avgrequest', 'number') } >Avg Request {arrowRetuner(sa === 'avgrequest' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('publisher', 'string') } > Host {arrowRetuner(sa === 'publisher' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() =>  tablesorter('category', 'string') } > Category {arrowRetuner(sa === 'category' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('tier1', 'string') } > Tier1 {arrowRetuner(sa === 'tier1' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
 								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('tier2', 'string')} > Tier2 {arrowRetuner(sa === 'tier2' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('tier3', 'string')} > Tier3 {arrowRetuner(sa === 'tier3' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('displayname', 'string')} >  Episode Name {arrowRetuner(sa === 'displayname' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('publishername', 'string')} > Publisher Name {arrowRetuner(sa === 'publishername' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('hostPossibility', 'string')} > Host Possibility {arrowRetuner(sa === 'hostPossibility' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('tier3', 'string') } > Tier3 {arrowRetuner(sa === 'tier3' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('displayname', 'string') } >  Episode Name {arrowRetuner(sa === 'displayname' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('publishername', 'string') } > Publisher Name {arrowRetuner(sa === 'publishername' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('hostPossibility', 'string') } > Host Possibility {arrowRetuner(sa === 'hostPossibility' ? (order === 'asc' ? '1' : '2') : '3')} </TableCell>}
 								<TableCell style={{ width: '10%' }}>
 								<FormGroup>
 									<FormControlLabel
@@ -369,7 +339,7 @@ export default function EpisodeTab() {
 							</TableRow>
 						</TableHead>
 						<TableBody >
-							{(searchedData.length !== 0 ? searchedData : rows).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+							{(searchedData.length !== 0 ? searchedData : rows).map((row) => (
 								<TableRow key={row.name}>
 									<TableCell component="th" scope="row">
 										{row.episodename ? row.episodename : ''}
@@ -397,7 +367,9 @@ export default function EpisodeTab() {
 					</Table>
 				</TableContainer>
 				)}
-
+				{pages.map((pageindex)=>(
+					<button onClick={()=>setpagenumber(pageindex)} > {pageindex+1} </button>
+				))}
 
 				<TablePagination
 					rowsPerPageOptions={[100, 1000, 10000]}
@@ -441,3 +413,5 @@ export default function EpisodeTab() {
 
 
 }
+// .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+//
