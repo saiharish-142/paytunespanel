@@ -57,7 +57,7 @@ function TablePro() {
 	const spentdata = useSelector((state) => state.report.spent);
 	const stateratio = useSelector((state) => state.ratio.ratio);
 	const [ usinr, setusinr ] = useState(74.94715);
-	const [ pincodereports, setpincodereports ] = useState([]);
+	const [ pincodereports, setpincodereports ] = useState({});
 	const [ phoneModelReports, setphoneModelReports ] = useState([]);
 	const [ ibaReports, setibaReports ] = useState([]);
 	const [ frequencyReport, setfrequencyReport ] = useState([]);
@@ -159,11 +159,14 @@ function TablePro() {
 		var data = {};
 		if (idsa) {
 			var sets = [ 'audio', 'display', 'video' ];
+			// var setsdatastat = {};
+			// var setsdatastatval = true;
+			// sets.forEach((x) => (setsdatastat[x] = { value: true, count: 0 }));
 			var ids = idsa;
 			for (var i = 0; i < sets.length; i++) {
-				if (ids[sets[i]] && ids[sets[i]].length) {
+				if (ids[sets[i]].length) {
 					console.log(ids[sets[i]]);
-					await fetch('/subrepo/pinbycampids', {
+					await fetch('/subrepo/pinbycampidsrawtre', {
 						method: 'put',
 						headers: {
 							'Content-Type': 'application/json',
@@ -178,6 +181,7 @@ function TablePro() {
 							console.log(result);
 							// setpincodeData(prev=>(...prev,`${sets[i]}`:result))
 							data[sets[i]] = result;
+							setpincodereports(data);
 						})
 						.catch((err) => {
 							// setpincodeDataerr(true);
@@ -185,8 +189,8 @@ function TablePro() {
 						});
 				}
 			}
-			setpincodereports(data);
 		}
+		setpincodereports(data);
 		// if (idsa) {
 		// 	fetch('/subrepo/zipbycampidsallcombo', {
 		// 		method: 'put',
