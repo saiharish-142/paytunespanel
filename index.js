@@ -5,7 +5,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const { MONGOURI } = require('./config/keys');
 const cron = require('node-cron');
-
+const phonemodel2reports = require('./models/phonemodel2reports');
+// var connectTimeout = require('connect-timeout')
 
 app.use(express.json());
 app.use(cors());
@@ -824,7 +825,7 @@ async function PodcastEpisodeRefresher() {
 				hostPossibility: 1
 			}
 		},
-		{ $match: { test: {$gt:'2021-10-10'} } },
+		{ $match: { test: yesterday } },
 		{
 			$project: {
 				episodename: 1,
@@ -834,30 +835,6 @@ async function PodcastEpisodeRefresher() {
 				displayname: 1,
 				language: 1,
 				hostPossibility: 1
-			}
-		},
-		{
-			$group: {
-				_id: {
-					episodename: '$episodename',
-					category: '$category',
-					publisher: '$publisherid',
-					language: '$language'
-				},
-				request: { $sum: '$requests' },
-				displayname: { $first: '$displayname' },
-				hostPossibility: { $first: '$hostPossibility' }
-			}
-		},
-		{
-			$project: {
-				episodename: '$_id.episodename',
-				category: '$_id.category',
-				publisher: '$_id.publisher',
-				language: '$_id.language',
-				request: '$request',
-				displayname: '$displayname',
-				hostPossibility: '$hostPossibility'
 			}
 		},
 		{
@@ -907,7 +884,7 @@ async function PodcastEpisodeRefresher() {
 				request: 1,
 				displayname: 1,
 				hostPossibility: 1,
-				
+
 			}
 		},
 		{
@@ -974,7 +951,7 @@ async function PodcastEpisodeRefresher() {
 				{
 					$and: [
 						{ episodename: podcast.episodename },
-						{ publisherid: podcast.publisher },
+						{ publisher: podcast.publisher },
 						{ category: podcast.category },
 						{ language: podcast.language }
 					]
@@ -2710,7 +2687,7 @@ async function DailyReportMailer() {
 	// HTTP.open('put', 'http://23.98.35.74:5000/streamingads/groupedsingleClient');
 	var ses = new aws.SES();
 	for (var i = 0; i < users.length; i++) {
-		var mail = users[i].email;
+		var mail = users[i].targetemail ? users[i].targetemail : [];
 		var id = users[i]._id;
 		console.log(mail, id);
 		let campaignss = await campaignClient.find({ userid: id }).catch((err) => console.log(err));
@@ -2718,7 +2695,10 @@ async function DailyReportMailer() {
 			console.log(campaignss.length);
 			campaignss.map(async (x) => {
 				console.log(x.type);
-				if (x.type === 'campaign') {
+				var endStae = new Date() > new Date(x.endDate);
+				if (endStae) {
+					console.log('campaign completed');
+				} else if (x.type === 'campaign') {
 					let formdata = await StreamingAds.aggregate([
 						{
 							$project: {
@@ -2831,7 +2811,7 @@ async function DailyReportMailer() {
 					var params = {
 						Destination: {
 							BccAddresses: [],
-							CcAddresses: [],
+							CcAddresses: mail,
 							ToAddresses: [
 								'saiharishmedam@gmail.com',
 								'tiwarigaurav1@gmail.com',

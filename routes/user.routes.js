@@ -361,6 +361,30 @@ router.put('/createUser', adminauth, (req, res) => {
 	});
 });
 
+router.put('/addmailtouser', adminauth, (req, res) => {
+	const { mailToAdd, iduser } = req.body;
+	admin.findByIdAndUpdate(iduser, { $push: { targetemail: mailToAdd } }, { new: true }).exec((err, result) => {
+		if (err) {
+			console.log(err);
+			return res.status(422).json({ error: 'Error occured....!', err });
+		} else {
+			return res.json({ result, message: 'mail added...!' });
+		}
+	});
+});
+
+router.put('/removemailtouser', adminauth, (req, res) => {
+	const { mailToRemove, iduser } = req.body;
+	admin.findByIdAndUpdate(iduser, { $pull: { targetemail: mailToRemove } }, { new: true }).exec((err, result) => {
+		if (err) {
+			console.log(err);
+			return res.status(422).json({ error: 'Error occured....!', err });
+		} else {
+			return res.json({ result, message: 'mail removed...!' });
+		}
+	});
+});
+
 router.get('/users', adminauth, (req, res) => {
 	// if(req.user.usertype !== 'admin'){
 	//     return res.json({message:'You Should be an admin'})

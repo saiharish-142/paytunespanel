@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
 	password: { type: String, required: true },
 	usertype: { type: String, required: true },
 	email: { type: String, required: true },
+	targetemail: [ { type: String } ],
 	bundles: [ { type: String } ],
 	campaigns: [ { type: String } ]
 });
