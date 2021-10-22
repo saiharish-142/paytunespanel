@@ -223,7 +223,7 @@ export default function PhoneVideodata() {
 	return (
 		<div>
 			<div>
-				<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Phone  Video data </h4>
+				<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Device Video data </h4>
 				<input
 					placeholder="Search PhoneModel"
 					onChange={(e) => setsearch(e.target.value)}

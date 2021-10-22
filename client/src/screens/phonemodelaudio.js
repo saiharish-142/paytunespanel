@@ -223,7 +223,7 @@ export default function PhoneAudiodata() {
 	return (
 		<div>
 			<div>
-				<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Phone Audio data </h4>
+				<h4 style={{ margin: '3%', fontWeight: 'bolder' }}>Device Audio data </h4>
 				<input
 					placeholder="Search PhoneModel"
 					onChange={(e) => setsearch(e.target.value)}

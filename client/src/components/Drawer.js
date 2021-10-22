@@ -196,7 +196,7 @@ export default function TemporaryDrawer() {
 										<ListItemIcon>
 											<i className="material-icons">keyboard_arrow_right</i>
 										</ListItemIcon>
-										<ListItemText>Phone Data</ListItemText>
+										<ListItemText>Device Data</ListItemText>
 									</ListItem>
 								</React.Fragment>
 							)}
