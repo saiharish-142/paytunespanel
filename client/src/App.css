@@ -186,12 +186,42 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
+  align-items: center;
 }
 
 .editineditinput{
   min-width: 100px;
   width: fit-content !important;
   margin: 5px !important;
+}
+
+.editeditinput{
+  min-width: 100px;
+  width: fit-content !important;
+  margin: 5px !important;
+  max-width: fit-content;
+}
+
+.emailslist{
+  min-height: 80px ;
+  max-height: 200px;
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 40vw;
+  text-align: center;
+  border: 1px solid grey;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.mailentried{
+  border: 1px solid lightblue;
+  height: fit-content;
+  width: fit-content;
+  padding: 0 10px;
+  border-radius: 213px;
+  display: flex;
+  flex-direction: row;
 }
 
 .editineditinput select{
