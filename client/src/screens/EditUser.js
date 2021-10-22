@@ -36,6 +36,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadAds, loadingAds } from '../redux/actions/manageadsAction';
 import { loadBundles, loadingBundles } from '../redux/actions/manageBundlesAction';
+import { HighlightOffTwoTone } from '@material-ui/icons';
 
 // function rand() {
 // 	return Math.round(Math.random() * 20) - 10;
@@ -67,6 +68,9 @@ function EditUser() {
 	const managebundles = useSelector((state) => state.managebundles);
 	const [ modalStyle ] = React.useState(getModalStyle);
 	const [ email, setemail ] = useState('');
+	const [ onproemail, setonproemail ] = useState('');
+	const [ emaillist, setemaillist ] = useState([]);
+	const [ emaillistaddload, setemaillistaddload ] = useState(false);
 	const [ usertype, setusertype ] = useState('');
 	const [ username, setusername ] = useState('');
 	const [ loading, setloading ] = useState(true);
@@ -201,6 +205,7 @@ function EditUser() {
 						setemail(user.email);
 						setusername(user.username);
 						setusertype(user.usertype);
+						setemaillist(user.targetemail);
 						setloading(false);
 						// setuser(user);
 					}
@@ -432,6 +437,78 @@ function EditUser() {
 				console.log(del);
 			});
 	}
+	// to add a email to list
+	function handleemailadd() {
+		if (
+			onproemail.length > 8 &&
+			onproemail.indexOf('@') > -1 &&
+			onproemail.indexOf('.') > -1 &&
+			!(onproemail.indexOf(' ') > -1)
+		) {
+			// console.log(onproemail);
+			fetch('/auth/addmailtouser', {
+				method: 'put',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: 'Bearer ' + localStorage.getItem('jwt')
+				},
+				body: JSON.stringify({
+					mailToAdd: onproemail,
+					iduser: id
+				})
+			})
+				.then((res) => res.json())
+				.then((result) => {
+					if (result.message) {
+						setemaillist(result.result.targetemail);
+						setonproemail('');
+						console.log(result);
+						setemaillistaddload(false);
+						setOpenSuccess({ status: true, message: result.message });
+					} else {
+						setemaillistaddload(false);
+						setOpenError({ status: true, message: 'An Error occured try again' });
+					}
+				})
+				.catch((err) => {
+					setOpenError({ status: true, message: 'An Error occured try again' });
+					setemaillistaddload(false);
+					console.log(err);
+				});
+		} else {
+			setOpenError({ status: true, message: 'Enter a valid Email' });
+		}
+	}
+	// to delete a email from list
+	function handleemaildelete(passmail) {
+		console.log(passmail);
+		fetch('/auth/removemailtouser', {
+			method: 'put',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('jwt')
+			},
+			body: JSON.stringify({
+				mailToRemove: passmail,
+				iduser: id
+			})
+		})
+			.then((res) => res.json())
+			.then((result) => {
+				if (result.message) {
+					setemaillist(result.result.targetemail);
+					// setonproemail('');
+					console.log(result);
+					setOpenSuccess({ status: true, message: result.message });
+				} else {
+					setOpenError({ status: true, message: 'An Error occured try again' });
+				}
+			})
+			.catch((err) => {
+				setOpenError({ status: true, message: 'An Error occured try again' });
+				console.log(err);
+			});
+	}
 	// to setup the edit data
 	function handleEditSetUp(camp) {
 		console.log(camp);
@@ -568,6 +645,47 @@ function EditUser() {
 								</Select>
 							</FormControl>
 							<input placeholder="Email" className="editineditinput" required value={email} disabled />
+						</div>
+						<div className="ineditables">
+							<div className="emailslist">
+								{emaillist.length ? (
+									emaillist.map((x) => {
+										var color = 'primary';
+										return (
+											<div className="mailentried">
+												<div>{x}</div>
+												<HighlightOffTwoTone
+													style={{ cursor: 'pointer' }}
+													onClick={() => {
+														handleemaildelete(x);
+													}}
+													color={color}
+												/>
+											</div>
+										);
+									})
+								) : (
+									'No Emails are added for mailing'
+								)}
+							</div>
+							<input
+								className="editeditinput"
+								placeholder="Email Id"
+								value={onproemail}
+								onChange={(e) => setonproemail(e.target.value)}
+							/>
+							{emaillistaddload ? (
+								<CircularProgress />
+							) : (
+								<Button
+									onClick={() => {
+										setemaillistaddload(true);
+										handleemailadd();
+									}}
+								>
+									Add Email
+								</Button>
+							)}
 						</div>
 						{selectedcampaigns && selectedcampaigns.length > 0 ? (
 							<div>
