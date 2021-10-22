@@ -80,7 +80,6 @@ export default function DetailedTable() {
 									})
 										.then((res) => res.json())
 										.then((resuda) => {
-
 											setids(result);
 											console.log(result.audio);
 											console.log(result);
@@ -97,25 +96,27 @@ export default function DetailedTable() {
 		[ campname ]
 	);
 
-		useEffect(()=>{
-			if(ids){
-				console.log('hjh',ids)
-				fetch('/offreport/detreportcambydat',{
-					method: 'put',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: 'Bearer ' + localStorage.getItem('jwt')
-					},
-					body: JSON.stringify({
-						campaignId: ids,
-						type:"Overall"
-					})
-				}).then(res=>res.json()).then(result=>{
+	useEffect(() => {
+		if (ids) {
+			console.log('hjh', ids);
+			fetch('/offreport/detreportcambydat', {
+				method: 'put',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: 'Bearer ' + localStorage.getItem('jwt')
+				},
+				body: JSON.stringify({
+					campaignId: ids,
+					type: 'Overall'
+				})
+			})
+				.then((res) => res.json())
+				.then((result) => {
 					setrows(result);
-				}).catch((err)=>console.log(err))
-			}
-		})
-
+				})
+				.catch((err) => console.log(err));
+		}
+	});
 
 	// useEffect(
 	// 	() => {
@@ -708,7 +709,7 @@ export default function DetailedTable() {
 			</div>
 			<TableContainer style={{ margin: '10px auto', width: 'fit-content' }} component={Paper}>
 				<Typography variant="h6" id="tableTitle" component="div">
-				Overall Summary Report
+					Overall Summary Report
 				</Typography>
 				<div>last updated at - {datefinder()}</div>
 				{/* <div style={{ margin: '5px', fontWeight: 'bolder' }}></div> */}
@@ -724,7 +725,8 @@ export default function DetailedTable() {
 							<TableCell>Clicks</TableCell>
 							<TableCell>CTR</TableCell>
 							<TableCell>Spend</TableCell>
-							
+							<TableCell>Complete</TableCell>
+							<TableCell>LTR</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -739,7 +741,10 @@ export default function DetailedTable() {
 									<TableCell>{row.clicks}</TableCell>
 									<TableCell>{Math.round(row.clicks * 100 / row.impressions * 100) / 100}%</TableCell>
 									<TableCell>{row.impressions}</TableCell>
-									<TableCell />
+									<TableCell>{row.complete}</TableCell>
+									<TableCell>
+										{Math.round(row.complete * 100 / row.impressions * 100) / 100}%
+									</TableCell>
 								</TableRow>
 							))
 						) : (
@@ -747,11 +752,7 @@ export default function DetailedTable() {
 						)}
 					</TableBody>
 				</Table>
-				
-				
 			</TableContainer>
-			
-			
 		</div>
 	);
 }
