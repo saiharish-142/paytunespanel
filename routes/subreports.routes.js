@@ -15,6 +15,7 @@ const Zipreports2 = mongoose.model('zipreports2');
 const CategoryReports2 = require('../models/categoryreports2');
 const Serverreport = require('../models/serverreport');
 const Campaignwisereports = mongoose.model('campaignwisereports');
+const frequencyreports = mongoose.model('frequencyreports');
 // const CategoryReports = mongoose.model('categoryreports');
 const CategoryReports = require('../models/categoryreports');
 const adminauth = require('../authenMiddleware/adminauth');
@@ -24,6 +25,7 @@ const frequencyConsole = mongoose.model('frequencyConsole');
 const freqpublishreports = mongoose.model('freqpublishreports');
 const uareqreports = mongoose.model('uareqreports');
 const zipsumreport = mongoose.model('zipsumreport');
+const adsetting = mongoose.model('adsetting');
 
 router.get('/phonemake', adminauth, (req, res) => {
 	phonemakereports
@@ -1539,6 +1541,46 @@ router.get('/frequencyComplete', adminauth, (req, res) => {
 			res.json(result);
 		})
 		.catch((err) => console.log(err));
+});
+
+router.get('/publisherComplete/usersCount', adminauth, async (req, res) => {
+	// frequencyreports //adsetting
+	try {
+		var campdata = await adsetting.find({}, { campaignId: 1, type: 1 });
+		var ids = { audio: [], display: [], video: [] };
+		campdata.map((x) => {
+			if (x.type === 'video') {
+				ids.video.push(x.campaignId);
+			} else if (x.type === 'display') {
+				ids.display.push(x.campaignId);
+			} else {
+				ids.audio.push(x.campaignId);
+			}
+		});
+		ids.audio = ids.audio.map((x) => mongoose.Types.ObjectId(x));
+		ids.display = ids.display.map((x) => mongoose.Types.ObjectId(x));
+		ids.video = ids.video.map((x) => mongoose.Types.ObjectId(x));
+		var users = { audio: 0, display: 0, video: 0 };
+		var audioCount = await frequencyreports.aggregate([
+			{ $match: { campaignId: { $in: ids.audio } } },
+			{ $group: { _id: null, users: { $sum: '$users' } } }
+		]);
+		var displayCount = await frequencyreports.aggregate([
+			{ $match: { campaignId: { $in: ids.display } } },
+			{ $group: { _id: null, users: { $sum: '$users' } } }
+		]);
+		var videoCount = await frequencyreports.aggregate([
+			{ $match: { campaignId: { $in: ids.video } } },
+			{ $group: { _id: null, users: { $sum: '$users' } } }
+		]);
+		users.audio = audioCount[0].users;
+		users.display = displayCount[0].users;
+		users.video = videoCount[0].users;
+		res.json(users);
+	} catch (e) {
+		console.log(e);
+		res.status(400).json({ error: e });
+	}
 });
 
 router.get('/publisherComplete2', adminauth, async (req, res) => {
