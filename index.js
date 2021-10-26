@@ -2850,9 +2850,15 @@ async function DailyReportMailer() {
 							reportdaily.push({
 								date: '',
 								impressions: totImp - totImp1,
-								clicks: totCli - totCli1,
-								complete: totCom - totCom1
+								clicks: totCli - totCli1 > 0 ? totCli - totCli1:0,
+								complete: totCom - totCom1>0?totCom - totCom1:0
 							});
+						reportdaily.push({
+							date:'Total',
+							impressions:totimp,
+							clicks:totCli,
+							complete:totCom
+						})
 						totaldataCount[mashh.das[j]] = reportdaily;
 						// console.log(totalcom, totImp, totCli, totCom, reportdaily);
 						// ses.sendEmail()
