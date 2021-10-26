@@ -3,6 +3,9 @@ import {
 	PUBLISHERDATA_ERROR,
 	PUBLISHERDATA_LOADING,
 	PUBLISHERDATA_LOADED,
+	UNIQUEUSERSPUBLISHER_LOADING,
+	UNIQUEUSERSPUBLISHER_LOADED,
+	UNIQUEUSERSPUBLISHER_ERROR,
 	PUBLISHERDATA_CLEAR,
 	PUBLISHERDATA_PAGINATION_AUDIO,
 	PUBLISHERDATA_PAGINATION_DISPLAY,
@@ -19,6 +22,9 @@ import { tokenConfig } from './authAction.js';
 export const PublisherLoading = () => (dispatch, getState) => {
 	dispatch({
 		type: PUBLISHERDATA_LOADING
+	});
+	dispatch({
+		type: UNIQUEUSERSPUBLISHER_LOADING
 	});
 };
 
@@ -115,6 +121,29 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 				console.log(err);
 				dispatch({
 					type: PUBLISHERDATA_ERROR
+				});
+			});
+	}
+};
+
+export const LoadUniqueUsersData = () => (dispatch, getState) => {
+	if (tokenConfig(getState).headers.Authorization) {
+		fetch(`/subrepo/publisherComplete/usersCount`, {
+			method: 'get',
+			headers: tokenConfig(getState).headers
+		})
+			.then((res) => res.json())
+			.then((result) => {
+				console.log(result);
+				dispatch({
+					type: UNIQUEUSERSPUBLISHER_LOADED,
+					payload: result
+				});
+			})
+			.catch((err) => {
+				console.log(err);
+				dispatch({
+					type: UNIQUEUSERSPUBLISHER_ERROR
 				});
 			});
 	}
