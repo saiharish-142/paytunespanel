@@ -40,7 +40,7 @@ function PublisherConsole() {
 		) {
 			dispatchRedux(PublisherLoading());
 			dispatchRedux(LoadPublisherData());
-			dispatchRedux(LoadQuartileData());
+			// dispatchRedux(LoadQuartileData());
 		}
 		// if (consoledata && consoledata.publisherDataValue) {
 		// 	setSearchval(consoledata.publisherDataValue);

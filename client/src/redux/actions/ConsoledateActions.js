@@ -1,3 +1,4 @@
+import { QUARTILE_LOADED, QUARTILE_ERROR } from '../types.js';
 import {
 	PUBLISHERDATA_ERROR,
 	PUBLISHERDATA_LOADING,
@@ -43,6 +44,7 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 					// x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					// console.log(x.feed);
 					x.fede = x.feed === 3 ? 'Podcast' : 'Ondemand and Streaming';
+					x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					x.avgimpre = Math.round(x.impression / x.days * 100) / 100;
 					x.overlap = x.unique ? Math.trunc(x.unique * 100 / uniqueTotalAudio * 100) / 100 : 0;
 					if (x.fede === 'Podcast') {
@@ -85,6 +87,7 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 					// console.log(x.feed);
 					x.fede = x.feed === 3 ? 'Podcast' : 'Ondemand and Streaming';
 					x.overlap = x.unique ? Math.trunc(x.unique * 100 / uniqueTotalVideo * 100) / 100 : 0;
+					x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					// console.log(x.fede);
 					// x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';
@@ -98,6 +101,13 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 						audio: dataA,
 						display: dataD,
 						video: dataV
+					}
+				});
+				dispatch({
+					type: QUARTILE_LOADED,
+					payload: {
+						caudio: dataA,
+						cvideo: dataV
 					}
 				});
 			})
