@@ -811,9 +811,9 @@ async function CategoryRefresher() {
 
 // tempfunc();
 
-// cron.schedule('30 1 * * *', function () {
-// 	PodcastEpisodeRefresher();
-// });
+cron.schedule('30 1 * * *', function () {
+	PodcastEpisodeRefresher();
+});
 //PodcastEpisodeRefresher();
 async function PodcastEpisodeRefresher() {
 	let date = new Date(new Date());
