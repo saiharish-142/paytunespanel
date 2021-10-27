@@ -16,7 +16,7 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
 	const [ sa, setsa ] = React.useState('impression');
-	const [ order, setorder ] = React.useState('asc');
+	const [ order, setorder ] = React.useState('desc');
 	const [ adss, setadss ] = React.useState([]);
 	const headers = [
 		{ key: 'publisherName', label: 'Publisher' },

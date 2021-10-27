@@ -406,6 +406,16 @@ function TablePro() {
 	// summary table
 	const SummaryTable = (title, reportsub, target, spent, users, pubusers) => {
 		// console.log({ users, pubusers, sad: 'dasda' });
+		var ltr = 0;
+		if (title === 'Summary') {
+			var impre = report.report.audioCompleteReport.impressions
+				? report.report.audioCompleteReport.impressions
+				: 0 + report.report.videoCompleteReport.impressions ? report.report.videoCompleteReport.impressions : 0;
+			var comp = report.report.audioCompleteReport.complete
+				? report.report.audioCompleteReport.complete
+				: 0 + report.report.videoCompleteReport.complete ? report.report.videoCompleteReport.complete : 0;
+			ltr = Math.round(comp * 100 / impre * 100) / 100;
+		}
 		return (
 			<TableContainer style={{ margin: '20px 0' }} elevation={3} component={Paper}>
 				<div style={{ margin: '5px', fontWeight: 'bolder' }}>Overall {title} Report</div>
@@ -423,6 +433,7 @@ function TablePro() {
 								<TableCell>% Users Overlap</TableCell>
 								<TableCell>Total Clicks Delivered till date</TableCell>
 								<TableCell>CTR</TableCell>
+								{title != 'Display' && <TableCell>LTR</TableCell>}
 								<TableCell>Avg required</TableCell>
 								<TableCell>Avg Achieved</TableCell>
 								<TableCell>Total spent</TableCell>
@@ -456,6 +467,14 @@ function TablePro() {
 								<TableCell>
 									{Math.round(reportsub.clicks * 100 / reportsub.impressions * 100) / 100}%
 								</TableCell>
+								{title != 'Display' &&
+									(title === 'Summary' && report.report.displayCompleteReport ? (
+										<TableCell>{ltr}%</TableCell>
+									) : (
+										<TableCell>
+											{Math.round(reportsub.complete * 100 / reportsub.impressions * 100) / 100}%
+										</TableCell>
+									))}
 								<TableCell>
 									{Math.round(target / timefinder(report.endDate, report.startDate) * 10) / 10}
 								</TableCell>

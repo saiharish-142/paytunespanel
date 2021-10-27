@@ -1,7 +1,11 @@
+import { QUARTILE_LOADED, QUARTILE_ERROR } from '../types.js';
 import {
 	PUBLISHERDATA_ERROR,
 	PUBLISHERDATA_LOADING,
 	PUBLISHERDATA_LOADED,
+	UNIQUEUSERSPUBLISHER_LOADING,
+	UNIQUEUSERSPUBLISHER_LOADED,
+	UNIQUEUSERSPUBLISHER_ERROR,
 	PUBLISHERDATA_CLEAR,
 	PUBLISHERDATA_PAGINATION_AUDIO,
 	PUBLISHERDATA_PAGINATION_DISPLAY,
@@ -18,6 +22,9 @@ import { tokenConfig } from './authAction.js';
 export const PublisherLoading = () => (dispatch, getState) => {
 	dispatch({
 		type: PUBLISHERDATA_LOADING
+	});
+	dispatch({
+		type: UNIQUEUSERSPUBLISHER_LOADING
 	});
 };
 
@@ -43,6 +50,7 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 					// x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					// console.log(x.feed);
 					x.fede = x.feed === 3 ? 'Podcast' : 'Ondemand and Streaming';
+					x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					x.avgimpre = Math.round(x.impression / x.days * 100) / 100;
 					x.overlap = x.unique ? Math.trunc(x.unique * 100 / uniqueTotalAudio * 100) / 100 : 0;
 					if (x.fede === 'Podcast') {
@@ -85,6 +93,7 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 					// console.log(x.feed);
 					x.fede = x.feed === 3 ? 'Podcast' : 'Ondemand and Streaming';
 					x.overlap = x.unique ? Math.trunc(x.unique * 100 / uniqueTotalVideo * 100) / 100 : 0;
+					x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					// console.log(x.fede);
 					// x.ltr = (x.complete ? parseInt(x.complete) : 0) * 100 / (x.impression ? parseInt(x.impression) : 0);
 					x.feed = x.feed === '3' ? 'Podcast' : x.feed === '' ? 'Ondemand and Streaming' : '';
@@ -100,11 +109,41 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 						video: dataV
 					}
 				});
+				dispatch({
+					type: QUARTILE_LOADED,
+					payload: {
+						caudio: dataA,
+						cvideo: dataV
+					}
+				});
 			})
 			.catch((err) => {
 				console.log(err);
 				dispatch({
 					type: PUBLISHERDATA_ERROR
+				});
+			});
+	}
+};
+
+export const LoadUniqueUsersData = () => (dispatch, getState) => {
+	if (tokenConfig(getState).headers.Authorization) {
+		fetch(`/subrepo/publisherComplete/usersCount`, {
+			method: 'get',
+			headers: tokenConfig(getState).headers
+		})
+			.then((res) => res.json())
+			.then((result) => {
+				console.log(result);
+				dispatch({
+					type: UNIQUEUSERSPUBLISHER_LOADED,
+					payload: result
+				});
+			})
+			.catch((err) => {
+				console.log(err);
+				dispatch({
+					type: UNIQUEUSERSPUBLISHER_ERROR
 				});
 			});
 	}

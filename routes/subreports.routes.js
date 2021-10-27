@@ -15,6 +15,7 @@ const Zipreports2 = mongoose.model('zipreports2');
 const CategoryReports2 = require('../models/categoryreports2');
 const Serverreport = require('../models/serverreport');
 const Campaignwisereports = mongoose.model('campaignwisereports');
+const frequencyreports = mongoose.model('frequencyreports');
 // const CategoryReports = mongoose.model('categoryreports');
 const CategoryReports = require('../models/categoryreports');
 const adminauth = require('../authenMiddleware/adminauth');
@@ -24,6 +25,7 @@ const frequencyConsole = mongoose.model('frequencyConsole');
 const freqpublishreports = mongoose.model('freqpublishreports');
 const uareqreports = mongoose.model('uareqreports');
 const zipsumreport = mongoose.model('zipsumreport');
+const adsetting = mongoose.model('adsetting');
 
 router.get('/phonemake', adminauth, (req, res) => {
 	phonemakereports
@@ -1541,18 +1543,56 @@ router.get('/frequencyComplete', adminauth, (req, res) => {
 		.catch((err) => console.log(err));
 });
 
+router.get('/publisherComplete/usersCount', adminauth, async (req, res) => {
+	// frequencyreports //adsetting
+	try {
+		var campdata = await adsetting.find({}, { campaignId: 1, type: 1 });
+		var ids = { audio: [], display: [], video: [] };
+		campdata.map((x) => {
+			if (x.type === 'video') {
+				ids.video.push(x.campaignId);
+			} else if (x.type === 'display') {
+				ids.display.push(x.campaignId);
+			} else {
+				ids.audio.push(x.campaignId);
+			}
+		});
+		ids.audio = ids.audio.map((x) => mongoose.Types.ObjectId(x));
+		ids.display = ids.display.map((x) => mongoose.Types.ObjectId(x));
+		ids.video = ids.video.map((x) => mongoose.Types.ObjectId(x));
+		var users = { audio: 0, display: 0, video: 0 };
+		var audioCount = await frequencyreports.aggregate([
+			{ $match: { campaignId: { $in: ids.audio } } },
+			{ $group: { _id: null, users: { $sum: '$users' } } }
+		]);
+		var displayCount = await frequencyreports.aggregate([
+			{ $match: { campaignId: { $in: ids.display } } },
+			{ $group: { _id: null, users: { $sum: '$users' } } }
+		]);
+		var videoCount = await frequencyreports.aggregate([
+			{ $match: { campaignId: { $in: ids.video } } },
+			{ $group: { _id: null, users: { $sum: '$users' } } }
+		]);
+		users.audio = audioCount[0].users;
+		users.display = displayCount[0].users;
+		users.video = videoCount[0].users;
+		res.json(users);
+	} catch (e) {
+		console.log(e);
+		res.status(400).json({ error: e });
+	}
+});
+
 router.get('/publisherComplete2', adminauth, async (req, res) => {
 	let audio = await publisherwiseConsole.find({ type: 'audio' }).catch((err) => console.log(err));
 	let display = await publisherwiseConsole.find({ type: 'display' }).catch((err) => console.log(err));
 	let video = await publisherwiseConsole.find({ type: 'video' }).catch((err) => console.log(err));
 	let uadata = await uareqreports
-		.aggregate([ { $group: { _id: '$publisherid', request: { $sum: '$ads' }, userAgent: { $push: '$ua' } } } ])
+		.aggregate([ { $group: { _id: '$publisherid', request: { $sum: '$ads' } } } ])
 		.catch((err) => console.log(err));
 	var sol = {};
-	var sola = {};
 	uadata.map((x) => {
 		sol[x._id] = x.request;
-		sola[x._id] = [ ...new Set(x.userAgent) ];
 	});
 	var compo = {
 		impression: 0,
@@ -1580,7 +1620,61 @@ router.get('/publisherComplete2', adminauth, async (req, res) => {
 			compo.thirdQuartile += x.thirdQuartile;
 			compo.complete += x.complete;
 		});
-	res.json({ audio: audio, display: display, video: video, complete: compo, sol, sola });
+	res.json({ audio: audio, display: display, video: video, complete: compo, sol });
+});
+
+router.get('/publisherCompletetest', adminauth, async (req, res) => {
+	try {
+		const { page, size, item, direction } = req.query;
+		var pagedefault = 0;
+		var sizedefault = 10;
+		var itemdefault = 'impression';
+		var directionDefault = -1;
+		if (!Number.isNaN(page) && page > 0) {
+			pagedefault = parseInt(page);
+		}
+		if (!Number.isNaN(size) && size > 0) {
+			sizedefault = parseInt(size);
+		}
+		if (item) {
+			itemdefault = item;
+		}
+		if (direction) {
+			directionDefault = parseInt(direction);
+		}
+		var queryPassSort = {};
+		queryPassSort[itemdefault] = directionDefault;
+		// var dataCount = publisherwiseConsole.count().catch((err) => console.log(err));
+		let audio = await publisherwiseConsole
+			.find({ type: 'audio' })
+			.sort(queryPassSort)
+			.skip(sizedefault * pagedefault)
+			.limit(sizedefault)
+			.catch((err) => console.log(err));
+		res.json({ audio: audio });
+	} catch (e) {
+		console.log(e);
+		res.status(400).json({ Error: e });
+	}
+});
+
+router.get('/publisherCompletetestcount', adminauth, async (req, res) => {
+	try {
+		var data = {
+			complete: 0,
+			audio: 0,
+			display: 0,
+			video: 0
+		};
+		data.audio = await publisherwiseConsole.countDocuments({ type: 'audio' }).catch((err) => console.log(err));
+		data.display = await publisherwiseConsole.countDocuments({ type: 'display' }).catch((err) => console.log(err));
+		data.video = await publisherwiseConsole.countDocuments({ type: 'video' }).catch((err) => console.log(err));
+		data.complete = parseInt(data.audio) + parseInt(data.display) + parseInt(data.video);
+		res.json(data);
+	} catch (e) {
+		console.log(e);
+		res.status(400).json({ Error: e });
+	}
 });
 
 ///////////////////  new apis //////////////////////////////

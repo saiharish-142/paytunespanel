@@ -95,7 +95,7 @@ if (process.env.NODE_ENV === 'production') {
 
 app.listen(port, () => console.log(`app listening on port ${port}!`));
 
-cron.schedule('00 02 * * *', function () {
+cron.schedule('00 02 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -119,7 +119,7 @@ cron.schedule('00 02 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 04 * * *', function () {
+cron.schedule('00 04 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -143,7 +143,7 @@ cron.schedule('00 04 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 06 * * *', function () {
+cron.schedule('00 06 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -167,7 +167,7 @@ cron.schedule('00 06 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 08 * * *', function () {
+cron.schedule('00 08 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -191,7 +191,7 @@ cron.schedule('00 08 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 10 * * *', function () {
+cron.schedule('00 10 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -215,7 +215,7 @@ cron.schedule('00 10 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 12 * * *', function () {
+cron.schedule('00 12 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -239,7 +239,7 @@ cron.schedule('00 12 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 14 * * *', function () {
+cron.schedule('00 14 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -263,7 +263,7 @@ cron.schedule('00 14 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 16 * * *', function () {
+cron.schedule('00 16 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -287,7 +287,7 @@ cron.schedule('00 16 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 18 * * *', function () {
+cron.schedule('00 18 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -311,7 +311,7 @@ cron.schedule('00 18 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 20 * * *', function () {
+cron.schedule('00 20 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -335,7 +335,7 @@ cron.schedule('00 20 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('00 22 * * *', function () {
+cron.schedule('00 22 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate());
 	if (d.getDate() < 10) {
@@ -359,7 +359,7 @@ cron.schedule('00 22 * * *', function () {
 	ReportsRefresher(date, ISTTime);
 });
 
-cron.schedule('10 00 * * *', function () {
+cron.schedule('10 00 * * *', function() {
 	var d = new Date();
 	d.setDate(d.getDate() - 1);
 	if (d.getDate() < 10) {
@@ -443,7 +443,7 @@ cron.schedule('10 00 * * *', function () {
 
 // }
 
-cron.schedule('00 1 * * *', function () {
+cron.schedule('00 1 * * *', function() {
 	PincodeRefresher();
 });
 
@@ -532,7 +532,7 @@ async function PincodeRefresher() {
 	});
 }
 
-cron.schedule('30 1 * * *', function () {
+cron.schedule('30 1 * * *', function() {
 	PincodeRequestsRefresher();
 });
 
@@ -617,7 +617,7 @@ async function PincodeRequestsRefresher() {
 	});
 }
 
-cron.schedule('00 2 * * *', function () {
+cron.schedule('00 2 * * *', function() {
 	PhoneRefresher();
 });
 
@@ -698,7 +698,7 @@ async function PhoneRefresher() {
 	});
 }
 
-cron.schedule('00 3 * * *', function () {
+cron.schedule('00 3 * * *', function() {
 	CategoryRefresher();
 });
 
@@ -747,13 +747,13 @@ async function CategoryRefresher() {
 	console.log(phones);
 	phones.forEach(async (cat) => {
 		const match = await Categoryreports2.findOne({
-			$or: [{ category: cat._id.category }, { new_taxonamy: cat._id.category }],
+			$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ],
 			feed: cat._id.feed
 		});
 
 		if (!match) {
 			const val = await Categoryreports2.findOne({
-				$or: [{ category: cat._id.category }, { new_taxonamy: cat._id.category }]
+				$or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ]
 			});
 			const newzip = new Categoryreports2({
 				parent: val ? val.parent : '',
@@ -773,7 +773,7 @@ async function CategoryRefresher() {
 			await newzip.save();
 		} else {
 			await Categoryreports2.findOneAndUpdate(
-				{ $or: [{ category: cat._id.category }, { new_taxonamy: cat._id.category }], feed: cat._id.feed },
+				{ $or: [ { category: cat._id.category }, { new_taxonamy: cat._id.category } ], feed: cat._id.feed },
 				{
 					$inc: {
 						impression: cat.impressions,
@@ -798,13 +798,11 @@ async function CategoryRefresher() {
 // 			let updates={
 // 				publishername:res.publishername?res.publishername:""  ,
 // 				displayname:res.displayname?res.displayname:""  ,
-// 				hostPossibility:res.hostPossibility?res.hostPossibility:"" 
+// 				hostPossibility:res.hostPossibility?res.hostPossibility:""
 // 			}
 // 			await EpisodeModel2.findOneAndUpdate({episodename:dat.episodename,category:dat.category},updates);
 // 			console.log(1)
 // 		}
-
-		
 
 // 	})
 // }
@@ -889,7 +887,13 @@ async function PodcastEpisodeRefresher() {
 				displayname: 1,
 				hostPossibility: 1,
 				// extra_details: { $ifNull: ['$extra_details', '$extra_details1'] },
-				extra_details: { $cond: [{ $eq: [{ $size: "$extra_details" }, 0] }, { $first: "$extra_details1" }, { $first: "$extra_details" }] }
+				extra_details: {
+					$cond: [
+						{ $eq: [ { $size: '$extra_details' }, 0 ] },
+						{ $first: '$extra_details1' },
+						{ $first: '$extra_details' }
+					]
+				}
 			}
 		},
 		{
@@ -903,13 +907,12 @@ async function PodcastEpisodeRefresher() {
 		{
 			$project: {
 				episodename: 1,
-				category: "$extra_details",
-				publisher: { $setUnion: ['$publisher_details.publishername', []] },
+				category: '$extra_details',
+				publisher: { $setUnion: [ '$publisher_details.publishername', [] ] },
 				language: 1,
-				request: "$requests",
+				request: '$requests',
 				displayname: 1,
-				hostPossibility: 1,
-
+				hostPossibility: 1
 			}
 		},
 		{
@@ -918,30 +921,30 @@ async function PodcastEpisodeRefresher() {
 				category: 1,
 				publisher: {
 					$filter: {
-						input: "$publisher",
-						as: "pub",
-						cond: { $ne: ["$$pub", ""] }
+						input: '$publisher',
+						as: 'pub',
+						cond: { $ne: [ '$$pub', '' ] }
 					}
 				},
 				language: 1,
 				request: 1,
 				displayname: 1,
-				hostPossibility: 1,
+				hostPossibility: 1
 			}
 		},
 		{
 			$project: {
 				episodename: 1,
-				category: "$category.category",
-				publisher: { $first: "$publisher" },
+				category: '$category.category',
+				publisher: { $first: '$publisher' },
 				language: 1,
 				request: 1,
 				displayname: 1,
 				hostPossibility: 1,
-				tier1: "$category.tier1",
-				tier2: "$category.tier2",
-				tier3: "$category.tier3",
-				new_taxonamy: "$category.new_taxonamy",
+				tier1: '$category.tier1',
+				tier2: '$category.tier2',
+				tier3: '$category.tier3',
+				new_taxonamy: '$category.new_taxonamy'
 			}
 		},
 		{
@@ -952,19 +955,19 @@ async function PodcastEpisodeRefresher() {
 					publisher: '$publisher',
 					language: '$language'
 				},
-				request:{$sum:"$request"},
-				displayname:{$first:"$displayname"},
+				request: { $sum: '$request' },
+				displayname: { $first: '$displayname' },
 				hostPossibility: { $first: '$hostPossibility' },
 				tier1: { $first: '$tier1' },
 				tier2: { $first: '$tier2' },
 				tier3: { $first: '$tier3' },
-				new_taxonamy: { $first: '$new_taxonamy' },
+				new_taxonamy: { $first: '$new_taxonamy' }
 			}
 		}
 	]);
-	
+
 	// console.log(result);
-	console.log(result.length)
+	console.log(result.length);
 
 	result.forEach(async (podcast) => {
 		const ismatch = await EpisodeModel2.findOne({
@@ -1020,8 +1023,8 @@ async function uniqueMaker({ date }) {
 	let response = await StreamingAds.aggregate([
 		{ $match: { _id: { $in: uniqueids } } },
 		{ $project: { AdTitle: { $toLower: '$AdTitle' } } },
-		{ $project: { AdTitle: { $split: ['$AdTitle', '_'] } } },
-		{ $project: { AdTitle: { $slice: ['$AdTitle', 2] } } },
+		{ $project: { AdTitle: { $split: [ '$AdTitle', '_' ] } } },
+		{ $project: { AdTitle: { $slice: [ '$AdTitle', 2 ] } } },
 		{
 			$project: {
 				AdTitle: {
@@ -1029,7 +1032,7 @@ async function uniqueMaker({ date }) {
 						input: '$AdTitle',
 						initialValue: '',
 						in: {
-							$concat: ['$$value', { $cond: [{ $eq: ['$$value', ''] }, '', '_'] }, '$$this']
+							$concat: [ '$$value', { $cond: [ { $eq: [ '$$value', '' ] }, '', '_' ] }, '$$this' ]
 						}
 					}
 				},
@@ -1138,7 +1141,7 @@ async function ReportsRefresher(date, credate) {
 				{
 					$facet: {
 						uniquesumdatawise: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId' },
@@ -1158,7 +1161,7 @@ async function ReportsRefresher(date, credate) {
 										$reduce: {
 											input: '$unique',
 											initialValue: [],
-											in: { $concatArrays: ['$$value', '$$this'] }
+											in: { $concatArrays: [ '$$value', '$$this' ] }
 										}
 									}
 								}
@@ -1166,7 +1169,7 @@ async function ReportsRefresher(date, credate) {
 							{ $project: { _id: 0, campaignId: '$_id', unique: { $size: '$unique' }, publishdata: 1 } }
 						],
 						regionwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId', region: '$region' },
@@ -1188,7 +1191,7 @@ async function ReportsRefresher(date, credate) {
 							{ $project: { _id: 0, campaignId: '$_id', results: 1 } }
 						],
 						pinwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId', zip: '$zip' },
@@ -1210,7 +1213,7 @@ async function ReportsRefresher(date, credate) {
 							{ $project: { _id: 0, campaignId: '$_id', results: 1 } }
 						],
 						lanwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: ['impression'] } } },
+							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
 							{
 								$group: {
 									_id: { campaignId: '$campaignId', appId: '$appId', language: '$language' },
@@ -1387,7 +1390,7 @@ async function ReportsRefresher(date, credate) {
 										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
 										result: {
 											$push: {
-												phoneModel: { $concat: ['$_id.phoneMake', ' - ', '$_id.phoneModel'] },
+												phoneModel: { $concat: [ '$_id.phoneMake', ' - ', '$_id.phoneModel' ] },
 												result: { $arrayToObject: '$result' }
 											}
 										}
@@ -1432,7 +1435,7 @@ async function ReportsRefresher(date, credate) {
 										result: {
 											$push: {
 												platformType: {
-													$concat: ['$_id.platformType', ' - ', '$_id.osVersion']
+													$concat: [ '$_id.platformType', ' - ', '$_id.osVersion' ]
 												},
 												result: { $arrayToObject: '$result' }
 											}
@@ -1727,19 +1730,19 @@ async function ReportsRefresher(date, credate) {
 	// res.json(compr)
 }
 
-cron.schedule('42 00 * * *', function () {
+cron.schedule('42 00 * * *', function() {
 	PublisherDataRefresher();
 });
 
-cron.schedule('45 00 * * *', function () {
+cron.schedule('45 00 * * *', function() {
 	FrequencyDataRefresher();
 });
 
-cron.schedule('55 00 * * *', function () {
+cron.schedule('55 00 * * *', function() {
 	pincodesumreport();
 });
 
-cron.schedule('35 00 * * *', function () {
+cron.schedule('35 00 * * *', function() {
 	FrequencyPublisherRefresher();
 });
 
@@ -1811,7 +1814,7 @@ var email = 'support@paytunes.in';
 var aws = require('aws-sdk');
 aws.config.loadFromPath(__dirname + '/config.json');
 
-cron.schedule('00 09 * * *', function () {
+cron.schedule('00 09 * * *', function() {
 	DailyReportMailer();
 });
 
@@ -1830,13 +1833,13 @@ async function PublisherConsoleLoaderTypeWise(array, type) {
 			// console.log(publisherB.PublisherSplit);
 			var publisherBit = publis;
 			// publisherBit.Publisher = [ ...new Set(publisherBit.Publisher) ];
-			publisherBit.ssp = [...new Set(publisherBit.ssp)];
+			publisherBit.ssp = [ ...new Set(publisherBit.ssp) ];
 			var testappubid = publisherBit.apppubidpo;
 			// console.log(publisherBit.test);
 			var daysCount = 1;
 			if (typeof publisherBit.test === 'object') {
-				publisherBit.test = [...new Set(publisherBit.test)];
-				publisherBit.test.sort(function (a, b) {
+				publisherBit.test = [ ...new Set(publisherBit.test) ];
+				publisherBit.test.sort(function(a, b) {
 					var d1 = new Date(a);
 					var d2 = new Date(b);
 					return d1 - d2;
@@ -2426,7 +2429,7 @@ async function pincodesumreport() {
 					zip: '$zip',
 					campaignId: '$campaignId',
 					impression: '$impression',
-					clicks: { $sum: ['$SovClickTracking', '$CompanionClickTracking'] }
+					clicks: { $sum: [ '$SovClickTracking', '$CompanionClickTracking' ] }
 				}
 			},
 			{
@@ -2555,7 +2558,7 @@ const idfindspilter = async (respo, onDemand, podcast, audio, display, video, mu
 				data.ids.audio.push(x.campaignId.toString());
 				data.ids.audimpression += parseInt(x.targetImpression);
 			});
-			data.ids.audio = [...new Set(data.ids.audio)];
+			data.ids.audio = [ ...new Set(data.ids.audio) ];
 			if (!(onDemand === podcast && onDemand === musicapps)) {
 				// var dads = { onDemand: [], podcast: [], musicapps: [] };
 				const outcome = await idsreturnspliter(data.ids.audio);
@@ -2587,13 +2590,13 @@ const idfindspilter = async (respo, onDemand, podcast, audio, display, video, mu
 				data.ids.display.push(x.campaignId.toString());
 				data.ids.disimpression += parseInt(x.targetImpression);
 			});
-			data.ids.display = [...new Set(data.ids.display)];
+			data.ids.display = [ ...new Set(data.ids.display) ];
 			var videoids = id_spliter.filter((x) => x.type === 'video');
 			videoids.map((x) => {
 				data.ids.video.push(x.campaignId.toString());
 				data.ids.vidimpression += parseInt(x.targetImpression);
 			});
-			data.ids.video = [...new Set(data.ids.video)];
+			data.ids.video = [ ...new Set(data.ids.video) ];
 		} else {
 			data.ids.audio = ids;
 			var dattarget = data.TargetImpressions;
@@ -2716,7 +2719,7 @@ const idfindspilter = async (respo, onDemand, podcast, audio, display, video, mu
 				data.ids.video.map((x) => puller[video].push(x));
 			}
 		}
-		dass = [...new Set(dass)];
+		dass = [ ...new Set(dass) ];
 		puller['das'] = dass;
 		return puller;
 	} else {
@@ -2843,13 +2846,19 @@ async function DailyReportMailer() {
 							totCli1 += dax.clicks;
 							totCom1 += dax.complete;
 						});
-						if (totImp > totImp1)
+						if (totImp > totImp1 || totCli - totCli1 > 0 || totCom - totCom1 > 0)
 							reportdaily.push({
 								date: '',
-								impressions: totImp - totImp1,
-								clicks: totCli - totCli1,
-								complete: totCom - totCom1
+								impressions: totImp - totImp1 > 0 ? totImp - totImp1 : 0,
+								clicks: totCli - totCli1 > 0 ? totCli - totCli1 : 0,
+								complete: totCom - totCom1 > 0 ? totCom - totCom1 : 0
 							});
+						reportdaily.push({
+							date: 'Total',
+							impressions: totimp,
+							clicks: totCli,
+							complete: totCom
+						});
 						totaldataCount[mashh.das[j]] = reportdaily;
 						// console.log(totalcom, totImp, totCli, totCom, reportdaily);
 						// ses.sendEmail()
@@ -2857,12 +2866,8 @@ async function DailyReportMailer() {
 					var params = {
 						Destination: {
 							BccAddresses: [],
-							CcAddresses: mail,
-							ToAddresses: [
-								'saiharishmedam@gmail.com',
-								'tiwarigaurav1@gmail.com',
-								'phool.k@paytunes.in'
-							]
+							CcAddresses: [],
+							ToAddresses: mail
 						},
 						Message: {
 							Body: {
@@ -2891,8 +2896,8 @@ async function DailyReportMailer() {
 									<body>
 									
 									${mashh.das
-											.map((xas) => {
-												return `
+										.map((xas) => {
+											return `
 											<div>
 												<h2>${xas}</h2>
 												<table>
@@ -2926,8 +2931,8 @@ async function DailyReportMailer() {
 														.join('')}
 												</table>
 											</div>`;
-											})
-											.join('')}
+										})
+										.join('')}
 									
 									</body>
 									   `
@@ -2948,7 +2953,7 @@ async function DailyReportMailer() {
 						// SourceArn: ''
 						Source: email
 					};
-					ses.sendEmail(params, function (err, data) {
+					ses.sendEmail(params, function(err, data) {
 						if (err)
 							console.log(err, err.stack); // an error occurred
 						else console.log(data); // successful response

@@ -3,6 +3,9 @@ import {
 	PUBLISHERDATA_LOADING,
 	PUBLISHERDATA_LOADED,
 	PUBLISHERDATA_CLEAR,
+	UNIQUEUSERSPUBLISHER_LOADING,
+	UNIQUEUSERSPUBLISHER_LOADED,
+	UNIQUEUSERSPUBLISHER_ERROR,
 	PUBLISHERDATA_PAGINATION_AUDIO,
 	PUBLISHERDATA_PAGINATION_DISPLAY,
 	PUBLISHERDATA_PAGINATION_VIDEO,
@@ -40,7 +43,10 @@ const initialState = {
 	videopublisherDataorderdir: 'desc',
 	videopublisherDataValue: '',
 	videopublisherDataPagination: 0,
-	videopublisherDataRPP: 5
+	videopublisherDataRPP: 5,
+	uniqueuserserror: false,
+	uniqueusersloading: true,
+	uniqueusersdata: null
 };
 
 export default function(state = initialState, action) {
@@ -50,6 +56,18 @@ export default function(state = initialState, action) {
 				...state,
 				publisherDataFail: false,
 				publisherDataLoading: true
+			};
+		case UNIQUEUSERSPUBLISHER_LOADED:
+			return {
+				...state,
+				uniqueusersdata: action.payload,
+				publisherDataLoading: true
+			};
+		case UNIQUEUSERSPUBLISHER_LOADING:
+			return {
+				...state,
+				uniqueuserserror: false,
+				uniqueusersloading: true
 			};
 		case PUBLISHERDATA_LOADED:
 			return {
@@ -70,6 +88,12 @@ export default function(state = initialState, action) {
 				...state,
 				publisherDataLoading: false,
 				publisherDataFail: true
+			};
+		case UNIQUEUSERSPUBLISHER_ERROR:
+			return {
+				...state,
+				uniqueusersloading: false,
+				uniqueuserserror: true
 			};
 		case PUBLISHERDATA_CLEAR:
 			return {

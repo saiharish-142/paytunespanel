@@ -5,6 +5,7 @@ import {
 	LoadPublisherData,
 	orderManagerPublisherData,
 	PublisherLoading,
+	LoadUniqueUsersData,
 	searchPublisherData,
 	storepaginationPublisherData
 } from '../redux/actions/ConsoledateActions';
@@ -40,7 +41,8 @@ function PublisherConsole() {
 		) {
 			dispatchRedux(PublisherLoading());
 			dispatchRedux(LoadPublisherData());
-			dispatchRedux(LoadQuartileData());
+			dispatchRedux(LoadUniqueUsersData());
+			// dispatchRedux(LoadQuartileData());
 		}
 		// if (consoledata && consoledata.publisherDataValue) {
 		// 	setSearchval(consoledata.publisherDataValue);

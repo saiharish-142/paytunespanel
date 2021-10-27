@@ -46,7 +46,12 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 				data.sort(function(a, b) {
 					return b.impressions - a.impressions;
 				});
-				var a1, a2, a3, a4, ai, ac;
+				var a1 = 0,
+					a2 = 0,
+					a3 = 0,
+					a4 = 0,
+					ai = 0,
+					ac = 0;
 				data.map((x) => {
 					a1 += x.start;
 					a2 += x.firstQuartile;
