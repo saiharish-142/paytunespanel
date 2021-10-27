@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 // import { useForm } from 'react-hook-form';
+import { orderSetter } from '../redux/actions/manageadsAction';
 import { CSVLink } from 'react-csv';
 import { Alert } from '@material-ui/lab';
 import {
@@ -14,7 +15,10 @@ import {
 	TableRow,
 	TablePagination,
 	Paper,
-	Modal
+	Modal,
+	FormControlLabel,
+	FormGroup,
+	Checkbox
 } from '@material-ui/core';
 
 import Categorydataform from '../components/categoryformdata';
@@ -45,6 +49,7 @@ export default function PodcastCategorydata() {
 	const [open, setOpen] = React.useState(false);
 	const [search1, setsearch] = useState('');
 	const [searchedData, setsearchedData] = useState([]);
+	const [ datafilterstatus, setdatafilterstatus ] = useState({ A: true, B: true });
 	const handleOpen = (data) => {
 	  setOpen(true);
 	  setShow(true)
@@ -58,6 +63,9 @@ export default function PodcastCategorydata() {
 	const [ success, setsuccess ] = useState('');
 	const [ rows, setrows ] = useState([]);
 	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
+	const [ datatrus, setdatatrus ] = useState([]);
+	const [ sa, setsa ] = React.useState('impression');
+	const [ order, setorder ] = React.useState('desc');
 	const [ rowsPerPage, setRowsPerPage ] = useState(10);
 	const [ page, setPage ] = useState(0);
 	const handleChangePage = (event, newPage) => {
@@ -116,6 +124,17 @@ export default function PodcastCategorydata() {
 			console.log('jvhvhvhv', arr);
 		}
 	}
+
+	const filterManger = (A, B) => {
+		var manage = datatrus.filter(
+			(x) =>
+				(A && x.tier4!==""|| B && x.tier4==="" )
+				// (!text || x.ua.toLowerCase().indexOf(text.toLowerCase()) > -1) &&
+				// ((A && x.display != '') || (B && x.display === ''))
+		);
+		// console.log(manage);
+		setrows(manage);
+	};
 	useEffect(() => {
 		fetch('/subrepo/categorydata_podcast', {
 			method: 'post',
@@ -133,6 +152,7 @@ export default function PodcastCategorydata() {
 
 				// setsuccess(dat)
 				setrows(dat);
+				setdatatrus(dat);
 				console.log(dat);
 			});
 	}, []);
@@ -151,7 +171,7 @@ export default function PodcastCategorydata() {
 		{ key: 'new_taxonamy', label: 'New Taxonamy' }
 	];
 	var csvReport = {
-		filename: `CategoryData.csv`,
+		filename: `VideoCategoryData.csv`,
 		headers: headers,
 		data: rows
 	};
@@ -196,6 +216,16 @@ export default function PodcastCategorydata() {
 		} else {
 			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
 		}
+	};
+
+	const tablesorter = (column, type) => {
+		var orde = sa === column ? (order === 'asc' ? 'desc' : 'asc') : 'asc';
+		setorder(orde);
+		setsa(column);
+		var setData = orderSetter(orde, column, rows, type);
+		var setDatatrus = orderSetter(orde, column, datatrus, type);
+		setrows(setData);
+		setdatatrus(setDatatrus);
 	};
 
 	return (
@@ -256,17 +286,47 @@ export default function PodcastCategorydata() {
 						<TableHead>
 							<TableRow>
 								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('category')} className={getClassNamesFor('category')}>Category {arrowRetuner( sortconfig.key==='category'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('impression')} className={getClassNamesFor('impression')}>Impressions {arrowRetuner( sortconfig.key==='impression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('avgimpression')} className={getClassNamesFor('avgimpression')}>Avg Impressions {arrowRetuner( sortconfig.key==='avgimpression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('click')} className={getClassNamesFor('click')}>Clicks {arrowRetuner( sortconfig.key==='click'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier1')} className={getClassNamesFor('tier1')}>Tier1 {arrowRetuner( sortconfig.key==='tier1'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
-								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier2')} className={getClassNamesFor('tier2')}>Tier2 {arrowRetuner( sortconfig.key==='tier2'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
-								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier3')} className={getClassNamesFor('tier3')}>Tier3 {arrowRetuner( sortconfig.key==='tier3'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('tier4')} className={getClassNamesFor('tier4')}>Tier4 {arrowRetuner( sortconfig.key==='tier4'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('genderCategory')} className={getClassNamesFor('genderCategory')}>Gender Category {arrowRetuner( sortconfig.key==='genderCategory'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('AgeCategory')} className={getClassNamesFor('AgeCategory')}>Age category {arrowRetuner( sortconfig.key==='AgeCategory'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('new_taxonamy')} className={getClassNamesFor('new_taxonmay')}>New Taxonamy {arrowRetuner( sortconfig.key==='new_taxonamy'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('category', 'string')} >Category {arrowRetuner(sa === 'category' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('impression', 'number')} >Impressions {arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('avgimpression', 'number')} >Avg Impressions {arrowRetuner(sa === 'avgimpression' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('click', 'number')} >Clicks {arrowRetuner(sa === 'click' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('tier1', 'string')} >Tier1 {arrowRetuner(sa === 'tier1' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
+								<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('tier2', 'string')} >Tier2 {arrowRetuner(sa === 'tier2' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
+								<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('tier3', 'string')} >Tier3 {arrowRetuner(sa === 'tier3' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('tier4', 'string')} >Tier4 {arrowRetuner(sa === 'tier4' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('genderCategory', 'string')} >Gender Category {arrowRetuner(sa === 'genderCategory' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('AgeCategory', 'string')} >Age category {arrowRetuner(sa === 'AgeCategory' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('new_taxonamy', 'string')} >New Taxonamy {arrowRetuner(sa === 'new_taxonamy' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell style={{width:'10%'}} >
+									<FormGroup>
+									<FormControlLabel
+										control={
+											<Checkbox
+												size="small"
+												checked={datafilterstatus.B}
+												onChange={(e) => {
+													setdatafilterstatus({ ...datafilterstatus, B: e.target.checked });
+													filterManger(datafilterstatus.A, e.target.checked);
+												}}
+											/>
+										}
+										label="Entries Not Done"
+									/>
+									<FormControlLabel
+										control={
+											<Checkbox
+												size="small"
+												checked={datafilterstatus.A}
+												onChange={(e) => {
+													setdatafilterstatus({ ...datafilterstatus, A: e.target.checked });
+													filterManger(e.target.checked, datafilterstatus.B);
+												}}
+											/>
+										}
+										label="Entries Done"
+									/>
+								</FormGroup>
+										</TableCell>}
 								{<TableCell />}
 							</TableRow>
 						</TableHead>
@@ -278,7 +338,7 @@ export default function PodcastCategorydata() {
 									</TableCell>
 									<TableCell>{row.impression ? row.impression : ''}</TableCell>
 									<TableCell>{row.avgimpression ? Math.round(row.avgimpression) : ''}</TableCell>
-									<TableCell>{row.click?row.click:''}</TableCell>
+									<TableCell>{row.click}</TableCell>
 									<TableCell>{row.tier1 ? row.tier1 : ''}</TableCell>
 									<TableCell>{row.tier2 ? row.tier2 : ''}</TableCell>
 									<TableCell>{row.tier3 ? row.tier3 : ''}</TableCell>

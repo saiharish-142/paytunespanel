@@ -2023,7 +2023,8 @@ router.get('/categorydata', adminauth, async (req, res) => {
 
 		const result = await CategoryReports2.aggregate([
 			{ $match: { impression: { $exists: true }, click: { $exists: true } } },
-			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } }
+			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
+			{$sort:{impression:-1}}
 		]);
 		res.status(200).json(result);
 	} catch (err) {
@@ -2183,7 +2184,8 @@ router.post('/categorydata_podcast', adminauth, async (req, res) => {
 				}
 			},
 			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
-			{ $match: { feed: '3' } }
+			{ $match: { feed: '3' } },
+			{$sort:{impression:-1}}
 		]);
 		res.status(200).json(result);
 	} catch (err) {
@@ -2222,7 +2224,8 @@ router.post('/categorydata_ondemand', adminauth, async (req, res) => {
 				}
 			},
 			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
-			{ $match: { feed: '' } }
+			{ $match: { feed: '' } },
+			{$sort:{impression:-1}}
 		]);
 		res.status(200).json(result);
 	} catch (err) {
@@ -2305,7 +2308,8 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
 				}
 			},
-			{ $match: { rtbType: 'video' } }
+			{ $match: { rtbType: 'video' } },
+			{$sort:{impressions:-1}}
 		]);
 		res.status(200).json(result);
 	} catch (err) {

@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 // import { useForm } from 'react-hook-form';
+import { orderSetter } from '../redux/actions/manageadsAction';
 import { CSVLink } from 'react-csv';
 import { Alert } from '@material-ui/lab';
 import {
@@ -14,7 +15,10 @@ import {
 	TableRow,
 	TablePagination,
 	Paper,
-	Modal
+	Modal,
+	FormControlLabel,
+	FormGroup,
+	Checkbox
 } from '@material-ui/core';
 
 import Categorydataform from '../components/categoryformdata';
@@ -45,6 +49,7 @@ export default function VideoCategorydata() {
 	const [open, setOpen] = React.useState(false);
 	const [search1, setsearch] = useState('');
 	const [searchedData, setsearchedData] = useState([]);
+	const [ datafilterstatus, setdatafilterstatus ] = useState({ A: true, B: true });
 	const handleOpen = (data) => {
 	  setOpen(true);
 	  setShow(true)
@@ -58,6 +63,9 @@ export default function VideoCategorydata() {
 	const [ success, setsuccess ] = useState('');
 	const [ rows, setrows ] = useState([]);
 	const [sortconfig,setsortconfig]=useState({key:'impression',direction:'descending'})
+	const [ datatrus, setdatatrus ] = useState([]);
+	const [ sa, setsa ] = React.useState('impression');
+	const [ order, setorder ] = React.useState('desc');
 	const [ rowsPerPage, setRowsPerPage ] = useState(10);
 	const [ page, setPage ] = useState(0);
 	const handleChangePage = (event, newPage) => {
@@ -116,6 +124,17 @@ export default function VideoCategorydata() {
 			console.log('jvhvhvhv', arr);
 		}
 	}
+
+	const filterManger = (A, B) => {
+		var manage = datatrus.filter(
+			(x) =>
+				(A && x.tier4!==""|| B && x.tier4==="" )
+				// (!text || x.ua.toLowerCase().indexOf(text.toLowerCase()) > -1) &&
+				// ((A && x.display != '') || (B && x.display === ''))
+		);
+		// console.log(manage);
+		setrows(manage);
+	};
 	useEffect(() => {
 		fetch('/subrepo/categorydata_video', {
 			method: 'post',
@@ -133,6 +152,7 @@ export default function VideoCategorydata() {
 
 				// setsuccess(dat)
 				setrows(dat);
+				setdatatrus(dat);
 				console.log(dat);
 			});
 	}, []);
@@ -198,6 +218,16 @@ export default function VideoCategorydata() {
 		}
 	};
 
+	const tablesorter = (column, type) => {
+		var orde = sa === column ? (order === 'asc' ? 'desc' : 'asc') : 'asc';
+		setorder(orde);
+		setsa(column);
+		var setData = orderSetter(orde, column, rows, type);
+		var setDatatrus = orderSetter(orde, column, datatrus, type);
+		setrows(setData);
+		setdatatrus(setDatatrus);
+	};
+
 	return (
 		<div>
 			<div>
@@ -256,17 +286,47 @@ export default function VideoCategorydata() {
 						<TableHead>
 							<TableRow>
 								{/* <TableCell>{title}</TableCell> */}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('_id.category')} className={getClassNamesFor('_id.category')}>Category {arrowRetuner( sortconfig.key==='_id.category'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('impressions')} className={getClassNamesFor('impressions')}>Impressions {arrowRetuner( sortconfig.key==='impression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('avgimpression')} className={getClassNamesFor('avgimpression')}>Avg Impressions {arrowRetuner( sortconfig.key==='avgimpression'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('click')} className={getClassNamesFor('click')}>Clicks {arrowRetuner( sortconfig.key==='click'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('extra_details.tier1')} className={getClassNamesFor('extra_details.tier1')}>Tier1 {arrowRetuner( sortconfig.key==='extra_details.tier1'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
-								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('extra_details.tier2')} className={getClassNamesFor('extra_details.tier2')}>Tier2 {arrowRetuner( sortconfig.key==='extra_details.tier2'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
-								<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('extra_details.tier3')} className={getClassNamesFor('extra_details.tier3')}>Tier3 {arrowRetuner( sortconfig.key==='extra_details.tier3'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('extra_details.tier4')} className={getClassNamesFor('extra_details.tier4')}>Tier4 {arrowRetuner( sortconfig.key==='extra_details.tier4'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('extra_details.genderCategory')} className={getClassNamesFor('extra_details.genderCategory')}>Gender Category {arrowRetuner( sortconfig.key==='extra_details.genderCategory'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('extra_details.AgeCategory')} className={getClassNamesFor('extra_details.AgeCategory')}>Age category {arrowRetuner( sortconfig.key==='extra_details.AgeCategory'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
-								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>requestSort('extra_details.new_taxonamy')} className={getClassNamesFor('extra_details.new_taxonmay')}>New Taxonamy {arrowRetuner( sortconfig.key==='extra_details.new_taxonamy'?(sortconfig.direction==='ascending'?'1':'2'):'3' )}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('_id.category', 'string')} >Category {arrowRetuner(sa === '_id.category' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('impressions', 'number')} >Impressions {arrowRetuner(sa === 'impressions' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('avgimpression', 'number')} >Avg Impressions {arrowRetuner(sa === 'avgimpression' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('click', 'number')} >Clicks {arrowRetuner(sa === 'click' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('extra_details.tier1', 'string')} >Tier1 {arrowRetuner(sa === 'extra_details.tier1' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
+								<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('extra_details.tier2', 'string')} >Tier2 {arrowRetuner(sa === 'extra_details.tier2' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
+								<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('extra_details.tier3', 'string')} >Tier3 {arrowRetuner(sa === 'extra_details.tier3' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('extra_details.tier4', 'string')} >Tier4 {arrowRetuner(sa === 'extra_details.tier4' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('extra_details.genderCategory', 'string')} >Gender Category {arrowRetuner(sa === 'extra_details.genderCategory' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('extra_details.AgeCategory', 'string')} >Age category {arrowRetuner(sa === 'extra_details.AgeCategory' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell style={{ cursor: 'pointer' }} onClick={()=>tablesorter('extra_details.new_taxonamy', 'string')} >New Taxonamy {arrowRetuner(sa === 'extra_details.new_taxonamy' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
+								{<TableCell style={{width:'10%'}} >
+									<FormGroup>
+									<FormControlLabel
+										control={
+											<Checkbox
+												size="small"
+												checked={datafilterstatus.B}
+												onChange={(e) => {
+													setdatafilterstatus({ ...datafilterstatus, B: e.target.checked });
+													filterManger(datafilterstatus.A, e.target.checked);
+												}}
+											/>
+										}
+										label="Entries Not Done"
+									/>
+									<FormControlLabel
+										control={
+											<Checkbox
+												size="small"
+												checked={datafilterstatus.A}
+												onChange={(e) => {
+													setdatafilterstatus({ ...datafilterstatus, A: e.target.checked });
+													filterManger(e.target.checked, datafilterstatus.B);
+												}}
+											/>
+										}
+										label="Entries Done"
+									/>
+								</FormGroup>
+										</TableCell>}
 								{<TableCell />}
 							</TableRow>
 						</TableHead>
