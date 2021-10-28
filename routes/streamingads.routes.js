@@ -736,13 +736,18 @@ function remove_duplicates_arrayobject(gotarray, unique) {
 
 const removeDuplicates = (inputArray) => {
 	const ids = [];
-	return inputArray.reduce((sum, element) => {
-		if (!ids.includes(element.toString())) {
-			sum.push(element);
-			ids.push(element.toString());
-		}
-		return sum;
-	}, []);
+	console.log(inputArray);
+	if (inputArray) {
+		return inputArray.reduce((sum, element) => {
+			if (!ids.includes(element.toString())) {
+				sum.push(element);
+				ids.push(element.toString());
+			}
+			return sum;
+		}, []);
+	} else {
+		return [];
+	}
 };
 
 router.put('/groupedsingle', adminauth, (req, res) => {
@@ -985,7 +990,7 @@ async function idsreturnspliter(ids) {
 			])
 			.catch((err) => console.log(err));
 		som = som[0] && som[0].campaignId;
-		som = removeDuplicates(som);
+		som = [ ...new Set(som) ];
 		som.map((x) => music.push(x));
 		audio = arr_diff(audio, som);
 		audio.map((x) => onDem.push(x));
@@ -1003,134 +1008,145 @@ async function idsreturnspliter(ids) {
 
 router.put('/groupedsingleClient', adminauth, (req, res) => {
 	const { adtitle, onDemand, podcast, audio, display, video, musicapps } = req.body;
-	StreamingAds.aggregate([
-		{
-			$project: {
-				id: '$_id',
-				AdTitle: { $toLower: '$AdTitle' }
-			}
-		},
-		{
-			$match: {
-				AdTitle: { $regex: adtitle.toLowerCase() }
-			}
-		},
-		{
-			$group: {
-				_id: null,
-				id: { $push: '$id' },
-				Adtitle: { $push: '$AdTitle' }
-			}
-		}
-	])
-		.then(async (respo) => {
-			var data;
-			data = respo.length && respo[0];
-			if (data) {
-				var ids =
-					typeof campaignId !== 'undefined' &&
-					typeof campaignId !== 'string' &&
-					typeof campaignId !== 'object'
-						? data.id.map((id) => mongoose.Types.ObjectId(id))
-						: data.id;
-				let id_spliter = await adsetting
-					.find({ campaignId: { $in: ids } }, { campaignId: 1, type: 1, targetImpression: 1 })
-					.catch((err) => console.log(err));
-				data.ids = {
-					onDemand: [],
-					podcast: [],
-					musicapps: [],
-					audio: [],
-					subimpression: { dem: 0, mus: 0, pod: 0 },
-					audimpression: 0,
-					display: [],
-					disimpression: 0,
-					video: [],
-					vidimpression: 0
-				};
-				data.ids['combined'] = ids;
-				// data.TargetImpressions = [ ...new Set(data.TargetImpressions) ];
-				id_spliter = remove_duplicates_arrayobject(id_spliter, 'campaignId');
-				var ids_cam = [];
-				id_spliter.map((x) => {
-					if (x.campaignId) ids_cam.push(x.campaignId.toString());
-				});
-				var left_cam = arr_diff(data.id, ids_cam);
-				if (left_cam && left_cam.length) {
-					await left_cam.map((id) => data.ids.audio.push(id));
-					// data.ids.audio = [ ...new Set(data.ids.audio) ];
-					data.ids.audio = removeDuplicates(data.ids.audio);
-					// data.ids.audio = [ ...new Set(data.ids.audio) ];
+	try {
+		StreamingAds.aggregate([
+			{
+				$project: {
+					id: '$_id',
+					AdTitle: { $toLower: '$AdTitle' }
 				}
-				if (id_spliter.length) {
-					var audioids = id_spliter.filter((x) => x.type === 'audio');
-					audioids.map((x) => {
-						data.ids.audio.push(x.campaignId.toString());
-						data.ids.audimpression += parseInt(x.targetImpression);
+			},
+			{
+				$match: {
+					AdTitle: { $regex: adtitle.toLowerCase() }
+				}
+			},
+			{
+				$group: {
+					_id: null,
+					id: { $push: '$id' },
+					Adtitle: { $push: '$AdTitle' }
+				}
+			}
+		])
+			.then(async (respo) => {
+				var data;
+				data = respo.length && respo[0];
+				if (data) {
+					var ids =
+						typeof campaignId !== 'undefined' &&
+						typeof campaignId !== 'string' &&
+						typeof campaignId !== 'object'
+							? data.id.map((id) => mongoose.Types.ObjectId(id))
+							: data.id;
+					let id_spliter = await adsetting
+						.find({ campaignId: { $in: ids } }, { campaignId: 1, type: 1, targetImpression: 1 })
+						.catch((err) => console.log(err));
+					data.ids = {
+						onDemand: [],
+						podcast: [],
+						musicapps: [],
+						audio: [],
+						subimpression: { dem: 0, mus: 0, pod: 0 },
+						audimpression: 0,
+						display: [],
+						disimpression: 0,
+						video: [],
+						vidimpression: 0
+					};
+					data.ids['combined'] = ids;
+					// data.TargetImpressions = [ ...new Set(data.TargetImpressions) ];
+					id_spliter = remove_duplicates_arrayobject(id_spliter, 'campaignId');
+					var ids_cam = [];
+					id_spliter.map((x) => {
+						if (x.campaignId) ids_cam.push(x.campaignId.toString());
 					});
-					data.ids.audio = [ ...new Set(data.ids.audio) ];
-					if (!(onDemand === podcast && onDemand === musicapps)) {
-						// var dads = { onDemand: [], podcast: [], musicapps: [] };
-						const outcome = await idsreturnspliter(data.ids.audio);
-						data.ids.onDemand = outcome.dem;
-						data.ids.podcast = outcome.pod;
-						data.ids['musicapps'] = outcome.mus;
-						if (data.ids.onDemand.length) {
-							var dataonDem = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.onDemand));
-							dataonDem.map((im) => {
-								data.ids.subimpression.dem += parseInt(im.targetImpression);
-							});
-						}
-						if (data.ids.podcast.length) {
-							var datapodcast = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.podcast));
-							datapodcast.map((im) => {
-								data.ids.subimpression.pod += parseInt(im.targetImpression);
-							});
-						}
-						if (data.ids.musicapps.length) {
-							var datamusic = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.musicapps));
-							datamusic.map((im) => {
-								data.ids.subimpression.mus += parseInt(im.targetImpression);
-							});
-						}
-						// data.ids['new'] = outcome;
+					var left_cam = arr_diff(data.id, ids_cam);
+					if (left_cam && left_cam.length) {
+						await left_cam.map((id) => data.ids.audio.push(id));
+						// data.ids.audio = [ ...new Set(data.ids.audio) ];
+						data.ids.audio = removeDuplicates(data.ids.audio);
+						// data.ids.audio = [ ...new Set(data.ids.audio) ];
 					}
-					var displayids = id_spliter.filter((x) => x.type === 'display');
-					displayids.map((x) => {
-						data.ids.display.push(x.campaignId.toString());
-						data.ids.disimpression += parseInt(x.targetImpression);
-					});
-					data.ids.display = [ ...new Set(data.ids.display) ];
-					var videoids = id_spliter.filter((x) => x.type === 'video');
-					videoids.map((x) => {
-						data.ids.video.push(x.campaignId.toString());
-						data.ids.vidimpression += parseInt(x.targetImpression);
-					});
-					data.ids.video = [ ...new Set(data.ids.video) ];
+					if (id_spliter.length) {
+						var audioids = id_spliter.filter((x) => x.type === 'audio');
+						audioids.map((x) => {
+							data.ids.audio.push(x.campaignId.toString());
+							data.ids.audimpression += parseInt(x.targetImpression);
+						});
+						data.ids.audio = [ ...new Set(data.ids.audio) ];
+						if (!(onDemand === podcast && onDemand === musicapps)) {
+							// var dads = { onDemand: [], podcast: [], musicapps: [] };
+							const outcome = await idsreturnspliter(data.ids.audio);
+							data.ids.onDemand = outcome.dem;
+							data.ids.podcast = outcome.pod;
+							data.ids['musicapps'] = outcome.mus;
+							if (data.ids.onDemand.length) {
+								var dataonDem = id_spliter.filter((x) =>
+									idmatchCheker(x.campaignId, data.ids.onDemand)
+								);
+								dataonDem.map((im) => {
+									data.ids.subimpression.dem += parseInt(im.targetImpression);
+								});
+							}
+							if (data.ids.podcast.length) {
+								var datapodcast = id_spliter.filter((x) =>
+									idmatchCheker(x.campaignId, data.ids.podcast)
+								);
+								datapodcast.map((im) => {
+									data.ids.subimpression.pod += parseInt(im.targetImpression);
+								});
+							}
+							if (data.ids.musicapps.length) {
+								var datamusic = id_spliter.filter((x) =>
+									idmatchCheker(x.campaignId, data.ids.musicapps)
+								);
+								datamusic.map((im) => {
+									data.ids.subimpression.mus += parseInt(im.targetImpression);
+								});
+							}
+							// data.ids['new'] = outcome;
+						}
+						var displayids = id_spliter.filter((x) => x.type === 'display');
+						displayids.map((x) => {
+							data.ids.display.push(x.campaignId.toString());
+							data.ids.disimpression += parseInt(x.targetImpression);
+						});
+						data.ids.display = [ ...new Set(data.ids.display) ];
+						var videoids = id_spliter.filter((x) => x.type === 'video');
+						videoids.map((x) => {
+							data.ids.video.push(x.campaignId.toString());
+							data.ids.vidimpression += parseInt(x.targetImpression);
+						});
+						data.ids.video = [ ...new Set(data.ids.video) ];
+					} else {
+						data.ids.audio = ids;
+						var dattarget = data.TargetImpressions;
+						dattarget.map((ar) => {
+							data.ids.audimpression += parseInt(ar.TR);
+						});
+					}
+					// var resstartDate = [].concat.apply([], data.startDate);
+					// resstartDate = [ ...new Set(resstartDate) ];
+					// data.startDate = resstartDate;
+					// var resendDate = [].concat.apply([], data.endDate);
+					// resendDate = [ ...new Set(resendDate) ];
+					// data.endDate = resendDate;
+					// data.splendid = id_spliter
+					// var tottar = 0;
+					// data.TargetImpressions.forEach(num=> tottar += parseInt(num))
+					// data.TargetImpressions = tottar
+					res.json(data);
 				} else {
-					data.ids.audio = ids;
-					var dattarget = data.TargetImpressions;
-					dattarget.map((ar) => {
-						data.ids.audimpression += parseInt(ar.TR);
-					});
+					console.log(respo);
+					res.status(422).json({ error: 'somthing went wrong try again' });
 				}
-				// var resstartDate = [].concat.apply([], data.startDate);
-				// resstartDate = [ ...new Set(resstartDate) ];
-				// data.startDate = resstartDate;
-				// var resendDate = [].concat.apply([], data.endDate);
-				// resendDate = [ ...new Set(resendDate) ];
-				// data.endDate = resendDate;
-				// data.splendid = id_spliter
-				// var tottar = 0;
-				// data.TargetImpressions.forEach(num=> tottar += parseInt(num))
-				// data.TargetImpressions = tottar
-				res.json(data);
-			} else {
-				console.log(respo);
-				res.status(422).json({ error: 'somthing went wrong try again' });
-			}
-		})
-		.catch((err) => console.log(err));
+			})
+			.catch((err) => console.log(err));
+	} catch (e) {
+		console.log(e);
+		res.status(422).json({ error: 'somthing went wrong try again', e });
+	}
 });
 
 router.put('/groupedbundleClient', adminauth, (req, res) => {

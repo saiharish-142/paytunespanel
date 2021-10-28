@@ -21,6 +21,7 @@ const initialState = {
 	publisherDataLoading: true,
 	publisherDataFail: null,
 	CompletepublisherData: null,
+	totalpublisherData: null,
 	quartileaudiopublisherData: null,
 	quartilevideopublisherData: null,
 	audiopublisherData: null,
@@ -61,7 +62,7 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				uniqueusersdata: action.payload,
-				publisherDataLoading: true
+				uniqueusersloading: false
 			};
 		case UNIQUEUSERSPUBLISHER_LOADING:
 			return {
@@ -73,6 +74,7 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				publisherDataLoading: false,
+				totalpublisherData: action.payload.total,
 				CompletepublisherData: action.payload.complete,
 				quartileaudiopublisherData: action.payload.caudio,
 				quartilevideopublisherData: action.payload.cvideo,
