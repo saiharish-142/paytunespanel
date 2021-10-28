@@ -226,7 +226,8 @@ function PublisherConsole() {
 		audio: quartiledata.quartileaudiopublisherData,
 		video: quartiledata.quartilevideopublisherData
 	};
-	console.log(quartiledata);
+	console.log(consoledata);
+	// console.log(consoledata.uniqueusersloading);
 	return (
 		<div>
 			<div className="heading">
@@ -239,6 +240,149 @@ function PublisherConsole() {
 					<ExcelSheet dataSet={QuartileDown.video} name="Complete Quartile Publisher Video Wise" />
 				</ExeclDownload>
 			</div>
+			{consoledata &&
+			!consoledata.uniqueusersloading && (
+				<div>
+					<Paper className="tableCont tablemargin">
+						<div>Overall Summary Report</div>
+						<TableContainer className="smallTableRow">
+							<TableHead>
+								<TableRow>
+									<TableCell>Total Impressions</TableCell>
+									<TableCell>Average Impressions</TableCell>
+									<TableCell>Unique Users</TableCell>
+									<TableCell>Average Frequency</TableCell>
+									<TableCell>% Over Lap</TableCell>
+									<TableCell>Total Clicks</TableCell>
+									<TableCell>CTR</TableCell>
+									<TableCell>LTR</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								<TableRow>
+									<TableCell>{consoledata.totalpublisherData.complete.impressions}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.complete.avgimpressions}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.complete.uniqueusers}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.complete.avgfreq}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.complete.overlap}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.complete.clicks}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.complete.ctr}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.complete.ltr}</TableCell>
+								</TableRow>
+							</TableBody>
+						</TableContainer>
+					</Paper>
+					<Paper className="tableCont tablemargin">
+						<div>Overall Audio Report</div>
+						<TableContainer className="smallTableRow">
+							<TableHead>
+								<TableRow>
+									<TableCell>Requests</TableCell>
+									<TableCell>Average Requests</TableCell>
+									<TableCell>Total Impressions</TableCell>
+									<TableCell>Average Impressions</TableCell>
+									<TableCell>Unique Users</TableCell>
+									<TableCell>Average Frequency</TableCell>
+									<TableCell>% Over Lap</TableCell>
+									<TableCell>Total Clicks</TableCell>
+									<TableCell>CTR</TableCell>
+									<TableCell>LTR</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								<TableRow>
+									<TableCell>{consoledata.totalpublisherData.audio.requests}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.audio.avgrequest}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.audio.impressions}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.audio.avgimpressions}</TableCell>
+									<TableCell>{consoledata.uniqueusersdata.audio}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.audio.avgfreq}</TableCell>
+									<TableCell>
+										{Math.round(
+											consoledata.totalpublisherData.audio.uniqueusers /
+												consoledata.uniqueusersdata.audio *
+												100
+										) / 100}
+									</TableCell>
+									<TableCell>{consoledata.totalpublisherData.audio.clicks}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.audio.ctr}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.audio.ltr}</TableCell>
+								</TableRow>
+							</TableBody>
+						</TableContainer>
+					</Paper>
+					<Paper className="tableCont tablemargin">
+						<div>Overall Display Report</div>
+						<TableContainer className="smallTableRow">
+							<TableHead>
+								<TableRow>
+									<TableCell>Total Impressions</TableCell>
+									<TableCell>Average Impressions</TableCell>
+									<TableCell>Unique Users</TableCell>
+									<TableCell>Average Frequency</TableCell>
+									<TableCell>% Over Lap</TableCell>
+									<TableCell>Total Clicks</TableCell>
+									<TableCell>CTR</TableCell>
+									<TableCell>LTR</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								<TableRow>
+									<TableCell>{consoledata.totalpublisherData.display.impressions}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.display.avgimpressions}</TableCell>
+									<TableCell>{consoledata.uniqueusersdata.display}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.display.avgfreq}</TableCell>
+									<TableCell>
+										{Math.round(
+											consoledata.totalpublisherData.display.uniqueusers /
+												consoledata.uniqueusersdata.display *
+												100
+										) / 100}
+									</TableCell>
+									<TableCell>{consoledata.totalpublisherData.display.clicks}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.display.ctr}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.display.ltr}</TableCell>
+								</TableRow>
+							</TableBody>
+						</TableContainer>
+					</Paper>
+					<Paper className="tableCont tablemargin">
+						<div>Overall Video Report</div>
+						<TableContainer className="smallTableRow">
+							<TableHead>
+								<TableRow>
+									<TableCell>Total Impressions</TableCell>
+									<TableCell>Average Impressions</TableCell>
+									<TableCell>Unique Users</TableCell>
+									<TableCell>Average Frequency</TableCell>
+									<TableCell>% Over Lap</TableCell>
+									<TableCell>Total Clicks</TableCell>
+									<TableCell>CTR</TableCell>
+									<TableCell>LTR</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								<TableRow>
+									<TableCell>{consoledata.totalpublisherData.video.impressions}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.video.avgimpressions}</TableCell>
+									<TableCell>{consoledata.uniqueusersdata.video}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.video.avgfreq}</TableCell>
+									<TableCell>
+										{Math.round(
+											consoledata.totalpublisherData.video.uniqueusers /
+												consoledata.uniqueusersdata.video *
+												100
+										) / 100}
+									</TableCell>
+									<TableCell>{consoledata.totalpublisherData.video.clicks}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.video.ctr}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.video.ltr}</TableCell>
+								</TableRow>
+							</TableBody>
+						</TableContainer>
+					</Paper>
+				</div>
+			)}
 			<PublisherConsoleTable
 				title="Audio"
 				headers={headersAudio}
