@@ -1281,7 +1281,7 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 
 // db.getCollection('campaignwisereports').find({campaignId:ObjectId("60c175048473711b21db0804")}).sort({_id:-1})
 
-router.put('/reportbycamp', adminauth, async (req, res) => {
+router.put('/reportbycamp',  async (req, res) => {
 	//publisher
 	try {
 		const { campaignId, pubname } = req.body;
@@ -1302,7 +1302,14 @@ router.put('/reportbycamp', adminauth, async (req, res) => {
 				},
 				{ $addFields: { pubname: { $first: '$appdet' } } },
 				{ $match: { 'pubname.publishername': pubname } },
-				{ $sort: { date: -1 } }
+				{$group:{
+					_id:{date:"$date"},
+					impression:{$sum:"$impression"},
+					CompanionClickTracking:{$sum:"$CompanionClickTracking"},
+					SovClickTracking:{$sum:"$SovClickTracking"},
+					pubname:{$first:"$pubname"}
+				}},
+				{ $sort: { "_id.date": -1 } }
 			])
 			.allowDiskUse(true);
 		let data = reports;
