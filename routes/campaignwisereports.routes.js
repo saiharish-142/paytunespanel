@@ -1281,7 +1281,7 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 
 // db.getCollection('campaignwisereports').find({campaignId:ObjectId("60c175048473711b21db0804")}).sort({_id:-1})
 
-router.put('/reportbycamp',  async (req, res) => {
+router.put('/reportbycamp', adminauth, async (req, res) => {
 	//publisher
 	try {
 		const { campaignId, pubname } = req.body;
