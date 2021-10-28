@@ -1285,10 +1285,12 @@ router.put('/reportbycamp', adminauth, async (req, res) => {
 	//publisher
 	try {
 		const { campaignId, pubname } = req.body;
-		var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
-		var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
-		var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
-		let ids = [ ...audio, ...video, ...display ];
+		console.log(campaignId)
+		let ids=campaignId.map((id)=>mongoose.Types.ObjectId(id));
+		// var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
+		// var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
+		// var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
+		// let ids = [ ...audio, ...video, ...display ];
 		let reports = await campaignwisereports
 			.aggregate([
 				{ $match: { campaignId: { $in: ids } } },
@@ -1307,7 +1309,8 @@ router.put('/reportbycamp', adminauth, async (req, res) => {
 					impression:{$sum:"$impression"},
 					CompanionClickTracking:{$sum:"$CompanionClickTracking"},
 					SovClickTracking:{$sum:"$SovClickTracking"},
-					pubname:{$first:"$pubname"}
+					pubname:{$first:"$pubname"},
+					appId:{$first:"$appId"}
 				}},
 				{ $sort: { "_id.date": -1 } }
 			])

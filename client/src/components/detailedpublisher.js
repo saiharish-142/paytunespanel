@@ -17,7 +17,7 @@ export default function DetailedTable() {
 	const { state1, dispatch1 } = useContext(IdContext);
     const [rows,setrows]=useState([]);
 	const { campname } = useParams();
-	const [ ids, setids ] = useState({});
+	const [ ids, setids ] = useState([]);
 	const [ title, settitle ] = useState('');
 	const [ datelogs, setdatelogs ] = useState([]);
 	const [ publishlogs, setpublishlogs ] = useState([]);
@@ -54,44 +54,49 @@ export default function DetailedTable() {
 				})
 					.then((res) => res.json())
 					.then((idds) => {
-						// setids(idds)
-						fetch('/ads/addetailt', {
+						console.log(idds)
+						setids(idds)
+						console.log(ids)
+						fetch('/offreport/reportbycamp', {
 							method: 'put',
 							headers: {
 								'Content-Type': 'application/json',
 								Authorization: 'Bearer ' + localStorage.getItem('jwt')
 							},
 							body: JSON.stringify({
-								campaignId: idds
+								campaignId: idds,
+								pubname
 							})
 						})
 							.then((res) => res.json())
 							.then((result) => {
-								if (result.spear.length === 0) {
-									setids(result);
-									console.log(result);
-								} else {
-									fetch('/streamingads/reqtarget', {
-										method: 'put',
-										headers: {
-											'Content-Type': 'application/json',
-											Authorization: 'Bearer ' + localStorage.getItem('jwt')
-										},
-										body: JSON.stringify({
-											ids: result.spear
-										})
-									})
-										.then((res) => res.json())
-										.then((resuda) => {
-											setids(result);
-											console.log(result.audio);
-											console.log(result);
-											console.log(resuda);
-										})
-										.catch((err) => console.log(err));
-								}
+								var plogs = result;
+								result.map((adad) => {
+									if (
+										adad.appId._id.toString() === '5b2210af504f3097e73e0d8b' ||
+										adad.appId._id.toString() === '5d10c405844dd970bf41e2af'
+									) {
+										adad.appId.AppName += ' offline';
+									}
+								});
+								plogs = plogs.sort(function(a, b) {
+									var d1 = new Date(a._id.date);
+									var d2 = new Date(b._id.date);
+									return d2 - d1;
+								});
+								// plogs = plogs.sort(function(a, b) {
+								// 	var d1 = new Date(a.createdAt ? a.createdAt : a.createdOn);
+								// 	var d2 = new Date(b.createdAt ? b.createdAt : b.createdOn);
+								// 	if (a.date === b.date) return d2 - d1;
+								// });
+								console.log(plogs);
+								setpublishlogs(plogs);
+								console.log(publishlogs)
+								// console.log(result)
 							})
-							.catch((err) => console.log(err));
+							.catch((err) => {
+								console.log(err);
+							});
 					})
 					.catch((err) => console.log(err));
 			}
@@ -147,50 +152,50 @@ export default function DetailedTable() {
         //     }
         // })
 
-	useEffect (() => {
-        if(ids){
-            console.log('hhh',ids)
-		fetch('/offreport/reportbycamp', {
-			method: 'put',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('jwt')
-			},
-			body: JSON.stringify({
-				campaignId: ids,
-                pubname
-			})
-		})
-			.then((res) => res.json())
-			.then((result) => {
-				var plogs = result;
-				result.map((adad) => {
-					if (
-						adad.appId._id.toString() === '5b2210af504f3097e73e0d8b' ||
-						adad.appId._id.toString() === '5d10c405844dd970bf41e2af'
-					) {
-						adad.appId.AppName += ' offline';
-					}
-				});
-				plogs = plogs.sort(function(a, b) {
-					var d1 = new Date(a.date);
-					var d2 = new Date(b.date);
-					return d2 - d1;
-				});
-				plogs = plogs.sort(function(a, b) {
-					var d1 = new Date(a.createdAt ? a.createdAt : a.createdOn);
-					var d2 = new Date(b.createdAt ? b.createdAt : b.createdOn);
-					if (a.date === b.date) return d2 - d1;
-				});
-				console.log(plogs);
-				setpublishlogs(plogs);
-				// console.log(result)
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-        }
-	},[ids]);
+	// useEffect (() => {
+    //     if(ids){
+    //         console.log('hhh',ids)
+	// 	fetch('/offreport/reportbycamp', {
+	// 		method: 'put',
+	// 		headers: {
+	// 			'Content-Type': 'application/json',
+	// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+	// 		},
+	// 		body: JSON.stringify({
+	// 			campaignId: ids,
+    //             pubname
+	// 		})
+	// 	})
+	// 		.then((res) => res.json())
+	// 		.then((result) => {
+	// 			var plogs = result;
+	// 			result.map((adad) => {
+	// 				if (
+	// 					adad.appId._id.toString() === '5b2210af504f3097e73e0d8b' ||
+	// 					adad.appId._id.toString() === '5d10c405844dd970bf41e2af'
+	// 				) {
+	// 					adad.appId.AppName += ' offline';
+	// 				}
+	// 			});
+	// 			plogs = plogs.sort(function(a, b) {
+	// 				var d1 = new Date(a.date);
+	// 				var d2 = new Date(b.date);
+	// 				return d2 - d1;
+	// 			});
+	// 			plogs = plogs.sort(function(a, b) {
+	// 				var d1 = new Date(a.createdAt ? a.createdAt : a.createdOn);
+	// 				var d2 = new Date(b.createdAt ? b.createdAt : b.createdOn);
+	// 				if (a.date === b.date) return d2 - d1;
+	// 			});
+	// 			console.log(plogs);
+	// 			setpublishlogs(plogs);
+	// 			// console.log(result)
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 		});
+    //     }
+	// },[]);
 	// useEffect(
 	// 	() => {
 	// 		if (ids && ids.display) {
