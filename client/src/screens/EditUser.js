@@ -97,6 +97,7 @@ function EditUser() {
 		searchName: '',
 		adtitle: '',
 		titles: [],
+		targetemail: [],
 		type: '',
 		endDate: null,
 		startDate: null,
@@ -275,6 +276,7 @@ function EditUser() {
 				userid: id,
 				searchName: selectedsemicampaigns.searchName,
 				startDate: selectedsemicampaigns.startDate,
+				targetemail: selectedsemicampaigns.targetemail,
 				endDate: selectedsemicampaigns.endDate,
 				PricingModel: selectedsemicampaigns.PricingModel,
 				type: selectedsemicampaigns.type,
@@ -306,6 +308,7 @@ function EditUser() {
 					title: '',
 					searchName: '',
 					adtitle: '',
+					targetemail: [],
 					titles: [],
 					type: '',
 					endDate: null,
@@ -351,6 +354,7 @@ function EditUser() {
 				_id: selectedsemicampaigns._id,
 				userid: id,
 				searchName: selectedsemicampaigns.searchName,
+				targetemail: selectedsemicampaigns.targetemail,
 				startDate: selectedsemicampaigns.startDate,
 				endDate: selectedsemicampaigns.endDate,
 				PricingModel: selectedsemicampaigns.PricingModel,
@@ -383,6 +387,7 @@ function EditUser() {
 					title: '',
 					searchName: '',
 					adtitle: '',
+					targetemail: [],
 					titles: [],
 					type: '',
 					endDate: null,
@@ -521,6 +526,7 @@ function EditUser() {
 			title: '',
 			searchName: '',
 			adtitle: '',
+			targetemail: [],
 			titles: [],
 			type: '',
 			endDate: null,
@@ -646,7 +652,7 @@ function EditUser() {
 							</FormControl>
 							<input placeholder="Email" className="editineditinput" required value={email} disabled />
 						</div>
-						<div className="ineditables">
+						{/* <div className="ineditables">
 							<div className="emailslist">
 								{emaillist.length ? (
 									emaillist.map((x) => {
@@ -686,7 +692,7 @@ function EditUser() {
 									Add Email
 								</Button>
 							)}
-						</div>
+						</div> */}
 						{selectedcampaigns && selectedcampaigns.length > 0 ? (
 							<div>
 								<b>selected campagins</b>
@@ -843,6 +849,7 @@ function EditUser() {
 									title: '',
 									searchName: '',
 									adtitle: '',
+									targetemail: [],
 									titles: [],
 									type: '',
 									endDate: null,
@@ -883,6 +890,81 @@ function EditUser() {
 												})}
 										/>
 									</div>
+								</div>
+								<div className="ineditables">
+									<div className="emailslist">
+										{selectedsemicampaigns.targetemail.length ? (
+											selectedsemicampaigns.targetemail.map((x) => {
+												var color = 'primary';
+												return (
+													<div className="mailentried">
+														<div>{x}</div>
+														<HighlightOffTwoTone
+															style={{ cursor: 'pointer' }}
+															onClick={() => {
+																// handleemaildelete(x);
+																var data = selectedsemicampaigns.targetemail.filter(
+																	(z) => z != x
+																);
+																setselectedsemicampaigns({
+																	...selectedsemicampaigns,
+																	targetemail: data
+																});
+															}}
+															color={color}
+														/>
+													</div>
+												);
+											})
+										) : (
+											'No Emails are added for mailing'
+										)}
+									</div>
+									<input
+										className="editeditinput"
+										placeholder="Email Id"
+										value={onproemail}
+										onChange={(e) => setonproemail(e.target.value)}
+									/>
+									{emaillistaddload ? (
+										<CircularProgress />
+									) : (
+										<Button
+											onClick={() => {
+												// setemaillistaddload(true);
+												// handleemailadd();
+												// console.log(
+												// 	onproemail.length > 8 &&
+												// 		onproemail.indexOf('@') > -1 &&
+												// 		onproemail.indexOf('.') > -1 &&
+												// 		!(onproemail.indexOf(' ') > -1)
+												// );
+												var data = selectedsemicampaigns.targetemail;
+												if (data.includes(onproemail)) {
+													setOpenError({
+														status: true,
+														message: 'This email is alreay added'
+													});
+												} else if (
+													onproemail.length > 8 &&
+													onproemail.indexOf('@') > -1 &&
+													onproemail.indexOf('.') > -1 &&
+													!(onproemail.indexOf(' ') > -1)
+												) {
+													data.push(onproemail);
+													setselectedsemicampaigns({
+														...selectedsemicampaigns,
+														targetemail: data
+													});
+													setonproemail('');
+												} else {
+													setOpenError({ status: true, message: 'Enter a valid email' });
+												}
+											}}
+										>
+											Add Email
+										</Button>
+									)}
 								</div>
 								<div>
 									{selectedsemicampaigns.titles && selectedsemicampaigns.titles.length ? (

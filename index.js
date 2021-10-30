@@ -809,7 +809,7 @@ async function CategoryRefresher() {
 
 // tempfunc();
 
-cron.schedule('30 1 * * *', function () {
+cron.schedule('30 1 * * *', function() {
 	PodcastEpisodeRefresher();
 });
 //PodcastEpisodeRefresher();
@@ -2747,7 +2747,7 @@ async function DailyReportMailer() {
 				var endStae = new Date() > new Date(x.endDate);
 				if (endStae) {
 					console.log('campaign completed');
-				} else if (x.type === 'campaign') {
+				} else if (x.type === 'campaign' && x.targetemail && x.targetemail.length) {
 					let formdata = await StreamingAds.aggregate([
 						{
 							$project: {
@@ -2855,7 +2855,7 @@ async function DailyReportMailer() {
 							});
 						reportdaily.push({
 							date: 'Total',
-							impressions: totimp,
+							impressions: totImp,
 							clicks: totCli,
 							complete: totCom
 						});
@@ -2867,7 +2867,7 @@ async function DailyReportMailer() {
 						Destination: {
 							BccAddresses: [],
 							CcAddresses: [],
-							ToAddresses: mail
+							ToAddresses: x.targetemail
 						},
 						Message: {
 							Body: {
