@@ -211,6 +211,7 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 		PricingModel,
 		startDate,
 		type,
+		targetemail,
 		campaignName,
 		audio,
 		display,
@@ -244,6 +245,7 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 		campaignName: campaignName,
 		searchName: searchName,
 		type: type,
+		targetemail,
 		startDate,
 		endDate,
 		PricingModel,
@@ -266,7 +268,19 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 });
 
 router.put('/editcampaign', adminauth, async (req, res) => {
-	const { _id, userid, searchName, campaignName, audio, display, video, podcast, onDemand, musicapps } = req.body;
+	const {
+		_id,
+		userid,
+		searchName,
+		campaignName,
+		targetemail,
+		audio,
+		display,
+		video,
+		podcast,
+		onDemand,
+		musicapps
+	} = req.body;
 	if (
 		!searchName ||
 		!userid ||
@@ -283,6 +297,9 @@ router.put('/editcampaign', adminauth, async (req, res) => {
 	});
 	if (campaignName) {
 		campaign.campaignName = campaignName;
+	}
+	if (targetemail && targetemail.length > 0) {
+		campaign.targetemail = targetemail;
 	}
 	if (display) {
 		campaign.display = display;
