@@ -1138,11 +1138,13 @@ router.put('/groupedsingleClient', adminauth, (req, res) => {
 						});
 						data.ids.video = [ ...new Set(data.ids.video) ];
 					} else {
-						data.ids.audio = ids;
-						var dattarget = data.TargetImpressions;
-						dattarget.map((ar) => {
-							data.ids.audimpression += parseInt(ar.TR);
-						});
+						if (ids && ids.length) {
+							data.ids.audio = ids;
+							var dattarget = data.TargetImpressions;
+							dattarget.map((ar) => {
+								data.ids.audimpression += parseInt(ar.TR);
+							});
+						}
 					}
 					// var resstartDate = [].concat.apply([], data.startDate);
 					// resstartDate = [ ...new Set(resstartDate) ];
