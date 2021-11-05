@@ -1140,7 +1140,8 @@ router.put('/groupedsingleClient', adminauth, (req, res) => {
 					} else {
 						if (ids && ids.length) {
 							data.ids.audio = ids;
-							var dattarget = data.TargetImpressions;
+							var dattarget =
+								data.TargetImpressions && data.TargetImpressions.length ? data.TargetImpressions : [];
 							dattarget.map((ar) => {
 								data.ids.audimpression += parseInt(ar.TR);
 							});
