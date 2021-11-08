@@ -8,6 +8,7 @@ const publisherapps = mongoose.model('publisherapps');
 const apppublishers = mongoose.model('apppublishers');
 const adsetting = mongoose.model('adsetting');
 const freqpublishreports = mongoose.model('freqpublishreports');
+const spentreports = mongoose.model('spentreports');
 
 router.get('/reports', adminauth, (req, res) => {
 	campaignwisereports
@@ -666,7 +667,7 @@ function uniqueValuefinder(array, id) {
 
 router.put('/sumreportofcamall2', adminauth, (req, res) => {
 	const { campaignId } = req.body;
-	console.log(campaignId);
+	// console.log(campaignId);
 	// var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
 	var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
 	var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
@@ -1010,7 +1011,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					}
 				}
 			}
-			audioCompleteReport.uniquedata = tempvideo;
+			videoCompleteReport.uniquedata = tempvideo;
 			// console.log(audioCompleteReport.uniquedata);
 			// displayCompleteReport.unique = removeDuplicates(displayCompleteReport.unique);
 			// displayCompleteReport.uniquedata = await freqpublishreports
@@ -1235,6 +1236,192 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 		.catch((err) => console.log(err));
 });
 
+router.put('/sumreportofcamDiv', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	var ids = campaignId.map((id) => mongoose.Types.ObjectId(id));
+	campaignwisereports
+		.aggregate([
+			{
+				$match: {
+					campaignId: { $in: ids }
+				}
+			},
+			{
+				$group: {
+					_id: { appubid: '$apppubid', feed: '$feed' },
+					appId: { $push: '$appId' },
+					ssp: { $push: '$ssp' },
+					updatedAt: { $push: '$createdOn' },
+					camp: { $push: '$campaignId' },
+					impressions: { $sum: '$impression' },
+					complete: { $sum: '$complete' },
+					clicks: { $sum: '$CompanionClickTracking' },
+					clicks1: { $sum: '$SovClickTracking' },
+					thirdQuartile: { $sum: '$thirdQuartile' },
+					start: { $sum: '$start' },
+					firstQuartile: { $sum: '$firstQuartile' },
+					midpoint: { $sum: '$midpoint' }
+				}
+			},
+			{
+				$project: {
+					Publisher: '$appId',
+					PublisherSplit: '$_id.appubid',
+					feed: '$_id.feed',
+					updatedAt: '$updatedAt',
+					ssp: '$ssp',
+					campaignId: '$camp',
+					impressions: '$impressions',
+					complete: '$complete',
+					clicks: '$clicks',
+					clicks1: '$clicks1',
+					midpoint: '$midpoint',
+					start: '$start',
+					firstQuartile: '$firstQuartile',
+					thirdQuartile: '$thirdQuartile',
+					targetimpre: '0',
+					unique: '0',
+					_id: 0
+				}
+			},
+			{
+				$lookup: {
+					from: 'apppublishers',
+					localField: 'PublisherSplit',
+					foreignField: 'publisherid',
+					as: 'apppubidpo'
+				}
+			}
+		])
+		.then(async (resultgot) => {
+			var result = resultgot;
+			if (result && result.length) {
+				var targetgetter = await adsetting
+					.aggregate([
+						{
+							$match: {
+								campaignId: { $in: ids }
+							}
+						},
+						{
+							$project: {
+								targetImpression: '$targetImpression',
+								campaignId: '$campaignId',
+								appId: '$appId'
+							}
+						}
+					])
+					.catch((err) => console.log(err));
+				var summaryReport = {
+					impressions: 0,
+					clicks: 0,
+					unique: [],
+					uniqueValue: 0,
+					spentValue: 0,
+					complete: 0,
+					start: 0,
+					firstQuartile: 0,
+					midpoint: 0,
+					thirdQuartile: 0
+				};
+				result.map((x) => {
+					summaryReport.unique.push(x.PublisherSplit);
+				});
+				let uniqueData = await freqpublishreports.aggregate([
+					{ $match: { campaignId: { $in: ids }, appId: { $in: summaryReport.unique } } }
+				]);
+				let spentData = await spentreports.aggregate([
+					{ $match: { campaignId: { $in: ids } } },
+					{ $group: { _id: '$apppubid', totalspent: { $sum: '$totalSpent' } } },
+					{ $project: { _id: 0, appId: '$_id', totalspent: 1 } }
+				]);
+				var updatedAtTimes = [];
+				var tempUser = {};
+				if (uniqueData.length) {
+					uniqueData.map((z) => {
+						summaryReport.uniqueValue += parseInt(z.users);
+						if (z.appId === null) {
+							tempUser['null'] = parseInt(z.users);
+						} else if (tempUser[z.appId]) {
+							tempUser[z.appId] += parseInt(z.users);
+						} else {
+							tempUser[z.appId] = parseInt(z.users);
+						}
+					});
+				}
+				var tempSpent = {};
+				if (spentData.length) {
+					spentData.map((z) => {
+						summaryReport.spentValue += parseFloat(z.totalspent);
+						if (z.appId === null) {
+							tempSpent['null'] = parseFloat(z.totalspent);
+						} else {
+							tempSpent[z.appId] = parseFloat(z.totalspent);
+						}
+					});
+				}
+				// summaryReport.uniqueData = tempUser;
+				// summaryReport.spentData = tempSpent;
+				result.map((x) => {
+					x.updatedAt = [ ...new Set(x.updatedAt) ];
+					x.Publisher = [ ...new Set(x.Publisher) ];
+					x.ssp = [ ...new Set(x.ssp) ];
+					// x.unique = 0;
+					var testappubid = x.apppubidpo;
+					var forda;
+					if (testappubid && testappubid.length)
+						for (var i = 0; i < testappubid.length; i++) {
+							if (testappubid && testappubid[i] && testappubid[i].publishername) {
+								forda = testappubid[i];
+								break;
+							}
+						}
+					x.apppubidpo = forda;
+					x.spent = tempSpent[x.PublisherSplit];
+					x.uniqueData = tempUser[x.PublisherSplit];
+					x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
+					summaryReport.impressions += parseInt(x.impressions);
+					summaryReport.clicks += parseInt(x.clicks);
+					summaryReport.complete += parseInt(x.complete);
+					summaryReport.midpoint += parseInt(x.midpoint);
+					summaryReport.start += parseInt(x.start);
+					summaryReport.firstQuartile += parseInt(x.firstQuartile);
+					summaryReport.thirdQuartile += parseInt(x.thirdQuartile);
+					x.updatedAt.sort(function(a, b) {
+						return new Date(b) - new Date(a);
+					});
+					x.Publisher = x.Publisher[0];
+					var numberta = 0;
+					var targetfii =
+						targetgetter.audio &&
+						targetgetter.audio.filter(
+							(y) => arrayincludefinder(x.campaignId, y.campaignId) && x.Publisher === y.appId
+						);
+					targetfii &&
+						targetfii.map((cx) => {
+							numberta += cx.targetImpression;
+						});
+					// console.log(numberta);
+					x.targetimpre = numberta;
+					x.updatedAt = x.updatedAt[0];
+					x.ssp = x.ssp ? x.ssp[0] : '';
+					x.campaignId = x.campaignId[0];
+					updatedAtTimes.push(x.updatedAt);
+				});
+				updatedAtTimes.sort(function(a, b) {
+					return new Date(b) - new Date(a);
+				});
+				var response = {};
+				response.data = result;
+				response.summary = summaryReport;
+				response.allrecentupdate = updatedAtTimes ? updatedAtTimes[0] : undefined;
+				res.json(response);
+			} else {
+				res.json({ message: 'No reports found...' });
+			}
+		});
+});
+
 router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 	const { campaignId } = req.body;
 	// var ids = campaignId.map(id => mongoose.Types.ObjectId(id))
@@ -1285,8 +1472,8 @@ router.put('/reportbycamp', adminauth, async (req, res) => {
 	//publisher
 	try {
 		const { campaignId, pubname } = req.body;
-		console.log(campaignId)
-		let ids=campaignId.map((id)=>mongoose.Types.ObjectId(id));
+		console.log(campaignId);
+		let ids = campaignId.map((id) => mongoose.Types.ObjectId(id));
 		// var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
 		// var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
 		// var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
@@ -1304,15 +1491,17 @@ router.put('/reportbycamp', adminauth, async (req, res) => {
 				},
 				{ $addFields: { pubname: { $first: '$appdet' } } },
 				{ $match: { 'pubname.publishername': pubname } },
-				{$group:{
-					_id:{date:"$date"},
-					impression:{$sum:"$impression"},
-					CompanionClickTracking:{$sum:"$CompanionClickTracking"},
-					SovClickTracking:{$sum:"$SovClickTracking"},
-					pubname:{$first:"$pubname"},
-					appId:{$first:"$appId"}
-				}},
-				{ $sort: { "_id.date": -1 } }
+				{
+					$group: {
+						_id: { date: '$date' },
+						impression: { $sum: '$impression' },
+						CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+						SovClickTracking: { $sum: '$SovClickTracking' },
+						pubname: { $first: '$pubname' },
+						appId: { $first: '$appId' }
+					}
+				},
+				{ $sort: { '_id.date': -1 } }
 			])
 			.allowDiskUse(true);
 		let data = reports;
