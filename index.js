@@ -2598,11 +2598,13 @@ const idfindspilter = async (respo, onDemand, podcast, audio, display, video, mu
 			});
 			data.ids.video = [ ...new Set(data.ids.video) ];
 		} else {
-			data.ids.audio = ids;
-			var dattarget = data.TargetImpressions;
-			dattarget.map((ar) => {
-				data.ids.audimpression += parseInt(ar.TR);
-			});
+			if (ids && ids.length) {
+				data.ids.audio = ids;
+				var dattarget = data.TargetImpressions && data.TargetImpressions.length ? data.TargetImpressions : [];
+				dattarget.map((ar) => {
+					data.ids.audimpression += parseInt(ar.TR);
+				});
+			}
 		}
 		// var resstartDate = [].concat.apply([], data.startDate);
 		// resstartDate = [ ...new Set(resstartDate) ];
