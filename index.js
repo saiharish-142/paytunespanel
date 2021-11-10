@@ -2296,7 +2296,7 @@ async function FrequencyDataRefresher() {
 	});
 }
 
-// FrequencyPublisherRefresher();
+FrequencyPublisherRefresher();
 async function FrequencyPublisherRefresher() {
 	// let date = new Date(new Date());
 	// date.setDate(date.getDate() - 1);
@@ -2306,7 +2306,7 @@ async function FrequencyPublisherRefresher() {
 	// const date1 = date.getDate();
 	// let yesterday = `${year}-${month}-${date1}`;
 	// console.log('yesterday', yesterday);
-	var datee = new Date('2021-09-05').toISOString();
+	var datee = new Date('2021-10-10').toISOString();
 	// var datee = new Date(new Date());
 	// datee.setDate(datee.getDate() - 1);
 	// var date = datee.getDate();
@@ -2348,7 +2348,7 @@ async function FrequencyPublisherRefresher() {
 					click: '$click'
 				}
 			},
-			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+			{ $match: { test: { $gte: datee, $lt: chevk2 } } },
 			{
 				$group: {
 					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
