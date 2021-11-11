@@ -2359,7 +2359,7 @@ async function FrequencyPublisherRefresher(datae) {
 					click: '$click'
 				}
 			},
-			{ $match: { test: { $gte: datee, $lt: chevk2 } } },
+			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
 			{
 				$group: {
 					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
