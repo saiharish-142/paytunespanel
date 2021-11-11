@@ -1426,7 +1426,12 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 				response.data = result;
 				response.summary = summaryReport;
 				response.allrecentupdate = updatedAtTimes ? updatedAtTimes[0] : undefined;
-				res.json(response);
+				res.json({
+					data: response.data,
+					unique: tempUser,
+					summary: summaryReport,
+					allrecentupdate: updatedAtTimes ? updatedAtTimes[0] : undefined
+				});
 			} else {
 				res.json({ message: 'No reports found...' });
 			}
