@@ -1812,6 +1812,7 @@ const admin = mongoose.model('admin');
 const campaignwisereports = mongoose.model('campaignwisereports');
 var email = 'support@paytunes.in';
 var aws = require('aws-sdk');
+const adminauth = require('./authenMiddleware/adminauth');
 aws.config.loadFromPath(__dirname + '/config.json');
 
 cron.schedule('00 09 * * *', function() {
@@ -2297,7 +2298,7 @@ async function FrequencyDataRefresher() {
 }
 
 // FrequencyPublisherRefresher();
-async function FrequencyPublisherRefresher() {
+async function FrequencyPublisherRefresher(datae) {
 	// let date = new Date(new Date());
 	// date.setDate(date.getDate() - 1);
 	// date = new Date(date);
@@ -2329,6 +2330,10 @@ async function FrequencyPublisherRefresher() {
 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
 	cyear = cdatee.getFullYear();
 	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	if (datae) {
+		console.log(datae);
+		chevk = datae;
+	}
 	console.log(datee, chevk, chevk2);
 	// datee2.setDate(datee2.getDate());
 	// var date2 = datee2.getDate();
@@ -2348,7 +2353,7 @@ async function FrequencyPublisherRefresher() {
 					click: '$click'
 				}
 			},
-			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+			{ $match: { test: { $gte: datee, $lt: chevk2 } } },
 			{
 				$group: {
 					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
