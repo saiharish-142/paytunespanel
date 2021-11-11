@@ -1388,7 +1388,7 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 						}
 					x.apppubidpo = forda;
 					x.spent = tempSpent[x.PublisherSplit];
-					console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
+					// console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
 					x.uniqueData = tempUser[x.PublisherSplit] ? tempUser[x.PublisherSplit] : 0;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
 					summaryReport.impressions += parseInt(x.impressions);
