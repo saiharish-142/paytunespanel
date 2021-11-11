@@ -2296,7 +2296,7 @@ async function FrequencyDataRefresher() {
 	});
 }
 
-FrequencyPublisherRefresher();
+// FrequencyPublisherRefresher();
 async function FrequencyPublisherRefresher() {
 	// let date = new Date(new Date());
 	// date.setDate(date.getDate() - 1);
@@ -2348,7 +2348,7 @@ async function FrequencyPublisherRefresher() {
 					click: '$click'
 				}
 			},
-			{ $match: { test: { $gte: datee, $lt: chevk2 } } },
+			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
 			{
 				$group: {
 					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
@@ -2372,10 +2372,10 @@ async function FrequencyPublisherRefresher() {
 				campaignId: frequenct._id.campaignId,
 				appId: frequenct._id.apppubid,
 				rtbType: frequenct._id.rtbType,
-				impression: frequenct.impression,
+				impression: frequenct.impression ? frequenct.impression : 0,
 				createdOn: chevk2,
-				click: frequenct.click,
-				users: frequenct.users
+				click: frequenct.click ? frequenct.click : 0,
+				users: frequenct.users ? frequenct.users : 0
 			});
 			await newzip.save().catch((err) => console.log(err));
 			console.log('created', coo--);
@@ -2383,9 +2383,9 @@ async function FrequencyPublisherRefresher() {
 			if (match.createdOn === chevk2) {
 				console.log('Already Done', coo--);
 			} else {
-				match.impression += frequenct.impressions;
-				match.click += frequenct.click;
-				match.users += frequenct.users;
+				match.impression += frequenct.impressions ? frequenct.impressions : 0;
+				match.click += frequenct.click ? frequenct.click : 0;
+				match.users += frequenct.users ? frequenct.users : 0;
 				match.createdOn = chevk2;
 				match
 					.save()

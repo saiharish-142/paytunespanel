@@ -10,6 +10,16 @@ const adsetting = mongoose.model('adsetting');
 const freqpublishreports = mongoose.model('freqpublishreports');
 const spentreports = mongoose.model('spentreports');
 
+const saavnids = [
+	'22308',
+	'22310',
+	'5a1e46beeb993dc67979412e',
+	'5efac6f9aeeeb92b8a1ee056',
+	'11726',
+	'com.jio.media.jiobeats',
+	'441813332'
+];
+
 router.get('/reports', adminauth, (req, res) => {
 	campaignwisereports
 		.find()
@@ -680,7 +690,8 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					audio: [
 						{
 							$match: {
-								campaignId: { $in: audio }
+								campaignId: { $in: audio },
+								appubid: { $nin: saavnids }
 							}
 						},
 						{
@@ -733,7 +744,8 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					display: [
 						{
 							$match: {
-								campaignId: { $in: display }
+								campaignId: { $in: display },
+								appubid: { $nin: saavnids }
 							}
 						},
 						{
@@ -786,7 +798,8 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					video: [
 						{
 							$match: {
-								campaignId: { $in: video }
+								campaignId: { $in: video },
+								appubid: { $nin: saavnids }
 							}
 						},
 						{
@@ -1243,7 +1256,8 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 		.aggregate([
 			{
 				$match: {
-					campaignId: { $in: ids }
+					campaignId: { $in: ids },
+					appubid: { $nin: saavnids }
 				}
 			},
 			{
@@ -1378,7 +1392,8 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 						}
 					x.apppubidpo = forda;
 					x.spent = tempSpent[x.PublisherSplit];
-					x.uniqueData = tempUser[x.PublisherSplit];
+					console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
+					x.uniqueData = tempUser[x.PublisherSplit] ? tempUser[x.PublisherSplit] : 0;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
 					summaryReport.impressions += parseInt(x.impressions);
 					summaryReport.clicks += parseInt(x.clicks);
