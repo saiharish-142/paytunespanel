@@ -690,8 +690,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					audio: [
 						{
 							$match: {
-								campaignId: { $in: audio },
-								appubid: { $nin: saavnids }
+								campaignId: { $in: audio }
 							}
 						},
 						{
@@ -744,8 +743,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					display: [
 						{
 							$match: {
-								campaignId: { $in: display },
-								appubid: { $nin: saavnids }
+								campaignId: { $in: display }
 							}
 						},
 						{
@@ -798,8 +796,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					video: [
 						{
 							$match: {
-								campaignId: { $in: video },
-								appubid: { $nin: saavnids }
+								campaignId: { $in: video }
 							}
 						},
 						{
@@ -1256,8 +1253,7 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 		.aggregate([
 			{
 				$match: {
-					campaignId: { $in: ids },
-					appubid: { $nin: saavnids }
+					campaignId: { $in: ids }
 				}
 			},
 			{
@@ -1446,7 +1442,8 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 		.aggregate([
 			{
 				$match: {
-					campaignId: { $in: audio }
+					campaignId: { $in: audio },
+					appubid: { $nin: saavnids }
 				}
 			},
 			{
