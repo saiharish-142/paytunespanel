@@ -2297,6 +2297,12 @@ async function FrequencyDataRefresher() {
 	});
 }
 
+app.put('/callfrequencypubliser', adminauth, (req, res) => {
+	const { date } = req.body;
+	var datee = new Date(date).toISOString();
+	FrequencyPublisherRefresher(datee);
+});
+
 // FrequencyPublisherRefresher();
 async function FrequencyPublisherRefresher(datae) {
 	// let date = new Date(new Date());
