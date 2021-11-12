@@ -982,7 +982,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					}
 				}
 			}
-			console.log(tempaudio);
+			// console.log(tempaudio);
 			audioCompleteReport.uniquedata3 = tempaudio;
 			audioCompleteReport.uniquedata = tempaudio;
 			audioCompleteReport.uniquedata2 = datmaaudio;
@@ -1089,6 +1089,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 						targetfii.map((cx) => {
 							numberta += cx.targetImpression;
 						});
+					// console.log(numberta, x.campaignId, x.Publisher);
 					// console.log(numberta);
 					x.targetimpre = numberta;
 					x.updatedAt = x.updatedAt[0];
@@ -1322,6 +1323,7 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 						}
 					])
 					.catch((err) => console.log(err));
+				// console.log(targetgetter);
 				var summaryReport = {
 					impressions: 0,
 					clicks: 0,
@@ -1404,15 +1406,15 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 					x.Publisher = x.Publisher[0];
 					var numberta = 0;
 					var targetfii =
-						targetgetter.audio &&
-						targetgetter.audio.filter(
+						targetgetter &&
+						targetgetter.filter(
 							(y) => arrayincludefinder(x.campaignId, y.campaignId) && x.Publisher === y.appId
 						);
 					targetfii &&
 						targetfii.map((cx) => {
 							numberta += cx.targetImpression;
 						});
-					// console.log(numberta);
+					// console.log(numberta, x.campaignId, x.Publisher);
 					x.targetimpre = numberta;
 					x.updatedAt = x.updatedAt[0];
 					x.ssp = x.ssp ? x.ssp[0] : '';
@@ -1423,12 +1425,13 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 					return new Date(b) - new Date(a);
 				});
 				var response = {};
+				summaryReport.unique = [];
 				response.data = result;
 				response.summary = summaryReport;
 				response.allrecentupdate = updatedAtTimes ? updatedAtTimes[0] : undefined;
 				res.json({
 					data: response.data,
-					unique: tempUser,
+					// unique: tempUser,
 					summary: summaryReport,
 					allrecentupdate: updatedAtTimes ? updatedAtTimes[0] : undefined
 				});
