@@ -1970,6 +1970,15 @@ async function PublisherConsoleLoaderTypeWise(array, type) {
 
 var fixDate = new Date('2021-07-01').toISOString();
 console.log(fixDate);
+const saavnids = [
+	'22308',
+	'22310',
+	'5a1e46beeb993dc67979412e',
+	'5efac6f9aeeeb92b8a1ee056',
+	'11726',
+	'com.jio.media.jiobeats',
+	'441813332'
+];
 
 // PublisherDataRefresher();
 async function PublisherDataRefresher() {
@@ -2798,7 +2807,7 @@ async function DailyReportMailer() {
 							? mashh[mashh.das[j]].map((x) => mongoose.Types.ObjectId(x))
 							: [];
 						let totalcom = await campaignwisereports.aggregate([
-							{ $match: { campaignId: { $in: idsa } } },
+							{ $match: { campaignId: { $in: idsa }, appubid: { $nin: saavnids } } },
 							{
 								$group: {
 									_id: null,
@@ -2815,7 +2824,7 @@ async function DailyReportMailer() {
 						]);
 						totalcom = totalcom && totalcom[0];
 						let reportdaily = await campaignwisereports.aggregate([
-							{ $match: { campaignId: { $in: idsa } } },
+							{ $match: { campaignId: { $in: idsa }, appubid: { $nin: saavnids } } },
 							{
 								$group: {
 									_id: { date: '$date' },
