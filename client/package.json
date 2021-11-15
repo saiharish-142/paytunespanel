@@ -1,0 +1,44 @@
+{
+  "name": "admin-app",
+  "version": "0.1.0",
+  "proxy": "http://localhost:5000",
+  "private": true,
+  "dependencies": {
+    "@babel/plugin-transform-modules-umd": "^7.14.0",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "materialize-css": "^1.0.0-rc.2",
+    "react": "^16.13.1",
+    "react-csv": "^2.0.3",
+    "react-data-export": "^0.6.0",
+    "react-dom": "^16.13.1",
+    "react-scripts": "3.4.3",
+    "xlsx": "^0.17.0"
+  },
+  "devServer": {
+    "disableHostCheck": true
+  },
+  "scripts": {
+    "start": " react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "deploy-production": "react-scripts build && scp -r ./build/* ptazurehgktracking@23.98.35.74:/var/www/paytunespanel/client"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
