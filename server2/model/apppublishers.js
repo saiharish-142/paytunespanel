@@ -7,4 +7,4 @@ var apppublishersSchema = new mongoose.Schema({
 });
 
 mongoose.model('apppublishers',apppublishersSchema)
-// module.exports=apppublishersSchema
+module.exports=apppublishersSchema

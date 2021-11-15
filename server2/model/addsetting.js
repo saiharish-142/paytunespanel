@@ -36,4 +36,4 @@ const adsettingsSchema = new mongoose.Schema({
 })
 
 mongoose.model('adsetting',adsettingsSchema)
-// module.exports=adsettingsSchema
+module.exports=adsettingsSchema
