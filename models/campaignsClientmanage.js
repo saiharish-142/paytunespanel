@@ -6,6 +6,7 @@ const ClientCampaignsetSchema = new mongoose.Schema({
 	campaignName: { type: String, required: true },
 	searchName: { type: String, required: true },
 	type: { type: String, required: true },
+	targetemail: [ { type: String } ],
 	PricingModel: { type: String },
 	endDate: { type: Date },
 	startDate: { type: Date },

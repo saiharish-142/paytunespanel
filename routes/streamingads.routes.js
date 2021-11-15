@@ -1013,6 +1013,8 @@ router.put('/groupedsingleClient', adminauth, (req, res) => {
 			{
 				$project: {
 					id: '$_id',
+					startDate: '$startDate',
+					endDate: '$endDate',
 					AdTitle: { $toLower: '$AdTitle' }
 				}
 			},
@@ -1025,7 +1027,9 @@ router.put('/groupedsingleClient', adminauth, (req, res) => {
 				$group: {
 					_id: null,
 					id: { $push: '$id' },
-					Adtitle: { $push: '$AdTitle' }
+					Adtitle: { $push: '$AdTitle' },
+					startDate: { $push: '$startDate' },
+					endDate: { $push: '$endDate' }
 				}
 			}
 		])
@@ -1033,6 +1037,18 @@ router.put('/groupedsingleClient', adminauth, (req, res) => {
 				var data;
 				data = respo.length && respo[0];
 				if (data) {
+					var startD =
+						data.startDate && data.startDate.length
+							? data.startDate.sort(function(a, b) {
+									return new Date(a) - new Date(b);
+								})[0]
+							: '';
+					var endD =
+						data.endDate && data.endDate.length
+							? data.endDate.sort(function(b, a) {
+									return new Date(a) - new Date(b);
+								})[0]
+							: '';
 					var ids =
 						typeof campaignId !== 'undefined' &&
 						typeof campaignId !== 'string' &&
@@ -1055,6 +1071,8 @@ router.put('/groupedsingleClient', adminauth, (req, res) => {
 						vidimpression: 0
 					};
 					data.ids['combined'] = ids;
+					data.startDate = startD;
+					data.endDate = endD;
 					// data.TargetImpressions = [ ...new Set(data.TargetImpressions) ];
 					id_spliter = remove_duplicates_arrayobject(id_spliter, 'campaignId');
 					var ids_cam = [];
@@ -1120,11 +1138,14 @@ router.put('/groupedsingleClient', adminauth, (req, res) => {
 						});
 						data.ids.video = [ ...new Set(data.ids.video) ];
 					} else {
-						data.ids.audio = ids;
-						var dattarget = data.TargetImpressions;
-						dattarget.map((ar) => {
-							data.ids.audimpression += parseInt(ar.TR);
-						});
+						if (ids && ids.length) {
+							data.ids.audio = ids;
+							var dattarget =
+								data.TargetImpressions && data.TargetImpressions.length ? data.TargetImpressions : [];
+							dattarget.map((ar) => {
+								data.ids.audimpression += parseInt(ar.TR);
+							});
+						}
 					}
 					// var resstartDate = [].concat.apply([], data.startDate);
 					// resstartDate = [ ...new Set(resstartDate) ];

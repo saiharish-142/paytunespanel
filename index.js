@@ -811,7 +811,7 @@ async function CategoryRefresher() {
 
 // tempfunc();
 
-cron.schedule('30 1 * * *', function () {
+cron.schedule('30 1 * * *', function() {
 	PodcastEpisodeRefresher();
 });
 // PodcastEpisodeRefresher();
@@ -1814,6 +1814,7 @@ const admin = mongoose.model('admin');
 const campaignwisereports = mongoose.model('campaignwisereports');
 var email = 'support@paytunes.in';
 var aws = require('aws-sdk');
+const adminauth = require('./authenMiddleware/adminauth');
 aws.config.loadFromPath(__dirname + '/config.json');
 
 cron.schedule('00 09 * * *', function() {
@@ -1971,6 +1972,15 @@ async function PublisherConsoleLoaderTypeWise(array, type) {
 
 var fixDate = new Date('2021-07-01').toISOString();
 console.log(fixDate);
+const saavnids = [
+	'22308',
+	'22310',
+	'5a1e46beeb993dc67979412e',
+	'5efac6f9aeeeb92b8a1ee056',
+	'11726',
+	'com.jio.media.jiobeats',
+	'441813332'
+];
 
 // PublisherDataRefresher();
 async function PublisherDataRefresher() {
@@ -2298,8 +2308,14 @@ async function FrequencyDataRefresher() {
 	});
 }
 
+app.put('/callfrequencypubliser', adminauth, (req, res) => {
+	const { date } = req.body;
+	var datee = new Date(date).toISOString();
+	FrequencyPublisherRefresher(datee);
+});
+
 // FrequencyPublisherRefresher();
-async function FrequencyPublisherRefresher() {
+async function FrequencyPublisherRefresher(datae) {
 	// let date = new Date(new Date());
 	// date.setDate(date.getDate() - 1);
 	// date = new Date(date);
@@ -2308,7 +2324,7 @@ async function FrequencyPublisherRefresher() {
 	// const date1 = date.getDate();
 	// let yesterday = `${year}-${month}-${date1}`;
 	// console.log('yesterday', yesterday);
-	var datee = new Date('2021-09-05').toISOString();
+	var datee = new Date('2021-10-10').toISOString();
 	// var datee = new Date(new Date());
 	// datee.setDate(datee.getDate() - 1);
 	// var date = datee.getDate();
@@ -2331,6 +2347,10 @@ async function FrequencyPublisherRefresher() {
 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
 	cyear = cdatee.getFullYear();
 	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	if (datae) {
+		console.log(datae);
+		chevk = datae;
+	}
 	console.log(datee, chevk, chevk2);
 	// datee2.setDate(datee2.getDate());
 	// var date2 = datee2.getDate();
@@ -2374,10 +2394,10 @@ async function FrequencyPublisherRefresher() {
 				campaignId: frequenct._id.campaignId,
 				appId: frequenct._id.apppubid,
 				rtbType: frequenct._id.rtbType,
-				impression: frequenct.impression,
+				impression: frequenct.impression ? frequenct.impression : 0,
 				createdOn: chevk2,
-				click: frequenct.click,
-				users: frequenct.users
+				click: frequenct.click ? frequenct.click : 0,
+				users: frequenct.users ? frequenct.users : 0
 			});
 			await newzip.save().catch((err) => console.log(err));
 			console.log('created', coo--);
@@ -2385,9 +2405,9 @@ async function FrequencyPublisherRefresher() {
 			if (match.createdOn === chevk2) {
 				console.log('Already Done', coo--);
 			} else {
-				match.impression += frequenct.impressions;
-				match.click += frequenct.click;
-				match.users += frequenct.users;
+				match.impression += frequenct.impressions ? frequenct.impressions : 0;
+				match.click += frequenct.click ? frequenct.click : 0;
+				match.users += frequenct.users ? frequenct.users : 0;
 				match.createdOn = chevk2;
 				match
 					.save()
@@ -2600,11 +2620,13 @@ const idfindspilter = async (respo, onDemand, podcast, audio, display, video, mu
 			});
 			data.ids.video = [ ...new Set(data.ids.video) ];
 		} else {
-			data.ids.audio = ids;
-			var dattarget = data.TargetImpressions;
-			dattarget.map((ar) => {
-				data.ids.audimpression += parseInt(ar.TR);
-			});
+			if (ids && ids.length) {
+				data.ids.audio = ids;
+				var dattarget = data.TargetImpressions && data.TargetImpressions.length ? data.TargetImpressions : [];
+				dattarget.map((ar) => {
+					data.ids.audimpression += parseInt(ar.TR);
+				});
+			}
 		}
 		// var resstartDate = [].concat.apply([], data.startDate);
 		// resstartDate = [ ...new Set(resstartDate) ];
@@ -2749,7 +2771,7 @@ async function DailyReportMailer() {
 				var endStae = new Date() > new Date(x.endDate);
 				if (endStae) {
 					console.log('campaign completed');
-				} else if (x.type === 'campaign') {
+				} else if (x.type === 'campaign' && x.targetemail && x.targetemail.length) {
 					let formdata = await StreamingAds.aggregate([
 						{
 							$project: {
@@ -2787,7 +2809,7 @@ async function DailyReportMailer() {
 							? mashh[mashh.das[j]].map((x) => mongoose.Types.ObjectId(x))
 							: [];
 						let totalcom = await campaignwisereports.aggregate([
-							{ $match: { campaignId: { $in: idsa } } },
+							{ $match: { campaignId: { $in: idsa }, appubid: { $nin: saavnids } } },
 							{
 								$group: {
 									_id: null,
@@ -2804,7 +2826,7 @@ async function DailyReportMailer() {
 						]);
 						totalcom = totalcom && totalcom[0];
 						let reportdaily = await campaignwisereports.aggregate([
-							{ $match: { campaignId: { $in: idsa } } },
+							{ $match: { campaignId: { $in: idsa }, appubid: { $nin: saavnids } } },
 							{
 								$group: {
 									_id: { date: '$date' },
@@ -2857,7 +2879,7 @@ async function DailyReportMailer() {
 							});
 						reportdaily.push({
 							date: 'Total',
-							impressions: totimp,
+							impressions: totImp,
 							clicks: totCli,
 							complete: totCom
 						});
@@ -2869,7 +2891,7 @@ async function DailyReportMailer() {
 						Destination: {
 							BccAddresses: [],
 							CcAddresses: [],
-							ToAddresses: mail
+							ToAddresses: x.targetemail
 						},
 						Message: {
 							Body: {
