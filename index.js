@@ -2759,6 +2759,14 @@ async function DailyReportMailer() {
 	// const HTTP = new XMLHttpRequest();
 	// HTTP.open('put', 'http://23.98.35.74:5000/streamingads/groupedsingleClient');
 	var ses = new aws.SES();
+	var cdate, cmonth, cyear;
+	var cdatee = new Date(new Date());
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk2 = `${cyear}-${cmonth}-${cdate}`;
 	for (var i = 0; i < users.length; i++) {
 		var mail = users[i].targetemail ? users[i].targetemail : [];
 		var id = users[i]._id;
@@ -2832,6 +2840,7 @@ async function DailyReportMailer() {
 									_id: { date: '$date' },
 									impressions: { $sum: '$impression' },
 									complete: { $sum: '$complete' },
+									firstQuartile: { $sum: '$firstQuartile' },
 									clicks: { $sum: '$CompanionClickTracking' },
 									region: { $push: '$region' }
 								}
@@ -2840,6 +2849,7 @@ async function DailyReportMailer() {
 								$project: {
 									date: '$_id.date',
 									impressions: '$impressions',
+									firstQuartile: '$firstQuartile',
 									complete: '$complete',
 									clicks: '$clicks',
 									region: '$region',
@@ -2860,12 +2870,14 @@ async function DailyReportMailer() {
 							totCli += dax.clicks;
 							totCom += dax.complete;
 						});
+						console.log(totalcom);
+						totalcom.complete = totalcom.complete / totalcom.firstQuartile * totalcom.impressions;
 						reportdaily.map((dax) => {
-							dax.impressions = totImp ? Math.trunc(dax.impressions / totImp * totalcom.impressions) : 0;
+							dax.impressions = totImp ? Math.round(dax.impressions / totImp * totalcom.impressions) : 0;
 							dax.clicks = totCli
-								? Math.trunc(dax.clicks / totCli * (totalcom.clicks + totalcom.clicks1))
+								? Math.round(dax.clicks / totCli * (totalcom.clicks + totalcom.clicks1))
 								: 0;
-							dax.complete = totCom ? Math.trunc(dax.complete / totCom * totalcom.complete) : 0;
+							dax.complete = totCom ? Math.round(dax.complete / totCom * totalcom.complete) : 0;
 							totImp1 += dax.impressions;
 							totCli1 += dax.clicks;
 							totCom1 += dax.complete;
@@ -2877,6 +2889,21 @@ async function DailyReportMailer() {
 								clicks: totCli - totCli1 > 0 ? totCli - totCli1 : 0,
 								complete: totCom - totCom1 > 0 ? totCom - totCom1 : 0
 							});
+						var dum = reportdaily.filter((x) => x.date === chevk2);
+						if (dum.length) {
+							reportdaily = reportdaily.filter((x) => x.date != chevk2);
+							var tempImp = 0,
+								tempCli = 0,
+								tempCom = 0;
+							dum.map((zx) => {
+								tempImp += zx.impressions;
+								tempCli += zx.clicks;
+								tempCom += zx.complete;
+							});
+							totImp -= tempImp;
+							totCli -= tempCli;
+							totCom -= tempCom;
+						}
 						reportdaily.push({
 							date: 'Total',
 							impressions: totImp,
@@ -2884,9 +2911,10 @@ async function DailyReportMailer() {
 							complete: totCom
 						});
 						totaldataCount[mashh.das[j]] = reportdaily;
-						// console.log(totalcom, totImp, totCli, totCom, reportdaily);
+						console.log(totalcom, totImp, totCli, totCom, reportdaily);
 						// ses.sendEmail()
 					}
+					console.log(x.searchName, mashh, totaldataCount);
 					var params = {
 						Destination: {
 							BccAddresses: [],
