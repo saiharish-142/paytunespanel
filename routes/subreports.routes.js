@@ -1750,8 +1750,20 @@ router.get('/phonedata', adminauth, async (req, res) => {
 		}
 
 		const phone = await phonemodel2.aggregate([
+			{
+				$group: {
+					_id: '$make_model',
+					impression: { $sum: '$impression' },
+					click: { $sum: '$click' },
+					release: { $first: '$release' },
+					cost: { $first: '$cost' },
+					company: { $first: '$company' },
+					city: { $first: '$city' },
+					model: { $first: '$model' },
+					type: { $first: '$type' }
+			}},
+			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $sort: { impression: -1 } },
-			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } }
 		]);
 		res.status(200).json(phone);
 	} catch (err) {
@@ -1801,6 +1813,7 @@ router.get('/phonedata_video', adminauth, async (req, res) => {
 		const phone = await phonemodel2.aggregate([
 			{ $sort: { impression: -1 } },
 			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
+
 			{ $match: { rtbType: 'video' } }
 		]);
 		res.status(200).json(phone);

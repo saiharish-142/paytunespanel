@@ -402,9 +402,9 @@ export default function Phonedata() {
 								{(searchedData.length !== 0 ? searchedData : rows)
 									.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 									.map((row) => (
-										<TableRow key={row.name}>
+										<TableRow key={row._id}>
 											<TableCell component="th" scope="row">
-												{row.make_model ? row.make_model : ''}
+												{row._id ? row._id : ''}
 											</TableCell>
 											<TableCell>{row.impression ? row.impression : ''}</TableCell>
 											<TableCell>
