@@ -164,13 +164,13 @@ async function resScript() {
 	})
 }
 
-cron.schedule('52 11 * * *',podcastscript)
-cron.schedule('43 11 * * *',UareqScript)
-cron.schedule('45 11 * * *',apppublisherscript)
-// cron.schedule('35 11 * * *',Addsettingscript)
-// cron.schedule('40 00 * * *',reqScript)
-// cron.schedule('45 00 * * *',resScript)
-cron.schedule('48 11 * * *',ZipreqScript)
+cron.schedule('00 1 * * *',podcastscript)
+cron.schedule('10 1 * * *',UareqScript)
+cron.schedule('20 1 * * *',apppublisherscript)
+cron.schedule('35 1 * * *',Addsettingscript)
+cron.schedule('40 1 * * *',reqScript)
+cron.schedule('45 1 * * *',resScript)
+cron.schedule('50 1 * * *',ZipreqScript)
 
 // apppublisherscript() 
 // Addsettingscript() 
