@@ -53,7 +53,7 @@ async function podcastscript() {
 	let results = await EpisodeModel.aggregate([
 		{ $match: { createdOn:  {$gt: new Date(`${yesterday}T00:00:00.000Z`),$lt:new Date()  }  } },
 	])
-	console.log(results)
+	console.log('podcast',results.length)
 	results.map(async (res) => {
 		let n = new EpisodeModel1(res);
 		await n.save();
@@ -95,7 +95,7 @@ async function apppublisherscript() {
 		{ $sort: { _id: -1 } },
 		{ $limit: 1 }
 	])
-	console.log(latestiddetails)
+	console.log('apppub',latestiddetails)
 	let results = await Apppublisher2.aggregate([
 		{ $match: { _id: { $gt: latestiddetails[0]._id } } }
 	])
@@ -126,12 +126,11 @@ async function Demographyscript() {
 
 async function ZipreqScript() {
 	let yesterday = getyesterday();
-	console.log()
 	let results = await Zipreq2.aggregate([
 		{ $match: { date: yesterday } },
 		{$sort:{date:1}}
 	]).allowDiskUse(true)
-	console.log(results.length)
+	console.log('zipreq',results.length)
 	results.map(async (res) => {
 		let n = new Zipreq1(res);
 		await n.save();
@@ -165,13 +164,13 @@ async function resScript() {
 	})
 }
 
-// cron.schedule('15 00 * * *',podcastscript)
-// cron.schedule('20 00 * * *',UareqScript)
-// cron.schedule('25 00 * * *',apppublisherscript)
-cron.schedule('35 11 * * *',Addsettingscript)
+cron.schedule('52 11 * * *',podcastscript)
+cron.schedule('43 11 * * *',UareqScript)
+cron.schedule('45 11 * * *',apppublisherscript)
+// cron.schedule('35 11 * * *',Addsettingscript)
 // cron.schedule('40 00 * * *',reqScript)
 // cron.schedule('45 00 * * *',resScript)
-// cron.schedule('50 00 * * *',ZipreqScript)
+cron.schedule('48 11 * * *',ZipreqScript)
 
 // apppublisherscript() 
 // Addsettingscript() 
