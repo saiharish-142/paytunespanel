@@ -15,16 +15,16 @@ const Adsetting1 = db1.model('adsettings', AdsettingSchema)
 const Adsetting2 = db2.model('adsettings', AdsettingSchema)
 const Apppublisher1 = db1.model('apppublishers', apppublisherschema)
 const Apppublisher2 = db2.model('apppublishers', apppublisherschema)
-// const Zipreq1=db1.model('zipreqreports',zipreqreportsSchema);
-// const Zipreq2=db2.model('zipreqreports',zipreqreportsSchema);
-// const req1=db1.model('reqreports',reqreportsSchema);
-// const req2=db2.model('reqreports',reqreportsSchema);
-// const res1=db1.model('resreports',resreportsSchema);
-// const res2=db2.model('resreports',resreportsSchema);
-// const demography1=db1.model('demographyreports',DemographySchema)
-// const demography2=db2.model('demographyreports',DemographySchema)
-// const Uareports1=db1.model('uareqreports',Uareportschema)
-// const Uareports2=db2.model('uareqreports',Uareportschema)
+const Zipreq1=db1.model('zipreqreports',zipreqreportsSchema);
+const Zipreq2=db2.model('zipreqreports',zipreqreportsSchema);
+const req1=db1.model('reqreports',reqreportsSchema);
+const req2=db2.model('reqreports',reqreportsSchema);
+const res1=db1.model('resreports',resreportsSchema);
+const res2=db2.model('resreports',resreportsSchema);
+const demography1=db1.model('demographyreports',DemographySchema)
+const demography2=db2.model('demographyreports',DemographySchema)
+const Uareports1=db1.model('uareqreports',Uareportschema)
+const Uareports2=db2.model('uareqreports',Uareportschema)
 
 
 
@@ -51,9 +51,9 @@ function getyesterday() {
 async function podcastscript() {
 	let yesterday = getyesterday()
 	let results = await EpisodeModel.aggregate([
-		{ $match: { createdOn:  {$gt:new Date('2021-11-10')}  } },
+		{ $match: { createdOn:  {$gt: new Date(`${yesterday}T00:00:00.000Z`),$lt:new Date()  }  } },
 	])
-	console.log(1)
+	console.log(results)
 	results.map(async (res) => {
 		let n = new EpisodeModel1(res);
 		await n.save();
@@ -64,7 +64,7 @@ async function podcastscript() {
 async function UareqScript() {
 	let yesterday = getyesterday()
 	let results = await Uareports2.aggregate([
-		{ $match: { date:  {$gt:'2021-11-15'}  } },
+		{ $match: { date:  yesterday  } },
 	])
 	console.log('ua',results.length)
 	results.map(async (res) => {
@@ -77,9 +77,11 @@ async function UareqScript() {
 async function Addsettingscript() {
 
 	let yesterday = getyesterday();
+	console.log(yesterday)
 	let results = await Adsetting2.aggregate([
-		{ $match: { createdOn:  new Date(yesterday)  } },
+		{ $match: { createdOn:  {$gt:new Date(`${yesterday}T00:00:00.000Z`) ,$lt:new Date() }  } },
 	])
+	console.log(results)
 	results.map(async (res) => {
 		let n = new Adsetting1(res);
 		await n.save();
@@ -139,7 +141,7 @@ async function ZipreqScript() {
 async function reqScript() {
 	let yesterday = getyesterday();
 	let results = await req2.aggregate([
-		{ $match: { date: { $gt: '2021-09-25' } } },
+		{ $match: { date: yesterday } },
 		{$sort:{date:1}}
 	])
 	console.log('er',results[0])
@@ -151,8 +153,9 @@ async function reqScript() {
 
 async function resScript() {
 	let yesterday = getyesterday();
+	console.log(yesterday)
 	let results = await res2.aggregate([
-		{ $match: { date: { $gt: '2021-10-26' } } },
+		{ $match: { date: yesterday }},
 		{$sort:{date:1}}
 	])
 	console.log(results[0])
@@ -162,11 +165,19 @@ async function resScript() {
 	})
 }
 
-// apppublisherscript() d
-// Addsettingscript() d
-// podcastscript() d
-// ZipreqScript() d
+// cron.schedule('15 00 * * *',podcastscript)
+// cron.schedule('20 00 * * *',UareqScript)
+// cron.schedule('25 00 * * *',apppublisherscript)
+cron.schedule('35 11 * * *',Addsettingscript)
+// cron.schedule('40 00 * * *',reqScript)
+// cron.schedule('45 00 * * *',resScript)
+// cron.schedule('50 00 * * *',ZipreqScript)
+
+// apppublisherscript() 
+// Addsettingscript() 
+// podcastscript() 
+// ZipreqScript() 
 // reqScript()  d
-// resScript() d
+// resScript() 
 // UareqScript() d
 // Demographyscript()
