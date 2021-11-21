@@ -15,6 +15,9 @@ import {
 } from '../types.js';
 import { tokenConfig } from './authAction.js';
 
+var wynkids = [ '11726', '5b2210af504f3097e73e0d8b', 'com.bsbportal.music', '845083955' ];
+var hungamaids = [ '5d10c405844dd970bf41e2af' ];
+
 export const idStorer = (id) => (dispatch, getState) => {
 	// console.log(id);
 	dispatch({
@@ -33,33 +36,40 @@ export const loadReportBase = () => (dispatch, getState) => {
 	if (tokenConfig(getState).headers.Authorization) {
 		const id = getState().report.req_id;
 		console.log(id);
-		fetch(`/streamingads/groupedsingle`, {
+		fetch(`/streamingads/groupedsingleClient`, {
 			method: 'put',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + localStorage.getItem('jwt')
 			},
 			body: JSON.stringify({
-				adtitle: id
+				adtitle: id,
+				podcast: 'podcast'
 			})
 		})
 			.then((res) => res.json())
 			.then(async (result) => {
 				// settitle(result[0].AdTitle)
 				// setloading(false)
-				console.log(result);
+				var ids = result.ids;
+				if (ids.podcast && ids.podcast.length) {
+					ids.audio = ids.audio.filter((x) => !ids.podcast.includes(x));
+					ids.audimpression = ids.subimpression.mus + ids.subimpression.dem;
+				}
+				console.log(result, ids);
 				dispatch({
 					type: REPORT_BASE_LOADED,
 					payload: {
-						ids: result.ids,
+						ids: ids,
 						id: result.id,
-						title: result._id,
-						startDate: result.startDate[0],
-						endDate: result.endDate[0]
+						title: id,
+						startDate: result.startDate,
+						endDate: result.endDate
 					}
 				});
 				await dispatch(loadSpentData());
 				await dispatch(loadReport());
+				await dispatch(loadReportDiv());
 			})
 			.catch((err) => {
 				// setloading(false)
@@ -101,7 +111,7 @@ export const loadSpentData = () => (dispatch, getState) => {
 
 export const loadReport = () => (dispatch, getState) => {
 	const datast = getState().report;
-	// console.log(datast.ids.audio);
+	// console.log(datast.ids);
 	if (datast) {
 		fetch('/offreport/sumreportofcamall2', {
 			method: 'put',
@@ -246,6 +256,255 @@ export const loadReport = () => (dispatch, getState) => {
 				console.log(err);
 			});
 	}
+};
+
+export const loadReportDiv = () => async (dispatch, getState) => {
+	const datast = getState().report;
+	console.log(datast);
+	var tags = [ 'audio', 'display', 'video', 'podcast' ];
+	var data = {};
+	data.startDate = datast.startDate;
+	data.endDate = datast.endDate;
+	var summarydata = {};
+	var recentdate = [];
+	var startDate = new Date(datast.startDate);
+	var endDate = new Date(datast.endDate);
+	var curre = new Date(Date.now());
+	var wholeTime = (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24);
+	var leftTime = curre > endDate ? wholeTime : (curre.getTime() - startDate.getTime()) / (1000 * 3600 * 24);
+	data.leftTime = Math.ceil(leftTime);
+	data.wholeTime = wholeTime;
+	var wholereportsum = {
+		impressions: 0,
+		clicks: 0,
+		target: 0,
+		start: 0,
+		firstQuartile: 0,
+		midpoint: 0,
+		thirdQuartile: 0,
+		complete: 0,
+		unique: 0,
+		spent: 0,
+		avefreq: 0,
+		ctr: 0,
+		ltr: 0,
+		avgreq: 0,
+		avgach: 0,
+		balance: 0
+	};
+	for (var i = 0; i < tags.length; i++) {
+		if (datast.ids[tags[i]]) {
+			console.log(tags[i]);
+			await fetch('/offreport/sumreportofcamDiv', {
+				method: 'put',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: 'Bearer ' + localStorage.getItem('jwt')
+				},
+				body: JSON.stringify({
+					campaignId: datast.ids[tags[i]]
+				})
+			})
+				.then((res) => res.json())
+				.then((result) => {
+					// console.log(result);
+					var data2 = result;
+					data2.data.map((re) => {
+						re.publishername = re.apppubidpo
+							? re.apppubidpo.publishername ? re.apppubidpo.publishername : re.PublisherSplit
+							: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
+						re.target = re.targetimpre;
+						re.click = parseInt(re.clicks) + parseInt(re.clicks1);
+						// wholereportsum.impressions += parseInt(re.impressions);
+						// wholereportsum.clicks += re.click;
+						re.avgreq = parseInt(re.target) / parseInt(wholeTime);
+						re.avgach = parseInt(re.impressions) / parseInt(leftTime);
+						if (re.apppubidpo && re.apppubidpo.ssp === 'offline') {
+							// Humgama
+							if (hungamaids.includes(re.apppubidpo.publisherid)) {
+								re.spent = parseInt(re.impressions) * 4.25 / 100;
+								data.summary.spentValue += parseInt(re.impressions) * 4.25 / 100;
+								console.log(re.spent);
+							}
+							// Wynk
+							if (wynkids.includes(re.apppubidpo.publisherid)) {
+								re.spent = parseInt(re.impressions) * 10 / 100;
+								data.summary.spentValue += parseInt(re.impressions) * 10 / 100;
+								console.log(re.spent);
+							}
+							// wholereportsum.spent += re.spent ? parseFloat(re.spent) : 0;
+							// wholereportsum.spent += re.unqiueData ? parseFloat(re.unqiueData) : 0;
+							re.unique = re.unqiueData;
+						}
+						// console.log(re.uniqueData);
+					});
+					wholereportsum.impressions += data2.summary.impressions;
+					wholereportsum.clicks += data2.summary.clicks;
+					wholereportsum.start += data2.summary.start;
+					wholereportsum.firstQuartile += data2.summary.firstQuartile;
+					wholereportsum.midpoint += data2.summary.midpoint;
+					wholereportsum.thirdQuartile += data2.summary.thirdQuartile;
+					wholereportsum.complete += data2.summary.complete;
+					wholereportsum.uniqueValue += data2.summary.uniqueValue;
+					wholereportsum.spentValue += data2.summary.spentValue;
+					console.log(tags[i]);
+					data[`${tags[i]}`] = data2.data;
+					summarydata[tags[i]] = data2.summary;
+					recentdate.push(data2.allrecentupdate);
+					console.log(data2);
+				})
+				.catch((err) => console.log(err));
+		}
+	}
+	data['complete'] = wholereportsum;
+	recentdate = recentdate.sort(function(a, b) {
+		return new Date(a) - new Date(b);
+	});
+	console.log(data, summarydata, recentdate);
+	// if (datast) {
+	// 	fetch('/offreport/sumreportofcamall2', {
+	// 		method: 'put',
+	// 		headers: {
+	// 			'Content-Type': 'application/json',
+	// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+	// 		},
+	// 		body: JSON.stringify({
+	// 			campaignId: datast.ids
+	// 		})
+	// 	})
+	// 		.then((res) => res.json())
+	// 		.then((result) => {
+	// 			console.log(result);
+	// 			var data = result;
+	// 			var startDate = new Date(datast.startDate);
+	// 			var endDate = new Date(datast.endDate);
+	// 			var curre = new Date(Date.now());
+	// 			var wholeTime = (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24);
+	// 			var leftTime =
+	// 				curre > endDate ? wholeTime : (curre.getTime() - startDate.getTime()) / (1000 * 3600 * 24);
+	// 			data.leftTime = leftTime;
+	// 			data.wholeTime = wholeTime;
+	// 			var audiospentOffline = 0;
+	// 			var displayspentOffline = 0;
+	// 			var videospentOffline = 0;
+	// 			var audiouniquePublisher = 0;
+	// 			var displayuniquePublisher = 0;
+	// 			var videouniquePublisher = 0;
+	// 			if (!data.audio) {
+	// 				data.audio = [];
+	// 			}
+	// 			// else {
+	// 			// 	data.audio = data.audio.filter((x) => x.impressions > 0);
+	// 			// }
+	// 			if (!data.display) {
+	// 				data.display = [];
+	// 			}
+	// 			// else {
+	// 			// 	data.display = data.display.filter((x) => x.impressions > 0);
+	// 			// }
+	// 			if (!data.video) {
+	// 				data.video = [];
+	// 			}
+	// 			// else {
+	// 			// 	data.video = data.video.filter((x) => x.impressions > 0);
+	// 			// }
+	// 			data.audio.length &&
+	// 				data.audio.map((re) => {
+	// 					re.publishername = re.apppubidpo
+	// 						? re.apppubidpo.publishername ? re.apppubidpo.publishername : re.PublisherSplit
+	// 						: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
+	// 					// re.ssp = re.ssp.length ? re.ssp[0] : re.apppubidpo.length ? re.apppubidpo[0].ssp : null;
+	// 					re.target = re.targetimpre;
+	// 					audiouniquePublisher += parseInt(re.unique);
+	// 					re.avgreq = parseInt(re.target) / parseInt(wholeTime);
+	// 					re.avgach = parseInt(re.impressions) / parseInt(leftTime);
+	// 					re.click = parseInt(re.clicks) + parseInt(re.clicks1);
+	// 					re.ctr =
+	// 						parseInt(re.click) / parseInt(re.impressions)
+	// 							? parseInt(re.click) * 100 / parseInt(re.impressions)
+	// 							: 0;
+	// 					if (re.apppubidpo && re.apppubidpo[0] && re.apppubidpo[0].ssp === 'offline') {
+	// 						// Humgama
+	// 						if (re.apppubidpo[0].publishername === 'Hungama') {
+	// 							audiospentOffline += parseInt(re.impressions) * 4.25 / 100;
+	// 						}
+	// 						// Wynk
+	// 						if (re.apppubidpo[0].publishername === 'Wynk') {
+	// 							audiospentOffline += parseInt(re.impressions) * 10 / 100;
+	// 						}
+	// 					}
+	// 				});
+	// 			data.display.length &&
+	// 				data.display.map((re) => {
+	// 					re.publishername = re.apppubidpo
+	// 						? re.apppubidpo.publishername ? re.apppubidpo.publishername : re.PublisherSplit
+	// 						: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
+	// 					// re.ssp = re.ssp.length ? re.ssp[0] : re.apppubidpo.length ? re.apppubidpo[0].ssp : null;
+	// 					displayuniquePublisher += parseInt(re.unique);
+	// 					re.target = datast.ids.disimpression;
+	// 					re.avgreq = parseInt(re.target) / parseInt(wholeTime);
+	// 					re.avgach = parseInt(re.impressions) / parseInt(leftTime);
+	// 					re.click = parseInt(re.clicks) + parseInt(re.clicks1);
+	// 					re.ctr =
+	// 						parseInt(re.click) / parseInt(re.impressions)
+	// 							? parseInt(re.click) * 100 / parseInt(re.impressions)
+	// 							: 0;
+	// 					if (re.apppubidpo && re.apppubidpo[0] && re.apppubidpo[0].ssp === 'offline') {
+	// 						// Humgama
+	// 						if (re.apppubidpo[0].publishername === 'Hungama') {
+	// 							displayspentOffline += parseInt(re.impressions) * 4.25 / 100;
+	// 						}
+	// 						// Wynk
+	// 						if (re.apppubidpo[0].publishername === 'Wynk') {
+	// 							displayspentOffline += parseInt(re.impressions) * 10 / 100;
+	// 						}
+	// 					}
+	// 				});
+	// 			data.video.length &&
+	// 				data.video.map((re) => {
+	// 					re.publishername = re.apppubidpo
+	// 						? re.apppubidpo.publishername ? re.apppubidpo.publishername : re.PublisherSplit
+	// 						: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
+	// 					// re.ssp = re.ssp.length ? re.ssp[0] : re.apppubidpo.length ? re.apppubidpo[0].ssp : null;
+	// 					re.target = datast.ids.vidimpression;
+	// 					videouniquePublisher += parseInt(re.unique);
+	// 					re.avgreq = parseInt(re.target) / parseInt(wholeTime);
+	// 					re.avgach = parseInt(re.impressions) / parseInt(leftTime);
+	// 					re.click = parseInt(re.clicks) + parseInt(re.clicks1);
+	// 					re.ctr =
+	// 						parseInt(re.click) / parseInt(re.impressions)
+	// 							? parseInt(re.click) * 100 / parseInt(re.impressions)
+	// 							: 0;
+	// 					if (re.apppubidpo && re.apppubidpo[0] && re.apppubidpo[0].ssp === 'offline') {
+	// 						// Humgama
+	// 						if (re.apppubidpo[0].publishername === 'Hungama') {
+	// 							videospentOffline += parseInt(re.impressions) * 4.25 / 100;
+	// 						}
+	// 						// Wynk
+	// 						if (re.apppubidpo[0].publishername === 'Wynk') {
+	// 							videospentOffline += parseInt(re.impressions) * 10 / 100;
+	// 						}
+	// 					}
+	// 				});
+	// 			data.audiospentOffline = audiospentOffline;
+	// 			data.displayspentOffline = displayspentOffline;
+	// 			data.videospentOffline = videospentOffline;
+	// 			data.audiouniquePublisher = audiouniquePublisher;
+	// 			data.displayuniquePublisher = displayuniquePublisher;
+	// 			data.videouniquePublisher = videouniquePublisher;
+	// 			// console.log('bhag');
+	// 			// console.log(audiouniquePublisher);
+	// 			// console.log(displayuniquePublisher);
+	// 			// console.log(videouniquePublisher);
+	// 			dispatch({
+	// 				type: REPORT_LOADED,
+	// 				payload: data
+	// 			});
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 		});
+	// }
 };
 
 export const loadReportBaseBundle = () => (dispatch, getState) => {
