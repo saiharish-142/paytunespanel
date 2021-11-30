@@ -70,6 +70,7 @@ require('./models/campaignsClientmanage');
 require('./models/freqencypublishcount.model');
 require('./models/uareqreports.models');
 require('./models/useragent.model');
+require('./models/freqCampaignWise.model');
 
 app.use('/auth', require('./routes/user.routes'));
 app.use('/streamingads', require('./routes/streamingads.routes'));
@@ -1811,6 +1812,7 @@ const campaignClient = mongoose.model('campaignClient');
 const StreamingAds = mongoose.model('streamingads');
 const adsetting = mongoose.model('adsetting');
 const admin = mongoose.model('admin');
+const freqCampWise = mongoose.model('freqCampWise');
 const campaignwisereports = mongoose.model('campaignwisereports');
 var email = 'support@paytunes.in';
 var aws = require('aws-sdk');
@@ -2314,6 +2316,20 @@ app.put('/callfrequencypubliser', adminauth, (req, res) => {
 	FrequencyPublisherRefresher(datee);
 });
 
+app.put('/callfrequencycampaign', adminauth, async (req, res) => {
+	const { date } = req.body;
+	var datee = new Date(date).toISOString();
+	var result = await FrequencyCampaignRefresher(datee);
+	res.json(result);
+});
+
+app.put('/callfrequencycampaign2', adminauth, async (req, res) => {
+	const { date } = req.body;
+	var datee = new Date(date).toISOString();
+	var result = await FrequencyCampaignRefresher2(datee);
+	res.json(result);
+});
+
 // FrequencyPublisherRefresher();
 async function FrequencyPublisherRefresher(datae) {
 	// let date = new Date(new Date());
@@ -2418,6 +2434,228 @@ async function FrequencyPublisherRefresher(datae) {
 			}
 		}
 	});
+}
+
+// FrequencyPublisherRefresher();
+async function FrequencyCampaignRefresher(datae) {
+	// let date = new Date(new Date());
+	// date.setDate(date.getDate() - 1);
+	// date = new Date(date);
+	// const year = date.getFullYear();
+	// const month = `0${date.getMonth() + 1}`;
+	// const date1 = date.getDate();
+	// let yesterday = `${year}-${month}-${date1}`;
+	// console.log('yesterday', yesterday);
+	var datee = new Date('2021-10-10').toISOString();
+	// var datee = new Date(new Date());
+	// datee.setDate(datee.getDate() - 1);
+	// var date = datee.getDate();
+	// var month = datee.getMonth() + 1;
+	// var year = datee.getFullYear();
+	// console.log(datee.getFullYear(), datee.getMonth() + 1, datee.getDate());
+	// var datee2 = new Date().toISOString();
+	var cdate, cmonth, cyear;
+	var cdatee = new Date(new Date());
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk2 = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	cdatee.setDate(cdatee.getDate() - 1);
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	if (datae) {
+		console.log(datae);
+		chevk = datae;
+	}
+	console.log(datee, chevk, chevk2);
+	// datee2.setDate(datee2.getDate());
+	// var date2 = datee2.getDate();
+	// var month2 = datee2.getMonth() + 1;
+	// var year2 = datee2.getFullYear();
+	// console.log(datee2.getFullYear(), datee2.getMonth() + 1, datee2.getDate());
+	// { $match: { test: yesterday } },
+	const frequency = await campaignifareports
+		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					campaignId: '$campaignId',
+					rtbType: '$rtbType',
+					ifa: '$ifa',
+					apppubid: '$apppubid'
+				}
+			},
+			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+			{
+				$group: {
+					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
+					ifa: { $addToSet: '$ifa' }
+				}
+			},
+			{
+				$unwind: '$ifa'
+			},
+			{
+				$group: {
+					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
+					users: { $sum: 1 }
+				}
+			}
+		])
+		.catch((err) => console.log(err));
+	console.log(frequency.length);
+	var coo = frequency.length;
+	return coo;
+	// frequency.forEach(async (frequenct) => {
+	// 	const match = await freqpublishreports.findOne({
+	// 		campaignId: frequenct._id.campaignId,
+	// 		rtbType: frequenct._id.rtbType,
+	// 		appId: frequenct._id.apppubid
+	// 	});
+	// 	if (!match) {
+	// 		const newzip = new freqpublishreports({
+	// 			campaignId: frequenct._id.campaignId,
+	// 			appId: frequenct._id.apppubid,
+	// 			rtbType: frequenct._id.rtbType,
+	// 			impression: frequenct.impression ? frequenct.impression : 0,
+	// 			createdOn: chevk2,
+	// 			click: frequenct.click ? frequenct.click : 0,
+	// 			users: frequenct.users ? frequenct.users : 0
+	// 		});
+	// 		await newzip.save().catch((err) => console.log(err));
+	// 		console.log('created', coo--);
+	// 	} else {
+	// 		if (match.createdOn === chevk2) {
+	// 			console.log('Already Done', coo--);
+	// 		} else {
+	// 			match.impression += frequenct.impressions ? frequenct.impressions : 0;
+	// 			match.click += frequenct.click ? frequenct.click : 0;
+	// 			match.users += frequenct.users ? frequenct.users : 0;
+	// 			match.createdOn = chevk2;
+	// 			match
+	// 				.save()
+	// 				.then((ss) => {
+	// 					console.log('updated', coo--);
+	// 				})
+	// 				.catch((err) => console.log(err));
+	// 		}
+	// 	}
+	// });
+}
+
+// FrequencyPublisherRefresher();
+async function FrequencyCampaignRefresher2(datae) {
+	// let date = new Date(new Date());
+	// date.setDate(date.getDate() - 1);
+	// date = new Date(date);
+	// const year = date.getFullYear();
+	// const month = `0${date.getMonth() + 1}`;
+	// const date1 = date.getDate();
+	// let yesterday = `${year}-${month}-${date1}`;
+	// console.log('yesterday', yesterday);
+	var datee = new Date('2021-10-10').toISOString();
+	// var datee = new Date(new Date());
+	// datee.setDate(datee.getDate() - 1);
+	// var date = datee.getDate();
+	// var month = datee.getMonth() + 1;
+	// var year = datee.getFullYear();
+	// console.log(datee.getFullYear(), datee.getMonth() + 1, datee.getDate());
+	// var datee2 = new Date().toISOString();
+	var cdate, cmonth, cyear;
+	var cdatee = new Date(new Date());
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk2 = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	cdatee.setDate(cdatee.getDate() - 1);
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	if (datae) {
+		console.log(datae);
+		chevk = datae;
+	}
+	console.log(datee, chevk, chevk2);
+	// datee2.setDate(datee2.getDate());
+	// var date2 = datee2.getDate();
+	// var month2 = datee2.getMonth() + 1;
+	// var year2 = datee2.getFullYear();
+	// console.log(datee2.getFullYear(), datee2.getMonth() + 1, datee2.getDate());
+	// { $match: { test: yesterday } },
+	const frequency = await campaignifareports
+		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					campaignId: '$campaignId',
+					rtbType: '$rtbType',
+					ifa: '$ifa',
+					apppubid: '$apppubid'
+				}
+			},
+			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+			{
+				$group: {
+					_id: { ifa: '$ifa', campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' }
+				}
+			},
+			{
+				$group: {
+					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
+					users: { $sum: 1 }
+				}
+			}
+		])
+		.catch((err) => console.log(err));
+	console.log(frequency.length);
+	var coo = frequency.length;
+	return coo;
+	// frequency.forEach(async (frequenct) => {
+	// 	const match = await freqpublishreports.findOne({
+	// 		campaignId: frequenct._id.campaignId,
+	// 		rtbType: frequenct._id.rtbType,
+	// 		appId: frequenct._id.apppubid
+	// 	});
+	// 	if (!match) {
+	// 		const newzip = new freqpublishreports({
+	// 			campaignId: frequenct._id.campaignId,
+	// 			appId: frequenct._id.apppubid,
+	// 			rtbType: frequenct._id.rtbType,
+	// 			impression: frequenct.impression ? frequenct.impression : 0,
+	// 			createdOn: chevk2,
+	// 			click: frequenct.click ? frequenct.click : 0,
+	// 			users: frequenct.users ? frequenct.users : 0
+	// 		});
+	// 		await newzip.save().catch((err) => console.log(err));
+	// 		console.log('created', coo--);
+	// 	} else {
+	// 		if (match.createdOn === chevk2) {
+	// 			console.log('Already Done', coo--);
+	// 		} else {
+	// 			match.impression += frequenct.impressions ? frequenct.impressions : 0;
+	// 			match.click += frequenct.click ? frequenct.click : 0;
+	// 			match.users += frequenct.users ? frequenct.users : 0;
+	// 			match.createdOn = chevk2;
+	// 			match
+	// 				.save()
+	// 				.then((ss) => {
+	// 					console.log('updated', coo--);
+	// 				})
+	// 				.catch((err) => console.log(err));
+	// 		}
+	// 	}
+	// });
 }
 
 // pincodesumreport();
