@@ -1746,7 +1746,18 @@ cron.schedule('55 00 * * *', function() {
 });
 
 cron.schedule('35 00 * * *', function() {
-	FrequencyPublisherRefresher();
+	var datee = new Date(date).toISOString();
+	var cdatee = new Date(new Date());
+	var cdate, cmonth, cyear;
+	var datee = new Date(date).toISOString();
+	cdatee.setDate(cdatee.getDate() - 1);
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+	FrequencyPublisherRefresher(chevk);
 });
 
 function arrayincludefinder(array, id) {
