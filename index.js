@@ -2560,7 +2560,8 @@ async function FrequencyCampaignRefresher(datae) {
 	// });
 }
 
-// FrequencyPublisherRefresher();
+// var dataData = FrequencyCampaignRefresher2('2021-10-10');
+// console.log(dataData);
 async function FrequencyCampaignRefresher2(datae) {
 	// let date = new Date(new Date());
 	// date.setDate(date.getDate() - 1);
@@ -2628,6 +2629,7 @@ async function FrequencyCampaignRefresher2(datae) {
 				}
 			}
 		])
+		.allowDiskUse(true)
 		.catch((err) => console.log(err));
 	console.log(frequency.length);
 	var coo = frequency.length;
