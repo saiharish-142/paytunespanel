@@ -863,7 +863,7 @@ router.put('/phoneModelbycampids', adminauth, (req, res) => {
 	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
 	phonemodelreports
 		.aggregate([
-			{ $match: { campaignId: { $in: ids } } },
+			{ $match: { campaignId: { $in: display } } },
 			{ $addFields: { phoneModel_sub: { $toUpper: '$phoneModel' } } },
 			{
 				$lookup: {
@@ -950,6 +950,73 @@ router.put('/phoneModelbycampids', adminauth, (req, res) => {
 				});
 			}
 			res.json(solu);
+		})
+		.catch((err) => res.status(422).json(err));
+});
+
+router.put('/phoneModelbycampids2', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	const dumd = [];
+	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	phonemodelreports
+		.aggregate([
+			{ $match: { campaignId: { $in: ids } } },
+			{ $addFields: { phoneModel_sub: { $toUpper: '$phoneModel' } } },
+			{
+				$lookup: {
+					from: 'phonemodel2reports',
+					localField: 'phoneModel_sub',
+					foreignField: 'make_model',
+					as: 'extra_details'
+				}
+			},
+			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+			{
+				$project: {
+					phoneModel: 1,
+					impression: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: {
+						$ifNull: [
+							'$extra_details',
+							{
+								make_model: '',
+								cost: '',
+								cumulative: '',
+								release: '',
+								company: '',
+								type: '',
+								total_percent: '',
+								model: '',
+								combined_make_model: ''
+							}
+						]
+					}
+				}
+			},
+			{
+				$group: {
+					_id: { combined_make_model: '$extra_details.combined_make_model' },
+					impressions: { $sum: '$impression' },
+					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+					SovClickTracking: { $sum: '$SovClickTracking' },
+					extra: { $first: '$extra_details' }
+				}
+			},
+			{
+				$project: {
+					impression: '$impressions',
+					phoneModel: '$_id.combined_make_model',
+					extra: '$extra',
+					CompanionClickTracking: 1,
+					SovClickTracking: 1
+				}
+			},
+			{ $sort: { impression: -1 } }
+		])
+		.then((result) => {
+			res.json(result);
 		})
 		.catch((err) => res.status(422).json(err));
 });
