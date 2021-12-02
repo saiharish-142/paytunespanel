@@ -1761,9 +1761,10 @@ router.get('/phonedata', adminauth, async (req, res) => {
 					city: { $first: '$city' },
 					model: { $first: '$model' },
 					type: { $first: '$type' }
-			}},
+				}
+			},
 			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
-			{ $sort: { impression: -1 } },
+			{ $sort: { impression: -1 } }
 		]);
 		res.status(200).json(phone);
 	} catch (err) {
@@ -2037,7 +2038,7 @@ router.get('/categorydata', adminauth, async (req, res) => {
 		const result = await CategoryReports2.aggregate([
 			{ $match: { impression: { $exists: true }, click: { $exists: true } } },
 			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
-			{$sort:{impression:-1}}
+			{ $sort: { impression: -1 } }
 		]);
 		res.status(200).json(result);
 	} catch (err) {
@@ -2198,7 +2199,7 @@ router.post('/categorydata_podcast', adminauth, async (req, res) => {
 			},
 			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $match: { feed: '3' } },
-			{$sort:{impression:-1}}
+			{ $sort: { impression: -1 } }
 		]);
 		res.status(200).json(result);
 	} catch (err) {
@@ -2238,7 +2239,7 @@ router.post('/categorydata_ondemand', adminauth, async (req, res) => {
 			},
 			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $match: { feed: '' } },
-			{$sort:{impression:-1}}
+			{ $sort: { impression: -1 } }
 		]);
 		res.status(200).json(result);
 	} catch (err) {
@@ -2322,7 +2323,7 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 				}
 			},
 			{ $match: { rtbType: 'video' } },
-			{$sort:{impressions:-1}}
+			{ $sort: { impressions: -1 } }
 		]);
 		res.status(200).json(result);
 	} catch (err) {
