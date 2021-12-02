@@ -1307,22 +1307,20 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 		.then(async (resultgot) => {
 			var result = resultgot;
 			if (result && result.length) {
-				var targetgetter = await adsetting
-					.aggregate([
-						{
-							$match: {
-								campaignId: { $in: ids }
-							}
-						},
-						{
-							$project: {
-								targetImpression: '$targetImpression',
-								campaignId: '$campaignId',
-								appId: '$appId'
-							}
+				var targetgetter = await adsetting.aggregate([
+					{
+						$match: {
+							campaignId: { $in: ids }
 						}
-					])
-					.catch((err) => console.log(err));
+					},
+					{
+						$project: {
+							targetImpression: '$targetImpression',
+							campaignId: '$campaignId',
+							appId: '$appId'
+						}
+					}
+				]);
 				// console.log(targetgetter);
 				var summaryReport = {
 					impressions: 0,
@@ -1440,6 +1438,20 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 				res.json({ message: 'No reports found...' });
 			}
 		});
+});
+
+router.put('/sumreportUnique', adminauth, async (req, res) => {
+	const { campaignId } = req.body;
+	try {
+		var ids = campaignId.map((id) => mongoose.Types.ObjectId(id));
+		let uniqueData = await freqpublishreports
+			.aggregate([ { $match: { campaignId: { $in: ids } } } ])
+			.catch((er) => console.log(er));
+		console.log(uniqueData, ids);
+	} catch (e) {
+		console.log(e);
+		res.json({ error: 'Error occured...!', e });
+	}
 });
 
 router.put('/sumreportofcamallClient', adminauth, (req, res) => {
