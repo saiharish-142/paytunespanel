@@ -68,7 +68,6 @@ export const loadReportBase = () => (dispatch, getState) => {
 					}
 				});
 				await dispatch(loadSpentData());
-				await dispatch(loadReport());
 				await dispatch(loadReportDiv());
 			})
 			.catch((err) => {
@@ -247,6 +246,7 @@ export const loadReport = () => (dispatch, getState) => {
 				// console.log(audiouniquePublisher);
 				// console.log(displayuniquePublisher);
 				// console.log(videouniquePublisher);
+				console.log(data);
 				dispatch({
 					type: REPORT_LOADED,
 					payload: data
@@ -260,6 +260,8 @@ export const loadReport = () => (dispatch, getState) => {
 
 export const loadReportDiv = () => async (dispatch, getState) => {
 	const datast = getState().report;
+	const usinrst = getState().ratio.ratio;
+	var usinr = usinrst ? usinrst : 74.94715;
 	console.log(datast);
 	var tags = [ 'audio', 'display', 'video', 'podcast' ];
 	var data = {};
@@ -275,6 +277,7 @@ export const loadReportDiv = () => async (dispatch, getState) => {
 	data.leftTime = Math.ceil(leftTime);
 	data.wholeTime = wholeTime;
 	var wholereportsum = {
+		pubunique: 0,
 		impressions: 0,
 		clicks: 0,
 		target: 0,
@@ -286,6 +289,8 @@ export const loadReportDiv = () => async (dispatch, getState) => {
 		unique: 0,
 		spent: 0,
 		avefreq: 0,
+		uniqueValue: 0,
+		spentValue: 0,
 		ctr: 0,
 		ltr: 0,
 		avgreq: 0,
@@ -293,7 +298,7 @@ export const loadReportDiv = () => async (dispatch, getState) => {
 		balance: 0
 	};
 	for (var i = 0; i < tags.length; i++) {
-		if (datast.ids[tags[i]]) {
+		if (datast.ids[tags[i]] && datast.ids[tags[i]].length) {
 			console.log(tags[i]);
 			await fetch('/offreport/sumreportofcamDiv', {
 				method: 'put',
@@ -309,35 +314,40 @@ export const loadReportDiv = () => async (dispatch, getState) => {
 				.then((result) => {
 					// console.log(result);
 					var data2 = result;
+					var pubunique = 0;
 					data2.data.map((re) => {
 						re.publishername = re.apppubidpo
 							? re.apppubidpo.publishername ? re.apppubidpo.publishername : re.PublisherSplit
 							: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
 						re.target = re.targetimpre;
 						re.click = parseInt(re.clicks) + parseInt(re.clicks1);
+						re.ctr = (parseInt(re.clicks) + parseInt(re.clicks1)) * 100 / re.impressions;
 						// wholereportsum.impressions += parseInt(re.impressions);
 						// wholereportsum.clicks += re.click;
+						re.unique = re.uniqueData;
+						console.log(re.uniqueData);
+						pubunique += parseInt(re.uniqueData);
 						re.avgreq = parseInt(re.target) / parseInt(wholeTime);
 						re.avgach = parseInt(re.impressions) / parseInt(leftTime);
 						if (re.apppubidpo && re.apppubidpo.ssp === 'offline') {
 							// Humgama
 							if (hungamaids.includes(re.apppubidpo.publisherid)) {
-								re.spent = parseInt(re.impressions) * 4.25 / 100;
-								data.summary.spentValue += parseInt(re.impressions) * 4.25 / 100;
+								re.spent = parseInt(re.impressions) * 4.25 / (usinr * 100);
+								data.summary.spentValue += parseInt(re.impressions) * 4.25 / (usinr * 100);
 								console.log(re.spent);
 							}
 							// Wynk
 							if (wynkids.includes(re.apppubidpo.publisherid)) {
-								re.spent = parseInt(re.impressions) * 10 / 100;
-								data.summary.spentValue += parseInt(re.impressions) * 10 / 100;
+								re.spent = parseInt(re.impressions) * 10 / (usinr * 100);
+								data.summary.spentValue += parseInt(re.impressions) * 10 / (usinr * 100);
 								console.log(re.spent);
 							}
 							// wholereportsum.spent += re.spent ? parseFloat(re.spent) : 0;
 							// wholereportsum.spent += re.unqiueData ? parseFloat(re.unqiueData) : 0;
-							re.unique = re.unqiueData;
 						}
 						// console.log(re.uniqueData);
 					});
+					wholereportsum.target += parseInt(data2.summary.target);
 					wholereportsum.impressions += data2.summary.impressions;
 					wholereportsum.clicks += data2.summary.clicks;
 					wholereportsum.start += data2.summary.start;
@@ -345,22 +355,38 @@ export const loadReportDiv = () => async (dispatch, getState) => {
 					wholereportsum.midpoint += data2.summary.midpoint;
 					wholereportsum.thirdQuartile += data2.summary.thirdQuartile;
 					wholereportsum.complete += data2.summary.complete;
-					wholereportsum.uniqueValue += data2.summary.uniqueValue;
-					wholereportsum.spentValue += data2.summary.spentValue;
+					wholereportsum.pubunique += parseInt(pubunique);
+					wholereportsum.uniqueValue += parseInt(data2.summary.uniqueValue);
+					wholereportsum.spentValue += parseFloat(data2.summary.spentValue);
+					data2.summary.pubunique = pubunique;
 					console.log(tags[i]);
 					data[`${tags[i]}`] = data2.data;
+					data[`${tags[i]}CompleteReport`] = data2.summary;
 					summarydata[tags[i]] = data2.summary;
 					recentdate.push(data2.allrecentupdate);
-					console.log(data2);
+					// console.log(data2);
 				})
 				.catch((err) => console.log(err));
 		}
 	}
-	data['complete'] = wholereportsum;
-	recentdate = recentdate.sort(function(a, b) {
+	wholereportsum.avgreq = parseInt(wholereportsum.target) / parseInt(wholeTime);
+	wholereportsum.avgach = parseInt(wholereportsum.impressions) / parseInt(leftTime);
+	wholereportsum.balance = parseInt(wholereportsum.target) - parseInt(wholereportsum.impressions);
+	wholereportsum.ctr = parseInt(wholereportsum.clicks) * 100 / parseInt(wholereportsum.impressions);
+	wholereportsum.avefreq = parseInt(wholereportsum.impressions) / parseInt(wholereportsum.uniqueValue);
+	if (wholereportsum.complete) {
+		wholereportsum.ltr = parseInt(wholereportsum.complete) * 100 / parseInt(wholereportsum.impressions);
+	}
+	data['summaryCompleteReport'] = wholereportsum;
+	recentdate = recentdate.sort(function(b, a) {
 		return new Date(a) - new Date(b);
 	});
+	data['allrecentupdate'] = recentdate[0];
 	console.log(data, summarydata, recentdate);
+	dispatch({
+		type: REPORT_LOADED,
+		payload: data
+	});
 	// if (datast) {
 	// 	fetch('/offreport/sumreportofcamall2', {
 	// 		method: 'put',

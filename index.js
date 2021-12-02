@@ -2519,8 +2519,10 @@ async function FrequencyCampaignRefresher(datae) {
 				}
 			}
 		])
+		.allowDiskUse(true)
 		.catch((err) => console.log(err));
 	console.log(frequency.length);
+	console.log(frequency);
 	var coo = frequency.length;
 	return coo;
 	// frequency.forEach(async (frequenct) => {

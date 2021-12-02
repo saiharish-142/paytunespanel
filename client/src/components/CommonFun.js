@@ -240,13 +240,13 @@ export const FrequencyBody = (report1) => {
 export const IBABody = (report1) => {
 	return report1.map((log, index) => {
 		var category = log._id.category ? log._id.category : '';
-		var Name = log.extra_details ? log.extra_details.Name : '';
-		var tier1 = log.extra_details ? log.extra_details.tier1 : '';
-		var tier2 = log.extra_details ? log.extra_details.tier2 : '';
-		var tier3 = log.extra_details ? log.extra_details.tier3 : '';
-		var tier4 = log.extra_details ? log.extra_details.tier4 : '';
-		var genderCategory = log.extra_details ? log.extra_details.genderCategory : '';
-		var AgeCategory = log.extra_details ? log.extra_details.AgeCategory : '';
+		var Name = log.extra_details.length !== 0 ? log.extra_details[0].Name : '';
+		var tier1 = log.extra_details.length !== 0 ? log.extra_details[0].tier1 : '';
+		var tier2 = log.extra_details.length !== 0 ? log.extra_details[0].tier2 : '';
+		var tier3 = log.extra_details.length !== 0 ? log.extra_details[0].tier3 : '';
+		var tier4 = log.extra_details.length !== 0 ? log.extra_details[0].tier4 : '';
+		var genderCategory = log.extra_details.length !== 0 ? log.extra_details[0].genderCategory : '';
+		var AgeCategory = log.extra_details.length !== 0 ? log.extra_details[0].AgeCategory : '';
 		var impression = log.impressions ? log.impressions : 0;
 		var clicks = parseInt(log.CompanionClickTracking) + parseInt(log.SovClickTracking);
 		var ctr =
