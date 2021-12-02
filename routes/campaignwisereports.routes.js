@@ -1321,7 +1321,7 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 						}
 					}
 				]);
-				console.log(targetgetter);
+				// console.log(targetgetter);
 				var totaltarget = 0;
 				targetgetter.map((tar) => {
 					totaltarget += tar.targetImpression;
