@@ -26,6 +26,7 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 	const [ adss, setadss ] = React.useState(report);
 	const headers = [
 		{ key: 'publishername', label: 'Publisher' },
+		{ key: 'ssp', label: 'ssp' },
 		{ key: 'impressions', label: 'Total Impressions' },
 		{ key: 'start', label: 'Start' },
 		{ key: 'firstQuartile', label: 'First Quartile' },
@@ -106,6 +107,10 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 									Publisher
 									{arrowRetuner(sa === 'publishername' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
+								<TableCell onClick={() => tablesorter('ssp', 'string')} style={{ cursor: 'pointer' }}>
+									SSP
+									{arrowRetuner(sa === 'ssp' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
 								<TableCell
 									onClick={() => tablesorter('impressions', 'number')}
 									style={{ cursor: 'pointer' }}
@@ -153,6 +158,7 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 								return (
 									<TableRow key={i}>
 										<TableCell>{log.publishername}</TableCell>
+										<TableCell>{log.ssp}</TableCell>
 										<TableCell>{log.impressions}</TableCell>
 										<TableCell>{log.start}</TableCell>
 										<TableCell>{log.firstQuartile}</TableCell>
@@ -165,6 +171,7 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 							})}
 							<TableRow>
 								<TableCell className="boldClass">Total</TableCell>
+								<TableCell className="boldClass" />
 								<TableCell className="boldClass">{compi}</TableCell>
 								<TableCell className="boldClass">{comp1}</TableCell>
 								<TableCell className="boldClass">{comp2}</TableCell>

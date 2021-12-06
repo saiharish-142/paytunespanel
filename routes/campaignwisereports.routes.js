@@ -1132,8 +1132,8 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					x.Publisher = x.Publisher[0];
 					var numberta = 0;
 					var targetfii =
-						targetgetter.audio &&
-						targetgetter.audio.filter(
+						targetgetter.display &&
+						targetgetter.display.filter(
 							(y) => arrayincludefinder(x.campaignId, y.campaignId) && x.Publisher === y.appId
 						);
 					targetfii &&
@@ -1181,8 +1181,8 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					x.Publisher = x.Publisher[0];
 					var numberta = 0;
 					var targetfii =
-						targetgetter.audio &&
-						targetgetter.audio.filter(
+						targetgetter.video &&
+						targetgetter.video.filter(
 							(y) => arrayincludefinder(x.campaignId, y.campaignId) && x.Publisher === y.appId
 						);
 					targetfii &&
@@ -1307,23 +1307,25 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 		.then(async (resultgot) => {
 			var result = resultgot;
 			if (result && result.length) {
-				var targetgetter = await adsetting
-					.aggregate([
-						{
-							$match: {
-								campaignId: { $in: ids }
-							}
-						},
-						{
-							$project: {
-								targetImpression: '$targetImpression',
-								campaignId: '$campaignId',
-								appId: '$appId'
-							}
+				var targetgetter = await adsetting.aggregate([
+					{
+						$match: {
+							campaignId: { $in: ids }
 						}
-					])
-					.catch((err) => console.log(err));
+					},
+					{
+						$project: {
+							targetImpression: '$targetImpression',
+							campaignId: '$campaignId',
+							appId: '$appId'
+						}
+					}
+				]);
 				// console.log(targetgetter);
+				var totaltarget = 0;
+				targetgetter.map((tar) => {
+					totaltarget += tar.targetImpression;
+				});
 				var summaryReport = {
 					impressions: 0,
 					clicks: 0,
@@ -1391,7 +1393,7 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 						}
 					x.apppubidpo = forda;
 					x.spent = tempSpent[x.PublisherSplit];
-					console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
+					// console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
 					x.uniqueData = tempUser[x.PublisherSplit] ? tempUser[x.PublisherSplit] : 0;
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
 					summaryReport.impressions += parseInt(x.impressions);
@@ -1427,6 +1429,7 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 				});
 				var response = {};
 				summaryReport.unique = [];
+				summaryReport.target = totaltarget;
 				response.data = result;
 				response.summary = summaryReport;
 				response.allrecentupdate = updatedAtTimes ? updatedAtTimes[0] : undefined;
@@ -1440,6 +1443,20 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 				res.json({ message: 'No reports found...' });
 			}
 		});
+});
+
+router.put('/sumreportUnique', adminauth, async (req, res) => {
+	const { campaignId } = req.body;
+	try {
+		var ids = campaignId.map((id) => mongoose.Types.ObjectId(id));
+		let uniqueData = await freqpublishreports
+			.aggregate([ { $match: { campaignId: { $in: ids } } } ])
+			.catch((er) => console.log(er));
+		console.log(uniqueData, ids);
+	} catch (e) {
+		console.log(e);
+		res.json({ error: 'Error occured...!', e });
+	}
 });
 
 router.put('/sumreportofcamallClient', adminauth, (req, res) => {

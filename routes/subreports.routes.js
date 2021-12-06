@@ -863,7 +863,7 @@ router.put('/phoneModelbycampids', adminauth, (req, res) => {
 	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
 	phonemodelreports
 		.aggregate([
-			{ $match: { campaignId: { $in: ids } } },
+			{ $match: { campaignId: { $in: display } } },
 			{ $addFields: { phoneModel_sub: { $toUpper: '$phoneModel' } } },
 			{
 				$lookup: {
@@ -950,6 +950,73 @@ router.put('/phoneModelbycampids', adminauth, (req, res) => {
 				});
 			}
 			res.json(solu);
+		})
+		.catch((err) => res.status(422).json(err));
+});
+
+router.put('/phoneModelbycampids2', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	const dumd = [];
+	var ids = campaignId ? campaignId.map((id) => mongoose.Types.ObjectId(id)) : dumd;
+	phonemodelreports
+		.aggregate([
+			{ $match: { campaignId: { $in: ids } } },
+			{ $addFields: { phoneModel_sub: { $toUpper: '$phoneModel' } } },
+			{
+				$lookup: {
+					from: 'phonemodel2reports',
+					localField: 'phoneModel_sub',
+					foreignField: 'make_model',
+					as: 'extra_details'
+				}
+			},
+			{ $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+			{
+				$project: {
+					phoneModel: 1,
+					impression: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: {
+						$ifNull: [
+							'$extra_details',
+							{
+								make_model: '',
+								cost: '',
+								cumulative: '',
+								release: '',
+								company: '',
+								type: '',
+								total_percent: '',
+								model: '',
+								combined_make_model: ''
+							}
+						]
+					}
+				}
+			},
+			{
+				$group: {
+					_id: { combined_make_model: '$extra_details.combined_make_model' },
+					impressions: { $sum: '$impression' },
+					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+					SovClickTracking: { $sum: '$SovClickTracking' },
+					extra: { $first: '$extra_details' }
+				}
+			},
+			{
+				$project: {
+					impression: '$impressions',
+					phoneModel: '$_id.combined_make_model',
+					extra: '$extra',
+					CompanionClickTracking: 1,
+					SovClickTracking: 1
+				}
+			},
+			{ $sort: { impression: -1 } }
+		])
+		.then((result) => {
+			res.json(result);
 		})
 		.catch((err) => res.status(422).json(err));
 });
@@ -1525,6 +1592,133 @@ router.put('/categorywisereportsallcombo', adminauth, async (req, res) => {
 	// .catch(err=>console.log(err))
 });
 
+router.put('/categorywisereportsids', adminauth, async (req, res) => {
+	const { campaignId } = req.body;
+	var audio = campaignId.map((id) => mongoose.Types.ObjectId(id));
+
+	try {
+		const resultaudio = await CategoryReports.aggregate([
+			{ $match: { campaignId: { $in: audio } } },
+			// {$project:{
+			// 	category:1,
+			// 	impression:1,
+			// 	CompanionClickTracking:1,
+			// 	SovClickTracking:1,
+			// 	test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+			// }},
+			// {$match:{test:{$gt:setdate}}},
+			{
+				$group: {
+					_id: { category: '$category' },
+					impressions: { $sum: '$impression' },
+					CompanionClickTracking: { $sum: '$CompanionClickTracking' },
+					SovClickTracking: { $sum: '$SovClickTracking' }
+				}
+			},
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'category',
+					as: 'extra_details'
+				}
+			},
+			// { $unwind: { path: '$extra_details', preserveNullAndEmptyArrays: true } },
+			{
+				$lookup: {
+					from: 'categoryreports2',
+					localField: '_id.category',
+					foreignField: 'new_taxonamy',
+					as: 'extra_details1'
+				}
+			},
+			// { $unwind: { path: '$extra_details1', preserveNullAndEmptyArrays: true } },
+			{ $sort: { impressions: -1 } },
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', '$extra_details1' ] }
+				}
+			},
+			{
+				$project: {
+					impressions: 1,
+					CompanionClickTracking: 1,
+					SovClickTracking: 1,
+					extra_details: { $ifNull: [ '$extra_details', [] ] }
+				}
+			}
+			// {
+			// 	$project: {
+			// 		impressions: 1,
+			// 		CompanionClickTracking: 1,
+			// 		SovClickTracking: 1,
+			// 		extra_details: { $ifNull: ['$extra_details', []] }
+			// 	}
+			// }
+		]).allowDiskUse(true);
+		res.status(200).json(resultaudio);
+	} catch (err) {
+		res.status(400).json({ error: err.message });
+	}
+	// CategoryReports.aggregate([
+	//     {$facet:{
+	//         "audio":[
+	//             {$match:{campaignId:{$in:audio}}},
+	//             {$group:{_id:{category:"$category"},
+	//                 impressions:{"$sum":"$impression"},
+	//                 CompanionClickTracking:{$sum:"$CompanionClickTracking"},
+	//                 SovClickTracking:{$sum:"$SovClickTracking"}
+	//             }},
+	//             {$lookup:{
+	//                 from:'categoryreports2',
+	//                 localField:'_id.category',
+	//                 foreignField:'category',
+	//                 as:'extra_details'
+	//             }},
+	//             {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
+	//             {$sort:{"impressions":-1}}
+	//         ],
+	//         "display":[
+	//             {$match:{campaignId:{$in:display}}},
+	//             {$group:{_id:{category:"$category"},
+	//                 impressions:{"$sum":"$impression"},
+	//                 CompanionClickTracking:{$sum:"$CompanionClickTracking"},
+	//                 SovClickTracking:{$sum:"$SovClickTracking"}
+	//             }},
+	//             {$lookup:{
+	//                 from:'categoryreports2',
+	//                 localField:'_id.category',
+	//                 foreignField:'category',
+	//                 as:'extra_details'
+	//             }},
+	//             {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
+	//             {$sort:{"impressions":-1}}
+	//         ],
+	//         "video":[
+	//             {$match:{campaignId:{$in:video}}},
+	//             {$group:{_id:{category:"$category"},
+	//                 impressions:{"$sum":"$impression"},
+	//                 CompanionClickTracking:{$sum:"$CompanionClickTracking"},
+	//                 SovClickTracking:{$sum:"$SovClickTracking"}
+	//             }},
+	//             {$lookup:{
+	//                 from:'categoryreports2',
+	//                 localField:'_id.category',
+	//                 foreignField:'category',
+	//                 as:'extra_details'
+	//             }},
+	//             {$unwind:{path:"$extra_details",preserveNullAndEmptyArrays:true}},
+	//             {$sort:{"impressions":-1}}
+	//         ]
+	//     }}
+	// ])
+	// .then(result=>res.json(result))
+	// .catch(err=>console.log(err))
+});
+
 router.get('/publisherComplete', adminauth, (req, res) => {
 	publisherwiseConsole
 		.find()
@@ -1761,9 +1955,10 @@ router.get('/phonedata', adminauth, async (req, res) => {
 					city: { $first: '$city' },
 					model: { $first: '$model' },
 					type: { $first: '$type' }
-			}},
+				}
+			},
 			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
-			{ $sort: { impression: -1 } },
+			{ $sort: { impression: -1 } }
 		]);
 		res.status(200).json(phone);
 	} catch (err) {
@@ -2037,7 +2232,7 @@ router.get('/categorydata', adminauth, async (req, res) => {
 		const result = await CategoryReports2.aggregate([
 			{ $match: { impression: { $exists: true }, click: { $exists: true } } },
 			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
-			{$sort:{impression:-1}}
+			{ $sort: { impression: -1 } }
 		]);
 		res.status(200).json(result);
 	} catch (err) {
@@ -2198,7 +2393,7 @@ router.post('/categorydata_podcast', adminauth, async (req, res) => {
 			},
 			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $match: { feed: '3' } },
-			{$sort:{impression:-1}}
+			{ $sort: { impression: -1 } }
 		]);
 		res.status(200).json(result);
 	} catch (err) {
@@ -2238,7 +2433,7 @@ router.post('/categorydata_ondemand', adminauth, async (req, res) => {
 			},
 			{ $addFields: { avgimpression: { $divide: [ '$impression', days ] } } },
 			{ $match: { feed: '' } },
-			{$sort:{impression:-1}}
+			{ $sort: { impression: -1 } }
 		]);
 		res.status(200).json(result);
 	} catch (err) {
@@ -2322,7 +2517,7 @@ router.post('/categorydata_video', adminauth, async (req, res) => {
 				}
 			},
 			{ $match: { rtbType: 'video' } },
-			{$sort:{impressions:-1}}
+			{ $sort: { impressions: -1 } }
 		]);
 		res.status(200).json(result);
 	} catch (err) {

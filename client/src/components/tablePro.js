@@ -49,6 +49,7 @@ const useStyles = makeStyles({
 
 // const ExcelFile = ReactExport.ExcelFile;
 // const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const labelTags = [ 'audio', 'podcast', 'display', 'video' ];
 
 function TablePro() {
 	const history = useHistory();
@@ -158,7 +159,7 @@ function TablePro() {
 		// console.log(idsa)
 		var data = {};
 		if (idsa) {
-			var sets = [ 'audio', 'display', 'video' ];
+			var sets = labelTags;
 			// var setsdatastat = {};
 			// var setsdatastatval = true;
 			// sets.forEach((x) => (setsdatastat[x] = { value: true, count: 0 }));
@@ -223,108 +224,217 @@ function TablePro() {
 		// }
 	};
 	// phoneModel data of all data
-	const PhoneModelDataPuller = (idsa) => {
+	const PhoneModelDataPuller = async (idsa) => {
 		// console.log(idsa)
+		var sets = labelTags;
+		var data = {};
 		if (idsa) {
-			fetch('/subrepo/phoneModelbycampidsallcombo', {
-				method: 'put',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: 'Bearer ' + localStorage.getItem('jwt')
-				},
-				body: JSON.stringify({
-					campaignId: idsa
-				})
-			})
-				.then((res) => res.json())
-				.then((result) => {
-					console.log(result[0]);
-					var data = result[0];
-					if (data) {
-						if (data.audio) {
-							data.audio = data.audio.filter((x) => x.impression > 0);
-						}
-						if (data.display) {
-							data.display = data.display.filter((x) => x.impression > 0);
-						}
-						if (data.video) {
-							data.video = data.video.filter((x) => x.impression > 0);
-						}
-					}
-					setphoneModelReports(data);
-				})
-				.catch((err) => console.log(err));
+			var ids = idsa;
+			for (var i = 0; i < sets.length; i++) {
+				if (ids[sets[i]].length) {
+					console.log(ids[sets[i]]);
+					await fetch('/subrepo/phoneModelbycampids2', {
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: 'Bearer ' + localStorage.getItem('jwt')
+						},
+						body: JSON.stringify({
+							campaignId: ids[sets[i]]
+						})
+					})
+						.then((res) => res.json())
+						.then((result) => {
+							console.log(result);
+							var dataq = result;
+							dataq = dataq.filter((x) => x.impression > 0);
+							// if (data) {
+							// 	if (data.audio) {
+							// 		data.audio = data.audio.filter((x) => x.impression > 0);
+							// 	}
+							// 	if (data.display) {
+							// 		data.display = data.display.filter((x) => x.impression > 0);
+							// 	}
+							// 	if (data.video) {
+							// 		data.video = data.video.filter((x) => x.impression > 0);
+							// 	}
+							// }
+							data[sets[i]] = dataq;
+							setphoneModelReports(data);
+						})
+						.catch((err) => console.log(err));
+				}
+			}
 		}
+		// if (idsa) {
+		// 	fetch('/subrepo/phoneModelbycampidsallcombo', {
+		// 		method: 'put',
+		// 		headers: {
+		// 			'Content-Type': 'application/json',
+		// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+		// 		},
+		// 		body: JSON.stringify({
+		// 			campaignId: idsa
+		// 		})
+		// 	})
+		// 		.then((res) => res.json())
+		// 		.then((result) => {
+		// 			console.log(result[0]);
+		// 			var data = result[0];
+		// 			if (data) {
+		// 				if (data.audio) {
+		// 					data.audio = data.audio.filter((x) => x.impression > 0);
+		// 				}
+		// 				if (data.display) {
+		// 					data.display = data.display.filter((x) => x.impression > 0);
+		// 				}
+		// 				if (data.video) {
+		// 					data.video = data.video.filter((x) => x.impression > 0);
+		// 				}
+		// 			}
+		// 			setphoneModelReports(data);
+		// 		})
+		// 		.catch((err) => console.log(err));
+		// }
 	};
 	// iba data of all data
-	const IbaDataPuller = (idsa) => {
+	const IbaDataPuller = async (idsa) => {
 		// console.log(idsa)
+		var sets = labelTags;
+		var data = {};
+		var ids = idsa;
 		if (idsa) {
-			fetch('/subrepo/categorywisereportsallcombo', {
-				method: 'put',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: 'Bearer ' + localStorage.getItem('jwt')
-				},
-				body: JSON.stringify({
-					campaignId: idsa
-				})
-			})
-				.then((res) => res.json())
-				.then((result) => {
-					console.log(result);
-					// console.log(result.audio);
-					// console.log(result.display);
-					var data = result;
-					if (data) {
-						if (data.audio) {
-							data.audio = data.audio.filter((x) => x.impressions > 0);
-						}
-						if (data.display) {
-							data.display = data.display.filter((x) => x.impressions > 0);
-						}
-						if (data.video) {
-							data.video = data.video.filter((x) => x.impressions > 0);
-						}
-					}
-					setibaReports(data);
-				})
-				.catch((err) => console.log(err));
+			for (var i = 0; i < sets.length; i++) {
+				if (ids[sets[i]].length) {
+					await fetch('/subrepo/categorywisereportsids', {
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: 'Bearer ' + localStorage.getItem('jwt')
+						},
+						body: JSON.stringify({
+							campaignId: ids[sets[i]]
+						})
+					})
+						.then((res) => res.json())
+						.then((result) => {
+							console.log(result);
+							// console.log(result.audio);
+							// console.log(result.display);
+							var dataq = result;
+							dataq = dataq.filter((x) => x.impressions > 0);
+							// if (data) {
+							// 	if (data.audio) {
+							// 		data.audio = data.audio.filter((x) => x.impressions > 0);
+							// 	}
+							// 	if (data.display) {
+							// 		data.display = data.display.filter((x) => x.impressions > 0);
+							// 	}
+							// 	if (data.video) {
+							// 		data.video = data.video.filter((x) => x.impressions > 0);
+							// 	}
+							// }
+							data[sets[i]] = dataq;
+							setibaReports(data);
+						})
+						.catch((err) => console.log(err));
+				}
+			}
 		}
+		// if (idsa) {
+		// 	fetch('/subrepo/categorywisereportsallcombo', {
+		// 		method: 'put',
+		// 		headers: {
+		// 			'Content-Type': 'application/json',
+		// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+		// 		},
+		// 		body: JSON.stringify({
+		// 			campaignId: idsa
+		// 		})
+		// 	})
+		// 		.then((res) => res.json())
+		// 		.then((result) => {
+		// 			console.log(result);
+		// 			// console.log(result.audio);
+		// 			// console.log(result.display);
+		// 			var data = result;
+		// 			if (data) {
+		// 				if (data.audio) {
+		// 					data.audio = data.audio.filter((x) => x.impressions > 0);
+		// 				}
+		// 				if (data.display) {
+		// 					data.display = data.display.filter((x) => x.impressions > 0);
+		// 				}
+		// 				if (data.video) {
+		// 					data.video = data.video.filter((x) => x.impressions > 0);
+		// 				}
+		// 			}
+		// 			setibaReports(data);
+		// 		})
+		// 		.catch((err) => console.log(err));
+		// }
 	};
 	// iba data of all data
-	const FrequencyPuller = (idsa) => {
+	const FrequencyPuller = async (idsa) => {
 		console.log(idsa);
+		var sets = labelTags;
+		var data = {};
 		if (idsa) {
-			fetch('/ifas/sumfrequency', {
-				method: 'put',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: 'Bearer ' + localStorage.getItem('jwt')
-				},
-				body: JSON.stringify({
-					campaignId: idsa
-				})
-			})
-				.then((res) => res.json())
-				.then((result) => {
-					console.log(result);
-					var data = result;
-					if (data) {
-						if (data.audio) {
-							data.audio = data.audio.filter((x) => x.impression > 0);
-						}
-						if (data.display) {
-							data.display = data.display.filter((x) => x.impression > 0);
-						}
-						if (data.video) {
-							data.video = data.video.filter((x) => x.impression > 0);
-						}
-					}
-					setfrequencyReport(data);
-				})
-				.catch((err) => console.log(err));
+			var ids = idsa;
+			for (var i = 0; i < sets.length; i++) {
+				if (ids[sets[i]].length) {
+					await fetch('/ifas/sumfrequencyids', {
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: 'Bearer ' + localStorage.getItem('jwt')
+						},
+						body: JSON.stringify({
+							campaignId: ids[sets[i]]
+						})
+					})
+						.then((res) => res.json())
+						.then((result) => {
+							console.log(result);
+							var dataq = result;
+							dataq = dataq.filter((x) => x.impression > 0);
+							data[sets[i]] = dataq;
+							setfrequencyReport(data);
+						})
+						.catch((err) => console.log(err));
+				}
+			}
 		}
+		// if (idsa) {
+		// 	fetch('/ifas/sumfrequency', {
+		// 		method: 'put',
+		// 		headers: {
+		// 			'Content-Type': 'application/json',
+		// 			Authorization: 'Bearer ' + localStorage.getItem('jwt')
+		// 		},
+		// 		body: JSON.stringify({
+		// 			campaignId: idsa
+		// 		})
+		// 	})
+		// 		.then((res) => res.json())
+		// 		.then((result) => {
+		// 			console.log(result);
+		// 			var data = result;
+		// 			if (data) {
+		// 				if (data.audio) {
+		// 					data.audio = data.audio.filter((x) => x.impression > 0);
+		// 				}
+		// 				if (data.display) {
+		// 					data.display = data.display.filter((x) => x.impression > 0);
+		// 				}
+		// 				if (data.video) {
+		// 					data.video = data.video.filter((x) => x.impression > 0);
+		// 				}
+		// 			}
+		// 			setfrequencyReport(data);
+		// 		})
+		// 		.catch((err) => console.log(err));
+		// }
 	};
 	// creative data puller
 	const Creativedata = (idsa) => {
@@ -404,18 +514,8 @@ function TablePro() {
 		return datechanged;
 	};
 	// summary table
-	const SummaryTable = (title, reportsub, target, spent, users, pubusers) => {
+	const SummaryTable = (title, reportsub) => {
 		// console.log({ users, pubusers, sad: 'dasda' });
-		var ltr = 0;
-		if (title === 'Summary') {
-			var impre = report.report.audioCompleteReport.impressions
-				? report.report.audioCompleteReport.impressions
-				: 0 + report.report.videoCompleteReport.impressions ? report.report.videoCompleteReport.impressions : 0;
-			var comp = report.report.audioCompleteReport.complete
-				? report.report.audioCompleteReport.complete
-				: 0 + report.report.videoCompleteReport.complete ? report.report.videoCompleteReport.complete : 0;
-			ltr = Math.round(comp * 100 / impre * 100) / 100;
-		}
 		return (
 			<TableContainer style={{ margin: '20px 0' }} elevation={3} component={Paper}>
 				<div style={{ margin: '5px', fontWeight: 'bolder' }}>Overall {title} Report</div>
@@ -448,7 +548,7 @@ function TablePro() {
 									background: colorfinder(
 										timefinder(report.endDate, report.startDate),
 										timefinder(Date.now(), report.startDate),
-										target,
+										reportsub.target,
 										reportsub.impressions
 									)
 								}}
@@ -458,32 +558,41 @@ function TablePro() {
 								{title === 'Summary' && (
 									<TableCell>{timefinder(report.endDate, report.startDate)} days</TableCell>
 								)}
-								<TableCell>{target}</TableCell>
+								<TableCell>{reportsub.target}</TableCell>
 								<TableCell>{reportsub.impressions}</TableCell>
-								<TableCell>{users}</TableCell>
-								<TableCell>{Math.round(reportsub.impressions / users * 100) / 100}</TableCell>
-								<TableCell>{Math.round(pubusers * 100 / users * 100) / 100}%</TableCell>
+								<TableCell>{reportsub.uniqueValue}</TableCell>
+								{title === 'Summary' ? (
+									<TableCell>{Math.round(reportsub.avefreq * 100) / 100}</TableCell>
+								) : (
+									<TableCell>
+										{Math.round(reportsub.impressions / reportsub.uniqueValue * 100) / 100}
+									</TableCell>
+								)}
+								<TableCell>
+									{Math.round(reportsub.pubunique * 100 / reportsub.uniqueValue * 100) / 100}%
+								</TableCell>
 								<TableCell>{reportsub.clicks}</TableCell>
 								<TableCell>
 									{Math.round(reportsub.clicks * 100 / reportsub.impressions * 100) / 100}%
 								</TableCell>
 								{title != 'Display' &&
 									(title === 'Summary' && report.report.displayCompleteReport ? (
-										<TableCell>{ltr}%</TableCell>
+										<TableCell>{reportsub.ltr}%</TableCell>
 									) : (
 										<TableCell>
 											{Math.round(reportsub.complete * 100 / reportsub.impressions * 100) / 100}%
 										</TableCell>
 									))}
 								<TableCell>
-									{Math.round(target / timefinder(report.endDate, report.startDate) * 10) / 10}
+									{Math.round(reportsub.target / timefinder(report.endDate, report.startDate) * 10) /
+										10}
 								</TableCell>
 								<TableCell>
 									{Math.round(reportsub.impressions / timefinder(Date.now(), report.startDate) * 10) /
 										10}
 								</TableCell>
-								<TableCell>{Math.round(spent * 1) / 1}</TableCell>
-								<TableCell>{target - reportsub.impressions}</TableCell>
+								<TableCell>{Math.round(reportsub.spentValue * 1) / 1}</TableCell>
+								<TableCell>{reportsub.target - reportsub.impressions}</TableCell>
 								{title === 'Summary' && (
 									<TableCell>{timefinder(report.endDate, Date.now())} days</TableCell>
 								)}
@@ -607,6 +716,52 @@ function TablePro() {
 			return <ArrowUpwardRoundedIcon fontSize="small" style={{ color: 'lightgrey' }} />;
 		}
 	};
+	const SumReportGen = (title, reportsub, target, users) => {
+		return [
+			{
+				ySteps: 1,
+				xSteps: 5,
+				columns: [ { title: `${title} Report` } ],
+				data: [ [ { value: '' } ] ]
+			},
+			{
+				columns: [
+					{ title: 'Campaign Start Date' },
+					{ title: 'Campaign End Date' },
+					{ title: 'Total Days of Campaign' },
+					{ title: 'Total Impressions Delivered till date' },
+					{ title: 'Unique User' },
+					{ title: 'Average Frequency' },
+					{ title: 'Total Clicks Delivered till date' },
+					{ title: 'CTR' },
+					{ title: 'LTR' }
+				],
+				data: [
+					[
+						{ value: dateformatchanger(report.startDate) },
+						{ value: dateformatchanger(report.endDate) },
+						{ value: timefinder(report.endDate, report.startDate) + 'days' },
+						{ value: reportsub.impressions ? reportsub.impressions : 0 },
+						{ value: users ? users : 0 },
+						{
+							value:
+								reportsub.impressions / users
+									? Math.round(reportsub.impressions / users * 100) / 100
+									: 0
+						},
+						{ value: reportsub.clicks + reportsub.clicks1 ? reportsub.clicks + reportsub.clicks1 : 0 },
+						{
+							value:
+								Math.round((reportsub.clicks + reportsub.clicks1) * 100 / reportsub.impressions * 100) /
+									100 +
+								'%'
+						},
+						{ value: Math.round(reportsub.complete * 100 / reportsub.impressions * 100) / 100 + '%' }
+					]
+				]
+			}
+		];
+	};
 	const PublisherProps = {
 		singlead: report,
 		titleData: report.title && report.title,
@@ -637,8 +792,10 @@ function TablePro() {
 					{ title: 'Total Impressions Delivered till date' },
 					{ title: 'unique User' },
 					{ title: 'Avg Frequency' },
+					{ title: '% Users Overlap' },
 					{ title: 'Total Clicks Delivered till date' },
 					{ title: 'CTR' },
+					{ title: 'LTR' },
 					{ title: 'Avg required' },
 					{ title: 'Avg Achieved' },
 					{ title: 'Total spent' },
@@ -651,19 +808,26 @@ function TablePro() {
 						{ value: dateformatchanger(report.endDate) },
 						{ value: timefinder(report.endDate, report.startDate) + ' days' },
 						{
-							value:
-								report.ids &&
-								report.ids.audimpression + report.ids.disimpression + report.ids.vidimpression
+							value: report.report.summaryCompleteReport.target
 						},
 						{ value: report.report.summaryCompleteReport.impressions },
-						{ value: uniqueData.complete ? uniqueData.complete : 0 },
 						{
-							value: Math.round(
-								report.report.summaryCompleteReport.impressions / uniqueData.complete
-									? uniqueData.complete
-									: 0
-							)
+							value: report.report.summaryCompleteReport.uniqueValue
+								? report.report.summaryCompleteReport.uniqueValue
+								: 0
 						},
+						{
+							value: Math.round(report.report.summaryCompleteReport.avefreq * 100) / 100
+						},
+						{
+							value:
+								Math.round(
+									report.report.summaryCompleteReport.pubunique *
+										100 /
+										report.report.summaryCompleteReport.uniqueValue *
+										100
+								) / 100
+						} + '%',
 						{ value: report.report.summaryCompleteReport.clicks },
 						{
 							value:
@@ -671,260 +835,407 @@ function TablePro() {
 									report.report.summaryCompleteReport.clicks /
 										report.report.summaryCompleteReport.impressions *
 										100
-								) / 100
+								) /
+									100 +
+								'%'
+						},
+						{ value: report.report.summaryCompleteReport.ltr } + '%',
+						{
+							value: Math.round(report.report.summaryCompleteReport.avgreq * 10) / 10
+						},
+						{
+							value: Math.round(report.report.summaryCompleteReport.avgach * 10) / 10
+						},
+						{
+							value: report.report.summaryCompleteReport.spentValue
 						},
 						{
 							value:
-								Math.round(
-									report.ids &&
-										report.ids.audimpression +
-											report.ids.disimpression +
-											report.ids.vidimpression / timefinder(report.endDate, report.startDate) * 10
-								) / 10
-						},
-						{
-							value:
-								Math.round(
-									report.report.summaryCompleteReport.impressions /
-										timefinder(Date.now(), report.startDate) *
-										10
-								) / 10
-						},
-						{
-							value:
-								completespentfider('all') +
-								(report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0) +
-								(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0) +
-								(report.videospentOffline ? parseFloat(report.videospentOffline) : 0)
-						},
-						{
-							value:
-								report.ids &&
-								report.ids.audimpression +
-									report.ids.disimpression +
-									report.ids.vidimpression -
-									report.report.summaryCompleteReport.impressions
+								report.report.summaryCompleteReport.target -
+								report.report.summaryCompleteReport.impressions
 						},
 						{ value: timefinder(report.endDate, Date.now()) }
 					]
 				]
 			}
 		],
-		audio: [
-			{
-				ySteps: 1,
-				xSteps: 5,
-				columns: [ { title: 'Audio Wise Summery Report' } ],
-				data: [ [ { value: '' } ] ]
-			},
-			{
-				columns: [
-					{ title: 'Total Impressions to be delivered' },
-					{ title: 'Total Impressions Delivered till date' },
-					{ title: 'unique User' },
-					{ title: 'Avg Frequency' },
-					{ title: 'Total Clicks Delivered till date' },
-					{ title: 'CTR' },
-					{ title: 'Avg required' },
-					{ title: 'Avg Achieved' },
-					{ title: 'Total spent' },
-					{ title: 'Balance Impressions' },
-					{ title: 'Balance Days' }
-				],
-				data: [
-					[
+		audio:
+			report.ids && report.ids.audio && report.ids.audio.length && report.report.audioCompleteReport
+				? [
 						{
-							value: report.ids && report.ids.audimpression
-						},
-						{ value: report.report.audioCompleteReport.impressions },
-						{ value: uniqueData.audio ? uniqueData.audio : 0 },
-						{
-							value: Math.round(
-								report.report.audioCompleteReport.impressions / uniqueData.audio ? uniqueData.audio : 0
-							)
-						},
-						{ value: report.report.audioCompleteReport.clicks },
-						{
-							value:
-								Math.round(
-									report.report.audioCompleteReport.clicks /
-										report.report.audioCompleteReport.impressions *
-										100
-								) / 100
+							ySteps: 1,
+							xSteps: 5,
+							columns: [ { title: 'Audio Wise Summery Report' } ],
+							data: [ [ { value: '' } ] ]
 						},
 						{
-							value:
-								Math.round(
-									report.ids &&
-										report.ids.audimpression / timefinder(report.endDate, report.startDate) * 10
-								) / 10
-						},
-						{
-							value:
-								Math.round(
-									report.report.audioCompleteReport.impressions /
-										timefinder(Date.now(), report.startDate) *
-										10
-								) / 10
-						},
-						{
-							value:
-								completespentfider('audio') +
-								(report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0)
-						},
-						{
-							value:
-								report.ids && report.ids.audimpression - report.report.audioCompleteReport.impressions
-						},
-						{ value: timefinder(report.endDate, Date.now()) }
+							columns: [
+								{ title: 'Total Impressions to be delivered' },
+								{ title: 'Total Impressions Delivered till date' },
+								{ title: 'unique User' },
+								{ title: 'Avg Frequency' },
+								{ title: '% Users Overlap' },
+								{ title: 'Total Clicks Delivered till date' },
+								{ title: 'CTR' },
+								{ title: 'LTR' },
+								{ title: 'Avg required' },
+								{ title: 'Avg Achieved' },
+								{ title: 'Total spent' },
+								{ title: 'Balance Impressions' },
+								{ title: 'Balance Days' }
+							],
+							data: [
+								[
+									{
+										value: report.report.audioCompleteReport.target
+									},
+									{ value: report.report.audioCompleteReport.impressions },
+									{ value: report.report.audioCompleteReport.uniqueValue },
+									{
+										value: Math.round(
+											report.report.audioCompleteReport.impressions /
+												report.report.audioCompleteReport.uniqueValue
+										)
+									},
+									{
+										value:
+											Math.round(
+												report.report.audioCompleteReport.pubunique /
+													report.report.audioCompleteReport.uniqueValue *
+													100
+											) / 100
+									} + '%',
+									{ value: report.report.audioCompleteReport.clicks },
+									{
+										value:
+											Math.round(
+												report.report.audioCompleteReport.clicks /
+													report.report.audioCompleteReport.impressions *
+													100
+											) /
+												100 +
+											'%'
+									},
+									{
+										value:
+											Math.round(
+												report.report.audioCompleteReport.complete /
+													report.report.audioCompleteReport.impressions *
+													100
+											) /
+												100 +
+											'%'
+									},
+									{
+										value:
+											Math.round(
+												report.report.audioCompleteReport.target /
+													timefinder(report.endDate, report.startDate) *
+													10
+											) / 10
+									},
+									{
+										value:
+											Math.round(
+												report.report.audioCompleteReport.impressions /
+													timefinder(Date.now(), report.startDate) *
+													10
+											) / 10
+									},
+									{
+										value: report.report.audioCompleteReport.spentValue
+									},
+									{
+										value:
+											report.report.audioCompleteReport.target -
+											report.report.audioCompleteReport.impressions
+									},
+									{ value: timefinder(report.endDate, Date.now()) }
+								]
+							]
+						}
 					]
-				]
-			}
-		],
-		display: [
-			{
-				ySteps: 1,
-				xSteps: 5,
-				columns: [ { title: 'Display Wise Summery Report' } ],
-				data: [ [ { value: '' } ] ]
-			},
-			{
-				columns: [
-					{ title: 'Total Impressions to be delivered' },
-					{ title: 'Total Impressions Delivered till date' },
-					{ title: 'unique User' },
-					{ title: 'Avg Frequency' },
-					{ title: 'Total Clicks Delivered till date' },
-					{ title: 'CTR' },
-					{ title: 'Avg required' },
-					{ title: 'Avg Achieved' },
-					{ title: 'Total spent' },
-					{ title: 'Balance Impressions' },
-					{ title: 'Balance Days' }
-				],
-				data: [
-					[
+				: [],
+		podcast:
+			report.ids && report.ids.podcast && report.ids.podcast.length && report.report.podcastCompleteReport
+				? [
 						{
-							value: report.ids && report.ids.disimpression
-						},
-						{ value: report.report.displayCompleteReport.impressions },
-						{ value: uniqueData.display ? uniqueData.display : 0 },
-						{
-							value: Math.round(
-								report.report.displayCompleteReport.impressions / uniqueData.display
-									? uniqueData.display
-									: 0
-							)
-						},
-						{ value: report.report.displayCompleteReport.clicks },
-						{
-							value:
-								Math.round(
-									report.report.displayCompleteReport.clicks /
-										report.report.displayCompleteReport.impressions *
-										100
-								) / 100
+							ySteps: 1,
+							xSteps: 5,
+							columns: [ { title: 'Podcast Wise Summery Report' } ],
+							data: [ [ { value: '' } ] ]
 						},
 						{
-							value:
-								Math.round(
-									report.ids &&
-										report.ids.disimpression / timefinder(report.endDate, report.startDate) * 10
-								) / 10
-						},
-						{
-							value:
-								Math.round(
-									report.report.displayCompleteReport.impressions /
-										timefinder(Date.now(), report.startDate) *
-										10
-								) / 10
-						},
-						{
-							value:
-								completespentfider('display') +
-								(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0)
-						},
-						{
-							value:
-								report.ids && report.ids.disimpression - report.report.displayCompleteReport.impressions
-						},
-						{ value: timefinder(report.endDate, Date.now()) }
+							columns: [
+								{ title: 'Total Impressions to be delivered' },
+								{ title: 'Total Impressions Delivered till date' },
+								{ title: 'unique User' },
+								{ title: 'Avg Frequency' },
+								{ title: '% Users Overlap' },
+								{ title: 'Total Clicks Delivered till date' },
+								{ title: 'CTR' },
+								{ title: 'LTR' },
+								{ title: 'Avg required' },
+								{ title: 'Avg Achieved' },
+								{ title: 'Total spent' },
+								{ title: 'Balance Impressions' },
+								{ title: 'Balance Days' }
+							],
+							data: [
+								[
+									{
+										value: report.report.podcastCompleteReport.target
+									},
+									{ value: report.report.podcastCompleteReport.impressions },
+									{ value: report.report.podcastCompleteReport.uniqueValue },
+									{
+										value: Math.round(
+											report.report.podcastCompleteReport.impressions /
+												report.report.podcastCompleteReport.uniqueValue
+										)
+									},
+									{
+										value:
+											Math.round(
+												report.report.podcastCompleteReport.pubunique /
+													report.report.podcastCompleteReport.uniqueValue *
+													100
+											) / 100
+									} + '%',
+									{ value: report.report.podcastCompleteReport.clicks },
+									{
+										value:
+											Math.round(
+												report.report.podcastCompleteReport.clicks /
+													report.report.podcastCompleteReport.impressions *
+													100
+											) /
+												100 +
+											'%'
+									},
+									{
+										value:
+											Math.round(
+												report.report.podcastCompleteReport.complete /
+													report.report.podcastCompleteReport.impressions *
+													100
+											) /
+												100 +
+											'%'
+									},
+									{
+										value:
+											Math.round(
+												report.report.podcastCompleteReport.target /
+													timefinder(report.endDate, report.startDate) *
+													10
+											) / 10
+									},
+									{
+										value:
+											Math.round(
+												report.report.podcastCompleteReport.impressions /
+													timefinder(Date.now(), report.startDate) *
+													10
+											) / 10
+									},
+									{
+										value: report.report.podcastCompleteReport.spentValue
+									},
+									{
+										value:
+											report.report.podcastCompleteReport.target -
+											report.report.podcastCompleteReport.impressions
+									},
+									{ value: timefinder(report.endDate, Date.now()) }
+								]
+							]
+						}
 					]
-				]
-			}
-		],
-		video: [
-			{
-				ySteps: 1,
-				xSteps: 5,
-				columns: [ { title: 'Video Wise Summery Report' } ],
-				data: [ [ { value: '' } ] ]
-			},
-			{
-				columns: [
-					{ title: 'Total Impressions to be delivered' },
-					{ title: 'Total Impressions Delivered till date' },
-					{ title: 'unique User' },
-					{ title: 'Avg Frequency' },
-					{ title: 'Total Clicks Delivered till date' },
-					{ title: 'CTR' },
-					{ title: 'Avg required' },
-					{ title: 'Avg Achieved' },
-					{ title: 'Total spent' },
-					{ title: 'Balance Impressions' },
-					{ title: 'Balance Days' }
-				],
-				data: [
-					[
+				: [],
+		display:
+			report.ids && report.ids.display && report.ids.display.length && report.report.displayCompleteReport
+				? [
 						{
-							value: report.ids && report.ids.vidimpression
-						},
-						{ value: report.report.videoCompleteReport.impressions },
-						{ value: uniqueData.video ? uniqueData.video : 0 },
-						{
-							value: Math.round(
-								report.report.videoCompleteReport.impressions / uniqueData.video ? uniqueData.video : 0
-							)
-						},
-						{ value: report.report.videoCompleteReport.clicks },
-						{
-							value:
-								Math.round(
-									report.report.videoCompleteReport.clicks /
-										report.report.videoCompleteReport.impressions *
-										100
-								) / 100
+							ySteps: 1,
+							xSteps: 5,
+							columns: [ { title: 'Display Wise Summery Report' } ],
+							data: [ [ { value: '' } ] ]
 						},
 						{
-							value:
-								Math.round(
-									report.ids &&
-										report.ids.vidimpression / timefinder(report.endDate, report.startDate) * 10
-								) / 10
-						},
-						{
-							value:
-								Math.round(
-									report.report.videoCompleteReport.impressions /
-										timefinder(Date.now(), report.startDate) *
-										10
-								) / 10
-						},
-						{
-							value:
-								completespentfider('video') +
-								(report.videospentOffline ? parseFloat(report.videospentOffline) : 0)
-						},
-						{
-							value:
-								report.ids && report.ids.vidimpression - report.report.videoCompleteReport.impressions
-						},
-						{ value: timefinder(report.endDate, Date.now()) }
+							columns: [
+								{ title: 'Total Impressions to be delivered' },
+								{ title: 'Total Impressions Delivered till date' },
+								{ title: 'unique User' },
+								{ title: 'Avg Frequency' },
+								{ title: '% Users Overlap' },
+								{ title: 'Total Clicks Delivered till date' },
+								{ title: 'CTR' },
+								{ title: 'Avg required' },
+								{ title: 'Avg Achieved' },
+								{ title: 'Total spent' },
+								{ title: 'Balance Impressions' },
+								{ title: 'Balance Days' }
+							],
+							data: [
+								[
+									{
+										value: report.report.displayCompleteReport.target
+									},
+									{ value: report.report.displayCompleteReport.impressions },
+									{ value: report.report.displayCompleteReport.uniqueValue },
+									{
+										value: Math.round(
+											report.report.displayCompleteReport.impressions /
+												report.report.displayCompleteReport.uniqueValue
+										)
+									},
+									{
+										value:
+											Math.round(
+												report.report.displayCompleteReport.pubunique /
+													report.report.displayCompleteReport.uniqueValue *
+													100
+											) / 100
+									} + '%',
+									{ value: report.report.displayCompleteReport.clicks },
+									{
+										value:
+											Math.round(
+												report.report.displayCompleteReport.clicks /
+													report.report.displayCompleteReport.impressions *
+													100
+											) /
+												100 +
+											'%'
+									},
+									{
+										value:
+											Math.round(
+												report.report.displayCompleteReport.target /
+													timefinder(report.endDate, report.startDate) *
+													10
+											) / 10
+									},
+									{
+										value:
+											Math.round(
+												report.report.displayCompleteReport.impressions /
+													timefinder(Date.now(), report.startDate) *
+													10
+											) / 10
+									},
+									{
+										value: report.report.displayCompleteReport.spentValue
+									},
+									{
+										value:
+											report.report.displayCompleteReport.target -
+											report.report.displayCompleteReport.impressions
+									},
+									{ value: timefinder(report.endDate, Date.now()) }
+								]
+							]
+						}
 					]
-				]
-			}
-		],
+				: [],
+		video:
+			report.ids && report.ids.video && report.ids.video.length && report.report.videoCompleteReport
+				? [
+						{
+							ySteps: 1,
+							xSteps: 5,
+							columns: [ { title: 'Video Wise Summery Report' } ],
+							data: [ [ { value: '' } ] ]
+						},
+						{
+							columns: [
+								{ title: 'Total Impressions to be delivered' },
+								{ title: 'Total Impressions Delivered till date' },
+								{ title: 'unique User' },
+								{ title: 'Avg Frequency' },
+								{ title: '% Users Overlap' },
+								{ title: 'Total Clicks Delivered till date' },
+								{ title: 'CTR' },
+								{ title: 'LTR' },
+								{ title: 'Avg required' },
+								{ title: 'Avg Achieved' },
+								{ title: 'Total spent' },
+								{ title: 'Balance Impressions' },
+								{ title: 'Balance Days' }
+							],
+							data: [
+								[
+									{
+										value: report.report.videoCompleteReport.target
+									},
+									{ value: report.report.videoCompleteReport.impressions },
+									{ value: report.report.videoCompleteReport.uniqueValue },
+									{
+										value: Math.round(
+											report.report.videoCompleteReport.impressions /
+												report.report.videoCompleteReport.uniqueValue
+										)
+									},
+									{
+										value:
+											Math.round(
+												report.report.videoCompleteReport.pubunique /
+													report.report.videoCompleteReport.uniqueValue *
+													100
+											) / 100
+									} + '%',
+									{ value: report.report.videoCompleteReport.clicks },
+									{
+										value:
+											Math.round(
+												report.report.videoCompleteReport.clicks /
+													report.report.videoCompleteReport.impressions *
+													100
+											) /
+												100 +
+											'%'
+									},
+									{
+										value:
+											Math.round(
+												report.report.videoCompleteReport.complete /
+													report.report.videoCompleteReport.impressions *
+													100
+											) /
+												100 +
+											'%'
+									},
+									{
+										value:
+											Math.round(
+												report.report.videoCompleteReport.target /
+													timefinder(report.endDate, report.startDate) *
+													10
+											) / 10
+									},
+									{
+										value:
+											Math.round(
+												report.report.videoCompleteReport.impressions /
+													timefinder(Date.now(), report.startDate) *
+													10
+											) / 10
+									},
+									{
+										value: report.report.videoCompleteReport.spentValue
+									},
+									{
+										value:
+											report.report.videoCompleteReport.target -
+											report.report.videoCompleteReport.impressions
+									},
+									{ value: timefinder(report.endDate, Date.now()) }
+								]
+							]
+						}
+					]
+				: [],
 		quartile: [
 			{
 				ySteps: 1,
@@ -951,9 +1262,21 @@ function TablePro() {
 								? report.report.summaryCompleteReport.start
 								: 0
 						},
-						{ value: report.report.summaryCompleteReport.fq ? report.report.summaryCompleteReport.fq : 0 },
-						{ value: report.report.summaryCompleteReport.sq ? report.report.summaryCompleteReport.sq : 0 },
-						{ value: report.report.summaryCompleteReport.tq ? report.report.summaryCompleteReport.tq : 0 },
+						{
+							value: report.report.summaryCompleteReport.firstQuartile
+								? report.report.summaryCompleteReport.firstQuartile
+								: 0
+						},
+						{
+							value: report.report.summaryCompleteReport.midpoint
+								? report.report.summaryCompleteReport.midpoint
+								: 0
+						},
+						{
+							value: report.report.summaryCompleteReport.thirdQuartile
+								? report.report.summaryCompleteReport.thirdQuartile
+								: 0
+						},
 						{
 							value: report.report.summaryCompleteReport.complete
 								? report.report.summaryCompleteReport.complete
@@ -985,29 +1308,42 @@ function TablePro() {
 	// 	arrowRetuner: arrowRetuner,
 	// 	url: 'citylanguagebycampids'
 	// };
-	// console.log(report.report.audio.length && PublishBody('Audio', report.report.audio));
+	// console.log(report.ids && report.ids.audio && report.ids.audio.length && PublishBody('Audio', report.report.audio));
 	const PublisherDown = {
 		audio: [
 			{
 				columns: PublishHead,
 				data:
-					report.report && report.report.audio.length
+					report.ids && report.ids.audio && report.ids.audio.length
 						? PublishBody('Audio', report.report.audio, spentfinder, report)
+						: null
+			}
+		],
+		podcast: [
+			{
+				columns: PublishHead,
+				data:
+					report.ids && report.ids.podcast && report.ids.podcast.length
+						? PublishBody('Podcast', report.report.podcast, spentfinder, report)
 						: null
 			}
 		],
 		display: [
 			{
 				columns: PublishHead,
-				data: report.report.display.length
-					? PublishBody('Display', report.report.display, spentfinder, report)
-					: null
+				data:
+					report.ids && report.ids.display && report.ids.display.length
+						? PublishBody('Display', report.report.display, spentfinder, report)
+						: null
 			}
 		],
 		video: [
 			{
 				columns: PublishHead,
-				data: report.report.video.length ? PublishBody('Video', report.report.video, spentfinder, report) : null
+				data:
+					report.ids && report.ids.video && report.ids.video.length
+						? PublishBody('Video', report.report.video, spentfinder, report)
+						: null
 			}
 		]
 	};
@@ -1015,13 +1351,20 @@ function TablePro() {
 		audio: [
 			{
 				columns: QuartileHead,
-				data: report.report.audio.length && QuartileBody(report.report.audio)
+				data: report.ids && report.ids.audio && report.ids.audio.length && QuartileBody(report.report.audio)
+			}
+		],
+		podcast: [
+			{
+				columns: QuartileHead,
+				data:
+					report.ids && report.ids.podcast && report.ids.podcast.length && QuartileBody(report.report.podcast)
 			}
 		],
 		video: [
 			{
 				columns: QuartileHead,
-				data: report.report.video.length && QuartileBody(report.report.video)
+				data: report.ids && report.ids.video && report.ids.video.length && QuartileBody(report.report.video)
 			}
 		]
 	};
@@ -1073,6 +1416,18 @@ function TablePro() {
 					PhoneModelBody(phoneModelReports.audio)
 			}
 		],
+		podcast: [
+			{
+				columns: PhoneModelHead,
+				data:
+					report.ids &&
+					report.ids.podcast &&
+					report.ids.podcast.length &&
+					phoneModelReports &&
+					phoneModelReports.podcast &&
+					PhoneModelBody(phoneModelReports.podcast)
+			}
+		],
 		display: [
 			{
 				columns: PhoneModelHead,
@@ -1109,6 +1464,18 @@ function TablePro() {
 					frequencyReport &&
 					frequencyReport.audio &&
 					FrequencyBody(frequencyReport.audio)
+			}
+		],
+		podcast: [
+			{
+				columns: FrequencyHead,
+				data:
+					report.ids &&
+					report.ids.podcast &&
+					report.ids.podcast.length &&
+					frequencyReport &&
+					frequencyReport.podcast &&
+					FrequencyBody(frequencyReport.podcast)
 			}
 		],
 		display: [
@@ -1149,6 +1516,18 @@ function TablePro() {
 					IBABody(ibaReports.audio)
 			}
 		],
+		podcast: [
+			{
+				columns: IBAHead,
+				data:
+					report.ids &&
+					report.ids.podcast &&
+					report.ids.podcast.length &&
+					ibaReports &&
+					ibaReports.podcast &&
+					IBABody(ibaReports.podcast)
+			}
+		],
 		display: [
 			{
 				columns: IBAHead,
@@ -1181,6 +1560,19 @@ function TablePro() {
 				data:
 					report.ids && report.ids.audio && report.ids.audio.length && pincodereports && pincodereports.audio
 						? PincodeBody(pincodereports.audio)
+						: null
+			}
+		],
+		podcast: [
+			{
+				columns: PincodeHead,
+				data:
+					report.ids &&
+					report.ids.podcast &&
+					report.ids.podcast.length &&
+					pincodereports &&
+					pincodereports.podcast
+						? PincodeBody(pincodereports.podcast)
 						: null
 			}
 		],
@@ -1224,6 +1616,8 @@ function TablePro() {
 		OverallDataDown.complete.map((x) => vamp.push(x));
 		if (report.ids && report.ids.audio && report.ids.audio.length && report.report.audioCompleteReport)
 			OverallDataDown.audio.map((x) => vamp.push(x));
+		if (report.ids && report.ids.podcast && report.ids.podcast.length && report.report.podcastCompleteReport)
+			OverallDataDown.podcast.map((x) => vamp.push(x));
 		if (report.ids && report.ids.display && report.ids.display.length && report.report.displayCompleteReport)
 			OverallDataDown.display.map((x) => vamp.push(x));
 		// vamp.concat(OverallDataDown.display);
@@ -1281,20 +1675,26 @@ function TablePro() {
 			<ExeclDownload filename={`Complete Report ${report.title}`}>
 				<ExcelSheet dataSet={CompeleteSheetGen()} must={true} name="Over all Summary Data" />
 				<ExcelSheet dataSet={PublisherDown.audio} name="Publisher Audio Wise" />
+				<ExcelSheet dataSet={PublisherDown.podcast} name="Publisher Podcast Wise" />
 				<ExcelSheet dataSet={PublisherDown.display} name="Publisher Display Wise" />
 				<ExcelSheet dataSet={PublisherDown.video} name="Publisher Video Wise" />
 				<ExcelSheet dataSet={QuartileDown.audio} name="Quartile Audio Wise" />
+				<ExcelSheet dataSet={QuartileDown.podcast} name="Quartile Podcast Wise" />
 				<ExcelSheet dataSet={QuartileDown.video} name="Quartile Video Wise" />
 				<ExcelSheet dataSet={PhoneModelDown.audio} name="PhoneModel Audio Wise" />
+				<ExcelSheet dataSet={PhoneModelDown.podcast} name="PhoneModel Podcast Wise" />
 				<ExcelSheet dataSet={PhoneModelDown.display} name="PhoneModel Display Wise" />
 				<ExcelSheet dataSet={PhoneModelDown.video} name="PhoneModel Video Wise" />
 				<ExcelSheet dataSet={FrequencyDown.audio} name="Frequency Audio Wise" />
+				<ExcelSheet dataSet={FrequencyDown.podcast} name="Frequency Podcast Wise" />
 				<ExcelSheet dataSet={FrequencyDown.display} name="Frequency Display Wise" />
 				<ExcelSheet dataSet={FrequencyDown.video} name="Frequency Video Wise" />
 				<ExcelSheet dataSet={IBADown.audio} name="Category Audio Wise" />
+				<ExcelSheet dataSet={IBADown.podcast} name="Category Podcast Wise" />
 				<ExcelSheet dataSet={IBADown.display} name="Category Display Wise" />
 				<ExcelSheet dataSet={IBADown.video} name="Category Video Wise" />
 				<ExcelSheet dataSet={PincodeDown.audio} name="Pincode Audio Wise" />
+				<ExcelSheet dataSet={PincodeDown.podcast} name="Pincode Podcast Wise" />
 				<ExcelSheet dataSet={PincodeDown.display} name="Pincode Display Wise" />
 				<ExcelSheet dataSet={PincodeDown.video} name="Pincode Video Wise" />
 				<ExcelSheet dataSet={CreativeDown} name="Creative Wise" />
@@ -1303,74 +1703,52 @@ function TablePro() {
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
-			{SummaryTable(
-				'Summary',
-				report.report.summaryCompleteReport,
-				report.ids && report.ids.audimpression + report.ids.disimpression + report.ids.vidimpression,
-				completespentfider('all') +
-					(report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0) +
-					(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0) +
-					(report.videospentOffline ? parseFloat(report.videospentOffline) : 0),
-				uniqueData.complete ? uniqueData.complete : 0,
-				parseInt(report.report.audiouniquePublisher) +
-					parseInt(report.report.displayuniquePublisher) +
-					parseInt(report.report.videouniquePublisher)
-			)}
+			{SummaryTable('Summary', report.report.summaryCompleteReport)}
 			{report.ids && report.ids.audio && report.ids.audio.length ? (
-				report.report.audioCompleteReport &&
-				SummaryTable(
-					'Audio',
-					report.report.audioCompleteReport,
-					report.ids && report.ids.audimpression,
-					completespentfider('audio') + (report.audiospentOffline ? parseFloat(report.audiospentOffline) : 0),
-					uniqueData.audio ? uniqueData.audio : 0,
-					report.report.audiouniquePublisher ? parseInt(report.report.audiouniquePublisher) : 0
-				)
+				report.report.audioCompleteReport && SummaryTable('Audio', report.report.audioCompleteReport)
+			) : (
+				''
+			)}
+			{report.ids && report.ids.podcast && report.ids.podcast.length ? (
+				report.report.podcastCompleteReport && SummaryTable('Podcast', report.report.podcastCompleteReport)
 			) : (
 				''
 			)}
 			{report.ids && report.ids.display && report.ids.display.length ? (
-				report.report.displayCompleteReport &&
-				SummaryTable(
-					'Display',
-					report.report.displayCompleteReport,
-					report.ids && report.ids.disimpression,
-					completespentfider('display') +
-						(report.displayspentOffline ? parseFloat(report.displayspentOffline) : 0),
-					uniqueData.display ? uniqueData.display : 0,
-					report.report.displayuniquePublisher ? parseInt(report.report.displayuniquePublisher) : 0
-				)
+				report.report.displayCompleteReport && SummaryTable('Display', report.report.displayCompleteReport)
 			) : (
 				''
 			)}
 			{report.ids && report.ids.video && report.ids.video.length ? (
-				report.report.videoCompleteReport &&
-				SummaryTable(
-					'Video',
-					report.report.videoCompleteReport,
-					report.ids && report.ids.vidimpression,
-					completespentfider('video') + (report.videospentOffline ? parseFloat(report.videospentOffline) : 0),
-					uniqueData.video ? uniqueData.video : 0,
-					report.report.videouniquePublisher ? parseInt(report.report.videouniquePublisher) : 0
-				)
+				report.report.videoCompleteReport && SummaryTable('Video', report.report.videoCompleteReport)
 			) : (
 				''
 			)}
 			<div className="titleReport">Publisher Report</div>
 			<ExeclDownload filename={`Publisher Wise Report ${report.title}`}>
 				<ExcelSheet dataSet={PublisherDown.audio} name="Audio Wise" />
+				<ExcelSheet dataSet={PublisherDown.podcast} name="Podcast Wise" />
 				<ExcelSheet dataSet={PublisherDown.display} name="Display Wise" />
 				<ExcelSheet dataSet={PublisherDown.video} name="Video Wise" />
 			</ExeclDownload>
 			<div>
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
-			{report.report.audio.length ? (
+			{report.ids && report.ids.audio && report.ids.audio.length ? (
 				<PublisherAdmin {...PublisherProps} title="Audio" report={report.report.audio && report.report.audio} />
 			) : (
 				''
 			)}
-			{report.report.display.length ? (
+			{report.ids && report.ids.podcast && report.ids.podcast.length ? (
+				<PublisherAdmin
+					{...PublisherProps}
+					title="Podcast"
+					report={report.report.podcast && report.report.podcast}
+				/>
+			) : (
+				''
+			)}
+			{report.ids && report.ids.display && report.ids.display.length ? (
 				<PublisherAdmin
 					{...PublisherProps}
 					title="Display"
@@ -1379,7 +1757,7 @@ function TablePro() {
 			) : (
 				''
 			)}
-			{report.report.video.length ? (
+			{report.ids && report.ids.video && report.ids.video.length ? (
 				<PublisherAdmin {...PublisherProps} title="Video" report={report.report.video && report.report.video} />
 			) : (
 				''
@@ -1387,6 +1765,7 @@ function TablePro() {
 			<div className="titleReport">Quartile Summary Report</div>
 			<ExeclDownload filename={`Quartile Wise Report ${report.title}`}>
 				<ExcelSheet dataSet={QuartileDown.audio} name="Audio Wise" />
+				<ExcelSheet dataSet={QuartileDown.podcast} name="Podcast Wise" />
 				<ExcelSheet dataSet={QuartileDown.video} name="Video Wise" />
 			</ExeclDownload>
 			<div>
@@ -1409,9 +1788,9 @@ function TablePro() {
 						<TableRow>
 							<TableCell>Impressions</TableCell>
 							<TableCell>{report.report.summaryCompleteReport.start}</TableCell>
-							<TableCell>{report.report.summaryCompleteReport.fq}</TableCell>
-							<TableCell>{report.report.summaryCompleteReport.sq}</TableCell>
-							<TableCell>{report.report.summaryCompleteReport.tq}</TableCell>
+							<TableCell>{report.report.summaryCompleteReport.firstQuartile}</TableCell>
+							<TableCell>{report.report.summaryCompleteReport.midpoint}</TableCell>
+							<TableCell>{report.report.summaryCompleteReport.thirdQuartile}</TableCell>
 							<TableCell>{report.report.summaryCompleteReport.complete}</TableCell>
 							<TableCell>{report.report.summaryCompleteReport.impressions}</TableCell>
 						</TableRow>
@@ -1420,7 +1799,7 @@ function TablePro() {
 			</TableContainer>
 			<TableContainer style={{ margin: '20px 0' }} elevation={3} component={Paper}>
 				<div style={{ margin: '5px', fontWeight: 'bolder' }}>Publisher Wise</div>
-				{report.report.audio.length ? (
+				{report.ids && report.ids.audio && report.ids.audio.length ? (
 					<QuartilePublisher
 						title="Audio"
 						report={report.report.audio && report.report.audio}
@@ -1431,7 +1810,18 @@ function TablePro() {
 				) : (
 					''
 				)}
-				{report.report.video.length ? (
+				{report.ids && report.ids.podcast && report.ids.podcast.length ? (
+					<QuartilePublisher
+						title="Podcast"
+						report={report.report.podcast && report.report.podcast}
+						arrowRetuner={arrowRetuner}
+						ids={report.ids}
+						state1={report.req_id}
+					/>
+				) : (
+					''
+				)}
+				{report.ids && report.ids.video && report.ids.video.length ? (
 					<QuartilePublisher
 						title="Video"
 						report={report.report.video && report.report.video}
@@ -1446,6 +1836,7 @@ function TablePro() {
 			<div className="titleReport">Phone Make Model Wise Summary Report</div>
 			<ExeclDownload filename={`Phone Make Model Wise Report ${report.title}`}>
 				<ExcelSheet dataSet={PhoneModelDown.audio} name="Audio Wise" />
+				<ExcelSheet dataSet={PhoneModelDown.podcast} name="Podcast Wise" />
 				<ExcelSheet dataSet={PhoneModelDown.display} name="Display Wise" />
 				<ExcelSheet dataSet={PhoneModelDown.video} name="Video Wise" />
 			</ExeclDownload>
@@ -1460,6 +1851,19 @@ function TablePro() {
 						state1={report.req_id}
 						arrowRetuner={arrowRetuner}
 						report={phoneModelReports && phoneModelReports.audio}
+					/>
+				)
+			) : (
+				''
+			)}
+			{report.ids && report.ids.podcast && report.ids.podcast.length ? (
+				phoneModelReports &&
+				phoneModelReports.podcast && (
+					<PhoneModelAdmin
+						title="Podcast"
+						state1={report.req_id}
+						arrowRetuner={arrowRetuner}
+						report={phoneModelReports && phoneModelReports.podcast}
 					/>
 				)
 			) : (
@@ -1494,6 +1898,7 @@ function TablePro() {
 			<div className="titleReport">Frequency Report</div>
 			<ExeclDownload filename={`Frequency Wise Report ${report.title}`}>
 				<ExcelSheet dataSet={FrequencyDown.audio} name="Audio Wise" />
+				<ExcelSheet dataSet={FrequencyDown.podcast} name="Podcast Wise" />
 				<ExcelSheet dataSet={FrequencyDown.display} name="Display Wise" />
 				<ExcelSheet dataSet={FrequencyDown.video} name="Video Wise" />
 			</ExeclDownload>
@@ -1506,6 +1911,16 @@ function TablePro() {
 					state1={report.req_id}
 					arrowRetuner={arrowRetuner}
 					report={frequencyReport && frequencyReport.audio}
+				/>
+			) : (
+				''
+			)}
+			{report.ids && report.ids.podcast && report.ids.podcast.length ? (
+				<FrequencyAdmin
+					title="Podcast"
+					state1={report.req_id}
+					arrowRetuner={arrowRetuner}
+					report={frequencyReport && frequencyReport.podcast}
 				/>
 			) : (
 				''
@@ -1533,6 +1948,7 @@ function TablePro() {
 			<div className="titleReport">Category Wise Summary Report</div>
 			<ExeclDownload filename={`Category Wise Report ${report.title}`}>
 				<ExcelSheet dataSet={IBADown.audio} name="Audio Wise" />
+				<ExcelSheet dataSet={IBADown.podcast} name="Podcast Wise" />
 				<ExcelSheet dataSet={IBADown.display} name="Display Wise" />
 				<ExcelSheet dataSet={IBADown.video} name="Video Wise" />
 			</ExeclDownload>
@@ -1545,6 +1961,16 @@ function TablePro() {
 					state1={report.req_id}
 					arrowRetuner={arrowRetuner}
 					report={ibaReports && ibaReports.audio}
+				/>
+			) : (
+				''
+			)}
+			{report.ids && report.ids.podcast && report.ids.podcast.length ? (
+				<IbaReportAdmin
+					title="Podcast"
+					state1={report.req_id}
+					arrowRetuner={arrowRetuner}
+					report={ibaReports && ibaReports.podcast}
 				/>
 			) : (
 				''
@@ -1572,6 +1998,7 @@ function TablePro() {
 			<div className="titleReport">Pincode Wise Summary Report</div>
 			<ExeclDownload filename={`Pincode Wise Report ${report.title}`}>
 				<ExcelSheet dataSet={PincodeDown.audio} name="Audio Wise" />
+				<ExcelSheet dataSet={PincodeDown.podcast} name="Podcast Wise" />
 				<ExcelSheet dataSet={PincodeDown.display} name="Display Wise" />
 				<ExcelSheet dataSet={PincodeDown.video} name="Video Wise" />
 			</ExeclDownload>
@@ -1584,6 +2011,16 @@ function TablePro() {
 					state1={report.req_id}
 					arrowRetuner={arrowRetuner}
 					report={pincodereports && pincodereports.audio}
+				/>
+			) : (
+				''
+			)}
+			{report.ids && report.ids.podcast && report.ids.podcast.length ? (
+				<PincodeAdmin
+					title="Podcast"
+					state1={report.req_id}
+					arrowRetuner={arrowRetuner}
+					report={pincodereports && pincodereports.podcast}
 				/>
 			) : (
 				''

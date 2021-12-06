@@ -102,4 +102,25 @@ router.put('/sumfrequency', adminauth, (req, res) => {
 		.catch((err) => console.log(err));
 });
 
+router.put('/sumfrequencyids', adminauth, (req, res) => {
+	const { campaignId } = req.body;
+	var audio = campaignId.map((id) => mongoose.Types.ObjectId(id));
+	frequencyreports
+		.aggregate([
+			{ $match: { campaignId: { $in: audio } } },
+			{
+				$group: {
+					_id: '$frequency',
+					users: { $sum: '$users' },
+					impression: { $sum: '$impression' },
+					click: { $sum: '$click' }
+				}
+			}
+		])
+		.then((respo) => {
+			res.json(respo);
+		})
+		.catch((err) => console.log(err));
+});
+
 module.exports = router;

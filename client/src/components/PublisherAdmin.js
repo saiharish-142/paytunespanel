@@ -74,18 +74,7 @@ function PublisherAdmin({
 					ad.overlap = Math.round(ad.unique * 100 / uniqea * 100) / 100;
 					imoop += ad.impressions;
 					cliom += ad.clicks;
-					spentdd += ad.spent ? parseFloat(ad.spent) : 0;
-					ad.spent =
-						spentfinder(
-							ad.Publisher._id,
-							ad.campaignId,
-							ad.impressions,
-							publishbid,
-							publishbid ? 'apppub' : 'appid'
-						) +
-						parseInt(title === 'Audio' ? (spentOffline ? spentOffline : 0) : 0) +
-						parseInt(title === 'Display' ? (spentOfflined ? spentOfflined : 0) : 0) +
-						parseInt(title === 'Video' ? (spentOfflinev ? spentOfflinev : 0) : 0);
+					spentdd += ad.spent ? ad.spent : 0;
 					// console.log(ad.spent);
 					return ad;
 				});
@@ -121,7 +110,7 @@ function PublisherAdmin({
 		<Paper>
 			<TableContainer style={{ margin: '20px 0' }}>
 				<div style={{ margin: '5px', fontWeight: 'bolder' }}>{title} Report</div>
-				{state1 && adss.length && ids ? (
+				{state1 && adss && adss.length && ids ? (
 					<Table className={classes.table} aria-label="simple table">
 						<TableHead>
 							<TableRow>
