@@ -1,4 +1,5 @@
 const cron=require('node-cron')
+// import mongoose from 'mongoose';
 const { db1, db2 } = require('../db')
 const PodcastSchema = require('../server2/model/episodemodel');
 const AdsettingSchema = require('../server2/model/addsetting')
@@ -51,6 +52,7 @@ function getyesterday() {
 async function podcastscript() {
 	let yesterday = getyesterday()
 	let results = await EpisodeModel.aggregate([
+		// {$match:{createdOn:{$gt: new Date('2021-11-29T00:00:00.000Z') }}},
 		{ $match: { createdOn:  {$gt: new Date(`${yesterday}T00:00:00.000Z`),$lt:new Date()  }  } },
 	])
 	console.log('podcast',results.length)
@@ -64,6 +66,7 @@ async function podcastscript() {
 async function UareqScript() {
 	let yesterday = getyesterday()
 	let results = await Uareports2.aggregate([
+		// {$match:{date:{$gt:'2021-12-02',$lt:'2021-12-07'}}},
 		{ $match: { date:  yesterday  } },
 	])
 	console.log('ua',results.length)
@@ -79,9 +82,10 @@ async function Addsettingscript() {
 	let yesterday = getyesterday();
 	console.log(yesterday)
 	let results = await Adsetting2.aggregate([
+		// {$match:{createdOn:{$gt: new Date('2021-11-29T00:00:00.000Z') }}},
 		{ $match: { createdOn:  {$gt:new Date(`${yesterday}T00:00:00.000Z`) ,$lt:new Date() }  } },
 	])
-	console.log(results)
+	console.log(results.length)
 	results.map(async (res) => {
 		let n = new Adsetting1(res);
 		await n.save();
@@ -107,15 +111,11 @@ async function apppublisherscript() {
 
 
 async function Demographyscript() {
-	let latestiddetails = await demography1.aggregate([
-		{ $sort: { _id: -1 } },
-		{ $limit: 1 }
-	])
-	console.log(latestiddetails)
+	console.log(1)
+	let yesterday = getyesterday();
 	let results = await demography2.aggregate([
-		{ $match: { _id: { $gt: latestiddetails[0]._id } } },
-		{$sort:{_id:1}},
-		{$skip:20000000}
+		// {$match:{createdOn:{$gt: new Date('2021-11-29T00:00:00.000Z') }}},
+		{ $match: { createdOn:  {$gt:new Date(`${yesterday}T00:00:00.000Z`) ,$lt:new Date() }  } },
 	]).allowDiskUse(true)
 	console.log(results.length)
 	results.map(async (res) => {
@@ -127,6 +127,7 @@ async function Demographyscript() {
 async function ZipreqScript() {
 	let yesterday = getyesterday();
 	let results = await Zipreq2.aggregate([
+		// {$match:{date:{$gt:'2021-12-02',$lt:'2021-12-07'}}},
 		{ $match: { date: yesterday } },
 		{$sort:{date:1}}
 	]).allowDiskUse(true)
@@ -140,6 +141,7 @@ async function ZipreqScript() {
 async function reqScript() {
 	let yesterday = getyesterday();
 	let results = await req2.aggregate([
+		// {$match:{date:{$gt:'2021-11-28'}}},
 		{ $match: { date: yesterday } },
 		{$sort:{date:1}}
 	])
@@ -154,6 +156,7 @@ async function resScript() {
 	let yesterday = getyesterday();
 	console.log(yesterday)
 	let results = await res2.aggregate([
+		// {$match:{date:{$gt:'2021-11-28'}}},
 		{ $match: { date: yesterday }},
 		{$sort:{date:1}}
 	])
@@ -176,7 +179,7 @@ cron.schedule('50 1 * * *',ZipreqScript)
 // Addsettingscript() 
 // podcastscript() 
 // ZipreqScript() 
-// reqScript()  d
+// reqScript()  
 // resScript() 
-// UareqScript() d
+// UareqScript() 
 // Demographyscript()

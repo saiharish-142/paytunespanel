@@ -10,8 +10,8 @@ const cron = require('node-cron');
 const phonemodel2reports = require('./models/phonemodel2reports');
 // var connectTimeout = require('connect-timeout')
 
-app.use(express.json());
-app.use(cors());
+app.use(express.json({limit: '50mb'}));
+app.use(cors({limit: '50mb'}));
 
 const options = {
 	useNewUrlParser: true,
@@ -804,25 +804,27 @@ async function CategoryRefresher() {
 	// console.log('updated', updateddoc);
 }
 
-// let tempfunc=async ()=>{
-// 	const EpisodeModel2 = require('./models/episodemodel2');
-// 	const EpisodeModel2Copy = require('./models/episodemodel2copy');
-// 	let data=await EpisodeModel2.find({});
-// 	console.log(data.length);
-// 	data.map(async dat=>{
-// 		let res=await EpisodeModel2Copy.findOne({episodename:dat.episodename,category:dat.category})
-// 		if(res){
-// 			let updates={
-// 				publishername:res.publishername?res.publishername:""  ,
-// 				displayname:res.displayname?res.displayname:""  ,
-// 				hostPossibility:res.hostPossibility?res.hostPossibility:""
-// 			}
-// 			await EpisodeModel2.findOneAndUpdate({episodename:dat.episodename,category:dat.category},updates);
-// 			console.log(1)
-// 		}
-
-// 	})
-// }
+let tempfunc=async ()=>{
+	const EpisodeModel2 = require('./models/episodemodel2');
+	const EpisodeModel2Copy = require('./models/episodemodel2copy');
+	let data=await EpisodeModel2.find({createdOn:  {$gt:new Date(`2021-10-26T00:00:00.000Z`) }  } );
+	console.log(data.length);
+	data.map(async dat=>{
+		let res=await EpisodeModel2Copy.findOne({episodename:dat.episodename,category:dat.category})
+		// console.log(res)
+		if(res){
+			console.log(3)
+			let updates={
+				publishername:res.publishername?res.publishername:""  ,
+				displayname:res.displayname?res.displayname:""  ,
+				hostPossibility:res.hostPossibility?res.hostPossibility:""
+			}
+			console.log(2)
+			await EpisodeModel2.findOneAndUpdate({episodename:dat.episodename,category:dat.category},{$set:updates});
+			console.log(1)
+		}
+	})
+}
 
 // tempfunc();
 
