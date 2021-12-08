@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema.Types;
 
 const FrequecyCampwiseDate = new mongoose.Schema({
-	campaignId: { type: ObjectId, ref: 'streamingadObj' },
+	campaignId: { type: ObjectId, ref: 'streamingads' },
 	rtbType: String,
 	users: Number,
 	createdOn: String

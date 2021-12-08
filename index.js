@@ -91,6 +91,7 @@ app.use('/useragent', require('./routes/useragent.routes'));
 
 const commonfunctions = require('./repeater');
 // commonfunctions.func1();
+// commonfunctions.func2();
 app.use('/repeat', commonfunctions.route);
 
 if (process.env.NODE_ENV === 'production') {
@@ -105,6 +106,10 @@ app.listen(port, () => console.log(`app listening on port ${port}!`));
 
 cron.schedule('04 00 * * *', function() {
 	commonfunctions.func1('2021-10-10');
+});
+
+cron.schedule('00 09 * * *', function() {
+	commonfunctions.func2();
 });
 
 cron.schedule('00 02 * * *', function() {

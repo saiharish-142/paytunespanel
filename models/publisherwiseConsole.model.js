@@ -5,7 +5,7 @@ const { ObjectId } = mongoose.Schema.Types;
 var publisheriseConsoleSchema = new Schema(
 	{
 		apppubid: String,
-		campaignId: { type: ObjectId, ref: 'streamingadObj' },
+		campaignId: { type: ObjectId, ref: 'streamingads' },
 		publisherName: String,
 		type: String,
 		ssp: String,
