@@ -848,8 +848,8 @@ async function DailyReportMailer() {
 						Destination: {
 							BccAddresses: [],
 							CcAddresses: [],
-							// ToAddresses: x.targetemail
-							ToAddresses: [ 'saiharishmedam@gmail.com' ]
+							ToAddresses: x.targetemail
+							// ToAddresses: [ 'saiharishmedam@gmail.com' ]
 						},
 						Message: {
 							Body: {
@@ -888,8 +888,8 @@ async function DailyReportMailer() {
 														<th>Impressions</th>
 														<th>Clicks</th>
 														<th>CTR</th>
-														<th>Complete</th>
-														<th>LTR</th>
+														${!(xas === 'Display' || xas === 'display') ? ` <th>Complete</th>` : ``}
+														${!(xas === 'Display' || xas === 'display') ? ` <th>LTR</th>` : ``}
 													</tr>
 													${totaldataCount[xas] && totaldataCount[xas].length
 														? totaldataCount[xas]
@@ -903,12 +903,12 @@ async function DailyReportMailer() {
 																<td>
 																	${Math.round(dalrep.clicks * 100 * 100 / dalrep.impressions) / 100}%
 																</td>
-																<td>
-																	${dalrep.complete}
-																</td>
-																<td>
-																	${Math.round(dalrep.complete * 100 * 100 / dalrep.impressions) / 100}%
-																</td>
+																${!(xas === 'Display' || xas === 'display') ? ` <td>${dalrep.complete}</td>` : ``}
+																${!(xas === 'Display' || xas === 'display')
+																	? `<td>
+																		${Math.round(dalrep.complete * 100 * 100 / dalrep.impressions) / 100}%
+																	</td>`
+																	: ``}
 															</tr>`;
 																})
 																.join('')
@@ -919,7 +919,7 @@ async function DailyReportMailer() {
 										.join('')}
 
 									</body>
-									   `
+									`
 								},
 								Text: {
 									Charset: 'UTF-8',
