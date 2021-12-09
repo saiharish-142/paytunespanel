@@ -43,8 +43,7 @@ export const loadReportBase = () => (dispatch, getState) => {
 				Authorization: 'Bearer ' + localStorage.getItem('jwt')
 			},
 			body: JSON.stringify({
-				adtitle: id,
-				podcast: 'podcast'
+				adtitle: id
 			})
 		})
 			.then((res) => res.json())
@@ -52,10 +51,14 @@ export const loadReportBase = () => (dispatch, getState) => {
 				// settitle(result[0].AdTitle)
 				// setloading(false)
 				var ids = result.ids;
-				if (ids.podcast && ids.podcast.length) {
-					ids.audio = ids.audio.filter((x) => !ids.podcast.includes(x));
-					ids.audimpression = ids.subimpression.mus + ids.subimpression.dem;
-				}
+				// if (ids.podcast && ids.podcast.length) {
+				// 	// var ids = [];
+				// 	// ids.onDemand && ids.onDemand.map((x) => ids.push(x));
+				// 	// ids.musicapps && ids.musicapps.map((x) => ids.push(x));
+				// 	// console.log(ids);
+				// 	// ids.audio = ids.audio.filter((x) => !ids.podcast.includes(x));
+				// 	// ids.audimpression = ids.subimpression.mus + ids.subimpression.dem;
+				// }
 				console.log(result, ids);
 				dispatch({
 					type: REPORT_BASE_LOADED,
@@ -263,7 +266,7 @@ export const loadReportDiv = () => async (dispatch, getState) => {
 	const usinrst = getState().ratio.ratio;
 	var usinr = usinrst ? usinrst : 74.94715;
 	console.log(datast);
-	var tags = [ 'audio', 'display', 'video', 'podcast' ];
+	var tags = [ 'audio', 'display', 'video' ];
 	var data = {};
 	data.startDate = datast.startDate;
 	data.endDate = datast.endDate;
@@ -307,63 +310,167 @@ export const loadReportDiv = () => async (dispatch, getState) => {
 					Authorization: 'Bearer ' + localStorage.getItem('jwt')
 				},
 				body: JSON.stringify({
-					campaignId: datast.ids[tags[i]]
+					campaignId: datast.ids[tags[i]],
+					tag: tags[i]
 				})
 			})
 				.then((res) => res.json())
 				.then((result) => {
 					// console.log(result);
-					var data2 = result;
-					var pubunique = 0;
-					data2.data.map((re) => {
-						re.publishername = re.apppubidpo
-							? re.apppubidpo.publishername ? re.apppubidpo.publishername : re.PublisherSplit
-							: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
-						re.target = re.targetimpre;
-						re.click = parseInt(re.clicks) + parseInt(re.clicks1);
-						re.ctr = (parseInt(re.clicks) + parseInt(re.clicks1)) * 100 / re.impressions;
-						// wholereportsum.impressions += parseInt(re.impressions);
-						// wholereportsum.clicks += re.click;
-						re.unique = re.uniqueData;
-						console.log(re.uniqueData);
-						pubunique += parseInt(re.uniqueData);
-						re.avgreq = parseInt(re.target) / parseInt(wholeTime);
-						re.avgach = parseInt(re.impressions) / parseInt(leftTime);
-						if (re.apppubidpo && re.apppubidpo.ssp === 'offline') {
-							// Humgama
-							if (hungamaids.includes(re.apppubidpo.publisherid)) {
-								re.spent = parseInt(re.impressions) * 4.25 / (usinr * 100);
-								data.summary.spentValue += parseInt(re.impressions) * 4.25 / (usinr * 100);
-								console.log(re.spent);
+					if (tags[i] === 'audio') {
+						var data2 = result;
+						var pubuniquepod = 0;
+						data2.data.podcastResult.map((re) => {
+							re.publishername = re.apppubidpo
+								? re.apppubidpo.publishername ? re.apppubidpo.publishername : re.PublisherSplit
+								: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
+							re.target = re.targetimpre;
+							re.click = parseInt(re.clicks) + parseInt(re.clicks1);
+							re.ctr = (parseInt(re.clicks) + parseInt(re.clicks1)) * 100 / re.impressions;
+							// wholereportsum.impressions += parseInt(re.impressions);
+							// wholereportsum.clicks += re.click;
+							re.unique = re.uniqueData;
+							console.log(re.uniqueData);
+							pubuniquepod += parseInt(re.uniqueData);
+							re.avgreq = parseInt(re.target) / parseInt(wholeTime);
+							re.avgach = parseInt(re.impressions) / parseInt(leftTime);
+							if (re.apppubidpo && re.apppubidpo.ssp === 'offline') {
+								// Humgama
+								if (hungamaids.includes(re.apppubidpo.publisherid)) {
+									re.spent = parseInt(re.impressions) * 4.25 / (usinr * 100);
+									data.summary.spentValue += parseInt(re.impressions) * 4.25 / (usinr * 100);
+									console.log(re.spent);
+								}
+								// Wynk
+								if (wynkids.includes(re.apppubidpo.publisherid)) {
+									re.spent = parseInt(re.impressions) * 10 / (usinr * 100);
+									data.summary.spentValue += parseInt(re.impressions) * 10 / (usinr * 100);
+									console.log(re.spent);
+								}
+								// wholereportsum.spent += re.spent ? parseFloat(re.spent) : 0;
+								// wholereportsum.spent += re.unqiueData ? parseFloat(re.unqiueData) : 0;
 							}
-							// Wynk
-							if (wynkids.includes(re.apppubidpo.publisherid)) {
-								re.spent = parseInt(re.impressions) * 10 / (usinr * 100);
-								data.summary.spentValue += parseInt(re.impressions) * 10 / (usinr * 100);
-								console.log(re.spent);
+							// console.log(re.uniqueData);
+						});
+						wholereportsum.target += parseInt(data2.summary.podcastReport.target);
+						wholereportsum.impressions += data2.summary.podcastReport.impressions;
+						wholereportsum.clicks += data2.summary.podcastReport.clicks;
+						wholereportsum.start += data2.summary.podcastReport.start;
+						wholereportsum.firstQuartile += data2.summary.podcastReport.firstQuartile;
+						wholereportsum.midpoint += data2.summary.podcastReport.midpoint;
+						wholereportsum.thirdQuartile += data2.summary.podcastReport.thirdQuartile;
+						wholereportsum.complete += data2.summary.podcastReport.complete;
+						wholereportsum.pubunique += parseInt(pubuniquepod);
+						wholereportsum.uniqueValue += parseInt(data2.summary.podcastReport.uniqueValue);
+						wholereportsum.spentValue += parseFloat(data2.summary.podcastReport.spentValue);
+						data2.summary.podcastReport.pubunique = pubuniquepod;
+						console.log(tags[i]);
+						data[`podcast`] = data2.data.podcastResult;
+						data[`podcastCompleteReport`] = data2.summary.podcastReport;
+						summarydata[tags[i]] = data2.summary.podcastReport;
+						var pubuniquemus = 0;
+						data2.data.musicappsResult.map((re) => {
+							re.publishername = re.apppubidpo
+								? re.apppubidpo.publishername ? re.apppubidpo.publishername : re.PublisherSplit
+								: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
+							re.target = re.targetimpre;
+							re.click = parseInt(re.clicks) + parseInt(re.clicks1);
+							re.ctr = (parseInt(re.clicks) + parseInt(re.clicks1)) * 100 / re.impressions;
+							// wholereportsum.impressions += parseInt(re.impressions);
+							// wholereportsum.clicks += re.click;
+							re.unique = re.uniqueData;
+							console.log(re.uniqueData);
+							pubuniquemus += parseInt(re.uniqueData);
+							re.avgreq = parseInt(re.target) / parseInt(wholeTime);
+							re.avgach = parseInt(re.impressions) / parseInt(leftTime);
+							if (re.apppubidpo && re.apppubidpo.ssp === 'offline') {
+								// Humgama
+								if (hungamaids.includes(re.apppubidpo.publisherid)) {
+									re.spent = parseInt(re.impressions) * 4.25 / (usinr * 100);
+									data.summary.spentValue += parseInt(re.impressions) * 4.25 / (usinr * 100);
+									console.log(re.spent);
+								}
+								// Wynk
+								if (wynkids.includes(re.apppubidpo.publisherid)) {
+									re.spent = parseInt(re.impressions) * 10 / (usinr * 100);
+									data.summary.spentValue += parseInt(re.impressions) * 10 / (usinr * 100);
+									console.log(re.spent);
+								}
+								// wholereportsum.spent += re.spent ? parseFloat(re.spent) : 0;
+								// wholereportsum.spent += re.unqiueData ? parseFloat(re.unqiueData) : 0;
 							}
-							// wholereportsum.spent += re.spent ? parseFloat(re.spent) : 0;
-							// wholereportsum.spent += re.unqiueData ? parseFloat(re.unqiueData) : 0;
-						}
-						// console.log(re.uniqueData);
-					});
-					wholereportsum.target += parseInt(data2.summary.target);
-					wholereportsum.impressions += data2.summary.impressions;
-					wholereportsum.clicks += data2.summary.clicks;
-					wholereportsum.start += data2.summary.start;
-					wholereportsum.firstQuartile += data2.summary.firstQuartile;
-					wholereportsum.midpoint += data2.summary.midpoint;
-					wholereportsum.thirdQuartile += data2.summary.thirdQuartile;
-					wholereportsum.complete += data2.summary.complete;
-					wholereportsum.pubunique += parseInt(pubunique);
-					wholereportsum.uniqueValue += parseInt(data2.summary.uniqueValue);
-					wholereportsum.spentValue += parseFloat(data2.summary.spentValue);
-					data2.summary.pubunique = pubunique;
-					console.log(tags[i]);
-					data[`${tags[i]}`] = data2.data;
-					data[`${tags[i]}CompleteReport`] = data2.summary;
-					summarydata[tags[i]] = data2.summary;
-					recentdate.push(data2.allrecentupdate);
+							// console.log(re.uniqueData);
+						});
+						wholereportsum.target += parseInt(data2.summary.musicappsReport.target);
+						wholereportsum.impressions += data2.summary.musicappsReport.impressions;
+						wholereportsum.clicks += data2.summary.musicappsReport.clicks;
+						wholereportsum.start += data2.summary.musicappsReport.start;
+						wholereportsum.firstQuartile += data2.summary.musicappsReport.firstQuartile;
+						wholereportsum.midpoint += data2.summary.musicappsReport.midpoint;
+						wholereportsum.thirdQuartile += data2.summary.musicappsReport.thirdQuartile;
+						wholereportsum.complete += data2.summary.musicappsReport.complete;
+						wholereportsum.pubunique += parseInt(pubuniquemus);
+						wholereportsum.uniqueValue += parseInt(data2.summary.musicappsReport.uniqueValue);
+						wholereportsum.spentValue += parseFloat(data2.summary.musicappsReport.spentValue);
+						data2.summary.musicappsReport.pubunique = pubuniquemus;
+						console.log(tags[i]);
+						data[`music`] = data2.data.musicappsResult;
+						data[`musicCompleteReport`] = data2.summary.musicappsReport;
+						summarydata[tags[i]] = data2.summary.musicappsReport;
+						recentdate.push(data2.allrecentupdate);
+					} else {
+						var data2 = result;
+						var pubunique = 0;
+						data2.data.map((re) => {
+							re.publishername = re.apppubidpo
+								? re.apppubidpo.publishername ? re.apppubidpo.publishername : re.PublisherSplit
+								: re.PublisherSplit ? re.PublisherSplit : re.Publisher.AppName;
+							re.target = re.targetimpre;
+							re.click = parseInt(re.clicks) + parseInt(re.clicks1);
+							re.ctr = (parseInt(re.clicks) + parseInt(re.clicks1)) * 100 / re.impressions;
+							// wholereportsum.impressions += parseInt(re.impressions);
+							// wholereportsum.clicks += re.click;
+							re.unique = re.uniqueData;
+							console.log(re.uniqueData);
+							pubunique += parseInt(re.uniqueData);
+							re.avgreq = parseInt(re.target) / parseInt(wholeTime);
+							re.avgach = parseInt(re.impressions) / parseInt(leftTime);
+							if (re.apppubidpo && re.apppubidpo.ssp === 'offline') {
+								// Humgama
+								if (hungamaids.includes(re.apppubidpo.publisherid)) {
+									re.spent = parseInt(re.impressions) * 4.25 / (usinr * 100);
+									data.summary.spentValue += parseInt(re.impressions) * 4.25 / (usinr * 100);
+									console.log(re.spent);
+								}
+								// Wynk
+								if (wynkids.includes(re.apppubidpo.publisherid)) {
+									re.spent = parseInt(re.impressions) * 10 / (usinr * 100);
+									data.summary.spentValue += parseInt(re.impressions) * 10 / (usinr * 100);
+									console.log(re.spent);
+								}
+								// wholereportsum.spent += re.spent ? parseFloat(re.spent) : 0;
+								// wholereportsum.spent += re.unqiueData ? parseFloat(re.unqiueData) : 0;
+							}
+							// console.log(re.uniqueData);
+						});
+						wholereportsum.target += parseInt(data2.summary.target);
+						wholereportsum.impressions += data2.summary.impressions;
+						wholereportsum.clicks += data2.summary.clicks;
+						wholereportsum.start += data2.summary.start;
+						wholereportsum.firstQuartile += data2.summary.firstQuartile;
+						wholereportsum.midpoint += data2.summary.midpoint;
+						wholereportsum.thirdQuartile += data2.summary.thirdQuartile;
+						wholereportsum.complete += data2.summary.complete;
+						wholereportsum.pubunique += parseInt(pubunique);
+						wholereportsum.uniqueValue += parseInt(data2.summary.uniqueValue);
+						wholereportsum.spentValue += parseFloat(data2.summary.spentValue);
+						data2.summary.pubunique = pubunique;
+						console.log(tags[i]);
+						data[`${tags[i]}`] = data2.data;
+						data[`${tags[i]}CompleteReport`] = data2.summary;
+						summarydata[tags[i]] = data2.summary;
+						recentdate.push(data2.allrecentupdate);
+					}
 					// console.log(data2);
 				})
 				.catch((err) => console.log(err));

@@ -87,7 +87,7 @@ export const searchclientads = (val) => (dispatch, getState) => {
 	var mads = getState().clientmanageads.manageads;
 	if (val) {
 		mads.map((ads) => {
-			if (ads.Adtitle.toLowerCase().indexOf(val.toLowerCase()) > -1) {
+			if (ads.campaignName.toLowerCase().indexOf(val.toLowerCase()) > -1) {
 				match.push(ads);
 			}
 		});

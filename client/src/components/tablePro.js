@@ -860,7 +860,7 @@ function TablePro() {
 			}
 		],
 		audio:
-			report.ids && report.ids.audio && report.ids.audio.length && report.report.audioCompleteReport
+			report.ids && report.ids.audio && report.ids.audio.length && report.report.musicCompleteReport
 				? [
 						{
 							ySteps: 1,
@@ -887,30 +887,30 @@ function TablePro() {
 							data: [
 								[
 									{
-										value: report.report.audioCompleteReport.target
+										value: report.report.musicCompleteReport.target
 									},
-									{ value: report.report.audioCompleteReport.impressions },
-									{ value: report.report.audioCompleteReport.uniqueValue },
+									{ value: report.report.musicCompleteReport.impressions },
+									{ value: report.report.musicCompleteReport.uniqueValue },
 									{
 										value: Math.round(
-											report.report.audioCompleteReport.impressions /
-												report.report.audioCompleteReport.uniqueValue
+											report.report.musicCompleteReport.impressions /
+												report.report.musicCompleteReport.uniqueValue
 										)
 									},
 									{
 										value:
 											Math.round(
-												report.report.audioCompleteReport.pubunique /
-													report.report.audioCompleteReport.uniqueValue *
+												report.report.musicCompleteReport.pubunique /
+													report.report.musicCompleteReport.uniqueValue *
 													100
 											) / 100
 									} + '%',
-									{ value: report.report.audioCompleteReport.clicks },
+									{ value: report.report.musicCompleteReport.clicks },
 									{
 										value:
 											Math.round(
-												report.report.audioCompleteReport.clicks /
-													report.report.audioCompleteReport.impressions *
+												report.report.musicCompleteReport.clicks /
+													report.report.musicCompleteReport.impressions *
 													100
 											) /
 												100 +
@@ -919,8 +919,8 @@ function TablePro() {
 									{
 										value:
 											Math.round(
-												report.report.audioCompleteReport.complete /
-													report.report.audioCompleteReport.impressions *
+												report.report.musicCompleteReport.complete /
+													report.report.musicCompleteReport.impressions *
 													100
 											) /
 												100 +
@@ -929,7 +929,7 @@ function TablePro() {
 									{
 										value:
 											Math.round(
-												report.report.audioCompleteReport.target /
+												report.report.musicCompleteReport.target /
 													timefinder(report.endDate, report.startDate) *
 													10
 											) / 10
@@ -937,18 +937,18 @@ function TablePro() {
 									{
 										value:
 											Math.round(
-												report.report.audioCompleteReport.impressions /
+												report.report.musicCompleteReport.impressions /
 													timefinder(Date.now(), report.startDate) *
 													10
 											) / 10
 									},
 									{
-										value: report.report.audioCompleteReport.spentValue
+										value: report.report.musicCompleteReport.spentValue
 									},
 									{
 										value:
-											report.report.audioCompleteReport.target -
-											report.report.audioCompleteReport.impressions
+											report.report.musicCompleteReport.target -
+											report.report.musicCompleteReport.impressions
 									},
 									{ value: timefinder(report.endDate, Date.now()) }
 								]
@@ -957,7 +957,7 @@ function TablePro() {
 					]
 				: [],
 		podcast:
-			report.ids && report.ids.podcast && report.ids.podcast.length && report.report.podcastCompleteReport
+			report.ids && report.ids.audio && report.ids.audio.length && report.report.podcastCompleteReport
 				? [
 						{
 							ySteps: 1,
@@ -1315,7 +1315,7 @@ function TablePro() {
 				columns: PublishHead,
 				data:
 					report.ids && report.ids.audio && report.ids.audio.length
-						? PublishBody('Audio', report.report.audio, spentfinder, report)
+						? PublishBody('Audio', report.report.music, spentfinder, report)
 						: null
 			}
 		],
@@ -1323,7 +1323,7 @@ function TablePro() {
 			{
 				columns: PublishHead,
 				data:
-					report.ids && report.ids.podcast && report.ids.podcast.length
+					report.ids && report.ids.audio && report.ids.audio.length
 						? PublishBody('Podcast', report.report.podcast, spentfinder, report)
 						: null
 			}
@@ -1351,14 +1351,13 @@ function TablePro() {
 		audio: [
 			{
 				columns: QuartileHead,
-				data: report.ids && report.ids.audio && report.ids.audio.length && QuartileBody(report.report.audio)
+				data: report.ids && report.ids.audio && report.ids.audio.length && QuartileBody(report.report.music)
 			}
 		],
 		podcast: [
 			{
 				columns: QuartileHead,
-				data:
-					report.ids && report.ids.podcast && report.ids.podcast.length && QuartileBody(report.report.podcast)
+				data: report.ids && report.ids.audio && report.ids.audio.length && QuartileBody(report.report.podcast)
 			}
 		],
 		video: [
@@ -1614,9 +1613,9 @@ function TablePro() {
 	const CompeleteSheetGen = () => {
 		var vamp = [];
 		OverallDataDown.complete.map((x) => vamp.push(x));
-		if (report.ids && report.ids.audio && report.ids.audio.length && report.report.audioCompleteReport)
+		if (report.ids && report.ids.audio && report.ids.audio.length && report.report.musicCompleteReport)
 			OverallDataDown.audio.map((x) => vamp.push(x));
-		if (report.ids && report.ids.podcast && report.ids.podcast.length && report.report.podcastCompleteReport)
+		if (report.ids && report.ids.audio && report.ids.audio.length && report.report.podcastCompleteReport)
 			OverallDataDown.podcast.map((x) => vamp.push(x));
 		if (report.ids && report.ids.display && report.ids.display.length && report.report.displayCompleteReport)
 			OverallDataDown.display.map((x) => vamp.push(x));
@@ -1705,11 +1704,11 @@ function TablePro() {
 			</div>
 			{SummaryTable('Summary', report.report.summaryCompleteReport)}
 			{report.ids && report.ids.audio && report.ids.audio.length ? (
-				report.report.audioCompleteReport && SummaryTable('Audio', report.report.audioCompleteReport)
+				report.report.musicCompleteReport && SummaryTable('Audio', report.report.musicCompleteReport)
 			) : (
 				''
 			)}
-			{report.ids && report.ids.podcast && report.ids.podcast.length ? (
+			{report.ids && report.ids.audio && report.ids.audio.length ? (
 				report.report.podcastCompleteReport && SummaryTable('Podcast', report.report.podcastCompleteReport)
 			) : (
 				''
@@ -1735,11 +1734,11 @@ function TablePro() {
 				last updated at - {report.report ? updatedatetimeseter(report.report.allrecentupdate) : 'Not found'}
 			</div>
 			{report.ids && report.ids.audio && report.ids.audio.length ? (
-				<PublisherAdmin {...PublisherProps} title="Audio" report={report.report.audio && report.report.audio} />
+				<PublisherAdmin {...PublisherProps} title="Audio" report={report.report.music && report.report.music} />
 			) : (
 				''
 			)}
-			{report.ids && report.ids.podcast && report.ids.podcast.length ? (
+			{report.ids && report.ids.audio && report.ids.audio.length ? (
 				<PublisherAdmin
 					{...PublisherProps}
 					title="Podcast"
@@ -1802,7 +1801,7 @@ function TablePro() {
 				{report.ids && report.ids.audio && report.ids.audio.length ? (
 					<QuartilePublisher
 						title="Audio"
-						report={report.report.audio && report.report.audio}
+						report={report.report.music && report.report.music}
 						arrowRetuner={arrowRetuner}
 						ids={report.ids}
 						state1={report.req_id}
@@ -1810,7 +1809,7 @@ function TablePro() {
 				) : (
 					''
 				)}
-				{report.ids && report.ids.podcast && report.ids.podcast.length ? (
+				{report.ids && report.ids.audio && report.ids.audio.length ? (
 					<QuartilePublisher
 						title="Podcast"
 						report={report.report.podcast && report.report.podcast}
