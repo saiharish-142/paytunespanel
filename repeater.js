@@ -1014,7 +1014,7 @@ router.put('/idssplitfinder', adminauth, async (req, res) => {
 	res.json(data);
 });
 
-router.put('/campaignPrior', adminauth, async (req, res) => {
+router.put('/campaignPriorMailer', adminauth, async (req, res) => {
 	pacingMailer();
 	res.json('sent');
 });
