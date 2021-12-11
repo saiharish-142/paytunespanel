@@ -94,6 +94,7 @@ async function datareturner(datae) {
 	try {
 		let ids = await adsetting
 			.aggregate([
+				{ $match: { isRunning: true } },
 				{
 					$project: {
 						testStart: { $dateToString: { format: '%Y-%m-%d', date: '$startDate' } },
@@ -102,8 +103,7 @@ async function datareturner(datae) {
 						targetImpression: '$targetImpression',
 						type: '$type'
 					}
-				},
-				{ $match: { testStart: { $gte: datee }, testEnd: { $gte: chevk } } }
+				}
 			])
 			.catch((err) => console.log(err));
 		var idsa = [];
@@ -215,13 +215,14 @@ async function pacingMailer() {
 	let data = await campaignreportsSum
 		.find({ createdOn: chevk2 })
 		.populate({ path: 'campaignId', select: 'AdTitle' })
+		.sort({ impression: -1 })
 		.catch((err) => console.log(err));
 	console.log(data.length);
 	var params = {
 		Destination: {
 			BccAddresses: [],
 			CcAddresses: [],
-			ToAddresses: [ 'fin-ops@paytunes.in' ]
+			ToAddresses: [ 'fin-ops@paytunes.in', 'raj.v@paytunes.in' ]
 			// ToAddresses:  ['fin-ops@paytunes.in']
 		},
 		Message: {
