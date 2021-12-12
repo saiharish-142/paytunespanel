@@ -52,7 +52,7 @@ function getyesterday() {
 async function podcastscript() {
 	let yesterday = getyesterday()
 	let results = await EpisodeModel.aggregate([
-		// {$match:{createdOn:{$gt: new Date('2021-11-29T00:00:00.000Z') }}},
+		// {$match:{createdOn:{$gt: new Date('2021-12-06T00:00:00.000Z') }}},
 		{ $match: { createdOn:  {$gt: new Date(`${yesterday}T00:00:00.000Z`),$lt:new Date()  }  } },
 	])
 	console.log('podcast',results.length)
@@ -66,7 +66,7 @@ async function podcastscript() {
 async function UareqScript() {
 	let yesterday = getyesterday()
 	let results = await Uareports2.aggregate([
-		// {$match:{date:{$gt:'2021-12-02',$lt:'2021-12-07'}}},
+		// {$match:{date:{$gt:'2021-12-09',$lt:'2021-12-13'}}},
 		{ $match: { date:  yesterday  } },
 	])
 	console.log('ua',results.length)
@@ -82,7 +82,7 @@ async function Addsettingscript() {
 	let yesterday = getyesterday();
 	console.log(yesterday)
 	let results = await Adsetting2.aggregate([
-		// {$match:{createdOn:{$gt: new Date('2021-11-29T00:00:00.000Z') }}},
+		// {$match:{createdOn:{$gt: new Date('2021-12-05T00:00:00.000Z') }}},
 		{ $match: { createdOn:  {$gt:new Date(`${yesterday}T00:00:00.000Z`) ,$lt:new Date() }  } },
 	])
 	console.log(results.length)
@@ -127,7 +127,7 @@ async function Demographyscript() {
 async function ZipreqScript() {
 	let yesterday = getyesterday();
 	let results = await Zipreq2.aggregate([
-		// {$match:{date:{$gt:'2021-12-02',$lt:'2021-12-07'}}},
+		// {$match:{date:{$gt:'2021-12-06'}}},
 		{ $match: { date: yesterday } },
 		{$sort:{date:1}}
 	]).allowDiskUse(true)
@@ -156,7 +156,7 @@ async function resScript() {
 	let yesterday = getyesterday();
 	console.log(yesterday)
 	let results = await res2.aggregate([
-		// {$match:{date:{$gt:'2021-11-28'}}},
+		// {$match:{date:{$gt:'2021-11-06'}}},
 		{ $match: { date: yesterday }},
 		{$sort:{date:1}}
 	])

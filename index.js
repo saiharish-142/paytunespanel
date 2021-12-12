@@ -547,7 +547,7 @@ async function PincodeRefresher() {
 cron.schedule('30 1 * * *', function() {
 	PincodeRequestsRefresher();
 });
-
+// PincodeRequestsRefresher();
 async function PincodeRequestsRefresher() {
 	let date = new Date(new Date());
 	date.setDate(date.getDate() - 1);
@@ -581,7 +581,7 @@ async function PincodeRequestsRefresher() {
 				ads: '$ads'
 			}
 		},
-		{ $match: { test: yesterday } },
+		{ $match: { test: {$gt:'2021-12-01',$lt:'2021-12-06'} } },
 		{
 			$group: {
 				_id: { zip: '$zip', rtbType: '$rtbType' },
@@ -826,7 +826,7 @@ let tempfunc=async ()=>{
 cron.schedule('30 1 * * *', function() {
 	PodcastEpisodeRefresher();
 });
-// PodcastEpisodeRefresher();
+PodcastEpisodeRefresher();
 async function PodcastEpisodeRefresher() {
 	let date = new Date(new Date());
 	date.setDate(date.getDate() - 1);
@@ -861,7 +861,7 @@ async function PodcastEpisodeRefresher() {
 				hostPossibility: 1
 			}
 		},
-		{ $match: { test: yesterday } },
+		{ $match: { test: {$gt:'2021-12-07',$lt:'2021-12-13'} } },
 		{
 			$project: {
 				episodename: 1,
