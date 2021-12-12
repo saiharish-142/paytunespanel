@@ -10,8 +10,8 @@ const cron = require('node-cron');
 const phonemodel2reports = require('./models/phonemodel2reports');
 // var connectTimeout = require('connect-timeout')
 
-app.use(express.json({limit: '50mb'}));
-app.use(cors({limit: '50mb'}));
+app.use(express.json({ limit: '50mb' }));
+app.use(cors({ limit: '50mb' }));
 
 const options = {
 	useNewUrlParser: true,
@@ -91,6 +91,8 @@ app.use('/useragent', require('./routes/useragent.routes'));
 
 const commonfunctions = require('./repeater');
 // commonfunctions.func1();
+// commonfunctions.func2();
+// commonfunctions.func3();
 app.use('/repeat', commonfunctions.route);
 
 if (process.env.NODE_ENV === 'production') {
@@ -105,6 +107,10 @@ app.listen(port, () => console.log(`app listening on port ${port}!`));
 
 cron.schedule('04 00 * * *', function() {
 	commonfunctions.func1('2021-10-10');
+});
+
+cron.schedule('00 09 * * *', function() {
+	commonfunctions.func2();
 });
 
 cron.schedule('00 02 * * *', function() {
@@ -799,27 +805,30 @@ async function CategoryRefresher() {
 	// console.log('updated', updateddoc);
 }
 
-let tempfunc=async ()=>{
+let tempfunc = async () => {
 	const EpisodeModel2 = require('./models/episodemodel2');
 	const EpisodeModel2Copy = require('./models/episodemodel2copy');
-	let data=await EpisodeModel2.find({createdOn:  {$gt:new Date(`2021-10-26T00:00:00.000Z`) }  } );
+	let data = await EpisodeModel2.find({ createdOn: { $gt: new Date(`2021-10-26T00:00:00.000Z`) } });
 	console.log(data.length);
-	data.map(async dat=>{
-		let res=await EpisodeModel2Copy.findOne({episodename:dat.episodename,category:dat.category})
+	data.map(async (dat) => {
+		let res = await EpisodeModel2Copy.findOne({ episodename: dat.episodename, category: dat.category });
 		// console.log(res)
-		if(res){
-			console.log(3)
-			let updates={
-				publishername:res.publishername?res.publishername:""  ,
-				displayname:res.displayname?res.displayname:""  ,
-				hostPossibility:res.hostPossibility?res.hostPossibility:""
-			}
-			console.log(2)
-			await EpisodeModel2.findOneAndUpdate({episodename:dat.episodename,category:dat.category},{$set:updates});
-			console.log(1)
+		if (res) {
+			console.log(3);
+			let updates = {
+				publishername: res.publishername ? res.publishername : '',
+				displayname: res.displayname ? res.displayname : '',
+				hostPossibility: res.hostPossibility ? res.hostPossibility : ''
+			};
+			console.log(2);
+			await EpisodeModel2.findOneAndUpdate(
+				{ episodename: dat.episodename, category: dat.category },
+				{ $set: updates }
+			);
+			console.log(1);
 		}
-	})
-}
+	});
+};
 
 // tempfunc();
 
@@ -1842,7 +1851,7 @@ const adminauth = require('./authenMiddleware/adminauth');
 aws.config.loadFromPath(__dirname + '/config.json');
 
 cron.schedule('00 09 * * *', function() {
-	DailyReportMailer();
+	commonfunctions.func3();
 });
 
 // cron.schedule('30 18 * * *', function() {
@@ -2789,6 +2798,20 @@ const removeDuplicates = (inputArray) => {
 	}, []);
 };
 
+const musicids = [
+	'13698',
+	'18880',
+	'18878',
+	'22308',
+	'22310',
+	'11726',
+	'5efac6f9aeeeb92b8a1ee056',
+	'5a1e46beeb993dc67979412e',
+	'5b2210af504f3097e73e0d8b',
+	'5adeeb79cf7a7e3e5d822106',
+	'5d10c405844dd970bf41e2af'
+];
+
 function remove_duplicates_arrayobject(gotarray, unique) {
 	var obj = {};
 	var array = gotarray;
@@ -3098,6 +3121,10 @@ async function DailyReportMailer() {
 							}
 						]);
 						totalcom = totalcom && totalcom[0];
+						if (!totalcom) {
+							console.log({ idsa, name: x.searchName });
+							continue;
+						}
 						let reportdaily = await campaignwisereports.aggregate([
 							{ $match: { campaignId: { $in: idsa }, appubid: { $nin: saavnids } } },
 							{
@@ -3123,6 +3150,7 @@ async function DailyReportMailer() {
 							},
 							{ $sort: { date: -1 } }
 						]);
+						console.log(totalcom, x.searchName, reportdaily.length, 'cooo');
 						reportdaily = reportdaily.filter((x) => x.impressions >= 10);
 						var totImp = 0,
 							totCli = 0,
@@ -3135,7 +3163,7 @@ async function DailyReportMailer() {
 							totCli += dax.clicks;
 							totCom += dax.complete;
 						});
-						console.log(totalcom);
+						// console.log(totalcom);
 						totalcom.complete = totalcom.complete / totalcom.firstQuartile * totalcom.impressions;
 						reportdaily.map((dax) => {
 							dax.impressions = totImp ? Math.round(dax.impressions / totImp * totalcom.impressions) : 0;
@@ -3180,106 +3208,106 @@ async function DailyReportMailer() {
 						// ses.sendEmail()
 					}
 					console.log(x.searchName, mashh, totaldataCount);
-					var params = {
-						Destination: {
-							BccAddresses: [],
-							CcAddresses: [],
-							ToAddresses: x.targetemail
-						},
-						Message: {
-							Body: {
-								Html: {
-									Charset: 'UTF-8',
-									Data: `
-									<head>
-									<style>
-									table {
-									font-family: arial, sans-serif;
-									border-collapse: collapse;
-									width: 100%;
-									}
+					// var params = {
+					// 	Destination: {
+					// 		BccAddresses: [],
+					// 		CcAddresses: [],
+					// 		ToAddresses: x.targetemail
+					// 	},
+					// 	Message: {
+					// 		Body: {
+					// 			Html: {
+					// 				Charset: 'UTF-8',
+					// 				Data: `
+					// 				<head>
+					// 				<style>
+					// 				table {
+					// 				font-family: arial, sans-serif;
+					// 				border-collapse: collapse;
+					// 				width: 100%;
+					// 				}
 
-									td, th {
-									border: 1px solid #dddddd;
-									text-align: center;
-									padding: 4px;
-									}
+					// 				td, th {
+					// 				border: 1px solid #dddddd;
+					// 				text-align: center;
+					// 				padding: 4px;
+					// 				}
 
-									tr:nth-child(even) {
-									background-color: #dddddd;
-									}
-									</style>
-									</head>
-									<body>
-									
-									${mashh.das
-										.map((xas) => {
-											return `
-											<div>
-												<h2>${xas}</h2>
-												<table>
-													<tr>
-														<th>Date</th>
-														<th>Impressions</th>
-														<th>Clicks</th>
-														<th>CTR</th>
-														<th>Complete</th>
-														<th>LTR</th>
-													</tr>
-													${totaldataCount[xas]
-														.map((dalrep) => {
-															return `<tr>
-																<td>${dalrep.date}</td>
-																<td>
-																	${dalrep.impressions}
-																</td>
-																<td>${dalrep.clicks}</td>
-																<td>
-																	${Math.round(dalrep.clicks * 100 * 100 / dalrep.impressions) / 100}%
-																</td>
-																<td>
-																	${dalrep.complete}
-																</td>
-																<td>
-																	${Math.round(dalrep.complete * 100 * 100 / dalrep.impressions) / 100}%
-																</td>
-															</tr>`;
-														})
-														.join('')}
-												</table>
-											</div>`;
-										})
-										.join('')}
-									
-									</body>
-									   `
-								},
-								Text: {
-									Charset: 'UTF-8',
-									Data: 'This is the message if in text if no data found.'
-								}
-							},
-							Subject: {
-								Charset: 'UTF-8',
-								Data: `${x.campaignName} daily report`
-							}
-						},
-						// ReplyToAddresses: [],
-						// ReturnPath: '',
-						// ReturnPathArn: '',
-						// SourceArn: ''
-						Source: email
-					};
-					ses.sendEmail(params, function(err, data) {
-						if (err)
-							console.log(err, err.stack); // an error occurred
-						else console.log(data); // successful response
-						/*
-						data = {
-						MessageId: "EXAMPLE78603177f-7a5433e7-8edb-42ae-af10-f0181f34d6ee-000000"
-						}
-						 */
-					});
+					// 				tr:nth-child(even) {
+					// 				background-color: #dddddd;
+					// 				}
+					// 				</style>
+					// 				</head>
+					// 				<body>
+
+					// 				${mashh.das
+					// 					.map((xas) => {
+					// 						return `
+					// 						<div>
+					// 							<h2>${xas}</h2>
+					// 							<table>
+					// 								<tr>
+					// 									<th>Date</th>
+					// 									<th>Impressions</th>
+					// 									<th>Clicks</th>
+					// 									<th>CTR</th>
+					// 									<th>Complete</th>
+					// 									<th>LTR</th>
+					// 								</tr>
+					// 								${totaldataCount[xas]
+					// 									.map((dalrep) => {
+					// 										return `<tr>
+					// 											<td>${dalrep.date}</td>
+					// 											<td>
+					// 												${dalrep.impressions}
+					// 											</td>
+					// 											<td>${dalrep.clicks}</td>
+					// 											<td>
+					// 												${Math.round(dalrep.clicks * 100 * 100 / dalrep.impressions) / 100}%
+					// 											</td>
+					// 											<td>
+					// 												${dalrep.complete}
+					// 											</td>
+					// 											<td>
+					// 												${Math.round(dalrep.complete * 100 * 100 / dalrep.impressions) / 100}%
+					// 											</td>
+					// 										</tr>`;
+					// 									})
+					// 									.join('')}
+					// 							</table>
+					// 						</div>`;
+					// 					})
+					// 					.join('')}
+
+					// 				</body>
+					// 				   `
+					// 			},
+					// 			Text: {
+					// 				Charset: 'UTF-8',
+					// 				Data: 'This is the message if in text if no data found.'
+					// 			}
+					// 		},
+					// 		Subject: {
+					// 			Charset: 'UTF-8',
+					// 			Data: `${x.campaignName} daily report`
+					// 		}
+					// 	},
+					// 	// ReplyToAddresses: [],
+					// 	// ReturnPath: '',
+					// 	// ReturnPathArn: '',
+					// 	// SourceArn: ''
+					// 	Source: email
+					// };
+					// ses.sendEmail(params, function(err, data) {
+					// 	if (err)
+					// 		console.log(err, err.stack); // an error occurred
+					// 	else console.log(data); // successful response
+					// 	/*
+					// 	data = {
+					// 	MessageId: "EXAMPLE78603177f-7a5433e7-8edb-42ae-af10-f0181f34d6ee-000000"
+					// 	}
+					// 	 */
+					// });
 					//
 					// console.log(formdata);
 					// console.log(

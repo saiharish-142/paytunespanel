@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var freqpublishreportsSchema = new Schema(
 	{
-		campaignId: { type: Schema.Types.ObjectId, ref: 'streamingadObj' },
+		campaignId: { type: Schema.Types.ObjectId, ref: 'streamingads' },
 		appId: String,
 		rtbType: String,
 		users: Number,

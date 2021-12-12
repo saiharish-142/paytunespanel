@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var zipreportsSchema = new Schema({
-	campaignId: { type: Schema.Types.ObjectId, ref: 'streamingadObj' },
+	campaignId: { type: Schema.Types.ObjectId, ref: 'streamingads' },
 	appId: String,
 	zip: Number,
 	requests: Number,

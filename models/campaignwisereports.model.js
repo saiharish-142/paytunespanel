@@ -3,7 +3,7 @@ const { ObjectId } = mongoose.Schema.Types;
 
 var campaignwisereportsSchema = new mongoose.Schema({
 	date: { type: String },
-	campaignId: { type: mongoose.Schema.Types.ObjectId, ref: 'streamingadObj' },
+	campaignId: { type: mongoose.Schema.Types.ObjectId, ref: 'streamingads' },
 	appId: String,
 	bundlename: String,
 	apppubid: String,

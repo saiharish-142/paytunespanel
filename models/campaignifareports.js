@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var campaignifareportsSchema = new Schema({
-	campaignId: { type: Schema.Types.ObjectId, ref: 'streamingadObj' },
+	campaignId: { type: Schema.Types.ObjectId, ref: 'streamingads' },
 	ccampaignId: String,
 	appId: String,
 	ifa: String,

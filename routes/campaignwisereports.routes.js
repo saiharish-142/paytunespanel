@@ -9,6 +9,7 @@ const apppublishers = mongoose.model('apppublishers');
 const adsetting = mongoose.model('adsetting');
 const freqpublishreports = mongoose.model('freqpublishreports');
 const spentreports = mongoose.model('spentreports');
+const http = require('http');
 
 const saavnids = [
 	'22308',
@@ -18,6 +19,30 @@ const saavnids = [
 	'11726',
 	'com.jio.media.jiobeats',
 	'441813332'
+];
+
+const musicids = [
+	'13698',
+	'18880',
+	'18878',
+	'22308',
+	'22310',
+	'11726',
+	'845083955',
+	'585270521',
+	'441813332',
+	'324684580',
+	'com.gaana',
+	'com.jio.media.jiobeats',
+	'com.spotify.music',
+	'com.bsbportal.music',
+	'5d3f052e979a1c2391016c04',
+	'5efac6f9aeeeb92b8a1ee056',
+	'5c0a3f024a6c1355afaffabc',
+	'5a1e46beeb993dc67979412e',
+	'5b2210af504f3097e73e0d8b',
+	'5adeeb79cf7a7e3e5d822106',
+	'5d10c405844dd970bf41e2af'
 ];
 
 router.get('/reports', adminauth, (req, res) => {
@@ -1248,7 +1273,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 });
 
 router.put('/sumreportofcamDiv', adminauth, (req, res) => {
-	const { campaignId } = req.body;
+	const { campaignId, tag } = req.body;
 	var ids = campaignId.map((id) => mongoose.Types.ObjectId(id));
 	campaignwisereports
 		.aggregate([
@@ -1374,71 +1399,222 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 						}
 					});
 				}
-				// console.log(uniqueData, tempUser);
-				// summaryReport.uniqueData = tempUser;
-				// summaryReport.spentData = tempSpent;
-				result.map((x) => {
-					x.updatedAt = [ ...new Set(x.updatedAt) ];
-					x.Publisher = [ ...new Set(x.Publisher) ];
-					x.ssp = [ ...new Set(x.ssp) ];
-					// x.unique = 0;
-					var testappubid = x.apppubidpo;
-					var forda;
-					if (testappubid && testappubid.length)
-						for (var i = 0; i < testappubid.length; i++) {
-							if (testappubid && testappubid[i] && testappubid[i].publishername) {
-								forda = testappubid[i];
-								break;
-							}
+				if (tag === 'audio') {
+					var podcastReport = {
+						impressions: 0,
+						clicks: 0,
+						unique: [],
+						uniqueValue: 0,
+						spentValue: 0,
+						complete: 0,
+						start: 0,
+						firstQuartile: 0,
+						midpoint: 0,
+						thirdQuartile: 0
+					};
+					var musicappsReport = {
+						impressions: 0,
+						clicks: 0,
+						unique: [],
+						uniqueValue: 0,
+						spentValue: 0,
+						complete: 0,
+						start: 0,
+						firstQuartile: 0,
+						midpoint: 0,
+						thirdQuartile: 0
+					};
+					var podcastResult = [];
+					var musicappsResult = [];
+					result.map((pubData) => {
+						if (musicids.includes(pubData.PublisherSplit)) {
+							musicappsResult.push(pubData);
+						} else {
+							podcastResult.push(pubData);
 						}
-					x.apppubidpo = forda;
-					x.spent = tempSpent[x.PublisherSplit];
-					// console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
-					x.uniqueData = tempUser[x.PublisherSplit] ? tempUser[x.PublisherSplit] : 0;
-					x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
-					summaryReport.impressions += parseInt(x.impressions);
-					summaryReport.clicks += parseInt(x.clicks);
-					summaryReport.complete += parseInt(x.complete);
-					summaryReport.midpoint += parseInt(x.midpoint);
-					summaryReport.start += parseInt(x.start);
-					summaryReport.firstQuartile += parseInt(x.firstQuartile);
-					summaryReport.thirdQuartile += parseInt(x.thirdQuartile);
-					x.updatedAt.sort(function(a, b) {
+					});
+					podcastResult.length &&
+						podcastResult.map((x) => {
+							x.updatedAt = [ ...new Set(x.updatedAt) ];
+							x.Publisher = [ ...new Set(x.Publisher) ];
+							x.ssp = [ ...new Set(x.ssp) ];
+							// x.unique = 0;
+							var testappubid = x.apppubidpo;
+							var forda;
+							if (testappubid && testappubid.length)
+								for (var i = 0; i < testappubid.length; i++) {
+									if (testappubid && testappubid[i] && testappubid[i].publishername) {
+										forda = testappubid[i];
+										break;
+									}
+								}
+							x.apppubidpo = forda;
+							x.spent = tempSpent[x.PublisherSplit];
+							// console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
+							x.uniqueData = tempUser[x.PublisherSplit] ? tempUser[x.PublisherSplit] : 0;
+							x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
+							podcastReport.uniqueValue += parseInt(x.uniqueData);
+							podcastReport.spentValue += x.spent ? parseFloat(x.spent) : 0;
+							podcastReport.impressions += parseInt(x.impressions);
+							podcastReport.clicks += parseInt(x.clicks);
+							podcastReport.complete += parseInt(x.complete);
+							podcastReport.midpoint += parseInt(x.midpoint);
+							podcastReport.start += parseInt(x.start);
+							podcastReport.firstQuartile += parseInt(x.firstQuartile);
+							podcastReport.thirdQuartile += parseInt(x.thirdQuartile);
+							x.updatedAt.sort(function(a, b) {
+								return new Date(b) - new Date(a);
+							});
+							x.Publisher = x.Publisher[0];
+							var numberta = 0;
+							var targetfii =
+								targetgetter &&
+								targetgetter.filter(
+									(y) => arrayincludefinder(x.campaignId, y.campaignId) && x.Publisher === y.appId
+								);
+							targetfii &&
+								targetfii.map((cx) => {
+									numberta += cx.targetImpression;
+								});
+							// console.log(numberta, x.campaignId, x.Publisher);
+							x.targetimpre = numberta;
+							x.updatedAt = x.updatedAt[0];
+							x.ssp = x.ssp ? x.ssp[0] : '';
+							x.campaignId = x.campaignId[0];
+							updatedAtTimes.push(x.updatedAt);
+						});
+					musicappsResult.length &&
+						musicappsResult.map((x) => {
+							x.updatedAt = [ ...new Set(x.updatedAt) ];
+							x.Publisher = [ ...new Set(x.Publisher) ];
+							x.ssp = [ ...new Set(x.ssp) ];
+							// x.unique = 0;
+							var testappubid = x.apppubidpo;
+							var forda;
+							if (testappubid && testappubid.length)
+								for (var i = 0; i < testappubid.length; i++) {
+									if (testappubid && testappubid[i] && testappubid[i].publishername) {
+										forda = testappubid[i];
+										break;
+									}
+								}
+							x.apppubidpo = forda;
+							x.spent = tempSpent[x.PublisherSplit];
+							// console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
+							x.uniqueData = tempUser[x.PublisherSplit] ? tempUser[x.PublisherSplit] : 0;
+							x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
+							musicappsReport.uniqueValue += parseInt(x.uniqueData);
+							musicappsReport.spentValue += x.spent ? parseFloat(x.spent) : 0;
+							musicappsReport.impressions += parseInt(x.impressions);
+							musicappsReport.clicks += parseInt(x.clicks);
+							musicappsReport.complete += parseInt(x.complete);
+							musicappsReport.midpoint += parseInt(x.midpoint);
+							musicappsReport.start += parseInt(x.start);
+							musicappsReport.firstQuartile += parseInt(x.firstQuartile);
+							musicappsReport.thirdQuartile += parseInt(x.thirdQuartile);
+							x.updatedAt.sort(function(a, b) {
+								return new Date(b) - new Date(a);
+							});
+							x.Publisher = x.Publisher[0];
+							var numberta = 0;
+							var targetfii =
+								targetgetter &&
+								targetgetter.filter(
+									(y) => arrayincludefinder(x.campaignId, y.campaignId) && x.Publisher === y.appId
+								);
+							targetfii &&
+								targetfii.map((cx) => {
+									numberta += cx.targetImpression;
+								});
+							// console.log(numberta, x.campaignId, x.Publisher);
+							x.targetimpre = numberta;
+							x.updatedAt = x.updatedAt[0];
+							x.ssp = x.ssp ? x.ssp[0] : '';
+							x.campaignId = x.campaignId[0];
+							updatedAtTimes.push(x.updatedAt);
+						});
+					updatedAtTimes.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
-					x.Publisher = x.Publisher[0];
-					var numberta = 0;
-					var targetfii =
-						targetgetter &&
-						targetgetter.filter(
-							(y) => arrayincludefinder(x.campaignId, y.campaignId) && x.Publisher === y.appId
-						);
-					targetfii &&
-						targetfii.map((cx) => {
-							numberta += cx.targetImpression;
+					var response = {};
+					summaryReport.unique = [];
+					summaryReport.target = totaltarget;
+					response.data = { podcastResult, musicappsResult };
+					response.summary = summaryReport;
+					response.allrecentupdate = updatedAtTimes ? updatedAtTimes[0] : undefined;
+					res.json({
+						data: response.data,
+						// unique: tempUser,
+						summary: { podcastReport, musicappsReport },
+						allrecentupdate: updatedAtTimes ? updatedAtTimes[0] : undefined
+					});
+				} else {
+					// console.log(uniqueData, tempUser);
+					// summaryReport.uniqueData = tempUser;
+					// summaryReport.spentData = tempSpent;
+					result.map((x) => {
+						x.updatedAt = [ ...new Set(x.updatedAt) ];
+						x.Publisher = [ ...new Set(x.Publisher) ];
+						x.ssp = [ ...new Set(x.ssp) ];
+						// x.unique = 0;
+						var testappubid = x.apppubidpo;
+						var forda;
+						if (testappubid && testappubid.length)
+							for (var i = 0; i < testappubid.length; i++) {
+								if (testappubid && testappubid[i] && testappubid[i].publishername) {
+									forda = testappubid[i];
+									break;
+								}
+							}
+						x.apppubidpo = forda;
+						x.spent = tempSpent[x.PublisherSplit];
+						// console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
+						x.uniqueData = tempUser[x.PublisherSplit] ? tempUser[x.PublisherSplit] : 0;
+						x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
+						summaryReport.impressions += parseInt(x.impressions);
+						summaryReport.clicks += parseInt(x.clicks);
+						summaryReport.complete += parseInt(x.complete);
+						summaryReport.midpoint += parseInt(x.midpoint);
+						summaryReport.start += parseInt(x.start);
+						summaryReport.firstQuartile += parseInt(x.firstQuartile);
+						summaryReport.thirdQuartile += parseInt(x.thirdQuartile);
+						x.updatedAt.sort(function(a, b) {
+							return new Date(b) - new Date(a);
 						});
-					// console.log(numberta, x.campaignId, x.Publisher);
-					x.targetimpre = numberta;
-					x.updatedAt = x.updatedAt[0];
-					x.ssp = x.ssp ? x.ssp[0] : '';
-					x.campaignId = x.campaignId[0];
-					updatedAtTimes.push(x.updatedAt);
-				});
-				updatedAtTimes.sort(function(a, b) {
-					return new Date(b) - new Date(a);
-				});
-				var response = {};
-				summaryReport.unique = [];
-				summaryReport.target = totaltarget;
-				response.data = result;
-				response.summary = summaryReport;
-				response.allrecentupdate = updatedAtTimes ? updatedAtTimes[0] : undefined;
-				res.json({
-					data: response.data,
-					// unique: tempUser,
-					summary: summaryReport,
-					allrecentupdate: updatedAtTimes ? updatedAtTimes[0] : undefined
-				});
+						x.Publisher = x.Publisher[0];
+						var numberta = 0;
+						var targetfii =
+							targetgetter &&
+							targetgetter.filter(
+								(y) => arrayincludefinder(x.campaignId, y.campaignId) && x.Publisher === y.appId
+							);
+						targetfii &&
+							targetfii.map((cx) => {
+								numberta += cx.targetImpression;
+							});
+						// console.log(numberta, x.campaignId, x.Publisher);
+						x.targetimpre = numberta;
+						x.updatedAt = x.updatedAt[0];
+						x.ssp = x.ssp ? x.ssp[0] : '';
+						x.campaignId = x.campaignId[0];
+						updatedAtTimes.push(x.updatedAt);
+					});
+					updatedAtTimes.sort(function(a, b) {
+						return new Date(b) - new Date(a);
+					});
+					var response = {};
+					summaryReport.unique = [];
+					summaryReport.target = totaltarget;
+					response.data = result;
+					response.summary = summaryReport;
+					response.allrecentupdate = updatedAtTimes ? updatedAtTimes[0] : undefined;
+					res.json({
+						data: response.data,
+						// unique: tempUser,
+						summary: summaryReport,
+						allrecentupdate: updatedAtTimes ? updatedAtTimes[0] : undefined
+					});
+				}
 			} else {
 				res.json({ message: 'No reports found...' });
 			}
