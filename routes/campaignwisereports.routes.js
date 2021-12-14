@@ -16,6 +16,9 @@ const saavnids = [
 	'22310',
 	'5a1e46beeb993dc67979412e',
 	'5efac6f9aeeeb92b8a1ee056',
+	'5c0a3f024a6c1355afaffabc',
+	'172101100',
+	'172101600',
 	'11726',
 	'com.jio.media.jiobeats',
 	'441813332'
@@ -31,6 +34,8 @@ const musicids = [
 	'845083955',
 	'585270521',
 	'441813332',
+	'172101100',
+	'172101600',
 	'324684580',
 	'com.gaana',
 	'com.jio.media.jiobeats',
