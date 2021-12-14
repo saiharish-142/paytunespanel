@@ -203,6 +203,15 @@ async function datareturner(datae) {
 	}
 }
 
+function dataformatchanger(date) {
+	var data = date;
+	if (data) {
+		return data.substr(8, 2) + '-' + data.substr(5, 2) + '-' + data.substr(0, 4);
+	} else {
+		return null;
+	}
+}
+
 async function pacingMailer() {
 	var cdate, cmonth, cyear;
 	var cdatee = new Date(new Date());
@@ -215,9 +224,12 @@ async function pacingMailer() {
 	let data = await campaignreportsSum
 		.find({ createdOn: chevk2 })
 		.populate({ path: 'campaignId', select: 'AdTitle' })
-		.sort({ impression: -1 })
+		.sort({ avgreq: -1 })
 		.catch((err) => console.log(err));
 	console.log(data.length);
+	// data.map(x=>{
+	// 	x.
+	// })
 	var params = {
 		Destination: {
 			BccAddresses: [],
@@ -272,8 +284,8 @@ async function pacingMailer() {
 											return `<tr>
 												<td>${dalrep.campaignId ? dalrep.campaignId.AdTitle : ''}</td>
 												<td>${dalrep.rtbType ? dalrep.rtbType : ''}</td>
-												<td>${dalrep.startDate ? dalrep.startDate : ''}</td>
-												<td>${dalrep.endDate ? dalrep.endDate : ''}</td>
+												<td>${dalrep.startDate ? dataformatchanger(dalrep.startDate) : ''}</td>
+												<td>${dalrep.endDate ? dataformatchanger(dalrep.endDate) : ''}</td>
 												<td>${dalrep.noofDays ? dalrep.noofDays : 0}</td>
 												<td>${dalrep.targetimpression ? dalrep.targetimpression : 0}</td>
 												<td>${dalrep.impression ? dalrep.impression : 0}</td>
