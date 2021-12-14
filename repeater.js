@@ -702,6 +702,39 @@ const idSplitter = async (respo, onDemand, podcast, audio, display, video, music
 	}
 };
 
+async function freqCampPubTest(chevk, chevk2) {
+	const frequency = await campaignifareports
+		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					campaignId: '$campaignId',
+					rtbType: '$rtbType',
+					ifa: '$ifa',
+					apppubid: '$apppubid'
+				}
+			},
+			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+			{
+				$group: {
+					_id: { ifa: '$ifa', campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' }
+				}
+			},
+			{
+				$group: {
+					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
+					users: { $sum: 1 }
+				}
+			}
+		])
+		.allowDiskUse(true)
+		.catch((err) => console.log(err));
+	console.log(frequency.length);
+	console.log(frequency);
+	var coo = frequency.length;
+	return coo;
+}
+
 // DailyReportMailer();
 async function DailyReportMailer() {
 	var users = await admin.find({ usertype: 'client' }).select('email').catch((err) => console.log(err));
@@ -1034,6 +1067,12 @@ router.put('/campaignPrior', adminauth, async (req, res) => {
 	var datee = new Date(date).toISOString();
 	let ans = await datareturner(datee);
 	res.json(ans);
+});
+
+router.put('/freq', adminauth, async (req, res) => {
+	const { date, date2 } = req.body;
+	let data = await freqCampPubTest(date, date2);
+	res.json(data);
 });
 
 router.put('/idssplitfinder', adminauth, async (req, res) => {
