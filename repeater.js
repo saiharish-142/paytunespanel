@@ -744,7 +744,7 @@ async function freqCampPubTest(chevk, chevk2) {
 		.then(async (frequency) => {
 			console.log(frequency.length, 'length');
 			var i = frequency.length;
-			frequency.map(async (feq) => {
+			frequency.map(async (fed) => {
 				let chunk = await freqpublishreports
 					.findOne({
 						campaignId: mongoose.Types.ObjectId(fed.campaignId),
