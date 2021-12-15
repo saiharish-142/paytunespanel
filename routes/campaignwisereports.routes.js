@@ -1308,6 +1308,7 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 				$project: {
 					Publisher: '$appId',
 					PublisherSplit: '$_id.appubid',
+					publisherid: '$_id.appubid',
 					feed: '$_id.feed',
 					updatedAt: '$updatedAt',
 					ssp: '$ssp',
