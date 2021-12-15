@@ -1432,10 +1432,10 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 					var podcastResult = [];
 					var musicappsResult = [];
 					result.map((pubData) => {
-						if (musicids.includes(pubData.PublisherSplit)) {
-							musicappsResult.push(pubData);
-						} else {
+						if (pubData.feed && (pubData.feed === '3' || pubData.feed === 3)) {
 							podcastResult.push(pubData);
+						} else {
+							musicappsResult.push(pubData);
 						}
 					});
 					podcastResult.length &&
@@ -1649,8 +1649,7 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 		.aggregate([
 			{
 				$match: {
-					campaignId: { $in: audio },
-					appubid: { $nin: saavnids }
+					campaignId: { $in: audio }
 				}
 			},
 			{
