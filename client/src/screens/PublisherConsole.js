@@ -59,6 +59,7 @@ function PublisherConsole() {
 	// const [ adss, setadss ] = useState(consoledata.searchedpublisherData);
 	const headersAudio = [
 		{ key: 'publisherName', label: 'Publisher' },
+		{ key: 'apppubid', label: 'PublisherId' },
 		{ key: 'ssp', label: 'SSP' },
 		{ key: 'fede', label: 'Feed' },
 		{ key: 'useage', label: 'User Agent' },
@@ -74,6 +75,7 @@ function PublisherConsole() {
 	];
 	const headers = [
 		{ key: 'publisherName', label: 'Publisher' },
+		{ key: 'apppubid', label: 'PublisherId' },
 		{ key: 'ssp', label: 'SSP' },
 		{ key: 'fede', label: 'Feed' },
 		{ key: 'unique', label: 'Unique Users' },

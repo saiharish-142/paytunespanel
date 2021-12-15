@@ -20,6 +20,7 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 	const [ adss, setadss ] = React.useState([]);
 	const headers = [
 		{ key: 'publisherName', label: 'Publisher' },
+		{ key: 'apppubid', label: 'PublisherId' },
 		{ key: 'impression', label: 'Total Impressions' },
 		{ key: 'start', label: 'Start' },
 		{ key: 'firstQuartile', label: 'First Quartile' },
@@ -113,6 +114,13 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 									{arrowRetuner(sa === 'publisherName' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
 								<TableCell
+									onClick={() => tablesorter('apppubid', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									PublisherId
+									{arrowRetuner(sa === 'apppubid' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
+								<TableCell
 									onClick={() => tablesorter('impression', 'number')}
 									style={{ cursor: 'pointer' }}
 								>
@@ -159,6 +167,7 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 								return (
 									<TableRow key={i}>
 										<TableCell>{log.publisherName}</TableCell>
+										<TableCell>{log.apppubid}</TableCell>
 										<TableCell>{log.impression}</TableCell>
 										<TableCell>{log.start}</TableCell>
 										<TableCell>{log.firstQuartile}</TableCell>
