@@ -747,9 +747,9 @@ async function freqCampPubTest(chevk, chevk2) {
 			frequency.map(async (fed) => {
 				let chunk = await freqpublishreports
 					.findOne({
-						campaignId: mongoose.Types.ObjectId(fed.campaignId),
-						appId: fed.appubid,
-						rtbType: fed.rtbType
+						campaignId: mongoose.Types.ObjectId(fed._id.campaignId),
+						appId: fed._id.appubid,
+						rtbType: fed._id.rtbType
 					})
 					.catch((err) => console.log(err));
 				if (chunk) {
@@ -767,9 +767,9 @@ async function freqCampPubTest(chevk, chevk2) {
 					}
 				} else {
 					const news = new freqpublishreports({
-						campaignId: fed.campaignId,
-						appId: fed.apppubid,
-						rtbType: fed.rtbType,
+						campaignId: fed._id.campaignId,
+						appId: fed._id.apppubid,
+						rtbType: fed._id.rtbType,
 						users: fed.users,
 						createdOn: chevk2
 					});
