@@ -241,14 +241,24 @@ async function pacingMailer() {
 		.populate({ path: 'campaignId', select: 'AdTitle' })
 		.sort({ avgreq: -1 })
 		.catch((err) => console.log(err));
+	data = data.filter((x) => x.balanceDays > 0);
+	data.map((x) => {
+		if (x.balanceDays) {
+			x.avgreqform = x.balanceimpression / x.balanceDays;
+		} else {
+			x.avgreqform = 0;
+		}
+	});
+	data.sort(function(a, b) {
+		return a.avgreqform - b.avgreqform;
+	});
 	console.log(data.length);
-	// data.map(x=>{
-	// 	x.
-	// })
 	var params = {
 		Destination: {
 			BccAddresses: [],
 			CcAddresses: [],
+			// ToAddresses: [ 'saiharishmedam@gmail.com' ]
+			// ToAddresses: [ 'fin-ops@paytunes.in', 'raj.v@paytunes.in', 'saiharishmedam@gmail.com' ]
 			ToAddresses: [ 'fin-ops@paytunes.in', 'raj.v@paytunes.in' ]
 			// ToAddresses:  ['fin-ops@paytunes.in']
 		},
@@ -289,10 +299,9 @@ async function pacingMailer() {
 										<th>Total days</th>
 										<th>Target Impressions</th>
 										<th>Impressions</th>
-										<th>Averge Required</th>
-										<th>Averge Achieved</th>
 										<th>Balance Impression</th>
 										<th>Balance Days</th>
+										<th>Averge Required</th>
 									</tr>
 									${data
 										.map((dalrep) => {
@@ -302,12 +311,11 @@ async function pacingMailer() {
 												<td>${dalrep.startDate ? dataformatchanger(dalrep.startDate) : ''}</td>
 												<td>${dalrep.endDate ? dataformatchanger(dalrep.endDate) : ''}</td>
 												<td>${dalrep.noofDays ? dalrep.noofDays : 0}</td>
-												<td>${dalrep.targetimpression ? dalrep.targetimpression : 0}</td>
+												<td>${dalrep.targetImpression ? dalrep.targetImpression : 0}</td>
 												<td>${dalrep.impression ? dalrep.impression : 0}</td>
-												<td>${dalrep.avgreq ? Math.round(dalrep.avgreq * 100) / 100 : 0}</td>
-												<td>${dalrep.avgach ? Math.round(dalrep.avgach * 100) / 100 : 0}</td>
 												<td>${dalrep.balanceimpression ? dalrep.balanceimpression : 0}</td>
 												<td>${dalrep.balanceDays ? dalrep.balanceDays : 0}</td>
+												<td>${dalrep.balanceDays && dalrep.avgreqform ? Math.round(dalrep.avgreqform * 100) / 100 : NaN}</td>
 											</tr>`;
 										})
 										.join('')}
@@ -703,36 +711,47 @@ const idSplitter = async (respo, onDemand, podcast, audio, display, video, music
 };
 
 async function freqCampPubTest(chevk, chevk2) {
-	const frequency = await campaignifareports
+	console.log('start');
+	campaignifareports
 		.aggregate([
 			{
 				$project: {
 					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
 					campaignId: '$campaignId',
-					rtbType: '$rtbType',
-					ifa: '$ifa',
-					apppubid: '$apppubid'
+					apppubid: '$apppubid',
+					ifa: '$ifa'
 				}
 			},
 			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
 			{
 				$group: {
-					_id: { ifa: '$ifa', campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' }
+					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
+					ifa: { $addToSet: '$ifa' }
 				}
 			},
 			{
+				$unwind: '$ifa'
+			},
+			{
 				$group: {
-					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
+					_id: { campaignId: '$_id.campaignId', rtbType: '$_id.rtbType', apppubid: '$_id.apppubid' },
 					users: { $sum: 1 }
 				}
 			}
 		])
 		.allowDiskUse(true)
-		.catch((err) => console.log(err));
-	console.log(frequency.length);
-	console.log(frequency);
-	var coo = frequency.length;
-	return coo;
+		.then((frequency) => {
+			console.log('lenght');
+			console.log(frequency.length, 'lenght');
+			console.log(frequency, 'data');
+			var coo = frequency.length;
+			return coo;
+		})
+		.catch((err) => {
+			console.log(err);
+			console.log('err');
+			return err;
+		});
 }
 
 // DailyReportMailer();
