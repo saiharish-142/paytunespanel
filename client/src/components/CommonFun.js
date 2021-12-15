@@ -3,6 +3,7 @@ import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 export const PublishHead = [
 	{ title: 'Publisher' },
+	{ title: 'PublisherId' },
 	{ title: 'Feed' },
 	{ title: 'SSP' },
 	{ title: 'Unique Users' },
@@ -16,6 +17,7 @@ export const PublishHead = [
 ];
 export const QuartileHead = [
 	{ title: 'Publisher' },
+	{ title: 'PublisherId' },
 	{ title: 'impressions' },
 	{ title: 'start' },
 	{ title: 'firstQuartile' },
@@ -147,6 +149,8 @@ export const PublishBody = (type, report1, spentfinder, report) => {
 			parseInt(type === 'Video' ? (spentOfflinev ? spentOfflinev : 0) : 0);
 		return [
 			{ value: log.publishername ? log.publishername : '' },
+			{ value: log.publisherid ? log.publisherid : '' },
+			
 			{
 				value: log.feed === '3' ? 'Podcast' : log.feed === '' ? 'Ondemand and Streaming' : ''
 			},
@@ -167,6 +171,7 @@ export const QuartileBody = (report1) => {
 		log.ltr = (log.complete ? parseInt(log.complete) : 0) * 100 / (log.impressions ? parseInt(log.impressions) : 0);
 		return [
 			{ value: log.publishername ? log.publishername : '' },
+			{ value: log.publisherid ? log.publisherid : '' },
 			{ value: log.impressions ? log.impressions : 0 },
 			{ value: log.start ? log.start : 0 },
 			{ value: log.firstQuartile ? log.firstQuartile : 0 },

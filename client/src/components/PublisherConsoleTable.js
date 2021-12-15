@@ -112,6 +112,13 @@ function PublisherConsoleTable({
 									Publisher
 									{arrowRetuner(sa === 'publisherName' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('publisherid', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									PublisherId
+									{arrowRetuner(sa === 'apppubid' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
 								<TableCell onClick={() => tablesorter('ssp', 'string')} style={{ cursor: 'pointer' }}>
 									SSP {arrowRetuner(sa === 'ssp' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
@@ -192,6 +199,7 @@ function PublisherConsoleTable({
 									return (
 										<TableRow key={i}>
 											<TableCell>{log.publisherName}</TableCell>
+											<TableCell>{log.apppubid}</TableCell>
 											<TableCell>{log.ssp}</TableCell>
 											<TableCell>{log.fede}</TableCell>
 											{title === 'Audio' && <TableCell>{log.useage}</TableCell>}

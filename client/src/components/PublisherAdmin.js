@@ -40,6 +40,7 @@ function PublisherAdmin({
 	const [ adss, setadss ] = React.useState(report);
 	const headers = [
 		{ key: 'publishername', label: 'Publisher' },
+		{ key: 'publisherid', label: 'PublisherId' },
 		{ key: 'feed', label: 'Feed' },
 		{ key: 'ssp', label: 'SSP' },
 		{ key: 'unique', label: 'Unique Users' },
@@ -121,6 +122,13 @@ function PublisherAdmin({
 									Publisher
 									{arrowRetuner(sa === 'publishername' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
+								<TableCell
+									onClick={() => tablesorter('publisherid', 'string')}
+									style={{ cursor: 'pointer' }}
+								>
+									PublisherId
+									{arrowRetuner(sa === 'publisherid' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
 								<TableCell onClick={() => tablesorter('ssp', 'string')} style={{ cursor: 'pointer' }}>
 									SSP {arrowRetuner(sa === 'ssp' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
@@ -184,6 +192,7 @@ function PublisherAdmin({
 										}}
 									>
 										<TableCell>{log.publishername}</TableCell>
+										<TableCell>{log.publisherid}</TableCell>
 										<TableCell>{log.ssp}</TableCell>
 										<TableCell>
 											{log.feed === '3' ? (
