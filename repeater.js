@@ -25,6 +25,7 @@ const saavnids = [
 	'22308',
 	'22310',
 	'5a1e46beeb993dc67979412e',
+	'jiosaavn',
 	'5efac6f9aeeeb92b8a1ee056',
 	'5c0a3f024a6c1355afaffabc',
 	'172101100',
@@ -37,6 +38,7 @@ const saavnids = [
 const musicids = [
 	'13698',
 	'18880',
+	'jiosaavn',
 	'18878',
 	'22308',
 	'22310',
@@ -712,6 +714,9 @@ const idSplitter = async (respo, onDemand, podcast, audio, display, video, music
 
 async function freqCampPubTest(chevk, chevk2) {
 	console.log('start');
+	var initialDate = '2021-10-10';
+	var tempDate = '2021-10-10';
+	console.log({ tempDate, chevk, chevk2 });
 	campaignifareports
 		.aggregate([
 			{
@@ -722,15 +727,11 @@ async function freqCampPubTest(chevk, chevk2) {
 					ifa: '$ifa'
 				}
 			},
-			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+			{ $match: { test: { $gte: tempDate, $lt: chevk2 } } },
 			{
 				$group: {
-					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
-					ifa: { $addToSet: '$ifa' }
+					_id: { ifa: '$ifa', campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' }
 				}
-			},
-			{
-				$unwind: '$ifa'
 			},
 			{
 				$group: {
@@ -740,12 +741,46 @@ async function freqCampPubTest(chevk, chevk2) {
 			}
 		])
 		.allowDiskUse(true)
-		.then((frequency) => {
-			console.log('lenght');
-			console.log(frequency.length, 'lenght');
-			console.log(frequency, 'data');
-			var coo = frequency.length;
-			return coo;
+		.then(async (frequency) => {
+			console.log(frequency.length, 'length');
+			for (var i = 0; i < frequency.length; i++) {
+				let chunk = await freqpublishreports
+					.findOne({
+						campaignId: mongoose.Types.ObjectId(frequency[i].campaignId),
+						appId: frequency[i].appubid,
+						rtbType: frequency[i].rtbType
+					})
+					.catch((err) => console.log(err));
+				if (chunk) {
+					if (chunk.createdOn === chevk2) {
+						console.log('Already Done', i);
+					} else {
+						chunk.users = frequency[i].users;
+						chunk.createdOn = chevk2;
+						chunk
+							.save()
+							.then((resu) => {
+								console.log('updated', i);
+							})
+							.catch((err) => console.log(err));
+					}
+				} else {
+					const news = new freqpublishreports({
+						campaignId: frequency[i].campaignId,
+						appId: frequency[i].apppubid,
+						rtbType: frequency[i].rtbType,
+						users: frequency[i].users,
+						createdOn: chevk2
+					});
+					let asn = await news.save().catch((err) => console.log(err));
+					if (asn) {
+						console.log('created', i);
+					} else {
+						console.log('err', i, frequency[i]);
+					}
+				}
+			}
+			return frequency.length;
 		})
 		.catch((err) => {
 			console.log(err);
