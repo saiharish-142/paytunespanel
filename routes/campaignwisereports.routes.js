@@ -16,7 +16,11 @@ const saavnids = [
 	'22310',
 	'5a1e46beeb993dc67979412e',
 	'5efac6f9aeeeb92b8a1ee056',
+	'5c0a3f024a6c1355afaffabc',
+	'172101100',
+	'172101600',
 	'11726',
+	'jiosaavn',
 	'com.jio.media.jiobeats',
 	'441813332'
 ];
@@ -27,10 +31,13 @@ const musicids = [
 	'18878',
 	'22308',
 	'22310',
+	'jiosaavn',
 	'11726',
 	'845083955',
 	'585270521',
 	'441813332',
+	'172101100',
+	'172101600',
 	'324684580',
 	'com.gaana',
 	'com.jio.media.jiobeats',
@@ -1428,10 +1435,10 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 					var podcastResult = [];
 					var musicappsResult = [];
 					result.map((pubData) => {
-						if (musicids.includes(pubData.PublisherSplit)) {
-							musicappsResult.push(pubData);
-						} else {
+						if (pubData.feed && (pubData.feed === '3' || pubData.feed === 3)) {
 							podcastResult.push(pubData);
+						} else {
+							musicappsResult.push(pubData);
 						}
 					});
 					podcastResult.length &&
@@ -1645,8 +1652,7 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 		.aggregate([
 			{
 				$match: {
-					campaignId: { $in: audio },
-					appubid: { $nin: saavnids }
+					campaignId: { $in: audio }
 				}
 			},
 			{

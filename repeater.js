@@ -25,7 +25,11 @@ const saavnids = [
 	'22308',
 	'22310',
 	'5a1e46beeb993dc67979412e',
+	'jiosaavn',
 	'5efac6f9aeeeb92b8a1ee056',
+	'5c0a3f024a6c1355afaffabc',
+	'172101100',
+	'172101600',
 	'11726',
 	'com.jio.media.jiobeats',
 	'441813332'
@@ -34,11 +38,24 @@ const saavnids = [
 const musicids = [
 	'13698',
 	'18880',
+	'jiosaavn',
 	'18878',
 	'22308',
 	'22310',
 	'11726',
+	'845083955',
+	'585270521',
+	'441813332',
+	'172101100',
+	'172101600',
+	'324684580',
+	'com.gaana',
+	'com.jio.media.jiobeats',
+	'com.spotify.music',
+	'com.bsbportal.music',
+	'5d3f052e979a1c2391016c04',
 	'5efac6f9aeeeb92b8a1ee056',
+	'5c0a3f024a6c1355afaffabc',
 	'5a1e46beeb993dc67979412e',
 	'5b2210af504f3097e73e0d8b',
 	'5adeeb79cf7a7e3e5d822106',
@@ -203,6 +220,15 @@ async function datareturner(datae) {
 	}
 }
 
+function dataformatchanger(date) {
+	var data = date;
+	if (data) {
+		return data.substr(8, 2) + '-' + data.substr(5, 2) + '-' + data.substr(0, 4);
+	} else {
+		return null;
+	}
+}
+
 async function pacingMailer() {
 	var cdate, cmonth, cyear;
 	var cdatee = new Date(new Date());
@@ -215,13 +241,26 @@ async function pacingMailer() {
 	let data = await campaignreportsSum
 		.find({ createdOn: chevk2 })
 		.populate({ path: 'campaignId', select: 'AdTitle' })
-		.sort({ impression: -1 })
+		.sort({ avgreq: -1 })
 		.catch((err) => console.log(err));
+	data = data.filter((x) => x.balanceDays > 0);
+	data.map((x) => {
+		if (x.balanceDays) {
+			x.avgreqform = x.balanceimpression / x.balanceDays;
+		} else {
+			x.avgreqform = 0;
+		}
+	});
+	data.sort(function(b, a) {
+		return a.avgreqform - b.avgreqform;
+	});
 	console.log(data.length);
 	var params = {
 		Destination: {
 			BccAddresses: [],
 			CcAddresses: [],
+			// ToAddresses: [ 'saiharishmedam@gmail.com' ]
+			// ToAddresses: [ 'fin-ops@paytunes.in', 'raj.v@paytunes.in', 'saiharishmedam@gmail.com' ]
 			ToAddresses: [ 'fin-ops@paytunes.in', 'raj.v@paytunes.in' ]
 			// ToAddresses:  ['fin-ops@paytunes.in']
 		},
@@ -261,26 +300,24 @@ async function pacingMailer() {
 										<th>End Date</th>
 										<th>Total days</th>
 										<th>Target Impressions</th>
-										<th>Impressions</th>
-										<th>Averge Required</th>
-										<th>Averge Achieved</th>
+										<th>Delivered Impressions</th>
 										<th>Balance Impression</th>
 										<th>Balance Days</th>
+										<th>Averge Required</th>
 									</tr>
 									${data
 										.map((dalrep) => {
 											return `<tr>
 												<td>${dalrep.campaignId ? dalrep.campaignId.AdTitle : ''}</td>
 												<td>${dalrep.rtbType ? dalrep.rtbType : ''}</td>
-												<td>${dalrep.startDate ? dalrep.startDate : ''}</td>
-												<td>${dalrep.endDate ? dalrep.endDate : ''}</td>
+												<td>${dalrep.startDate ? dataformatchanger(dalrep.startDate) : ''}</td>
+												<td>${dalrep.endDate ? dataformatchanger(dalrep.endDate) : ''}</td>
 												<td>${dalrep.noofDays ? dalrep.noofDays : 0}</td>
-												<td>${dalrep.targetimpression ? dalrep.targetimpression : 0}</td>
+												<td>${dalrep.targetImpression ? dalrep.targetImpression : 0}</td>
 												<td>${dalrep.impression ? dalrep.impression : 0}</td>
-												<td>${dalrep.avgreq ? Math.round(dalrep.avgreq * 100) / 100 : 0}</td>
-												<td>${dalrep.avgach ? Math.round(dalrep.avgach * 100) / 100 : 0}</td>
 												<td>${dalrep.balanceimpression ? dalrep.balanceimpression : 0}</td>
 												<td>${dalrep.balanceDays ? dalrep.balanceDays : 0}</td>
+												<td>${dalrep.balanceDays && dalrep.avgreqform ? Math.round(dalrep.avgreqform * 100) / 100 : NaN}</td>
 											</tr>`;
 										})
 										.join('')}
@@ -675,6 +712,84 @@ const idSplitter = async (respo, onDemand, podcast, audio, display, video, music
 	}
 };
 
+async function freqCampPubTest(chevk, chevk2) {
+	console.log('start');
+	var initialDate = '2021-10-10';
+	var tempDate = '2021-10-10';
+	console.log({ tempDate, chevk, chevk2 });
+	campaignifareports
+		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					campaignId: '$campaignId',
+					apppubid: '$apppubid',
+					ifa: '$ifa'
+				}
+			},
+			{ $match: { test: { $gte: tempDate, $lt: chevk2 } } },
+			{
+				$group: {
+					_id: { ifa: '$ifa', campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' }
+				}
+			},
+			{
+				$group: {
+					_id: { campaignId: '$_id.campaignId', rtbType: '$_id.rtbType', apppubid: '$_id.apppubid' },
+					users: { $sum: 1 }
+				}
+			}
+		])
+		.allowDiskUse(true)
+		.then(async (frequency) => {
+			console.log(frequency.length, 'length');
+			var i = frequency.length;
+			frequency.map(async (fed) => {
+				let chunk = await freqpublishreports
+					.findOne({
+						campaignId: mongoose.Types.ObjectId(fed.campaignId),
+						appId: fed.appubid,
+						rtbType: fed.rtbType
+					})
+					.catch((err) => console.log(err));
+				if (chunk) {
+					if (chunk.createdOn === chevk2) {
+						console.log('Already Done', i);
+					} else {
+						chunk.users = fed.users;
+						chunk.createdOn = chevk2;
+						chunk
+							.save()
+							.then((resu) => {
+								console.log('updated', i);
+							})
+							.catch((err) => console.log(err));
+					}
+				} else {
+					const news = new freqpublishreports({
+						campaignId: fed.campaignId,
+						appId: fed.apppubid,
+						rtbType: fed.rtbType,
+						users: fed.users,
+						createdOn: chevk2
+					});
+					let asn = await news.save().catch((err) => console.log(err));
+					if (asn) {
+						console.log('created', i);
+					} else {
+						console.log('err', i, fed);
+					}
+				}
+			});
+			return frequency.length;
+		})
+		.catch((err) => {
+			console.log(err);
+			console.log('err');
+			return err;
+		});
+}
+
 // DailyReportMailer();
 async function DailyReportMailer() {
 	var users = await admin.find({ usertype: 'client' }).select('email').catch((err) => console.log(err));
@@ -1007,6 +1122,12 @@ router.put('/campaignPrior', adminauth, async (req, res) => {
 	var datee = new Date(date).toISOString();
 	let ans = await datareturner(datee);
 	res.json(ans);
+});
+
+router.put('/freq', adminauth, async (req, res) => {
+	const { date, date2 } = req.body;
+	let data = await freqCampPubTest(date, date2);
+	res.json(data);
 });
 
 router.put('/idssplitfinder', adminauth, async (req, res) => {

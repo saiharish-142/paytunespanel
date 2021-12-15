@@ -587,7 +587,7 @@ async function PincodeRequestsRefresher() {
 				ads: '$ads'
 			}
 		},
-		{ $match: { test: {$gt:'2021-12-01',$lt:'2021-12-06'} } },
+		{ $match: { test: { $gt: '2021-12-01', $lt: '2021-12-06' } } },
 		{
 			$group: {
 				_id: { zip: '$zip', rtbType: '$rtbType' },
@@ -870,7 +870,7 @@ async function PodcastEpisodeRefresher() {
 				hostPossibility: 1
 			}
 		},
-		{ $match: { test: {$gt:'2021-12-07',$lt:'2021-12-13'} } },
+		{ $match: { test: { $gt: '2021-12-07', $lt: '2021-12-13' } } },
 		{
 			$project: {
 				episodename: 1,
@@ -2010,11 +2010,13 @@ const saavnids = [
 	'22310',
 	'5a1e46beeb993dc67979412e',
 	'5efac6f9aeeeb92b8a1ee056',
+	'5c0a3f024a6c1355afaffabc',
+	'172101100',
+	'172101600',
 	'11726',
 	'com.jio.media.jiobeats',
 	'441813332'
 ];
-
 // PublisherDataRefresher();
 async function PublisherDataRefresher() {
 	// let date = new Date(new Date());
@@ -2797,15 +2799,40 @@ const removeDuplicates = (inputArray) => {
 		return sum;
 	}, []);
 };
+// const saavnids = [
+// 	'22308',
+// 	'22310',
+// 	'5a1e46beeb993dc67979412e',
+// 	'5efac6f9aeeeb92b8a1ee056',
+// 	'5c0a3f024a6c1355afaffabc',
+// 	'172101100',
+// 	'172101600',
+// 	'11726',
+// 	'com.jio.media.jiobeats',
+// 	'441813332'
+// ];
 
 const musicids = [
 	'13698',
 	'18880',
+	'jiosaavn',
 	'18878',
 	'22308',
 	'22310',
 	'11726',
+	'845083955',
+	'585270521',
+	'441813332',
+	'172101100',
+	'172101600',
+	'324684580',
+	'com.gaana',
+	'com.jio.media.jiobeats',
+	'com.spotify.music',
+	'com.bsbportal.music',
+	'5d3f052e979a1c2391016c04',
 	'5efac6f9aeeeb92b8a1ee056',
+	'5c0a3f024a6c1355afaffabc',
 	'5a1e46beeb993dc67979412e',
 	'5b2210af504f3097e73e0d8b',
 	'5adeeb79cf7a7e3e5d822106',
