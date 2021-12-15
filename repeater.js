@@ -249,7 +249,7 @@ async function pacingMailer() {
 			x.avgreqform = 0;
 		}
 	});
-	data.sort(function(a, b) {
+	data.sort(function(b, a) {
 		return a.avgreqform - b.avgreqform;
 	});
 	console.log(data.length);
@@ -298,7 +298,7 @@ async function pacingMailer() {
 										<th>End Date</th>
 										<th>Total days</th>
 										<th>Target Impressions</th>
-										<th>Impressions</th>
+										<th>Delivered Impressions</th>
 										<th>Balance Impression</th>
 										<th>Balance Days</th>
 										<th>Averge Required</th>
