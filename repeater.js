@@ -743,19 +743,20 @@ async function freqCampPubTest(chevk, chevk2) {
 		.allowDiskUse(true)
 		.then(async (frequency) => {
 			console.log(frequency.length, 'length');
-			for (var i = 0; i < frequency.length; i++) {
+			var i = frequency.length;
+			frequency.map(async (feq) => {
 				let chunk = await freqpublishreports
 					.findOne({
-						campaignId: mongoose.Types.ObjectId(frequency[i].campaignId),
-						appId: frequency[i].appubid,
-						rtbType: frequency[i].rtbType
+						campaignId: mongoose.Types.ObjectId(fed.campaignId),
+						appId: fed.appubid,
+						rtbType: fed.rtbType
 					})
 					.catch((err) => console.log(err));
 				if (chunk) {
 					if (chunk.createdOn === chevk2) {
 						console.log('Already Done', i);
 					} else {
-						chunk.users = frequency[i].users;
+						chunk.users = fed.users;
 						chunk.createdOn = chevk2;
 						chunk
 							.save()
@@ -766,20 +767,20 @@ async function freqCampPubTest(chevk, chevk2) {
 					}
 				} else {
 					const news = new freqpublishreports({
-						campaignId: frequency[i].campaignId,
-						appId: frequency[i].apppubid,
-						rtbType: frequency[i].rtbType,
-						users: frequency[i].users,
+						campaignId: fed.campaignId,
+						appId: fed.apppubid,
+						rtbType: fed.rtbType,
+						users: fed.users,
 						createdOn: chevk2
 					});
 					let asn = await news.save().catch((err) => console.log(err));
 					if (asn) {
 						console.log('created', i);
 					} else {
-						console.log('err', i, frequency[i]);
+						console.log('err', i, fed);
 					}
 				}
-			}
+			});
 			return frequency.length;
 		})
 		.catch((err) => {
