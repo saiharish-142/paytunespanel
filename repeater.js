@@ -714,8 +714,8 @@ const idSplitter = async (respo, onDemand, podcast, audio, display, video, music
 
 async function freqCampPubTest(chevk, chevk2) {
 	console.log('start');
-	var initialDate = '2021-10-10';
-	var tempDate = '2021-10-10';
+	var initialDate = '2021-11-01';
+	var tempDate = '2021-11-01';
 	console.log({ tempDate, chevk, chevk2 });
 	campaignifareports
 		.aggregate([
@@ -754,14 +754,14 @@ async function freqCampPubTest(chevk, chevk2) {
 					.catch((err) => console.log(err));
 				if (chunk) {
 					if (chunk.createdOn === chevk2) {
-						console.log('Already Done', i);
+						console.log('Already Done', i--);
 					} else {
 						chunk.users = fed.users;
 						chunk.createdOn = chevk2;
 						chunk
 							.save()
 							.then((resu) => {
-								console.log('updated', i);
+								console.log('updated', i--);
 							})
 							.catch((err) => console.log(err));
 					}
@@ -775,9 +775,9 @@ async function freqCampPubTest(chevk, chevk2) {
 					});
 					let asn = await news.save().catch((err) => console.log(err));
 					if (asn) {
-						console.log('created', i);
+						console.log('created', i--);
 					} else {
-						console.log('err', i, fed);
+						console.log('err', i--, fed);
 					}
 				}
 			});
