@@ -724,6 +724,7 @@ async function freqCampPubTest(chevk, chevk2) {
 					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
 					campaignId: '$campaignId',
 					apppubid: '$apppubid',
+					rtbType: '$rtbType',
 					ifa: '$ifa'
 				}
 			},
