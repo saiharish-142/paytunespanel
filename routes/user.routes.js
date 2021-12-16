@@ -225,14 +225,17 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 		!searchName ||
 		!endDate ||
 		!startDate ||
-		!PricingModel ||
 		!type ||
 		!campaignName ||
 		!display ||
 		!video ||
-		!(audio || (musicapps && podcast && onDemand))
+		!(audio && (musicapps && podcast && onDemand))
 	) {
-		return res.status(422).json({ error: 'enter all the required fields' });
+		if (!audio && (musicapps && podcast && onDemand)) {
+		} else if (audio && musicapps && podcast && onDemand) {
+		} else {
+			return res.status(422).json({ error: 'enter all the required fields' });
+		}
 	}
 	let existCamp = await campaignClient
 		.find({ userid: userid, searchName: searchName })
