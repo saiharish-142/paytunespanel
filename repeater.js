@@ -790,7 +790,7 @@ async function freqCampPubTest(chevk, chevk2) {
 		});
 }
 
-DailyReportMailer();
+// DailyReportMailer();
 async function DailyReportMailer() {
 	var users = await admin.find({ usertype: 'client' }).select('email').catch((err) => console.log(err));
 	// const HTTP = new XMLHttpRequest();
@@ -964,8 +964,8 @@ async function DailyReportMailer() {
 						Destination: {
 							BccAddresses: [],
 							CcAddresses: [],
-							// ToAddresses: x.targetemail
-							ToAddresses: [ 'saiharishmedam@gmail.com' ]
+							ToAddresses: x.targetemail
+							// ToAddresses: [ 'saiharishmedam@gmail.com' ]
 						},
 						Message: {
 							Body: {

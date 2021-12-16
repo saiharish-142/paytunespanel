@@ -229,13 +229,9 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 		!campaignName ||
 		!display ||
 		!video ||
-		!(audio && (musicapps && podcast && onDemand))
+		(!(!audio && (musicapps && podcast && onDemand)) || !(audio && musicapps && podcast && onDemand))
 	) {
-		if (!audio && (musicapps && podcast && onDemand)) {
-		} else if (audio && musicapps && podcast && onDemand) {
-		} else {
-			return res.status(422).json({ error: 'enter all the required fields' });
-		}
+		return res.status(422).json({ error: 'enter all the required fields' });
 	}
 	let existCamp = await campaignClient
 		.find({ userid: userid, searchName: searchName })
