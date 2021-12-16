@@ -755,7 +755,15 @@ async function freqCampPubTest(chevk, chevk2) {
 					.catch((err) => console.log(err));
 				if (chunk) {
 					if (chunk.createdOn === chevk2) {
-						console.log('Already Done', i--);
+						// console.log('Already Done', i--);
+						chunk.users = fed.users;
+						chunk.createdOn = chevk2;
+						chunk
+							.save()
+							.then((resu) => {
+								console.log('updated', i--);
+							})
+							.catch((err) => console.log(err));
 					} else {
 						chunk.users = fed.users;
 						chunk.createdOn = chevk2;
