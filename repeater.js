@@ -755,15 +755,15 @@ async function freqCampPubTest(chevk, chevk2) {
 					.catch((err) => console.log(err));
 				if (chunk) {
 					if (chunk.createdOn === chevk2) {
-						// console.log('Already Done', i--);
-						chunk.users = fed.users;
-						chunk.createdOn = chevk2;
-						chunk
-							.save()
-							.then((resu) => {
-								console.log('updated', i--);
-							})
-							.catch((err) => console.log(err));
+						console.log('Already Done', i--);
+						// chunk.users = fed.users;
+						// chunk.createdOn = chevk2;
+						// chunk
+						// 	.save()
+						// 	.then((resu) => {
+						// 		console.log('updated', i--);
+						// 	})
+						// 	.catch((err) => console.log(err));
 					} else {
 						chunk.users = fed.users;
 						chunk.createdOn = chevk2;
@@ -865,11 +865,11 @@ async function DailyReportMailer() {
 						var idsa = mashh[mashh.das[j]]
 							? mashh[mashh.das[j]].map((x) => mongoose.Types.ObjectId(x))
 							: [];
-						let totalcom = await campaignwisereports.aggregate([
-							{ $match: { campaignId: { $in: idsa }, appubid: { $nin: saavnids } } },
+						let totalcoms = await campaignwisereports.aggregate([
+							{ $match: { campaignId: { $in: idsa } } },
 							{
 								$group: {
-									_id: null,
+									_id: '$ssp',
 									impressions: { $sum: '$impression' },
 									complete: { $sum: '$complete' },
 									clicks: { $sum: '$CompanionClickTracking' },
@@ -881,57 +881,96 @@ async function DailyReportMailer() {
 								}
 							}
 						]);
-						totalcom = totalcom && totalcom[0];
-						if (!totalcom) {
+						var totalcom = { impressions: 0, complete: 0, clicks: 0, clicks1: 0, onlineImpressions: 0 };
+						// totalcoms = totalcoms && totalcoms[0];
+						if (!totalcoms.length) {
 							// console.log({ idsa, mashh, name: x.searchName });
 							continue;
 						}
+						totalcoms.map((x) => {
+							totalcom.impressions += x.impressions;
+							totalcom.clicks += x.clicks;
+							totalcom.clicks1 += x.clicks1;
+							if (x && (x._id === 'Adswizz' || x._id === 'Rubicon' || x._id === 'Triton')) {
+								totalcom.complete += x.complete;
+								totalcom.onlineImpressions += x.impressions;
+							}
+						});
+						console.log(x.searchName, totalcoms, totalcom);
+						// continue;
 						let reportdaily = await campaignwisereports.aggregate([
-							{ $match: { campaignId: { $in: idsa }, appubid: { $nin: saavnids } } },
+							{ $match: { campaignId: { $in: idsa } } },
 							{
 								$group: {
-									_id: { date: '$date' },
+									_id: { date: '$date', ssp: '$ssp' },
 									impressions: { $sum: '$impression' },
 									complete: { $sum: '$complete' },
 									firstQuartile: { $sum: '$firstQuartile' },
-									clicks: { $sum: '$CompanionClickTracking' },
-									region: { $push: '$region' }
+									clicks: { $sum: '$CompanionClickTracking' }
+								}
+							},
+							{
+								$group: {
+									_id: { date: '$_id.date' },
+									data: {
+										$push: {
+											impressions: '$impressions',
+											firstQuartile: '$firstQuartile',
+											complete: '$complete',
+											clicks: '$clicks',
+											ssp: '$_id.ssp'
+										}
+									}
 								}
 							},
 							{
 								$project: {
 									date: '$_id.date',
-									impressions: '$impressions',
-									firstQuartile: '$firstQuartile',
-									complete: '$complete',
-									clicks: '$clicks',
-									region: '$region',
+									data: '$data',
 									_id: 0
 								}
 							},
 							{ $sort: { date: -1 } }
 						]);
+						reportdaily.map((pi) => {
+							pi.impressions = 0;
+							pi.onlineImpressions = 0;
+							pi.complete = 0;
+							pi.clicks = 0;
+							pi.data &&
+								pi.data.map((z) => {
+									pi.impressions += z.impressions;
+									pi.clicks += z.clicks;
+									if (z && (z.ssp === 'Adswizz' || z.ssp === 'Rubicon' || z.ssp === 'Triton')) {
+										pi.complete += z.complete;
+										pi.onlineImpressions += z.impressions;
+									}
+								});
+						});
 						// console.log(totalcom, x.searchName, reportdaily.length, 'cooo');
 						reportdaily = reportdaily.filter((x) => x.impressions >= 10);
 						var totImp = 0,
+							totOniImp = 0,
 							totCli = 0,
 							totCom = 0;
 						var totImp1 = 0,
 							totCli1 = 0,
 							totCom1 = 0;
 						reportdaily.map((dax) => {
+							totOniImp += dax.onlineImpressions;
 							totImp += dax.impressions;
 							totCli += dax.clicks;
 							totCom += dax.complete;
 						});
 						// console.log(totalcom);
-						totalcom.complete = totalcom.complete / totalcom.firstQuartile * totalcom.impressions;
+						// totalcom.complete = totalcom.complete / totalcom.onlineImpressions * totalcom.impressions;
 						reportdaily.map((dax) => {
 							dax.impressions = totImp ? Math.round(dax.impressions / totImp * totalcom.impressions) : 0;
+							dax.onlineImpressions = dax.onlineImpressions ? Math.round(dax.onlineImpressions) : 0;
 							dax.clicks = totCli
 								? Math.round(dax.clicks / totCli * (totalcom.clicks + totalcom.clicks1))
 								: 0;
-							dax.complete = totCom ? Math.round(dax.complete / totCom * totalcom.complete) : 0;
+							dax.complete = dax.complete ? Math.round(dax.complete) : 0;
 							totImp1 += dax.impressions;
 							totCli1 += dax.clicks;
 							totCom1 += dax.complete;
@@ -947,27 +986,37 @@ async function DailyReportMailer() {
 						if (dum.length) {
 							reportdaily = reportdaily.filter((x) => x.date != chevk2);
 							var tempImp = 0,
+								tempOniImp = 0,
 								tempCli = 0,
 								tempCom = 0;
 							dum.map((zx) => {
 								tempImp += zx.impressions;
+								tempOniImp += zx.onlineImpressions;
 								tempCli += zx.clicks;
 								tempCom += zx.complete;
 							});
 							totImp -= tempImp;
+							totOniImp -= tempOniImp;
 							totCli -= tempCli;
 							totCom -= tempCom;
 						}
 						reportdaily.push({
 							date: 'Total',
+							onlineImpressions: totOniImp,
 							impressions: totImp,
 							clicks: totCli,
 							complete: totCom
 						});
 						totaldataCount[mashh.das[j]] = reportdaily;
-						// console.log(totalcom, totImp, totCli, totCom, reportdaily);
+						totaldataCount[`${mashh.das[j]}das`] = totalcom;
+						// totaldataCount[`${mashh.das[j]}das2`] = totalcoms;
+						// console.log(totalcom, totalcoms, totImp, totCli, totCom, reportdaily);
 						// ses.sendEmail()
 					}
+					// if (x.searchName.indexOf('tea') > -1) {
+					// 	console.log(x.searchName, mashh, totaldataCount);
+					// }
+
 					console.log(x.searchName, mashh, totaldataCount);
 					var params = {
 						Destination: {
@@ -1004,7 +1053,8 @@ async function DailyReportMailer() {
 
 									${mashh.das
 										.map((xas) => {
-											return `
+											if (totaldataCount[xas] && totaldataCount[xas].length)
+												return `
 											<div>
 												<h2>${xas}</h2>
 												<table>
@@ -1013,7 +1063,6 @@ async function DailyReportMailer() {
 														<th>Impressions</th>
 														<th>Clicks</th>
 														<th>CTR</th>
-														${!(xas === 'Display' || xas === 'display') ? ` <th>Complete</th>` : ``}
 														${!(xas === 'Display' || xas === 'display') ? ` <th>LTR</th>` : ``}
 													</tr>
 													${totaldataCount[xas] && totaldataCount[xas].length
@@ -1028,10 +1077,9 @@ async function DailyReportMailer() {
 																<td>
 																	${Math.round(dalrep.clicks * 100 * 100 / dalrep.impressions) / 100}%
 																</td>
-																${!(xas === 'Display' || xas === 'display') ? ` <td>${dalrep.complete}</td>` : ``}
 																${!(xas === 'Display' || xas === 'display')
 																	? `<td>
-																		${Math.round(dalrep.complete * 100 * 100 / dalrep.impressions) / 100}%
+																		${Math.round(dalrep.complete * 100 * 100 / dalrep.onlineImpressions) / 100}%
 																	</td>`
 																	: ``}
 															</tr>`;
@@ -1137,6 +1185,12 @@ router.put('/freq', adminauth, async (req, res) => {
 	const { date, date2 } = req.body;
 	let data = await freqCampPubTest(date, date2);
 	res.json(data);
+});
+
+router.put('/autoMailer', adminauth, async (req, res) => {
+	// const { date, date2 } = req.body;
+	DailyReportMailer();
+	res.json('started');
 });
 
 router.put('/idssplitfinder', adminauth, async (req, res) => {
