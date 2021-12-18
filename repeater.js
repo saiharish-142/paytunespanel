@@ -728,7 +728,7 @@ async function freqCampPubTest(chevk, chevk2) {
 					ifa: '$ifa'
 				}
 			},
-			{ $match: { test: { $gte: tempDate, $lt: chevk2 } } },
+			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
 			{
 				$group: {
 					_id: { ifa: '$ifa', campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' }
@@ -746,28 +746,28 @@ async function freqCampPubTest(chevk, chevk2) {
 			console.log(frequency.length, 'length');
 			var i = frequency.length;
 			frequency.map(async (fed) => {
-				let chunk = await freqpublishreports
+				let alreadymade = await freqpublishreports
 					.findOne({
 						campaignId: mongoose.Types.ObjectId(fed._id.campaignId),
-						appId: fed._id.appubid,
+						appId: fed._id.apppubid,
 						rtbType: fed._id.rtbType
 					})
 					.catch((err) => console.log(err));
-				if (chunk) {
-					if (chunk.createdOn === chevk2) {
+				if (alreadymade) {
+					if (alreadymade.createdOn === chevk2) {
 						console.log('Already Done', i--);
-						// chunk.users = fed.users;
-						// chunk.createdOn = chevk2;
-						// chunk
+						// alreadymade.users = fed.users;
+						// alreadymade.createdOn = chevk2;
+						// alreadymade
 						// 	.save()
 						// 	.then((resu) => {
 						// 		console.log('updated', i--);
 						// 	})
 						// 	.catch((err) => console.log(err));
 					} else {
-						chunk.users = fed.users;
-						chunk.createdOn = chevk2;
-						chunk
+						alreadymade.users += fed.users;
+						alreadymade.createdOn = chevk2;
+						alreadymade
 							.save()
 							.then((resu) => {
 								console.log('updated', i--);
@@ -779,7 +779,7 @@ async function freqCampPubTest(chevk, chevk2) {
 						campaignId: fed._id.campaignId,
 						appId: fed._id.apppubid,
 						rtbType: fed._id.rtbType,
-						users: fed.users,
+						users: fed.users ? fed.users : 0,
 						createdOn: chevk2
 					});
 					let asn = await news.save().catch((err) => console.log(err));
