@@ -220,17 +220,27 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 		onDemand,
 		musicapps
 	} = req.body;
+	// console.log(
+	// 	!userid ||
+	// 		!searchName ||
+	// 		!endDate ||
+	// 		!startDate ||
+	// 		!type ||
+	// 		!campaignName ||
+	// 		!display ||
+	// 		!video ||
+	// 		!(!audio ? musicapps && podcast && musicapps : audio && musicapps && podcast && onDemand)
+	// );
 	if (
 		!userid ||
 		!searchName ||
 		!endDate ||
 		!startDate ||
-		!PricingModel ||
 		!type ||
 		!campaignName ||
 		!display ||
 		!video ||
-		!(audio || (musicapps && podcast && onDemand))
+		!(!audio ? musicapps && podcast && musicapps : audio && musicapps && podcast && onDemand)
 	) {
 		return res.status(422).json({ error: 'enter all the required fields' });
 	}
