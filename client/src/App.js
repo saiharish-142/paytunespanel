@@ -12,6 +12,8 @@ import DetailedTable from './screens/detailedReport';
 import ClientReport from './screens/ClientReport';
 import ManageUser from './screens/ManageUser';
 import CampaignBundle from './screens/CampaignBundle';
+import PublisherBundle from './screens/createpubbundle';
+import PubBundle from './components/pubbundledashboard';
 import DashboardBundle from './screens/manageBundles';
 import ReportBundle from './screens/Reportbundle';
 import DetailedTableBundle from './screens/detailedReportBundle';
@@ -125,6 +127,9 @@ function App() {
 								render={() => <DetailedTableBundle />}
 							/>
 							<Route path="/bundleManage/createbundle" exact render={() => <CampaignBundle />} />
+							<Route path="/bundleManage/createpubbundle" exact render={() => <PublisherBundle />} />
+							<Route path="/bundleManage/createpubbundle/:bundlename" exact render={() => <PublisherBundle />} />
+							<Route path="/bundleManage/pubbundle" exact render={() => <PubBundle />} />
 							<Route path="/bundleManage/:bundlename/edit" exact render={() => <CampaignBundle />} />
 							<Route path="/manageusers" exact render={() => <ManageUser />} />
 							<Route path="/EditUser/:id" exact render={() => <EditUser />} />

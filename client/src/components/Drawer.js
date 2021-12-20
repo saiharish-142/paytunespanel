@@ -87,6 +87,36 @@ export default function TemporaryDrawer() {
 									<ListItemText>Bundles</ListItemText>
 								</ListItem>
 							)}
+							{state &&
+							state.usertype === 'admin' && (
+								<ListItem
+									className={classes.nested}
+									onClick={() => {
+										setopen(false);
+										history.push('/bundleManage/pubbundle');
+									}}
+								>
+									<ListItemIcon>
+										<i className="material-icons">keyboard_arrow_right</i>
+									</ListItemIcon>
+									<ListItemText>Pub Bundles</ListItemText>
+								</ListItem>
+							)}
+							{state &&
+							state.usertype === 'admin' && (
+								<ListItem
+									className={classes.nested}
+									onClick={() => {
+										setopen(false);
+										history.push('/bundleManage/createpubbundle');
+									}}
+								>
+									<ListItemIcon>
+										<i className="material-icons">keyboard_arrow_right</i>
+									</ListItemIcon>
+									<ListItemText>Create Pub Bundle</ListItemText>
+								</ListItem>
+							)}
 							<ListItem className={classes.nested} onClick={() => setopen(false)}>
 								<ListItemIcon>
 									<i className="material-icons">keyboard_arrow_right</i>

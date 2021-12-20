@@ -2,10 +2,13 @@ const mongoose = require('mongoose');
 
 var apppublishersSchema = new mongoose.Schema({
 	publisherid: String,
-	publishername: String,
-	title: String,
+	publishername: {
+		type:String,
+		default:""
+	},
+	bundletitle: String,
 	ssp: { type: String }
 });
 
-mongoose.model('apppublishers', apppublishersSchema);
+module.exports=mongoose.model('apppublishers', apppublishersSchema);
 // module.exports=apppublishersSchema

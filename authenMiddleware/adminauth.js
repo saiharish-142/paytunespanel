@@ -5,6 +5,7 @@ const admin = mongoose.model('admin');
 
 module.exports = (req, res, next) => {
 	const { authorization } = req.headers;
+	console.log(12)
 	if (!authorization) {
 		return res.status(401).json({ error: 'you must be logged in' });
 	}
@@ -22,6 +23,7 @@ module.exports = (req, res, next) => {
 				if (!loggeduser) {
 					return res.status(422).json({ error: 'Try again by logging in again' });
 				}
+				console.log(1234)
 				res.locals.user = loggeduser;
 				// console.log(res.locals.user);
 				next();
