@@ -438,7 +438,7 @@ export default function BasicTable({ title, id, adminView }) {
 									100 +
 								'%'
 						},
-						{ value: Math.round(reportsub.complete * 100 / reportsub.impressions * 100) / 100 + '%' }
+						{ value: Math.round(reportsub.ltr * 100) / 100 + '%' }
 					]
 				]
 			}
@@ -463,10 +463,10 @@ export default function BasicTable({ title, id, adminView }) {
 			data: [
 				[
 					{ value: 'impressions' },
-					{ value: report.report.complete.firstQuartile },
-					{ value: report.report.complete.midpoint },
-					{ value: report.report.complete.thirdQuartile },
-					{ value: report.report.complete.complete },
+					{ value: Math.round(report.report.complete.firstQuartile * 100) / 100 + '%' },
+					{ value: Math.round(report.report.complete.midpoint * 100) / 100 + '%' },
+					{ value: Math.round(report.report.complete.thirdQuartile * 100) / 100 + '%' },
+					{ value: Math.round(report.report.complete.complete * 100) / 100 + '%' },
 					{ value: Math.round(report.report.complete.ltr * 100) / 100 + '%' }
 				]
 			]
