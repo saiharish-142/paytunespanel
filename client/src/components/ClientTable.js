@@ -342,11 +342,7 @@ export default function BasicTable({ title, id, adminView }) {
 										(reportsub.clicks + reportsub.clicks1) * 100 / reportsub.impressions * 100
 									) / 100}%
 								</TableCell>
-								{reportsub.ltr && (
-									<TableCell>
-										{Math.round(reportsub.complete * 100 / reportsub.impressions * 100) / 100}%
-									</TableCell>
-								)}
+								{reportsub.ltr && <TableCell>{Math.round(reportsub.ltr * 100) / 100}%</TableCell>}
 								<TableCell
 									className="mangeads__report"
 									onClick={() => {
@@ -648,10 +644,10 @@ export default function BasicTable({ title, id, adminView }) {
 					<TableBody>
 						<TableRow>
 							<TableCell>Impressions</TableCell>
-							<TableCell>{report.report.complete.firstQuartile}</TableCell>
-							<TableCell>{report.report.complete.midpoint}</TableCell>
-							<TableCell>{report.report.complete.thirdQuartile}</TableCell>
-							<TableCell>{report.report.complete.complete}</TableCell>
+							<TableCell>{Math.round(report.report.complete.firstQuartile * 100) / 100}%</TableCell>
+							<TableCell>{Math.round(report.report.complete.midpoint * 100) / 100}%</TableCell>
+							<TableCell>{Math.round(report.report.complete.thirdQuartile * 100) / 100}%</TableCell>
+							<TableCell>{Math.round(report.report.complete.complete * 100) / 100}%</TableCell>
 							<TableCell>{Math.round(report.report.complete.ltr * 100) / 100}%</TableCell>
 						</TableRow>
 					</TableBody>
