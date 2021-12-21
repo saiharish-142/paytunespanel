@@ -780,6 +780,7 @@ const publisherwiseConsole = mongoose.model('publisherwiseConsole');
 const frequencyConsole = mongoose.model('frequencyConsole');
 const frequencyreports = mongoose.model('frequencyreports');
 const freqpublishreports = mongoose.model('freqpublishreports');
+const freqpubonreports = mongoose.model('freqpubOnreports');
 const campaignifareports = mongoose.model('campaignifareports');
 const zipreports = mongoose.model('zipreports');
 const zipsumreport = mongoose.model('zipsumreport');
@@ -840,7 +841,7 @@ async function PublisherConsoleLoaderTypeWise(array, type) {
 			publisherBit.ssp = publisherBit.ssp ? publisherBit.ssp[0] : '';
 			publisherBit.campaignId = publisherBit.campaignId.map((id) => mongoose.Types.ObjectId(id));
 			// console.log(publisherBit.campaignId);
-			const userCount = await freqpublishreports.aggregate([
+			const userCount = await freqpubonreports.aggregate([
 				{ $match: { appId: publisherBit.PublisherSplit, rtbType: type } },
 				{ $group: { _id: null, users: { $sum: '$users' } } }
 			]);
@@ -961,6 +962,12 @@ const saavnids = [
 	'com.jio.media.jiobeats',
 	'441813332'
 ];
+
+app.get('/publisherdatarefresh', adminauth, (req, res) => {
+	PublisherDataRefresher();
+	res.json('started');
+});
+
 // PublisherDataRefresher();
 async function PublisherDataRefresher() {
 	// let date = new Date(new Date());
@@ -971,7 +978,7 @@ async function PublisherDataRefresher() {
 	// const date1 = date.getDate();
 	// let yesterday = `${year}-${month}-${date1}`;
 	// console.log('yesterday', yesterday);
-	var datee = new Date('2021-09-05').toISOString();
+	var datee = '2021-11-01';
 	var cdate, cmonth, cyear;
 	var cdatee = new Date(new Date());
 	cdate = cdatee.getDate();
