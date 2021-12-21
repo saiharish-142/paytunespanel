@@ -1711,7 +1711,7 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 					midpoint: 0,
 					onlineImpressions: 0
 				};
-				var data = report;
+				var data = reports;
 				data.map((z) => {
 					resol.impressions += z.impressions;
 					resol.clicks += z.clicks;
