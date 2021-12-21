@@ -10,6 +10,8 @@ const adsetting = mongoose.model('adsetting');
 const freqpublishreports = mongoose.model('freqpublishreports');
 const spentreports = mongoose.model('spentreports');
 const http = require('http');
+const freqpubonreports = mongoose.model('freqpubOnreports');
+const freqCampWise = mongoose.model('freqCampWise');
 
 const saavnids = [
 	'22308',
@@ -1374,9 +1376,10 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 				result.map((x) => {
 					summaryReport.unique.push(x.PublisherSplit);
 				});
-				let uniqueData = await freqpublishreports.aggregate([
-					{ $match: { campaignId: { $in: ids }, appId: { $in: summaryReport.unique } } }
+				let uniqueData = await freqpubonreports.aggregate([
+					{ $match: { appId: { $in: summaryReport.unique } } }
 				]);
+				let uniqueDataCamp = await freqCampWise.aggregate([ { $match: { campaignId: { $in: ids } } } ]);
 				let spentData = await spentreports.aggregate([
 					{ $match: { campaignId: { $in: ids } } },
 					{ $group: { _id: '$apppubid', totalspent: { $sum: '$totalSpent' } } },
@@ -1384,9 +1387,13 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 				]);
 				var updatedAtTimes = [];
 				var tempUser = {};
+				if (uniqueDataCamp.length) {
+					uniqueDataCamp.map((z) => {
+						summaryReport.uniqueValue += parseInt(z.users);
+					});
+				}
 				if (uniqueData.length) {
 					uniqueData.map((z) => {
-						summaryReport.uniqueValue += parseInt(z.users);
 						if (z.appId === null) {
 							tempUser['null'] = parseInt(z.users);
 						} else if (tempUser[z.appId]) {
