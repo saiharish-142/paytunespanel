@@ -16,6 +16,7 @@ const CategoryReports2 = require('../models/categoryreports2');
 const Serverreport = require('../models/serverreport');
 const Campaignwisereports = mongoose.model('campaignwisereports');
 const frequencyreports = mongoose.model('frequencyreports');
+const freqCampWise = mongoose.model('freqCampWise');
 // const CategoryReports = mongoose.model('categoryreports');
 const CategoryReports = require('../models/categoryreports');
 const adminauth = require('../authenMiddleware/adminauth');
@@ -1740,31 +1741,31 @@ router.get('/frequencyComplete', adminauth, (req, res) => {
 router.get('/publisherComplete/usersCount', adminauth, async (req, res) => {
 	// frequencyreports //adsetting
 	try {
-		var campdata = await adsetting.find({}, { campaignId: 1, type: 1 });
-		var ids = { audio: [], display: [], video: [] };
-		campdata.map((x) => {
-			if (x.type === 'video') {
-				ids.video.push(x.campaignId);
-			} else if (x.type === 'display') {
-				ids.display.push(x.campaignId);
-			} else {
-				ids.audio.push(x.campaignId);
-			}
-		});
-		ids.audio = ids.audio.map((x) => mongoose.Types.ObjectId(x));
-		ids.display = ids.display.map((x) => mongoose.Types.ObjectId(x));
-		ids.video = ids.video.map((x) => mongoose.Types.ObjectId(x));
+		// var campdata = await adsetting.find({}, { campaignId: 1, type: 1 });
+		// var ids = { audio: [], display: [], video: [] };
+		// campdata.map((x) => {
+		// 	if (x.type === 'video') {
+		// 		ids.video.push(x.campaignId);
+		// 	} else if (x.type === 'display') {
+		// 		ids.display.push(x.campaignId);
+		// 	} else {
+		// 		ids.audio.push(x.campaignId);
+		// 	}
+		// });
+		// ids.audio = ids.audio.map((x) => mongoose.Types.ObjectId(x));
+		// ids.display = ids.display.map((x) => mongoose.Types.ObjectId(x));
+		// ids.video = ids.video.map((x) => mongoose.Types.ObjectId(x));
 		var users = { audio: 0, display: 0, video: 0 };
-		var audioCount = await frequencyreports.aggregate([
-			{ $match: { campaignId: { $in: ids.audio } } },
+		var audioCount = await freqCampWise.aggregate([
+			{ $match: { rtbType: 'audio' } },
 			{ $group: { _id: null, users: { $sum: '$users' } } }
 		]);
-		var displayCount = await frequencyreports.aggregate([
-			{ $match: { campaignId: { $in: ids.display } } },
+		var displayCount = await freqCampWise.aggregate([
+			{ $match: { rtbType: 'display' } },
 			{ $group: { _id: null, users: { $sum: '$users' } } }
 		]);
-		var videoCount = await frequencyreports.aggregate([
-			{ $match: { campaignId: { $in: ids.video } } },
+		var videoCount = await freqCampWise.aggregate([
+			{ $match: { rtbType: 'video' } },
 			{ $group: { _id: null, users: { $sum: '$users' } } }
 		]);
 		users.audio = audioCount[0].users;
