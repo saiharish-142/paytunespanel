@@ -1356,6 +1356,18 @@ router.put('/freq', adminauth, async (req, res) => {
 	res.json(data);
 });
 
+router.put('/freqonlypub', adminauth, async (req, res) => {
+	const { date, date2 } = req.body;
+	let data = await freqPubTest(date, date2);
+	res.json(data);
+});
+
+router.put('/freqonlycamp', adminauth, async (req, res) => {
+	const { date, date2 } = req.body;
+	let data = await freqCampTest(date, date2);
+	res.json(data);
+});
+
 router.put('/autoMailer', adminauth, async (req, res) => {
 	// const { date, date2 } = req.body;
 	DailyReportMailer();
@@ -1378,6 +1390,8 @@ const expo = {
 	func2: pacingMailer,
 	func3: DailyReportMailer,
 	freqpub: freqCampPubTest,
+	freqonlypub: freqPubTest,
+	freqonlycamp: freqCampTest,
 	route: router
 };
 module.exports = expo;
