@@ -84,7 +84,7 @@ export default function TemporaryDrawer() {
 									<ListItemIcon>
 										<i className="material-icons">keyboard_arrow_right</i>
 									</ListItemIcon>
-									<ListItemText>Bundles</ListItemText>
+									<ListItemText>Campaign Bundles</ListItemText>
 								</ListItem>
 							)}
 							{state &&
