@@ -72,9 +72,10 @@ require('./models/uareqreports.models');
 require('./models/useragent.model');
 require('./models/freqCampaignWise.model');
 require('./models/campaignreportsum.model');
-app.get('/',(req,res)=>{
-	res.send("hello!")
-})
+require('./models/freqPubreport.models');
+app.get('/', (req, res) => {
+	res.send('hello!');
+});
 app.use('/auth', require('./routes/user.routes'));
 app.use('/streamingads', require('./routes/streamingads.routes'));
 app.use('/ads', require('./routes/adsetting.routes'));
