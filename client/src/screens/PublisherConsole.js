@@ -266,10 +266,19 @@ function PublisherConsole() {
 									<TableCell>{consoledata.totalpublisherData.complete.avgimpressions}</TableCell>
 									<TableCell>{consoledata.totalpublisherData.complete.uniqueusers}</TableCell>
 									<TableCell>{consoledata.totalpublisherData.complete.avgfreq}</TableCell>
-									<TableCell>{consoledata.totalpublisherData.complete.overlap}</TableCell>
+									<TableCell>
+										{Math.round(
+											consoledata.totalpublisherData.complete.uniqueusers *
+												100 *
+												100 /
+												(consoledata.uniqueusersdata.audio +
+													consoledata.uniqueusersdata.display +
+													consoledata.uniqueusersdata.video)
+										) / 100}%
+									</TableCell>
 									<TableCell>{consoledata.totalpublisherData.complete.clicks}</TableCell>
-									<TableCell>{consoledata.totalpublisherData.complete.ctr}</TableCell>
-									<TableCell>{consoledata.totalpublisherData.complete.ltr}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.complete.ctr}%</TableCell>
+									<TableCell>{consoledata.totalpublisherData.complete.ltr}%</TableCell>
 								</TableRow>
 							</TableBody>
 						</TableContainer>
@@ -301,14 +310,15 @@ function PublisherConsole() {
 									<TableCell>{consoledata.totalpublisherData.audio.avgfreq}</TableCell>
 									<TableCell>
 										{Math.round(
-											consoledata.totalpublisherData.audio.uniqueusers /
+											consoledata.totalpublisherData.audio.uniqueusers *
+												100 /
 												consoledata.uniqueusersdata.audio *
 												100
-										) / 100}
+										) / 100}%
 									</TableCell>
 									<TableCell>{consoledata.totalpublisherData.audio.clicks}</TableCell>
-									<TableCell>{consoledata.totalpublisherData.audio.ctr}</TableCell>
-									<TableCell>{consoledata.totalpublisherData.audio.ltr}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.audio.ctr}%</TableCell>
+									<TableCell>{consoledata.totalpublisherData.audio.ltr}%</TableCell>
 								</TableRow>
 							</TableBody>
 						</TableContainer>
@@ -325,7 +335,6 @@ function PublisherConsole() {
 									<TableCell>% Over Lap</TableCell>
 									<TableCell>Total Clicks</TableCell>
 									<TableCell>CTR</TableCell>
-									<TableCell>LTR</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
@@ -336,14 +345,14 @@ function PublisherConsole() {
 									<TableCell>{consoledata.totalpublisherData.display.avgfreq}</TableCell>
 									<TableCell>
 										{Math.round(
-											consoledata.totalpublisherData.display.uniqueusers /
+											consoledata.totalpublisherData.display.uniqueusers *
+												100 /
 												consoledata.uniqueusersdata.display *
 												100
-										) / 100}
+										) / 100}%
 									</TableCell>
 									<TableCell>{consoledata.totalpublisherData.display.clicks}</TableCell>
-									<TableCell>{consoledata.totalpublisherData.display.ctr}</TableCell>
-									<TableCell>{consoledata.totalpublisherData.display.ltr}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.display.ctr}%</TableCell>
 								</TableRow>
 							</TableBody>
 						</TableContainer>
@@ -371,14 +380,15 @@ function PublisherConsole() {
 									<TableCell>{consoledata.totalpublisherData.video.avgfreq}</TableCell>
 									<TableCell>
 										{Math.round(
-											consoledata.totalpublisherData.video.uniqueusers /
+											consoledata.totalpublisherData.video.uniqueusers *
+												100 /
 												consoledata.uniqueusersdata.video *
 												100
-										) / 100}
+										) / 100}%
 									</TableCell>
 									<TableCell>{consoledata.totalpublisherData.video.clicks}</TableCell>
-									<TableCell>{consoledata.totalpublisherData.video.ctr}</TableCell>
-									<TableCell>{consoledata.totalpublisherData.video.ltr}</TableCell>
+									<TableCell>{consoledata.totalpublisherData.video.ctr}%</TableCell>
+									<TableCell>{consoledata.totalpublisherData.video.ltr}%</TableCell>
 								</TableRow>
 							</TableBody>
 						</TableContainer>

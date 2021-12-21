@@ -65,7 +65,7 @@ function PublisherConsoleTable({
 				data.map((x) => {
 					ai += x.impression;
 					ac += x.click;
-					if (title === 'Audio') ar += x.req;
+					if (title === 'Audio') ar += x.req ? parseInt(x.req) : 0;
 					au += x.unique;
 					var uniquef = x.impression / x.unique;
 					x.uniquef = uniquef ? Math.round(uniquef * 100) / 100 : 0;
@@ -220,6 +220,7 @@ function PublisherConsoleTable({
 							)}
 							<TableRow>
 								<TableCell className="boldClass">Total</TableCell>
+								<TableCell />
 								<TableCell />
 								<TableCell />
 								{title === 'Audio' && <TableCell className="boldClass" />}

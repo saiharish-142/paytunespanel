@@ -125,7 +125,7 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 					x.overlap = x.unique ? Math.trunc(x.unique * 100 / uniqueTotalAudio * 100) / 100 : 0;
 					if (x.fede === 'Podcast') {
 						x.req = result.sol[x.apppubid];
-						compodata.audio.requests += result.sol[x.apppubid];
+						compodata.audio.requests += result.sol[x.apppubid] ? parseInt(result.sol[x.apppubid]) : 0;
 						// x.useage = result.sola[x.apppubid];
 						x.useage = 0;
 						x.avgreq = Math.round(result.sol[x.apppubid] / x.days * 100) / 100;
@@ -148,7 +148,7 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 					x.ctr = x.click * 100 / x.impression;
 					// console.log(x.feed);
 					compodata.complete.impressions += x.impression;
-					compodata.complete.complete += x.complete;
+					// compodata.complete.complete += x.complete;
 					compodata.complete.clicks += x.click;
 					compodata.complete.uniqueusers += x.unique;
 					compodata.display.impressions += x.impression;
@@ -198,8 +198,6 @@ export const LoadPublisherData = () => (dispatch, getState) => {
 					Math.round(compodata.complete.complete * 100 / compodata.complete.impressions * 100) / 100;
 				compodata.audio.ltr =
 					Math.round(compodata.audio.complete * 100 / compodata.audio.impressions * 100) / 100;
-				compodata.display.ltr =
-					Math.round(compodata.display.complete * 100 / compodata.display.impressions * 100) / 100;
 				compodata.video.ltr =
 					Math.round(compodata.video.complete * 100 / compodata.video.impressions * 100) / 100;
 				compodata.audio.avgrequest = Math.round(compodata.audio.requests * 100 / parseInt(daystot)) / 100;
