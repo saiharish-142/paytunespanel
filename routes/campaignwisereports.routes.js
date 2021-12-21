@@ -1376,8 +1376,8 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 				result.map((x) => {
 					summaryReport.unique.push(x.PublisherSplit);
 				});
-				let uniqueData = await freqpubonreports.aggregate([
-					{ $match: { appId: { $in: summaryReport.unique } } }
+				let uniqueData = await freqpublishreports.aggregate([
+					{ $match: { campaignId: { $in: ids }, appId: { $in: summaryReport.unique } } }
 				]);
 				let uniqueDataCamp = await freqCampWise.aggregate([ { $match: { campaignId: { $in: ids } } } ]);
 				let spentData = await spentreports.aggregate([
