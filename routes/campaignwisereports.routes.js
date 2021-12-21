@@ -1387,9 +1387,17 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 				]);
 				var updatedAtTimes = [];
 				var tempUser = {};
+				var tempUserCamp = {};
 				if (uniqueDataCamp.length) {
 					uniqueDataCamp.map((z) => {
 						summaryReport.uniqueValue += parseInt(z.users);
+						if (z.campaignId === null) {
+							tempUserCamp['null'] = parseInt(z.users);
+						} else if (tempUserCamp[z.campaignId]) {
+							tempUserCamp[z.campaignId] += parseInt(z.users);
+						} else {
+							tempUserCamp[z.campaignId] = parseInt(z.users);
+						}
 					});
 				}
 				if (uniqueData.length) {
@@ -1468,7 +1476,7 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 							// console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
 							x.uniqueData = tempUser[x.PublisherSplit] ? tempUser[x.PublisherSplit] : 0;
 							x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
-							podcastReport.uniqueValue += parseInt(x.uniqueData);
+							// podcastReport.uniqueValue += parseInt(x.uniqueData);
 							podcastReport.spentValue += x.spent ? parseFloat(x.spent) : 0;
 							podcastReport.impressions += parseInt(x.impressions);
 							podcastReport.clicks += parseInt(x.clicks);
@@ -1496,6 +1504,7 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 							x.updatedAt = x.updatedAt[0];
 							x.ssp = x.ssp ? x.ssp[0] : '';
 							x.campaignId = x.campaignId[0];
+							podcastReport.unique.push(x.campaignId);
 							updatedAtTimes.push(x.updatedAt);
 						});
 					musicappsResult.length &&
@@ -1518,7 +1527,7 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 							// console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
 							x.uniqueData = tempUser[x.PublisherSplit] ? tempUser[x.PublisherSplit] : 0;
 							x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
-							musicappsReport.uniqueValue += parseInt(x.uniqueData);
+							// musicappsReport.uniqueValue += parseInt(x.uniqueData);
 							musicappsReport.spentValue += x.spent ? parseFloat(x.spent) : 0;
 							musicappsReport.impressions += parseInt(x.impressions);
 							musicappsReport.clicks += parseInt(x.clicks);
@@ -1546,10 +1555,21 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 							x.updatedAt = x.updatedAt[0];
 							x.ssp = x.ssp ? x.ssp[0] : '';
 							x.campaignId = x.campaignId[0];
+							musicappsReport.unique.push(x.campaignId);
 							updatedAtTimes.push(x.updatedAt);
 						});
 					updatedAtTimes.sort(function(a, b) {
 						return new Date(b) - new Date(a);
+					});
+					podcastReport.unique = [ ...new Set(podcastReport.unique) ];
+					podcastReport.unique = removeDuplicates(podcastReport.unique);
+					podcastReport.unique.map((x) => {
+						podcastReport.uniqueValue += tempUserCamp[x];
+					});
+					musicappsReport.unique = [ ...new Set(musicappsReport.unique) ];
+					musicappsReport.unique = removeDuplicates(musicappsReport.unique);
+					musicappsReport.unique.map((x) => {
+						musicappsReport.uniqueValue += tempUserCamp[x];
 					});
 					var response = {};
 					summaryReport.unique = [];
