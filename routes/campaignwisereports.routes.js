@@ -1684,7 +1684,7 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 			},
 			{
 				$group: {
-					_id: null,
+					_id: { ssp: '$ssp' },
 					updatedAt: { $push: '$createdOn' },
 					impressions: { $sum: '$impression' },
 					complete: { $sum: '$complete' },
@@ -1699,7 +1699,37 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 		])
 		.then(async (reports) => {
 			if (reports.length) {
-				var response = reports[0];
+				var resol = {
+					updatedAt: [],
+					impressions: 0,
+					complete: 0,
+					clicks: 0,
+					clicks1: 0,
+					thirdQuartile: 0,
+					start: 0,
+					firstQuartile: 0,
+					midpoint: 0,
+					onlineImpressions: 0
+				};
+				var data = report;
+				data.map((z) => {
+					resol.impressions += z.impressions;
+					resol.clicks += z.clicks;
+					resol.clicks1 += z.clicks1;
+					z.updatedAt &&
+						z.updatedAt.map((x) => {
+							resol.updatedAt.push(x);
+						});
+					if (z && (z._id.ssp === 'Adswizz' || z._id.ssp === 'Rubicon' || z._id.ssp === 'Triton')) {
+						resol.start += z.start;
+						resol.firstQuartile += z.firstQuartile;
+						resol.midpoint += z.midpoint;
+						resol.thirdQuartile += z.thirdQuartile;
+						resol.complete += z.complete;
+						resol.onlineImpressions += z.impressions;
+					}
+				});
+				var response = resol;
 				response.updatedAt = [ ...new Set(response.updatedAt) ];
 				response.updatedAt.sort(function(a, b) {
 					return new Date(b) - new Date(a);
