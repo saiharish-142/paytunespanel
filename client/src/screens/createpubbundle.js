@@ -244,11 +244,13 @@ function PublisherBundle() {
     //     }
     // };
 
-    const removeselectedpubs = (_id) => {
+    const removeselectedpubs = (ad) => {
         let data = selectedpubdata;
-        let filtered = data.filter(x => x._id !== _id);
+        let filtered = data.filter(x => x !== ad);
         setselectedpubdata(filtered);
         setsearchedselectedpubdata(filtered);
+        setsearchedpubdata([...pubdata,ad]);
+        setpubdata([...pubdata,ad]);
     }
 
     // const adstoremove = (id, ad) => {
@@ -387,7 +389,7 @@ function PublisherBundle() {
                                                 <TableCell
                                                     style={{ cursor: 'pointer' }}
                                                     onClick={() => {
-                                                        removeselectedpubs(ad._id);
+                                                        removeselectedpubs(ad);
                                                         // loadingadder(ad._id);
                                                         // if (bundlename) {
                                                         //     adstoremove(ad._id, ad);
