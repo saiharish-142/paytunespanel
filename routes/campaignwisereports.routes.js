@@ -10,6 +10,8 @@ const adsetting = mongoose.model('adsetting');
 const freqpublishreports = mongoose.model('freqpublishreports');
 const spentreports = mongoose.model('spentreports');
 const http = require('http');
+const freqpubonreports = mongoose.model('freqpubOnreports');
+const freqCampWise = mongoose.model('freqCampWise');
 
 const saavnids = [
 	'22308',
@@ -1377,6 +1379,7 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 				let uniqueData = await freqpublishreports.aggregate([
 					{ $match: { campaignId: { $in: ids }, appId: { $in: summaryReport.unique } } }
 				]);
+				let uniqueDataCamp = await freqCampWise.aggregate([ { $match: { campaignId: { $in: ids } } } ]);
 				let spentData = await spentreports.aggregate([
 					{ $match: { campaignId: { $in: ids } } },
 					{ $group: { _id: '$apppubid', totalspent: { $sum: '$totalSpent' } } },
@@ -1384,9 +1387,21 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 				]);
 				var updatedAtTimes = [];
 				var tempUser = {};
+				var tempUserCamp = {};
+				if (uniqueDataCamp.length) {
+					uniqueDataCamp.map((z) => {
+						summaryReport.uniqueValue += parseInt(z.users);
+						if (z.campaignId === null) {
+							tempUserCamp['null'] = parseInt(z.users);
+						} else if (tempUserCamp[z.campaignId]) {
+							tempUserCamp[z.campaignId] += parseInt(z.users);
+						} else {
+							tempUserCamp[z.campaignId] = parseInt(z.users);
+						}
+					});
+				}
 				if (uniqueData.length) {
 					uniqueData.map((z) => {
-						summaryReport.uniqueValue += parseInt(z.users);
 						if (z.appId === null) {
 							tempUser['null'] = parseInt(z.users);
 						} else if (tempUser[z.appId]) {
@@ -1461,7 +1476,7 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 							// console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
 							x.uniqueData = tempUser[x.PublisherSplit] ? tempUser[x.PublisherSplit] : 0;
 							x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
-							podcastReport.uniqueValue += parseInt(x.uniqueData);
+							// podcastReport.uniqueValue += parseInt(x.uniqueData);
 							podcastReport.spentValue += x.spent ? parseFloat(x.spent) : 0;
 							podcastReport.impressions += parseInt(x.impressions);
 							podcastReport.clicks += parseInt(x.clicks);
@@ -1489,6 +1504,7 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 							x.updatedAt = x.updatedAt[0];
 							x.ssp = x.ssp ? x.ssp[0] : '';
 							x.campaignId = x.campaignId[0];
+							podcastReport.unique.push(x.campaignId);
 							updatedAtTimes.push(x.updatedAt);
 						});
 					musicappsResult.length &&
@@ -1511,7 +1527,7 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 							// console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
 							x.uniqueData = tempUser[x.PublisherSplit] ? tempUser[x.PublisherSplit] : 0;
 							x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
-							musicappsReport.uniqueValue += parseInt(x.uniqueData);
+							// musicappsReport.uniqueValue += parseInt(x.uniqueData);
 							musicappsReport.spentValue += x.spent ? parseFloat(x.spent) : 0;
 							musicappsReport.impressions += parseInt(x.impressions);
 							musicappsReport.clicks += parseInt(x.clicks);
@@ -1539,10 +1555,21 @@ router.put('/sumreportofcamDiv', adminauth, (req, res) => {
 							x.updatedAt = x.updatedAt[0];
 							x.ssp = x.ssp ? x.ssp[0] : '';
 							x.campaignId = x.campaignId[0];
+							musicappsReport.unique.push(x.campaignId);
 							updatedAtTimes.push(x.updatedAt);
 						});
 					updatedAtTimes.sort(function(a, b) {
 						return new Date(b) - new Date(a);
+					});
+					podcastReport.unique = [ ...new Set(podcastReport.unique) ];
+					podcastReport.unique = removeDuplicates(podcastReport.unique);
+					podcastReport.unique.map((x) => {
+						podcastReport.uniqueValue += tempUserCamp[x];
+					});
+					musicappsReport.unique = [ ...new Set(musicappsReport.unique) ];
+					musicappsReport.unique = removeDuplicates(musicappsReport.unique);
+					musicappsReport.unique.map((x) => {
+						musicappsReport.uniqueValue += tempUserCamp[x];
 					});
 					var response = {};
 					summaryReport.unique = [];
@@ -1657,7 +1684,7 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 			},
 			{
 				$group: {
-					_id: null,
+					_id: { ssp: '$ssp' },
 					updatedAt: { $push: '$createdOn' },
 					impressions: { $sum: '$impression' },
 					complete: { $sum: '$complete' },
@@ -1672,7 +1699,37 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 		])
 		.then(async (reports) => {
 			if (reports.length) {
-				var response = reports[0];
+				var resol = {
+					updatedAt: [],
+					impressions: 0,
+					complete: 0,
+					clicks: 0,
+					clicks1: 0,
+					thirdQuartile: 0,
+					start: 0,
+					firstQuartile: 0,
+					midpoint: 0,
+					onlineImpressions: 0
+				};
+				var data = reports;
+				data.map((z) => {
+					resol.impressions += z.impressions;
+					resol.clicks += z.clicks;
+					resol.clicks1 += z.clicks1;
+					z.updatedAt &&
+						z.updatedAt.map((x) => {
+							resol.updatedAt.push(x);
+						});
+					if (z && (z._id.ssp === 'Adswizz' || z._id.ssp === 'Rubicon' || z._id.ssp === 'Triton')) {
+						resol.start += z.start;
+						resol.firstQuartile += z.firstQuartile;
+						resol.midpoint += z.midpoint;
+						resol.thirdQuartile += z.thirdQuartile;
+						resol.complete += z.complete;
+						resol.onlineImpressions += z.impressions;
+					}
+				});
+				var response = resol;
 				response.updatedAt = [ ...new Set(response.updatedAt) ];
 				response.updatedAt.sort(function(a, b) {
 					return new Date(b) - new Date(a);

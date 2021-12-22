@@ -227,6 +227,7 @@ function PublisherAdmin({
 								<TableCell />
 								<TableCell />
 								<TableCell />
+								<TableCell />
 								<TableCell className="boldClass">{impreComp}</TableCell>
 								<TableCell className="boldClass">{uniqueComp}</TableCell>
 								<TableCell className="boldClass">

@@ -4,6 +4,7 @@ const router = express.Router();
 const campaignifareports = mongoose.model('campaignifareports');
 const frequencyreports = mongoose.model('frequencyreports');
 const adminauth = require('../authenMiddleware/adminauth');
+const freqCampWise = mongoose.model('freqCampWise');
 
 router.get('/reports', adminauth, (req, res) => {
 	campaignifareports
@@ -35,7 +36,7 @@ router.put('/tes', adminauth, (req, res) => {
 router.put('/frequency', adminauth, (req, res) => {
 	const { campaignId } = req.body;
 	var audio = campaignId.map((id) => mongoose.Types.ObjectId(id));
-	frequencyreports
+	freqCampWise
 		.aggregate([
 			{ $match: { campaignId: { $in: audio } } },
 			{

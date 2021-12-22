@@ -14,6 +14,7 @@ const StreamingAds = mongoose.model('streamingads');
 const adsetting = mongoose.model('adsetting');
 const admin = mongoose.model('admin');
 const freqCampWise = mongoose.model('freqCampWise');
+const freqpubOnreports = mongoose.model('freqpubOnreports');
 const campaignwisereports = mongoose.model('campaignwisereports');
 const campaignreportsSum = mongoose.model('campaignreportsSum');
 var aws = require('aws-sdk');
@@ -799,6 +800,174 @@ async function freqCampPubTest(chevk, chevk2) {
 		});
 }
 
+async function freqPubTest(chevk, chevk2) {
+	console.log('start');
+	var initialDate = '2021-11-01';
+	var tempDate = '2021-11-01';
+	console.log({ tempDate, chevk, chevk2 });
+	campaignifareports
+		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					apppubid: '$apppubid',
+					rtbType: '$rtbType',
+					ifa: '$ifa'
+				}
+			},
+			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+			{
+				$group: {
+					_id: { ifa: '$ifa', rtbType: '$rtbType', apppubid: '$apppubid' }
+				}
+			},
+			{
+				$group: {
+					_id: { rtbType: '$_id.rtbType', apppubid: '$_id.apppubid' },
+					users: { $sum: 1 }
+				}
+			}
+		])
+		.allowDiskUse(true)
+		.then(async (frequency) => {
+			console.log(frequency.length, 'length');
+			var i = frequency.length;
+			frequency.map(async (fed) => {
+				let alreadymade = await freqpubOnreports
+					.findOne({
+						appId: fed._id.apppubid,
+						rtbType: fed._id.rtbType
+					})
+					.catch((err) => console.log(err));
+				if (alreadymade) {
+					if (alreadymade.createdOn === chevk2) {
+						console.log('Already Done', i--);
+						// alreadymade.users = fed.users;
+						// alreadymade.createdOn = chevk2;
+						// alreadymade
+						// 	.save()
+						// 	.then((resu) => {
+						// 		console.log('updated', i--);
+						// 	})
+						// 	.catch((err) => console.log(err));
+					} else {
+						alreadymade.users += fed.users;
+						alreadymade.createdOn = chevk2;
+						alreadymade
+							.save()
+							.then((resu) => {
+								console.log('updated', i--);
+							})
+							.catch((err) => console.log(err));
+					}
+				} else {
+					const news = new freqpubOnreports({
+						appId: fed._id.apppubid,
+						rtbType: fed._id.rtbType,
+						users: fed.users ? fed.users : 0,
+						createdOn: chevk2
+					});
+					let asn = await news.save().catch((err) => console.log(err));
+					if (asn) {
+						console.log('created', i--);
+					} else {
+						console.log('err', i--, fed);
+					}
+				}
+			});
+			return frequency.length;
+		})
+		.catch((err) => {
+			console.log(err);
+			console.log('err');
+			return err;
+		});
+}
+
+async function freqCampTest(chevk, chevk2) {
+	console.log('start');
+	var initialDate = '2021-11-01';
+	var tempDate = '2021-11-01';
+	console.log({ tempDate, chevk, chevk2 });
+	campaignifareports
+		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					campaignId: '$campaignId',
+					rtbType: '$rtbType',
+					ifa: '$ifa'
+				}
+			},
+			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+			{
+				$group: {
+					_id: { ifa: '$ifa', campaignId: '$campaignId', rtbType: '$rtbType' }
+				}
+			},
+			{
+				$group: {
+					_id: { campaignId: '$_id.campaignId', rtbType: '$_id.rtbType' },
+					users: { $sum: 1 }
+				}
+			}
+		])
+		.allowDiskUse(true)
+		.then(async (frequency) => {
+			console.log(frequency.length, 'length');
+			var i = frequency.length;
+			frequency.map(async (fed) => {
+				let alreadymade = await freqCampWise
+					.findOne({
+						campaignId: mongoose.Types.ObjectId(fed._id.campaignId),
+						rtbType: fed._id.rtbType
+					})
+					.catch((err) => console.log(err));
+				if (alreadymade) {
+					if (alreadymade.createdOn === chevk2) {
+						console.log('Already Done', i--);
+						// alreadymade.users = fed.users;
+						// alreadymade.createdOn = chevk2;
+						// alreadymade
+						// 	.save()
+						// 	.then((resu) => {
+						// 		console.log('updated', i--);
+						// 	})
+						// 	.catch((err) => console.log(err));
+					} else {
+						alreadymade.users += fed.users;
+						alreadymade.createdOn = chevk2;
+						alreadymade
+							.save()
+							.then((resu) => {
+								console.log('updated', i--);
+							})
+							.catch((err) => console.log(err));
+					}
+				} else {
+					const news = new freqCampWise({
+						campaignId: fed._id.campaignId,
+						rtbType: fed._id.rtbType,
+						users: fed.users ? fed.users : 0,
+						createdOn: chevk2
+					});
+					let asn = await news.save().catch((err) => console.log(err));
+					if (asn) {
+						console.log('created', i--);
+					} else {
+						console.log('err', i--, fed);
+					}
+				}
+			});
+			return frequency.length;
+		})
+		.catch((err) => {
+			console.log(err);
+			console.log('err');
+			return err;
+		});
+}
+
 // DailyReportMailer();
 async function DailyReportMailer() {
 	var users = await admin.find({ usertype: 'client' }).select('email').catch((err) => console.log(err));
@@ -1187,6 +1356,18 @@ router.put('/freq', adminauth, async (req, res) => {
 	res.json(data);
 });
 
+router.put('/freqonlypub', adminauth, async (req, res) => {
+	const { date, date2 } = req.body;
+	let data = await freqPubTest(date, date2);
+	res.json(data);
+});
+
+router.put('/freqonlycamp', adminauth, async (req, res) => {
+	const { date, date2 } = req.body;
+	let data = await freqCampTest(date, date2);
+	res.json(data);
+});
+
 router.put('/autoMailer', adminauth, async (req, res) => {
 	// const { date, date2 } = req.body;
 	DailyReportMailer();
@@ -1204,5 +1385,13 @@ router.put('/campaignPriorMailer', adminauth, async (req, res) => {
 	res.json('sent');
 });
 
-const expo = { func1: datareturner, func2: pacingMailer, func3: DailyReportMailer, route: router };
+const expo = {
+	func1: datareturner,
+	func2: pacingMailer,
+	func3: DailyReportMailer,
+	freqpub: freqCampPubTest,
+	freqonlypub: freqPubTest,
+	freqonlycamp: freqCampTest,
+	route: router
+};
 module.exports = expo;

@@ -700,6 +700,7 @@ export const ClientReport = () => async (dispatch, getState) => {
 		complete: 0,
 		firstQuartile: 0,
 		impressions: 0,
+		onlineImpressions: 0,
 		midpoint: 0,
 		ltr: 0,
 		start: 0,
@@ -834,6 +835,7 @@ export const ClientReport = () => async (dispatch, getState) => {
 					pullerData['complete'].midpoint += result.midpoint ? result.midpoint : 0;
 					pullerData['complete'].thirdQuartile += result.thirdQuartile ? result.thirdQuartile : 0;
 					pullerData['complete'].complete += result.complete ? result.complete : 0;
+					pullerData['complete'].onlineImpressions += result.onlineImpressions ? result.onlineImpressions : 0;
 					pullerData['complete'].updatedAt.push(result.updatedAt);
 				}
 				// return result;
@@ -847,25 +849,21 @@ export const ClientReport = () => async (dispatch, getState) => {
 		return new Date(b) - new Date(a);
 	});
 	pullerData.complete.updatedAt = pullerData.complete.updatedAt[0];
-	pullerData.complete.midpoint =
-		pullerData.complete.midpoint / pullerData.complete.firstQuartile * pullerData.complete.impressions;
-	pullerData.complete.thirdQuartile =
-		pullerData.complete.thirdQuartile / pullerData.complete.firstQuartile * pullerData.complete.impressions;
-	pullerData.complete.complete =
-		pullerData.complete.complete / pullerData.complete.firstQuartile * pullerData.complete.impressions;
-	pullerData.complete.firstQuartile =
-		pullerData.complete.firstQuartile / pullerData.complete.firstQuartile * pullerData.complete.impressions;
-	pullerData.complete.ltr = pullerData.complete.complete * 100 / pullerData.complete.firstQuartile;
-	pullerData.complete.midpoint = Math.round(pullerData.complete.midpoint);
-	pullerData.complete.thirdQuartile = Math.round(pullerData.complete.thirdQuartile);
-	pullerData.complete.complete = Math.round(pullerData.complete.complete);
+	pullerData.complete.midpoint = pullerData.complete.midpoint / pullerData.complete.onlineImpressions * 100;
+	pullerData.complete.thirdQuartile = pullerData.complete.thirdQuartile / pullerData.complete.onlineImpressions * 100;
+	pullerData.complete.ltr = pullerData.complete.complete * 100 / pullerData.complete.onlineImpressions;
+	pullerData.complete.complete = pullerData.complete.complete / pullerData.complete.onlineImpressions * 100;
+	pullerData.complete.firstQuartile = pullerData.complete.firstQuartile / pullerData.complete.onlineImpressions * 100;
+	// pullerData.complete.midpoint = Math.round(pullerData.complete.midpoint);
+	// pullerData.complete.thirdQuartile = Math.round(pullerData.complete.thirdQuartile);
+	// pullerData.complete.complete = Math.round(pullerData.complete.complete);
 	for (const [ y, z ] of Object.entries(pullerCate)) {
 		pullerData[y].midpoint = pullerData[y].midpoint / pullerData[y].firstQuartile * pullerData[y].impressions;
 		pullerData[y].thirdQuartile =
 			pullerData[y].thirdQuartile / pullerData[y].firstQuartile * pullerData[y].impressions;
-		pullerData[y].complete = pullerData[y].complete / pullerData[y].firstQuartile * pullerData[y].impressions;
+		// pullerData[y].complete = pullerData[y].complete / pullerData[y].firstQuartile * pullerData[y].impressions;
 		pullerData[y].firstQuartile = pullerData[y].impressions;
-		pullerData[y].ltr = pullerData[y].complete * 100 / pullerData[y].impressions;
+		pullerData[y].ltr = pullerData[y].complete * 100 / pullerData[y].onlineImpressions;
 	}
 	console.log(dass, puller, pullerData);
 	dispatch({

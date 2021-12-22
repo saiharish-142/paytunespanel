@@ -72,9 +72,10 @@ require('./models/uareqreports.models');
 require('./models/useragent.model');
 require('./models/freqCampaignWise.model');
 require('./models/campaignreportsum.model');
-app.get('/',(req,res)=>{
-	res.send("hello!")
-})
+require('./models/freqPubreport.models');
+app.get('/', (req, res) => {
+	res.send('hello!');
+});
 app.use('/auth', require('./routes/user.routes'));
 app.use('/streamingads', require('./routes/streamingads.routes'));
 app.use('/ads', require('./routes/adsetting.routes'));
@@ -114,354 +115,6 @@ cron.schedule('04 00 * * *', function() {
 cron.schedule('00 09 * * *', function() {
 	commonfunctions.func2();
 });
-
-cron.schedule('00 02 * * *', function() {
-	var d = new Date();
-	d.setDate(d.getDate());
-	if (d.getDate() < 10) {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		}
-	} else {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
-		}
-	}
-	var currentTime = new Date();
-	var currentOffset = currentTime.getTimezoneOffset();
-	var ISTOffset = 330; // IST offset UTC +5:30
-	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
-	console.log(ISTTime);
-	ReportsRefresher(date, ISTTime);
-});
-
-cron.schedule('00 04 * * *', function() {
-	var d = new Date();
-	d.setDate(d.getDate());
-	if (d.getDate() < 10) {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		}
-	} else {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
-		}
-	}
-	var currentTime = new Date();
-	var currentOffset = currentTime.getTimezoneOffset();
-	var ISTOffset = 330; // IST offset UTC +5:30
-	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
-	console.log(ISTTime);
-	ReportsRefresher(date, ISTTime);
-});
-
-cron.schedule('00 06 * * *', function() {
-	var d = new Date();
-	d.setDate(d.getDate());
-	if (d.getDate() < 10) {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		}
-	} else {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
-		}
-	}
-	var currentTime = new Date();
-	var currentOffset = currentTime.getTimezoneOffset();
-	var ISTOffset = 330; // IST offset UTC +5:30
-	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
-	console.log(ISTTime);
-	ReportsRefresher(date, ISTTime);
-});
-
-cron.schedule('00 08 * * *', function() {
-	var d = new Date();
-	d.setDate(d.getDate());
-	if (d.getDate() < 10) {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		}
-	} else {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
-		}
-	}
-	var currentTime = new Date();
-	var currentOffset = currentTime.getTimezoneOffset();
-	var ISTOffset = 330; // IST offset UTC +5:30
-	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
-	console.log(ISTTime);
-	ReportsRefresher(date, ISTTime);
-});
-
-cron.schedule('00 10 * * *', function() {
-	var d = new Date();
-	d.setDate(d.getDate());
-	if (d.getDate() < 10) {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		}
-	} else {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
-		}
-	}
-	var currentTime = new Date();
-	var currentOffset = currentTime.getTimezoneOffset();
-	var ISTOffset = 330; // IST offset UTC +5:30
-	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
-	console.log(ISTTime);
-	ReportsRefresher(date, ISTTime);
-});
-
-cron.schedule('00 12 * * *', function() {
-	var d = new Date();
-	d.setDate(d.getDate());
-	if (d.getDate() < 10) {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		}
-	} else {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
-		}
-	}
-	var currentTime = new Date();
-	var currentOffset = currentTime.getTimezoneOffset();
-	var ISTOffset = 330; // IST offset UTC +5:30
-	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
-	console.log(ISTTime, date);
-	ReportsRefresher(date, ISTTime);
-});
-
-cron.schedule('00 14 * * *', function() {
-	var d = new Date();
-	d.setDate(d.getDate());
-	if (d.getDate() < 10) {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		}
-	} else {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
-		}
-	}
-	var currentTime = new Date();
-	var currentOffset = currentTime.getTimezoneOffset();
-	var ISTOffset = 330; // IST offset UTC +5:30
-	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
-	console.log(ISTTime);
-	ReportsRefresher(date, ISTTime);
-});
-
-cron.schedule('00 16 * * *', function() {
-	var d = new Date();
-	d.setDate(d.getDate());
-	if (d.getDate() < 10) {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		}
-	} else {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
-		}
-	}
-	var currentTime = new Date();
-	var currentOffset = currentTime.getTimezoneOffset();
-	var ISTOffset = 330; // IST offset UTC +5:30
-	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
-	console.log(ISTTime);
-	ReportsRefresher(date, ISTTime);
-});
-
-cron.schedule('00 18 * * *', function() {
-	var d = new Date();
-	d.setDate(d.getDate());
-	if (d.getDate() < 10) {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		}
-	} else {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
-		}
-	}
-	var currentTime = new Date();
-	var currentOffset = currentTime.getTimezoneOffset();
-	var ISTOffset = 330; // IST offset UTC +5:30
-	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
-	console.log(ISTTime);
-	ReportsRefresher(date, ISTTime);
-});
-
-cron.schedule('00 20 * * *', function() {
-	var d = new Date();
-	d.setDate(d.getDate());
-	if (d.getDate() < 10) {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		}
-	} else {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
-		}
-	}
-	var currentTime = new Date();
-	var currentOffset = currentTime.getTimezoneOffset();
-	var ISTOffset = 330; // IST offset UTC +5:30
-	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
-	console.log(ISTTime);
-	ReportsRefresher(date, ISTTime);
-});
-
-cron.schedule('00 22 * * *', function() {
-	var d = new Date();
-	d.setDate(d.getDate());
-	if (d.getDate() < 10) {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-		}
-	} else {
-		if (d.getMonth() + 1 > 10) {
-			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-		} else {
-			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
-		}
-	}
-	var currentTime = new Date();
-	var currentOffset = currentTime.getTimezoneOffset();
-	var ISTOffset = 330; // IST offset UTC +5:30
-	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
-	console.log(ISTTime);
-	ReportsRefresher(date, ISTTime);
-});
-
-cron.schedule('10 00 * * *', function() {
-	var d = new Date();
-	d.setDate(d.getDate() - 1);
-	if (d.getDate() < 10) {
-		var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
-	} else {
-		var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-	}
-	var currentTime = new Date();
-	var currentOffset = currentTime.getTimezoneOffset();
-	var ISTOffset = 330; // IST offset UTC +5:30
-	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset) * 60000);
-	console.log(ISTTime);
-	ReportsRefresher(date, ISTTime);
-	uniqueMaker(date);
-});
-
-//Pincode
-
-// cron.schedule('00 00 * * *', function () {
-// 	TempJob();
-// });
-
-// async function TempJob() {
-// 	const Zipreports2 = require('./models/zipdata2reports');
-// 	const PhoneModelReports=require('./models/phonemodelreports')
-// 	const ZipModelReports = require('./models/zipreports');
-// 	let phones = await PhoneModelReports.aggregate([
-// 		{
-// 			$project: {
-// 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-// 				phoneModel: { $toUpper: "$phoneModel" }
-// 			}
-// 		},
-// 		{ $match: { test: "2021-08-30" } },
-// 		{ $group: { _id: "$phoneModel" } }
-// 	])
-
-// 	phones.forEach(async (phn) => {
-// 		let val = await phonemodel2reports.findOne({ make_model: phn._id, rtbType: { $exists: false } })
-// 		let updates = {
-// 			cost: val ? val.cost : '',
-// 			cumulative: val ? val.cumulative : '',
-// 			release: val ? val.release : '',
-// 			company: val ? val.company : '',
-// 			type: val ? val.type : '',
-// 			total_percent: val ? val.total_percent : '',
-// 			model: val ? val.model : '',
-// 			combined_make_model: val ? val.combined_make_model : '',
-// 		}
-// 		await phonemodel2reports.updateMany({ make_model: phn._id, rtbType: { $exists: true } }, { $set: updates })
-// 	})
-
-// 	let pincodes = await ZipModelReports.aggregate([
-// 		{
-// 			$project: {
-// 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-// 				zip: "$zip"
-// 			}
-// 		},
-// 		{ $match: { test: "2021-08-30" } },
-// 		{ $group: { _id: "$zip" } }
-// 	])
-
-// 	pincodes.forEach(async (pincode) => {
-// 		let val = await Zipreports2.findOne({ pincode: pincode._id, rtbType: { $exists: false } })
-// 		let updates = {
-// 			area: val ? val.area : '',
-// 			lowersubcity: val ? val.lowersubcity : '',
-// 			subcity: val ? val.subcity : '',
-// 			city: val ? val.city : '',
-// 			grandcity: val ? val.grandcity : '',
-// 			district: val ? val.district : '',
-// 			comparison: val ? val.comparison : '',
-// 			state: val ? val.state : '',
-// 			grandstate: val ? val.grandstate : '',
-// 			latitude: val ? val.latitude : '',
-// 			longitude: val ? val.longitude : '',
-// 		}
-// 		await Zipreports2.updateMany({ pincode: pincode._id, rtbType: { $exists: true } }, { $set: updates })
-// 	})
-
-// }
 
 cron.schedule('00 1 * * *', function() {
 	PincodeRefresher();
@@ -1040,721 +693,6 @@ async function PodcastEpisodeRefresher() {
 	});
 }
 
-async function uniqueMaker({ date }) {
-	let uniqueids = await trackinglogs
-		.distinct('campaignId', { date: date, type: 'impression' })
-		.catch((err) => console.log(err));
-	uniqueids = uniqueids.map((id) => mongoose.Types.ObjectId(id));
-	let response = await StreamingAds.aggregate([
-		{ $match: { _id: { $in: uniqueids } } },
-		{ $project: { AdTitle: { $toLower: '$AdTitle' } } },
-		{ $project: { AdTitle: { $split: [ '$AdTitle', '_' ] } } },
-		{ $project: { AdTitle: { $slice: [ '$AdTitle', 2 ] } } },
-		{
-			$project: {
-				AdTitle: {
-					$reduce: {
-						input: '$AdTitle',
-						initialValue: '',
-						in: {
-							$concat: [ '$$value', { $cond: [ { $eq: [ '$$value', '' ] }, '', '_' ] }, '$$this' ]
-						}
-					}
-				},
-				_id: 0
-			}
-		},
-		{ $group: { _id: '$AdTitle' } }
-	]).catch((err) => console.log(err));
-	var ree = [];
-	response = await response.map(async (da) => {
-		let doudt = await StreamingAds.aggregate([
-			{ $project: { _id: '$_id', AdTitle: { $toLower: '$AdTitle' } } },
-			{ $match: { AdTitle: { $regex: da._id } } },
-			{ $group: { _id: null, ids: { $push: '$_id' } } }
-		]).catch((err) => console.log(err));
-		var title = da._id;
-		doudt = doudt[0].ids;
-		doudt = doudt.map((id) => mongoose.Types.ObjectId(id));
-		let splited = await adsetting.find({ campaignId: { $in: doudt } }).catch((err) => console.log(err));
-		var audio = [];
-		var display = [];
-		splited = await splited.map((ids) => {
-			if (ids.type === 'display') display.push(ids.campaignId);
-			else {
-				audio.push(ids.campaignId);
-			}
-		});
-		// console.log(audio)
-		audio = audio && audio.map((id) => id.toString());
-		let audioUnique = await trackinglogs.db.db
-			.command({
-				aggregate: 'trackinglogs',
-				pipeline: [
-					{ $match: { type: 'impression', campaignId: { $in: audio } } },
-					{ $group: { _id: '$ifa', total: { $sum: 1 } } },
-					{ $count: 'count' }
-				],
-				allowDiskUse: true,
-				cursor: {}
-			})
-			.catch((err) => console.log(err));
-		audioUnique = audioUnique.cursor.firstBatch && audioUnique.cursor.firstBatch[0];
-		console.log(audioUnique);
-		display = display && display.map((id) => id.toString());
-		let displayUnique = await trackinglogs.db.db
-			.command({
-				aggregate: 'trackinglogs',
-				pipeline: [
-					{ $match: { type: 'impression', campaignId: { $in: display } } },
-					{ $group: { _id: '$ifa', total: { $sum: 1 } } },
-					{ $count: 'count' }
-				],
-				allowDiskUse: true,
-				cursor: {}
-			})
-			.catch((err) => console.log(err));
-		displayUnique = displayUnique.cursor.firstBatch && displayUnique.cursor.firstBatch[0];
-		audioCount = audioUnique && audioUnique.count;
-		displayCount = displayUnique && displayUnique.count;
-		console.log(displayUnique);
-		const uniquedata = new Unique({
-			audiouser: audioCount ? audioCount : 0,
-			displayuser: displayCount ? displayCount : 0,
-			AdTitle: title
-		});
-		let dala = await Unique.deleteMany({ AdTitle: title }).catch((err) => console.log(err));
-		console.log(dala);
-		uniquedata
-			.save()
-			.then((resu) => {
-				return console.log('completeunique', dala);
-			})
-			.catch((err) => {
-				console.log(audioCount, displayCount, title, uniquedata);
-				return console.log(err, dala);
-			});
-	});
-}
-
-async function ReportsRefresher(date, credate) {
-	// var d = new Date()
-	// d.setDate(d.getDate());
-	// if(d.getDate() < 10){
-	//     var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
-	// }else{
-	//     var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
-	// }
-	const Report = mongoose.model('Report');
-	Report.deleteMany({ date: date }).then((repon) => {
-		console.log({ relt: repon, mess: 'deleted' });
-	});
-	console.log(date, credate);
-	const trackinglogs = mongoose.model('trackinglogs');
-	try {
-		let logids = await trackinglogs
-			.aggregate([
-				{ $match: { date: date } },
-				{ $group: { _id: null, ids: { $addToSet: '$campaignId' } } },
-				{ $project: { _id: 0, ids: 1 } }
-			])
-			.catch((err) => console.log(err));
-		logids = logids[0].ids;
-		let uniqueuserslist = await trackinglogs.db.db.command({
-			aggregate: 'trackinglogs',
-			pipeline: [
-				{
-					$facet: {
-						uniquesumdatawise: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
-							{
-								$group: {
-									_id: { campaignId: '$campaignId', appId: '$appId' },
-									ifa: { $addToSet: '$ifa' }
-								}
-							},
-							{
-								$group: {
-									_id: '$_id.campaignId',
-									unique: { $addToSet: '$ifa' },
-									publishdata: { $push: { appId: '$_id.appId', uniqueuser: { $size: '$ifa' } } }
-								}
-							},
-							{
-								$addFields: {
-									unique: {
-										$reduce: {
-											input: '$unique',
-											initialValue: [],
-											in: { $concatArrays: [ '$$value', '$$this' ] }
-										}
-									}
-								}
-							},
-							{ $project: { _id: 0, campaignId: '$_id', unique: { $size: '$unique' }, publishdata: 1 } }
-						],
-						regionwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
-							{
-								$group: {
-									_id: { campaignId: '$campaignId', appId: '$appId', region: '$region' },
-									ifa: { $addToSet: '$ifa' }
-								}
-							},
-							{
-								$group: {
-									_id: { campaignId: '$_id.campaignId', appId: '$_id.appId' },
-									uniquerepo: { $push: { region: '$_id.region', unique: { $size: '$ifa' } } }
-								}
-							},
-							{
-								$group: {
-									_id: '$_id.campaignId',
-									results: { $push: { appId: '$_id.appId', result: '$uniquerepo' } }
-								}
-							},
-							{ $project: { _id: 0, campaignId: '$_id', results: 1 } }
-						],
-						pinwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
-							{
-								$group: {
-									_id: { campaignId: '$campaignId', appId: '$appId', zip: '$zip' },
-									ifa: { $addToSet: '$ifa' }
-								}
-							},
-							{
-								$group: {
-									_id: { campaignId: '$_id.campaignId', appId: '$_id.appId' },
-									uniquerepo: { $push: { zip: '$_id.zip', unique: { $size: '$ifa' } } }
-								}
-							},
-							{
-								$group: {
-									_id: '$_id.campaignId',
-									results: { $push: { appId: '$_id.appId', result: '$uniquerepo' } }
-								}
-							},
-							{ $project: { _id: 0, campaignId: '$_id', results: 1 } }
-						],
-						lanwiseunique: [
-							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
-							{
-								$group: {
-									_id: { campaignId: '$campaignId', appId: '$appId', language: '$language' },
-									ifa: { $addToSet: '$ifa' }
-								}
-							},
-							{
-								$group: {
-									_id: { campaignId: '$_id.campaignId', appId: '$_id.appId' },
-									uniquerepo: { $push: { language: '$_id.language', unique: { $size: '$ifa' } } }
-								}
-							},
-							{
-								$group: {
-									_id: '$_id.campaignId',
-									results: { $push: { appId: '$_id.appId', result: '$uniquerepo' } }
-								}
-							},
-							{ $project: { _id: 0, campaignId: '$_id', results: 1 } }
-						]
-					}
-				}
-			],
-			allowDiskUse: true,
-			cursor: {}
-		});
-		uniqueuserslist = uniqueuserslist.cursor.firstBatch;
-		let wholetypelist = await trackinglogs.db.db
-			.command({
-				aggregate: 'trackinglogs',
-				pipeline: [
-					{
-						$facet: {
-							appIds: [
-								{ $match: { date: date } },
-								{ $group: { _id: { campaignId: '$campaignId', date: '$date', appId: '$appId' } } },
-								{
-									$group: {
-										_id: { campaignId: '$_id.campaignId', date: '$_id.date' },
-										ids: { $push: '$_id.appId' }
-									}
-								},
-								{ $project: { _id: 0, campaignId: '$_id.campaignId', date: '$_id.date', ids: '$ids' } }
-							],
-							typeValues: [
-								{ $match: { date: date } },
-								{
-									$group: {
-										_id: { campaignId: '$campaignId', type: '$type', appId: '$appId' },
-										count: { $sum: 1 }
-									}
-								},
-								{
-									$group: {
-										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
-										result: { $push: { k: '$_id.type', v: '$count' } }
-									}
-								},
-								{
-									$group: {
-										_id: '$_id.campaignId',
-										report: {
-											$push: { appId: '$_id.appId', result: { $arrayToObject: '$result' } }
-										}
-									}
-								},
-								{ $project: { campaignId: '$_id', report: '$report', _id: 0 } }
-							],
-							typebyRegion: [
-								{ $match: { date: date } },
-								{
-									$group: {
-										_id: {
-											campaignId: '$campaignId',
-											type: '$type',
-											appId: '$appId',
-											region: '$region'
-										},
-										count: { $sum: 1 }
-									}
-								},
-								{
-									$group: {
-										_id: {
-											appId: '$_id.appId',
-											campaignId: '$_id.campaignId',
-											region: '$_id.region'
-										},
-										result: { $push: { k: '$_id.type', v: '$count' } }
-									}
-								},
-								{
-									$group: {
-										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
-										result: {
-											$push: { region: '$_id.region', result: { $arrayToObject: '$result' } }
-										}
-									}
-								},
-								{
-									$group: {
-										_id: '$_id.campaignId',
-										report: { $push: { appId: '$_id.appId', result: '$result' } }
-									}
-								},
-								{ $project: { _id: 0, campaignId: '$_id', report: '$report' } }
-							],
-							typeByLan: [
-								{ $match: { date: date } },
-								{
-									$group: {
-										_id: {
-											campaignId: '$campaignId',
-											type: '$type',
-											appId: '$appId',
-											language: '$language'
-										},
-										count: { $sum: 1 }
-									}
-								},
-								{
-									$group: {
-										_id: {
-											campaignId: '$_id.campaignId',
-											appId: '$_id.appId',
-											language: '$_id.language'
-										},
-										result: { $push: { k: '$_id.type', v: '$count' } }
-									}
-								},
-								{
-									$group: {
-										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
-										result: {
-											$push: { language: '$_id.language', result: { $arrayToObject: '$result' } }
-										}
-									}
-								},
-								{
-									$group: {
-										_id: '$_id.campaignId',
-										report: { $push: { appId: '$_id.appId', result: '$result' } }
-									}
-								},
-								{ $project: { _id: 0, campaignId: '$_id', report: '$report' } }
-							],
-							typeByPhModel: [
-								{ $match: { date: date } },
-								{
-									$group: {
-										_id: {
-											campaignId: '$campaignId',
-											type: '$type',
-											appId: '$appId',
-											phoneMake: '$phoneMake',
-											phoneModel: '$phoneModel'
-										},
-										count: { $sum: 1 }
-									}
-								},
-								{
-									$group: {
-										_id: {
-											campaignId: '$_id.campaignId',
-											appId: '$_id.appId',
-											phoneMake: '$_id.phoneMake',
-											phoneModel: '$_id.phoneModel'
-										},
-										result: { $push: { k: '$_id.type', v: '$count' } }
-									}
-								},
-								{
-									$group: {
-										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
-										result: {
-											$push: {
-												phoneModel: { $concat: [ '$_id.phoneMake', ' - ', '$_id.phoneModel' ] },
-												result: { $arrayToObject: '$result' }
-											}
-										}
-									}
-								},
-								{
-									$group: {
-										_id: '$_id.campaignId',
-										report: { $push: { appId: '$_id.appId', result: '$result' } }
-									}
-								},
-								{ $project: { _id: 0, campaignId: '$_id', report: '$report' } }
-							],
-							typeByPT: [
-								{ $match: { date: date } },
-								{
-									$group: {
-										_id: {
-											campaignId: '$campaignId',
-											type: '$type',
-											appId: '$appId',
-											platformType: '$platformType',
-											osVersion: '$osVersion'
-										},
-										count: { $sum: 1 }
-									}
-								},
-								{
-									$group: {
-										_id: {
-											campaignId: '$_id.campaignId',
-											appId: '$_id.appId',
-											platformType: '$_id.platformType',
-											osVersion: '$_id.osVersion'
-										},
-										result: { $push: { k: '$_id.type', v: '$count' } }
-									}
-								},
-								{
-									$group: {
-										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
-										result: {
-											$push: {
-												platformType: {
-													$concat: [ '$_id.platformType', ' - ', '$_id.osVersion' ]
-												},
-												result: { $arrayToObject: '$result' }
-											}
-										}
-									}
-								},
-								{
-									$group: {
-										_id: '$_id.campaignId',
-										report: { $push: { appId: '$_id.appId', result: '$result' } }
-									}
-								},
-								{ $project: { _id: 0, campaignId: '$_id', report: '$report' } }
-							],
-							typeByPlatform: [
-								{ $match: { date: date } },
-								{
-									$group: {
-										_id: {
-											campaignId: '$campaignId',
-											type: '$type',
-											appId: '$appId',
-											platformType: '$platformType'
-										},
-										count: { $sum: 1 }
-									}
-								},
-								{
-									$group: {
-										_id: {
-											campaignId: '$_id.campaignId',
-											appId: '$_id.appId',
-											platformType: '$_id.platformType'
-										},
-										result: { $push: { k: '$_id.type', v: '$count' } }
-									}
-								},
-								{
-									$group: {
-										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
-										result: {
-											$push: {
-												platformType: '$_id.platformType',
-												result: { $arrayToObject: '$result' }
-											}
-										}
-									}
-								},
-								{
-									$group: {
-										_id: '$_id.campaignId',
-										report: { $push: { appId: '$_id.appId', result: '$result' } }
-									}
-								},
-								{ $project: { _id: 0, campaignId: '$_id', report: '$report' } }
-							],
-							typeByPin: [
-								{ $match: { date: date } },
-								{
-									$group: {
-										_id: { campaignId: '$campaignId', type: '$type', appId: '$appId', zip: '$zip' },
-										count: { $sum: 1 }
-									}
-								},
-								{
-									$group: {
-										_id: { campaignId: '$_id.campaignId', appId: '$_id.appId', zip: '$_id.zip' },
-										result: { $push: { k: '$_id.type', v: '$count' } }
-									}
-								},
-								{
-									$group: {
-										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
-										result: { $push: { zip: '$_id.zip', result: { $arrayToObject: '$result' } } }
-									}
-								},
-								{
-									$group: {
-										_id: '$_id.campaignId',
-										report: { $push: { appId: '$_id.appId', result: '$result' } }
-									}
-								},
-								{ $project: { _id: 0, campaignId: '$_id', report: '$report' } }
-							],
-							typeByDev: [
-								{ $match: { date: date } },
-								{
-									$group: {
-										_id: {
-											campaignId: '$campaignId',
-											type: '$type',
-											appId: '$appId',
-											pptype: '$pptype'
-										},
-										count: { $sum: 1 }
-									}
-								},
-								{
-									$group: {
-										_id: {
-											campaignId: '$_id.campaignId',
-											appId: '$_id.appId',
-											pptype: '$_id.pptype'
-										},
-										result: { $push: { k: '$_id.type', v: '$count' } }
-									}
-								},
-								{
-									$group: {
-										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
-										result: {
-											$push: { pptype: '$_id.pptype', result: { $arrayToObject: '$result' } }
-										}
-									}
-								},
-								{
-									$group: {
-										_id: '$_id.campaignId',
-										report: { $push: { appId: '$_id.appId', result: '$result' } }
-									}
-								},
-								{ $project: { _id: 0, campaignId: '$_id', report: '$report' } }
-							]
-						}
-					}
-				],
-				allowDiskUse: true,
-				cursor: {}
-			})
-			.catch((err) => console.log(err));
-		wholetypelist = wholetypelist.cursor.firstBatch;
-		wholetypelist[0].appIds.map((caompoids) => {
-			var campId = caompoids.campaignId;
-			var repodate = caompoids.date;
-			var uniquedatareq = uniqueuserslist[0];
-			var uniquedataofcamp = uniquedatareq.uniquesumdatawise.filter((x) => x.campaignId === campId);
-			var uniquecountofcamp = 0;
-			uniquedataofcamp.map((dd) => {
-				uniquecountofcamp = dd.unique;
-			});
-			var uniqueregiondatacamp = uniquedatareq.regionwiseunique.filter((x) => x.campaignId === campId);
-			var uniquepindatacamp = uniquedatareq.pinwiseunique.filter((x) => x.campaignId === campId);
-			var uniquelangdatacamp = uniquedatareq.lanwiseunique.filter((x) => x.campaignId === campId);
-			var resdatareq = wholetypelist[0];
-			var impredatacamp = resdatareq.typeValues.filter((x) => x.campaignId === campId);
-			var regiondatacamp = resdatareq.typebyRegion.filter((x) => x.campaignId === campId);
-			var languagedatacamp = resdatareq.typeByLan.filter((x) => x.campaignId === campId);
-			var pindatacamp = resdatareq.typeByPin.filter((x) => x.campaignId === campId);
-			var devicedatacamp = resdatareq.typeByDev.filter((x) => x.campaignId === campId);
-			var phmodatacamp = resdatareq.typeByPhModel.filter((x) => x.campaignId === campId);
-			var plattypedatacamp = resdatareq.typeByPT.filter((x) => x.campaignId === campId);
-			var platformdatacamp = resdatareq.typeByPlatform.filter((x) => x.campaignId === campId);
-			// console.log(pindatacamp[0])
-			caompoids.ids.map((app_id) => {
-				var appIdreq = app_id;
-				var appuniquedata = uniquedataofcamp[0];
-				var appuniquecount = 0;
-				uniquedataofcamp.map((dd) => {
-					appuniquedata = dd.publishdata.filter((x) => x.appId === appIdreq);
-					appuniquecount = appuniquedata[0].uniqueuser;
-				});
-				var uniqueregiondataapp = [];
-				uniqueregiondatacamp.map((dd) => {
-					uniqueregiondataapp = dd.results.filter((x) => x.appId === appIdreq);
-					uniqueregiondataapp = uniqueregiondataapp[0].result;
-				});
-				var uniquepindataapp = [];
-				uniquepindatacamp.map((dd) => {
-					uniquepindataapp = dd.results.filter((x) => x.appId === appIdreq);
-					uniquepindataapp = uniquepindataapp[0].result;
-				});
-				// console.log(typeof uniquepindataapp)
-				var uniquelangdataapp = [];
-				uniquelangdatacamp.map((dd) => {
-					uniquelangdataapp = dd.results.filter((x) => x.appId === appIdreq);
-					uniquelangdataapp = uniquelangdataapp[0].result;
-				});
-				// console.log(uniquelangdataapp)
-				var impressionsapp;
-				var completeapp;
-				var clickapp;
-				var firstqapp;
-				var thirdqapp;
-				var midpointapp;
-				var appimpredata = [];
-				impredatacamp.map((dd) => {
-					appimpredata = dd.report.filter((x) => x.appId === appIdreq);
-					appimpredata = appimpredata[0].result;
-					impressionsapp = appimpredata.impression ? appimpredata.impression : 0;
-					completeapp = appimpredata.complete ? appimpredata.complete : 0;
-					clickapp = appimpredata.click
-						? appimpredata.click
-						: 0 + appimpredata.companionclicktracking
-							? appimpredata.companionclicktracking
-							: 0 + appimpredata.clicktracking ? appimpredata.clicktracking : 0;
-					firstqapp = appimpredata.firstquartile ? appimpredata.firstquartile : 0;
-					thirdqapp = appimpredata.thirdquartile ? appimpredata.thirdquartile : 0;
-					midpointapp = appimpredata.midpoint ? appimpredata.midpoint : 0;
-				});
-				var regiondataapp = [];
-				regiondatacamp.map((dd) => {
-					regiondataapp = dd.report.filter((x) => x.appId === appIdreq);
-					regiondataapp = regiondataapp[0].result;
-					regiondataapp = regiondataapp.map((ad) => {
-						var regionlocal = uniqueregiondataapp.filter((x) => x.region === ad.region);
-						regionlocal.map((mad) => {
-							ad.unique = mad.unique;
-						});
-						return ad;
-					});
-					// console.log(regiondataapp)
-				});
-				var pindataapp = [];
-				pindatacamp.map((dd) => {
-					pindataapp = dd.report.filter((x) => x.appId === appIdreq);
-					pindataapp = pindataapp[0].result;
-					pindataapp = pindataapp.map((ad) => {
-						var pinlocal = uniquepindataapp.filter((x) => x.zip === ad.zip);
-						// console.log(JSON.stringify(pinlocal[0]))
-						pinlocal.map((mad) => {
-							ad.unique = mad.unique;
-						});
-						return ad;
-					});
-					// console.log(pindataapp)
-				});
-				var langdataapp = [];
-				languagedatacamp.map((dd) => {
-					langdataapp = dd.report.filter((x) => x.appId === appIdreq);
-					langdataapp = langdataapp[0].result;
-					langdataapp = langdataapp.map((ad) => {
-						var langlocal = uniquelangdataapp.filter((x) => x.zip === ad.zip);
-						// console.log(JSON.stringify(langlocal[0]))
-						langlocal.map((mad) => {
-							ad.unique = mad.unique;
-						});
-						return ad;
-					});
-					// console.log(langdataapp)
-				});
-				var devicedataapp = [];
-				devicedatacamp.map((dd) => {
-					devicedataapp = dd.report.filter((x) => x.appId === appIdreq);
-					devicedataapp = devicedataapp[0].result;
-					// console.log(devicedataapp)
-				});
-				var phmodataapp = [];
-				phmodatacamp.map((dd) => {
-					phmodataapp = dd.report.filter((x) => x.appId === appIdreq);
-					phmodataapp = phmodataapp[0].result;
-					// console.log(phmodataapp)
-				});
-				var plattypedataapp = [];
-				plattypedatacamp.map((dd) => {
-					plattypedataapp = dd.report.filter((x) => x.appId === appIdreq);
-					plattypedataapp = plattypedataapp[0].result;
-					// console.log(plattypedataapp)
-				});
-				var platformbasedataapp = [];
-				platformdatacamp.map((dd) => {
-					platformbasedataapp = dd.report.filter((x) => x.appId === appIdreq);
-					platformbasedataapp = platformbasedataapp[0].result;
-					// console.log(platformbasedataapp)
-				});
-				const Report = mongoose.model('Report');
-				const report = new Report({
-					date: repodate,
-					Publisher: appIdreq,
-					campaignId: campId,
-					impressions: impressionsapp,
-					firstQuartile: firstqapp,
-					midpoint: midpointapp,
-					thirdQuartile: thirdqapp,
-					complete: completeapp,
-					clicks: clickapp,
-					publishunique: appuniquecount,
-					campunique: uniquecountofcamp,
-					region: regiondataapp,
-					platformtype: plattypedataapp,
-					language: langdataapp,
-					pincode: pindataapp,
-					phoneModel: phmodataapp,
-					phonePlatform: platformbasedataapp,
-					deviceModel: devicedataapp
-				});
-				report.save().then((ree) => console.log('complete')).catch((err) => console.log(err));
-			});
-		});
-	} catch (e) {
-		console.log(e);
-	}
-	// res.json(compr)
-}
-
 cron.schedule('42 00 * * *', function() {
 	PublisherDataRefresher();
 });
@@ -1768,18 +706,42 @@ cron.schedule('55 00 * * *', function() {
 });
 
 cron.schedule('35 00 * * *', function() {
-	var datee = new Date(date).toISOString();
-	var cdatee = new Date(new Date());
 	var cdate, cmonth, cyear;
-	var datee = new Date(date).toISOString();
+	var cdatee = new Date(new Date());
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk2 = `${cyear}-${cmonth}-${cdate}`;
 	cdatee.setDate(cdatee.getDate() - 1);
 	cdate = cdatee.getDate();
 	cdate = cdate < 10 ? '0' + cdate : cdate;
 	cmonth = cdatee.getMonth() + 1;
 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
 	cyear = cdatee.getFullYear();
-	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
-	FrequencyPublisherRefresher(chevk);
+	var chevk = `${cyear}-${cmonth}-${cdate}`;
+	commonfunctions.freqpub(chevk, chevk2);
+});
+
+cron.schedule('30 00 * * *', function() {
+	var cdate, cmonth, cyear;
+	var cdatee = new Date(new Date());
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk2 = `${cyear}-${cmonth}-${cdate}`;
+	cdatee.setDate(cdatee.getDate() - 1);
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk = `${cyear}-${cmonth}-${cdate}`;
+	commonfunctions.freqonlycamp(chevk, chevk2);
+	commonfunctions.freqonlypub(chevk, chevk2);
 });
 
 function arrayincludefinder(array, id) {
@@ -1838,6 +800,7 @@ const publisherwiseConsole = mongoose.model('publisherwiseConsole');
 const frequencyConsole = mongoose.model('frequencyConsole');
 const frequencyreports = mongoose.model('frequencyreports');
 const freqpublishreports = mongoose.model('freqpublishreports');
+const freqpubonreports = mongoose.model('freqpubOnreports');
 const campaignifareports = mongoose.model('campaignifareports');
 const zipreports = mongoose.model('zipreports');
 const zipsumreport = mongoose.model('zipsumreport');
@@ -1898,7 +861,7 @@ async function PublisherConsoleLoaderTypeWise(array, type) {
 			publisherBit.ssp = publisherBit.ssp ? publisherBit.ssp[0] : '';
 			publisherBit.campaignId = publisherBit.campaignId.map((id) => mongoose.Types.ObjectId(id));
 			// console.log(publisherBit.campaignId);
-			const userCount = await freqpublishreports.aggregate([
+			const userCount = await freqpubonreports.aggregate([
 				{ $match: { appId: publisherBit.PublisherSplit, rtbType: type } },
 				{ $group: { _id: null, users: { $sum: '$users' } } }
 			]);
@@ -2019,6 +982,12 @@ const saavnids = [
 	'com.jio.media.jiobeats',
 	'441813332'
 ];
+
+app.get('/publisherdatarefresh', adminauth, (req, res) => {
+	PublisherDataRefresher();
+	res.json('started');
+});
+
 // PublisherDataRefresher();
 async function PublisherDataRefresher() {
 	// let date = new Date(new Date());
@@ -2029,7 +998,7 @@ async function PublisherDataRefresher() {
 	// const date1 = date.getDate();
 	// let yesterday = `${year}-${month}-${date1}`;
 	// console.log('yesterday', yesterday);
-	var datee = new Date('2021-09-05').toISOString();
+	var datee = '2021-11-01';
 	var cdate, cmonth, cyear;
 	var cdatee = new Date(new Date());
 	cdate = cdatee.getDate();
@@ -2345,359 +1314,6 @@ async function FrequencyDataRefresher() {
 	});
 }
 
-app.put('/callfrequencypubliser', adminauth, (req, res) => {
-	const { date } = req.body;
-	var datee = new Date(date).toISOString();
-	FrequencyPublisherRefresher(datee);
-});
-
-app.put('/callfrequencycampaign', adminauth, async (req, res) => {
-	const { date } = req.body;
-	var datee = new Date(date).toISOString();
-	var result = await FrequencyCampaignRefresher(datee);
-	res.json(result);
-});
-
-app.put('/callfrequencycampaign2', adminauth, async (req, res) => {
-	const { date } = req.body;
-	var datee = new Date(date).toISOString();
-	var result = await FrequencyCampaignRefresher2(datee);
-	res.json(result);
-});
-
-// FrequencyPublisherRefresher();
-async function FrequencyPublisherRefresher(datae) {
-	// let date = new Date(new Date());
-	// date.setDate(date.getDate() - 1);
-	// date = new Date(date);
-	// const year = date.getFullYear();
-	// const month = `0${date.getMonth() + 1}`;
-	// const date1 = date.getDate();
-	// let yesterday = `${year}-${month}-${date1}`;
-	// console.log('yesterday', yesterday);
-	var datee = new Date('2021-10-10').toISOString();
-	// var datee = new Date(new Date());
-	// datee.setDate(datee.getDate() - 1);
-	// var date = datee.getDate();
-	// var month = datee.getMonth() + 1;
-	// var year = datee.getFullYear();
-	// console.log(datee.getFullYear(), datee.getMonth() + 1, datee.getDate());
-	// var datee2 = new Date().toISOString();
-	var cdate, cmonth, cyear;
-	var cdatee = new Date(new Date());
-	cdate = cdatee.getDate();
-	cdate = cdate < 10 ? '0' + cdate : cdate;
-	cmonth = cdatee.getMonth() + 1;
-	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
-	cyear = cdatee.getFullYear();
-	var chevk2 = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
-	cdatee.setDate(cdatee.getDate() - 1);
-	cdate = cdatee.getDate();
-	cdate = cdate < 10 ? '0' + cdate : cdate;
-	cmonth = cdatee.getMonth() + 1;
-	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
-	cyear = cdatee.getFullYear();
-	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
-	if (datae) {
-		console.log(datae);
-		chevk = datae;
-	}
-	console.log(datee, chevk, chevk2);
-	// datee2.setDate(datee2.getDate());
-	// var date2 = datee2.getDate();
-	// var month2 = datee2.getMonth() + 1;
-	// var year2 = datee2.getFullYear();
-	// console.log(datee2.getFullYear(), datee2.getMonth() + 1, datee2.getDate());
-	// { $match: { test: yesterday } },
-	const frequency = await campaignifareports
-		.aggregate([
-			{
-				$project: {
-					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-					campaignId: '$campaignId',
-					rtbType: '$rtbType',
-					apppubid: '$apppubid',
-					impression: '$impression',
-					click: '$click'
-				}
-			},
-			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
-			{
-				$group: {
-					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
-					users: { $sum: 1 },
-					impression: { $sum: '$impression' },
-					click: { $sum: '$click' }
-				}
-			}
-		])
-		.catch((err) => console.log(err));
-	console.log(frequency.length);
-	var coo = frequency.length;
-	frequency.forEach(async (frequenct) => {
-		const match = await freqpublishreports.findOne({
-			campaignId: frequenct._id.campaignId,
-			rtbType: frequenct._id.rtbType,
-			appId: frequenct._id.apppubid
-		});
-		if (!match) {
-			const newzip = new freqpublishreports({
-				campaignId: frequenct._id.campaignId,
-				appId: frequenct._id.apppubid,
-				rtbType: frequenct._id.rtbType,
-				impression: frequenct.impression ? frequenct.impression : 0,
-				createdOn: chevk2,
-				click: frequenct.click ? frequenct.click : 0,
-				users: frequenct.users ? frequenct.users : 0
-			});
-			await newzip.save().catch((err) => console.log(err));
-			console.log('created', coo--);
-		} else {
-			if (match.createdOn === chevk2) {
-				console.log('Already Done', coo--);
-			} else {
-				match.impression += frequenct.impressions ? frequenct.impressions : 0;
-				match.click += frequenct.click ? frequenct.click : 0;
-				match.users += frequenct.users ? frequenct.users : 0;
-				match.createdOn = chevk2;
-				match
-					.save()
-					.then((ss) => {
-						console.log('updated', coo--);
-					})
-					.catch((err) => console.log(err));
-			}
-		}
-	});
-}
-
-// FrequencyPublisherRefresher();
-async function FrequencyCampaignRefresher(datae) {
-	// let date = new Date(new Date());
-	// date.setDate(date.getDate() - 1);
-	// date = new Date(date);
-	// const year = date.getFullYear();
-	// const month = `0${date.getMonth() + 1}`;
-	// const date1 = date.getDate();
-	// let yesterday = `${year}-${month}-${date1}`;
-	// console.log('yesterday', yesterday);
-	var datee = new Date('2021-10-10').toISOString();
-	// var datee = new Date(new Date());
-	// datee.setDate(datee.getDate() - 1);
-	// var date = datee.getDate();
-	// var month = datee.getMonth() + 1;
-	// var year = datee.getFullYear();
-	// console.log(datee.getFullYear(), datee.getMonth() + 1, datee.getDate());
-	// var datee2 = new Date().toISOString();
-	var cdate, cmonth, cyear;
-	var cdatee = new Date(new Date());
-	cdate = cdatee.getDate();
-	cdate = cdate < 10 ? '0' + cdate : cdate;
-	cmonth = cdatee.getMonth() + 1;
-	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
-	cyear = cdatee.getFullYear();
-	var chevk2 = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
-	cdatee.setDate(cdatee.getDate() - 1);
-	cdate = cdatee.getDate();
-	cdate = cdate < 10 ? '0' + cdate : cdate;
-	cmonth = cdatee.getMonth() + 1;
-	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
-	cyear = cdatee.getFullYear();
-	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
-	if (datae) {
-		console.log(datae);
-		chevk = datae;
-	}
-	console.log(datee, chevk, chevk2);
-	// datee2.setDate(datee2.getDate());
-	// var date2 = datee2.getDate();
-	// var month2 = datee2.getMonth() + 1;
-	// var year2 = datee2.getFullYear();
-	// console.log(datee2.getFullYear(), datee2.getMonth() + 1, datee2.getDate());
-	// { $match: { test: yesterday } },
-	const frequency = await campaignifareports
-		.aggregate([
-			{
-				$project: {
-					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-					campaignId: '$campaignId',
-					rtbType: '$rtbType',
-					ifa: '$ifa',
-					apppubid: '$apppubid'
-				}
-			},
-			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
-			{
-				$group: {
-					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
-					ifa: { $addToSet: '$ifa' }
-				}
-			},
-			{
-				$unwind: '$ifa'
-			},
-			{
-				$group: {
-					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
-					users: { $sum: 1 }
-				}
-			}
-		])
-		.allowDiskUse(true)
-		.catch((err) => console.log(err));
-	console.log(frequency.length);
-	console.log(frequency);
-	var coo = frequency.length;
-	return coo;
-	// frequency.forEach(async (frequenct) => {
-	// 	const match = await freqpublishreports.findOne({
-	// 		campaignId: frequenct._id.campaignId,
-	// 		rtbType: frequenct._id.rtbType,
-	// 		appId: frequenct._id.apppubid
-	// 	});
-	// 	if (!match) {
-	// 		const newzip = new freqpublishreports({
-	// 			campaignId: frequenct._id.campaignId,
-	// 			appId: frequenct._id.apppubid,
-	// 			rtbType: frequenct._id.rtbType,
-	// 			impression: frequenct.impression ? frequenct.impression : 0,
-	// 			createdOn: chevk2,
-	// 			click: frequenct.click ? frequenct.click : 0,
-	// 			users: frequenct.users ? frequenct.users : 0
-	// 		});
-	// 		await newzip.save().catch((err) => console.log(err));
-	// 		console.log('created', coo--);
-	// 	} else {
-	// 		if (match.createdOn === chevk2) {
-	// 			console.log('Already Done', coo--);
-	// 		} else {
-	// 			match.impression += frequenct.impressions ? frequenct.impressions : 0;
-	// 			match.click += frequenct.click ? frequenct.click : 0;
-	// 			match.users += frequenct.users ? frequenct.users : 0;
-	// 			match.createdOn = chevk2;
-	// 			match
-	// 				.save()
-	// 				.then((ss) => {
-	// 					console.log('updated', coo--);
-	// 				})
-	// 				.catch((err) => console.log(err));
-	// 		}
-	// 	}
-	// });
-}
-
-// var dataData = FrequencyCampaignRefresher2('2021-10-10');
-// console.log(dataData);
-async function FrequencyCampaignRefresher2(datae) {
-	// let date = new Date(new Date());
-	// date.setDate(date.getDate() - 1);
-	// date = new Date(date);
-	// const year = date.getFullYear();
-	// const month = `0${date.getMonth() + 1}`;
-	// const date1 = date.getDate();
-	// let yesterday = `${year}-${month}-${date1}`;
-	// console.log('yesterday', yesterday);
-	var datee = new Date('2021-10-10').toISOString();
-	// var datee = new Date(new Date());
-	// datee.setDate(datee.getDate() - 1);
-	// var date = datee.getDate();
-	// var month = datee.getMonth() + 1;
-	// var year = datee.getFullYear();
-	// console.log(datee.getFullYear(), datee.getMonth() + 1, datee.getDate());
-	// var datee2 = new Date().toISOString();
-	var cdate, cmonth, cyear;
-	var cdatee = new Date(new Date());
-	cdate = cdatee.getDate();
-	cdate = cdate < 10 ? '0' + cdate : cdate;
-	cmonth = cdatee.getMonth() + 1;
-	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
-	cyear = cdatee.getFullYear();
-	var chevk2 = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
-	cdatee.setDate(cdatee.getDate() - 1);
-	cdate = cdatee.getDate();
-	cdate = cdate < 10 ? '0' + cdate : cdate;
-	cmonth = cdatee.getMonth() + 1;
-	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
-	cyear = cdatee.getFullYear();
-	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
-	if (datae) {
-		console.log(datae);
-		chevk = datae;
-	}
-	console.log(datee, chevk, chevk2);
-	// datee2.setDate(datee2.getDate());
-	// var date2 = datee2.getDate();
-	// var month2 = datee2.getMonth() + 1;
-	// var year2 = datee2.getFullYear();
-	// console.log(datee2.getFullYear(), datee2.getMonth() + 1, datee2.getDate());
-	// { $match: { test: yesterday } },
-	const frequency = await campaignifareports
-		.aggregate([
-			{
-				$project: {
-					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-					campaignId: '$campaignId',
-					rtbType: '$rtbType',
-					ifa: '$ifa',
-					apppubid: '$apppubid'
-				}
-			},
-			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
-			{
-				$group: {
-					_id: { ifa: '$ifa', campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' }
-				}
-			},
-			{
-				$group: {
-					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
-					users: { $sum: 1 }
-				}
-			}
-		])
-		.allowDiskUse(true)
-		.catch((err) => console.log(err));
-	console.log(frequency.length);
-	console.log(frequency);
-	var coo = frequency.length;
-	return coo;
-	// frequency.forEach(async (frequenct) => {
-	// 	const match = await freqpublishreports.findOne({
-	// 		campaignId: frequenct._id.campaignId,
-	// 		rtbType: frequenct._id.rtbType,
-	// 		appId: frequenct._id.apppubid
-	// 	});
-	// 	if (!match) {
-	// 		const newzip = new freqpublishreports({
-	// 			campaignId: frequenct._id.campaignId,
-	// 			appId: frequenct._id.apppubid,
-	// 			rtbType: frequenct._id.rtbType,
-	// 			impression: frequenct.impression ? frequenct.impression : 0,
-	// 			createdOn: chevk2,
-	// 			click: frequenct.click ? frequenct.click : 0,
-	// 			users: frequenct.users ? frequenct.users : 0
-	// 		});
-	// 		await newzip.save().catch((err) => console.log(err));
-	// 		console.log('created', coo--);
-	// 	} else {
-	// 		if (match.createdOn === chevk2) {
-	// 			console.log('Already Done', coo--);
-	// 		} else {
-	// 			match.impression += frequenct.impressions ? frequenct.impressions : 0;
-	// 			match.click += frequenct.click ? frequenct.click : 0;
-	// 			match.users += frequenct.users ? frequenct.users : 0;
-	// 			match.createdOn = chevk2;
-	// 			match
-	// 				.save()
-	// 				.then((ss) => {
-	// 					console.log('updated', coo--);
-	// 				})
-	// 				.catch((err) => console.log(err));
-	// 		}
-	// 	}
-	// });
-}
-
 // pincodesumreport();
 async function pincodesumreport() {
 	var datee = '2021-07-01';
@@ -2791,16 +1407,369 @@ async function pincodesumreport() {
 		.catch((err) => console.log(err));
 }
 
-const removeDuplicates = (inputArray) => {
-	const ids = [];
-	return inputArray.reduce((sum, element) => {
-		if (!ids.includes(element.toString())) {
-			sum.push(element);
-			ids.push(element.toString());
-		}
-		return sum;
-	}, []);
-};
+// app.put('/callfrequencypubliser', adminauth, (req, res) => {
+// 	const { date } = req.body;
+// 	var datee = new Date(date).toISOString();
+// 	FrequencyPublisherRefresher(datee);
+// });
+
+// app.put('/callfrequencycampaign', adminauth, async (req, res) => {
+// 	const { date } = req.body;
+// 	var datee = new Date(date).toISOString();
+// 	var result = await FrequencyCampaignRefresher(datee);
+// 	res.json(result);
+// });
+
+// app.put('/callfrequencycampaign2', adminauth, async (req, res) => {
+// 	const { date } = req.body;
+// 	var datee = new Date(date).toISOString();
+// 	var result = await FrequencyCampaignRefresher2(datee);
+// 	res.json(result);
+// });
+
+// // FrequencyPublisherRefresher();
+// async function FrequencyPublisherRefresher(datae) {
+// 	// let date = new Date(new Date());
+// 	// date.setDate(date.getDate() - 1);
+// 	// date = new Date(date);
+// 	// const year = date.getFullYear();
+// 	// const month = `0${date.getMonth() + 1}`;
+// 	// const date1 = date.getDate();
+// 	// let yesterday = `${year}-${month}-${date1}`;
+// 	// console.log('yesterday', yesterday);
+// 	var datee = new Date('2021-10-10').toISOString();
+// 	// var datee = new Date(new Date());
+// 	// datee.setDate(datee.getDate() - 1);
+// 	// var date = datee.getDate();
+// 	// var month = datee.getMonth() + 1;
+// 	// var year = datee.getFullYear();
+// 	// console.log(datee.getFullYear(), datee.getMonth() + 1, datee.getDate());
+// 	// var datee2 = new Date().toISOString();
+// 	var cdate, cmonth, cyear;
+// 	var cdatee = new Date(new Date());
+// 	cdate = cdatee.getDate();
+// 	cdate = cdate < 10 ? '0' + cdate : cdate;
+// 	cmonth = cdatee.getMonth() + 1;
+// 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+// 	cyear = cdatee.getFullYear();
+// 	var chevk2 = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+// 	cdatee.setDate(cdatee.getDate() - 1);
+// 	cdate = cdatee.getDate();
+// 	cdate = cdate < 10 ? '0' + cdate : cdate;
+// 	cmonth = cdatee.getMonth() + 1;
+// 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+// 	cyear = cdatee.getFullYear();
+// 	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+// 	if (datae) {
+// 		console.log(datae);
+// 		chevk = datae;
+// 	}
+// 	console.log(datee, chevk, chevk2);
+// 	// datee2.setDate(datee2.getDate());
+// 	// var date2 = datee2.getDate();
+// 	// var month2 = datee2.getMonth() + 1;
+// 	// var year2 = datee2.getFullYear();
+// 	// console.log(datee2.getFullYear(), datee2.getMonth() + 1, datee2.getDate());
+// 	// { $match: { test: yesterday } },
+// 	const frequency = await campaignifareports
+// 		.aggregate([
+// 			{
+// 				$project: {
+// 					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+// 					campaignId: '$campaignId',
+// 					rtbType: '$rtbType',
+// 					apppubid: '$apppubid',
+// 					impression: '$impression',
+// 					click: '$click'
+// 				}
+// 			},
+// 			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+// 			{
+// 				$group: {
+// 					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
+// 					users: { $sum: 1 },
+// 					impression: { $sum: '$impression' },
+// 					click: { $sum: '$click' }
+// 				}
+// 			}
+// 		])
+// 		.catch((err) => console.log(err));
+// 	console.log(frequency.length);
+// 	var coo = frequency.length;
+// 	frequency.forEach(async (frequenct) => {
+// 		const match = await freqpublishreports.findOne({
+// 			campaignId: frequenct._id.campaignId,
+// 			rtbType: frequenct._id.rtbType,
+// 			appId: frequenct._id.apppubid
+// 		});
+// 		if (!match) {
+// 			const newzip = new freqpublishreports({
+// 				campaignId: frequenct._id.campaignId,
+// 				appId: frequenct._id.apppubid,
+// 				rtbType: frequenct._id.rtbType,
+// 				impression: frequenct.impression ? frequenct.impression : 0,
+// 				createdOn: chevk2,
+// 				click: frequenct.click ? frequenct.click : 0,
+// 				users: frequenct.users ? frequenct.users : 0
+// 			});
+// 			await newzip.save().catch((err) => console.log(err));
+// 			console.log('created', coo--);
+// 		} else {
+// 			if (match.createdOn === chevk2) {
+// 				console.log('Already Done', coo--);
+// 			} else {
+// 				match.impression += frequenct.impressions ? frequenct.impressions : 0;
+// 				match.click += frequenct.click ? frequenct.click : 0;
+// 				match.users += frequenct.users ? frequenct.users : 0;
+// 				match.createdOn = chevk2;
+// 				match
+// 					.save()
+// 					.then((ss) => {
+// 						console.log('updated', coo--);
+// 					})
+// 					.catch((err) => console.log(err));
+// 			}
+// 		}
+// 	});
+// }
+
+// // FrequencyPublisherRefresher();
+// async function FrequencyCampaignRefresher(datae) {
+// 	// let date = new Date(new Date());
+// 	// date.setDate(date.getDate() - 1);
+// 	// date = new Date(date);
+// 	// const year = date.getFullYear();
+// 	// const month = `0${date.getMonth() + 1}`;
+// 	// const date1 = date.getDate();
+// 	// let yesterday = `${year}-${month}-${date1}`;
+// 	// console.log('yesterday', yesterday);
+// 	var datee = new Date('2021-10-10').toISOString();
+// 	// var datee = new Date(new Date());
+// 	// datee.setDate(datee.getDate() - 1);
+// 	// var date = datee.getDate();
+// 	// var month = datee.getMonth() + 1;
+// 	// var year = datee.getFullYear();
+// 	// console.log(datee.getFullYear(), datee.getMonth() + 1, datee.getDate());
+// 	// var datee2 = new Date().toISOString();
+// 	var cdate, cmonth, cyear;
+// 	var cdatee = new Date(new Date());
+// 	cdate = cdatee.getDate();
+// 	cdate = cdate < 10 ? '0' + cdate : cdate;
+// 	cmonth = cdatee.getMonth() + 1;
+// 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+// 	cyear = cdatee.getFullYear();
+// 	var chevk2 = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+// 	cdatee.setDate(cdatee.getDate() - 1);
+// 	cdate = cdatee.getDate();
+// 	cdate = cdate < 10 ? '0' + cdate : cdate;
+// 	cmonth = cdatee.getMonth() + 1;
+// 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+// 	cyear = cdatee.getFullYear();
+// 	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+// 	if (datae) {
+// 		console.log(datae);
+// 		chevk = datae;
+// 	}
+// 	console.log(datee, chevk, chevk2);
+// 	// datee2.setDate(datee2.getDate());
+// 	// var date2 = datee2.getDate();
+// 	// var month2 = datee2.getMonth() + 1;
+// 	// var year2 = datee2.getFullYear();
+// 	// console.log(datee2.getFullYear(), datee2.getMonth() + 1, datee2.getDate());
+// 	// { $match: { test: yesterday } },
+// 	const frequency = await campaignifareports
+// 		.aggregate([
+// 			{
+// 				$project: {
+// 					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+// 					campaignId: '$campaignId',
+// 					rtbType: '$rtbType',
+// 					ifa: '$ifa',
+// 					apppubid: '$apppubid'
+// 				}
+// 			},
+// 			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+// 			{
+// 				$group: {
+// 					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
+// 					ifa: { $addToSet: '$ifa' }
+// 				}
+// 			},
+// 			{
+// 				$unwind: '$ifa'
+// 			},
+// 			{
+// 				$group: {
+// 					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
+// 					users: { $sum: 1 }
+// 				}
+// 			}
+// 		])
+// 		.allowDiskUse(true)
+// 		.catch((err) => console.log(err));
+// 	console.log(frequency.length);
+// 	console.log(frequency);
+// 	var coo = frequency.length;
+// 	return coo;
+// 	// frequency.forEach(async (frequenct) => {
+// 	// 	const match = await freqpublishreports.findOne({
+// 	// 		campaignId: frequenct._id.campaignId,
+// 	// 		rtbType: frequenct._id.rtbType,
+// 	// 		appId: frequenct._id.apppubid
+// 	// 	});
+// 	// 	if (!match) {
+// 	// 		const newzip = new freqpublishreports({
+// 	// 			campaignId: frequenct._id.campaignId,
+// 	// 			appId: frequenct._id.apppubid,
+// 	// 			rtbType: frequenct._id.rtbType,
+// 	// 			impression: frequenct.impression ? frequenct.impression : 0,
+// 	// 			createdOn: chevk2,
+// 	// 			click: frequenct.click ? frequenct.click : 0,
+// 	// 			users: frequenct.users ? frequenct.users : 0
+// 	// 		});
+// 	// 		await newzip.save().catch((err) => console.log(err));
+// 	// 		console.log('created', coo--);
+// 	// 	} else {
+// 	// 		if (match.createdOn === chevk2) {
+// 	// 			console.log('Already Done', coo--);
+// 	// 		} else {
+// 	// 			match.impression += frequenct.impressions ? frequenct.impressions : 0;
+// 	// 			match.click += frequenct.click ? frequenct.click : 0;
+// 	// 			match.users += frequenct.users ? frequenct.users : 0;
+// 	// 			match.createdOn = chevk2;
+// 	// 			match
+// 	// 				.save()
+// 	// 				.then((ss) => {
+// 	// 					console.log('updated', coo--);
+// 	// 				})
+// 	// 				.catch((err) => console.log(err));
+// 	// 		}
+// 	// 	}
+// 	// });
+// }
+
+// // var dataData = FrequencyCampaignRefresher2('2021-10-10');
+// // console.log(dataData);
+// async function FrequencyCampaignRefresher2(datae) {
+// 	// let date = new Date(new Date());
+// 	// date.setDate(date.getDate() - 1);
+// 	// date = new Date(date);
+// 	// const year = date.getFullYear();
+// 	// const month = `0${date.getMonth() + 1}`;
+// 	// const date1 = date.getDate();
+// 	// let yesterday = `${year}-${month}-${date1}`;
+// 	// console.log('yesterday', yesterday);
+// 	var datee = new Date('2021-10-10').toISOString();
+// 	// var datee = new Date(new Date());
+// 	// datee.setDate(datee.getDate() - 1);
+// 	// var date = datee.getDate();
+// 	// var month = datee.getMonth() + 1;
+// 	// var year = datee.getFullYear();
+// 	// console.log(datee.getFullYear(), datee.getMonth() + 1, datee.getDate());
+// 	// var datee2 = new Date().toISOString();
+// 	var cdate, cmonth, cyear;
+// 	var cdatee = new Date(new Date());
+// 	cdate = cdatee.getDate();
+// 	cdate = cdate < 10 ? '0' + cdate : cdate;
+// 	cmonth = cdatee.getMonth() + 1;
+// 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+// 	cyear = cdatee.getFullYear();
+// 	var chevk2 = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+// 	cdatee.setDate(cdatee.getDate() - 1);
+// 	cdate = cdatee.getDate();
+// 	cdate = cdate < 10 ? '0' + cdate : cdate;
+// 	cmonth = cdatee.getMonth() + 1;
+// 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+// 	cyear = cdatee.getFullYear();
+// 	var chevk = `${cyear}-${cmonth}-${cdate}T00:00:00.000Z`;
+// 	if (datae) {
+// 		console.log(datae);
+// 		chevk = datae;
+// 	}
+// 	console.log(datee, chevk, chevk2);
+// 	// datee2.setDate(datee2.getDate());
+// 	// var date2 = datee2.getDate();
+// 	// var month2 = datee2.getMonth() + 1;
+// 	// var year2 = datee2.getFullYear();
+// 	// console.log(datee2.getFullYear(), datee2.getMonth() + 1, datee2.getDate());
+// 	// { $match: { test: yesterday } },
+// 	const frequency = await campaignifareports
+// 		.aggregate([
+// 			{
+// 				$project: {
+// 					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+// 					campaignId: '$campaignId',
+// 					rtbType: '$rtbType',
+// 					ifa: '$ifa',
+// 					apppubid: '$apppubid'
+// 				}
+// 			},
+// 			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+// 			{
+// 				$group: {
+// 					_id: { ifa: '$ifa', campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' }
+// 				}
+// 			},
+// 			{
+// 				$group: {
+// 					_id: { campaignId: '$campaignId', rtbType: '$rtbType', apppubid: '$apppubid' },
+// 					users: { $sum: 1 }
+// 				}
+// 			}
+// 		])
+// 		.allowDiskUse(true)
+// 		.catch((err) => console.log(err));
+// 	console.log(frequency.length);
+// 	console.log(frequency);
+// 	var coo = frequency.length;
+// 	return coo;
+// 	// frequency.forEach(async (frequenct) => {
+// 	// 	const match = await freqpublishreports.findOne({
+// 	// 		campaignId: frequenct._id.campaignId,
+// 	// 		rtbType: frequenct._id.rtbType,
+// 	// 		appId: frequenct._id.apppubid
+// 	// 	});
+// 	// 	if (!match) {
+// 	// 		const newzip = new freqpublishreports({
+// 	// 			campaignId: frequenct._id.campaignId,
+// 	// 			appId: frequenct._id.apppubid,
+// 	// 			rtbType: frequenct._id.rtbType,
+// 	// 			impression: frequenct.impression ? frequenct.impression : 0,
+// 	// 			createdOn: chevk2,
+// 	// 			click: frequenct.click ? frequenct.click : 0,
+// 	// 			users: frequenct.users ? frequenct.users : 0
+// 	// 		});
+// 	// 		await newzip.save().catch((err) => console.log(err));
+// 	// 		console.log('created', coo--);
+// 	// 	} else {
+// 	// 		if (match.createdOn === chevk2) {
+// 	// 			console.log('Already Done', coo--);
+// 	// 		} else {
+// 	// 			match.impression += frequenct.impressions ? frequenct.impressions : 0;
+// 	// 			match.click += frequenct.click ? frequenct.click : 0;
+// 	// 			match.users += frequenct.users ? frequenct.users : 0;
+// 	// 			match.createdOn = chevk2;
+// 	// 			match
+// 	// 				.save()
+// 	// 				.then((ss) => {
+// 	// 					console.log('updated', coo--);
+// 	// 				})
+// 	// 				.catch((err) => console.log(err));
+// 	// 		}
+// 	// 	}
+// 	// });
+// }
+
+// const removeDuplicates = (inputArray) => {
+// 	const ids = [];
+// 	return inputArray.reduce((sum, element) => {
+// 		if (!ids.includes(element.toString())) {
+// 			sum.push(element);
+// 			ids.push(element.toString());
+// 		}
+// 		return sum;
+// 	}, []);
+// };
 // const saavnids = [
 // 	'22308',
 // 	'22310',
@@ -2814,583 +1783,583 @@ const removeDuplicates = (inputArray) => {
 // 	'441813332'
 // ];
 
-const musicids = [
-	'13698',
-	'18880',
-	'jiosaavn',
-	'18878',
-	'22308',
-	'22310',
-	'11726',
-	'845083955',
-	'585270521',
-	'441813332',
-	'172101100',
-	'172101600',
-	'324684580',
-	'com.gaana',
-	'com.jio.media.jiobeats',
-	'com.spotify.music',
-	'com.bsbportal.music',
-	'5d3f052e979a1c2391016c04',
-	'5efac6f9aeeeb92b8a1ee056',
-	'5c0a3f024a6c1355afaffabc',
-	'5a1e46beeb993dc67979412e',
-	'5b2210af504f3097e73e0d8b',
-	'5adeeb79cf7a7e3e5d822106',
-	'5d10c405844dd970bf41e2af'
-];
+// const musicids = [
+// 	'13698',
+// 	'18880',
+// 	'jiosaavn',
+// 	'18878',
+// 	'22308',
+// 	'22310',
+// 	'11726',
+// 	'845083955',
+// 	'585270521',
+// 	'441813332',
+// 	'172101100',
+// 	'172101600',
+// 	'324684580',
+// 	'com.gaana',
+// 	'com.jio.media.jiobeats',
+// 	'com.spotify.music',
+// 	'com.bsbportal.music',
+// 	'5d3f052e979a1c2391016c04',
+// 	'5efac6f9aeeeb92b8a1ee056',
+// 	'5c0a3f024a6c1355afaffabc',
+// 	'5a1e46beeb993dc67979412e',
+// 	'5b2210af504f3097e73e0d8b',
+// 	'5adeeb79cf7a7e3e5d822106',
+// 	'5d10c405844dd970bf41e2af'
+// ];
 
-function remove_duplicates_arrayobject(gotarray, unique) {
-	var obj = {};
-	var array = gotarray;
-	// console.log(array)
-	for (var i = 0, len = array.length; i < len; i++) obj[array[i][unique]] = array[i];
+// function remove_duplicates_arrayobject(gotarray, unique) {
+// 	var obj = {};
+// 	var array = gotarray;
+// 	// console.log(array)
+// 	for (var i = 0, len = array.length; i < len; i++) obj[array[i][unique]] = array[i];
 
-	array = new Array();
-	for (var key in obj) array.push(obj[key]);
+// 	array = new Array();
+// 	for (var key in obj) array.push(obj[key]);
 
-	return array;
-}
+// 	return array;
+// }
 
-const idfindspilter = async (respo, onDemand, podcast, audio, display, video, musicapps) => {
-	// const { adtitle, onDemand, podcast, audio, display, video, musicapps } = req.body;
-	var data;
-	data = respo.length && respo[0];
-	if (data) {
-		var ids =
-			typeof campaignId !== 'undefined' && typeof campaignId !== 'string' && typeof campaignId !== 'object'
-				? data.id.map((id) => mongoose.Types.ObjectId(id))
-				: data.id;
-		let id_spliter = await adsetting
-			.find({ campaignId: { $in: ids } }, { campaignId: 1, type: 1, targetImpression: 1 })
-			.catch((err) => console.log(err));
-		data.ids = {
-			onDemand: [],
-			podcast: [],
-			musicapps: [],
-			audio: [],
-			subimpression: { dem: 0, mus: 0, pod: 0 },
-			audimpression: 0,
-			display: [],
-			disimpression: 0,
-			video: [],
-			vidimpression: 0
-		};
-		data.ids['combined'] = ids;
-		// data.TargetImpressions = [ ...new Set(data.TargetImpressions) ];
-		id_spliter = remove_duplicates_arrayobject(id_spliter, 'campaignId');
-		var ids_cam = [];
-		id_spliter.map((x) => {
-			if (x.campaignId) ids_cam.push(x.campaignId.toString());
-		});
-		var left_cam = arr_diff(data.id, ids_cam);
-		if (left_cam && left_cam.length) {
-			await left_cam.map((id) => data.ids.audio.push(id));
-			// data.ids.audio = [ ...new Set(data.ids.audio) ];
-			data.ids.audio = removeDuplicates(data.ids.audio);
-			// data.ids.audio = [ ...new Set(data.ids.audio) ];
-		}
-		if (id_spliter.length) {
-			var audioids = id_spliter.filter((x) => x.type === 'audio');
-			audioids.map((x) => {
-				data.ids.audio.push(x.campaignId.toString());
-				data.ids.audimpression += parseInt(x.targetImpression);
-			});
-			data.ids.audio = [ ...new Set(data.ids.audio) ];
-			if (!(onDemand === podcast && onDemand === musicapps)) {
-				// var dads = { onDemand: [], podcast: [], musicapps: [] };
-				const outcome = await idsreturnspliter(data.ids.audio);
-				data.ids.onDemand = outcome.dem;
-				data.ids.podcast = outcome.pod;
-				data.ids['musicapps'] = outcome.mus;
-				if (data.ids.onDemand.length) {
-					var dataonDem = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.onDemand));
-					dataonDem.map((im) => {
-						data.ids.subimpression.dem += parseInt(im.targetImpression);
-					});
-				}
-				if (data.ids.podcast.length) {
-					var datapodcast = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.podcast));
-					datapodcast.map((im) => {
-						data.ids.subimpression.pod += parseInt(im.targetImpression);
-					});
-				}
-				if (data.ids.musicapps.length) {
-					var datamusic = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.musicapps));
-					datamusic.map((im) => {
-						data.ids.subimpression.mus += parseInt(im.targetImpression);
-					});
-				}
-				// data.ids['new'] = outcome;
-			}
-			var displayids = id_spliter.filter((x) => x.type === 'display');
-			displayids.map((x) => {
-				data.ids.display.push(x.campaignId.toString());
-				data.ids.disimpression += parseInt(x.targetImpression);
-			});
-			data.ids.display = [ ...new Set(data.ids.display) ];
-			var videoids = id_spliter.filter((x) => x.type === 'video');
-			videoids.map((x) => {
-				data.ids.video.push(x.campaignId.toString());
-				data.ids.vidimpression += parseInt(x.targetImpression);
-			});
-			data.ids.video = [ ...new Set(data.ids.video) ];
-		} else {
-			if (ids && ids.length) {
-				data.ids.audio = ids;
-				var dattarget = data.TargetImpressions && data.TargetImpressions.length ? data.TargetImpressions : [];
-				dattarget.map((ar) => {
-					data.ids.audimpression += parseInt(ar.TR);
-				});
-			}
-		}
-		// var resstartDate = [].concat.apply([], data.startDate);
-		// resstartDate = [ ...new Set(resstartDate) ];
-		// data.startDate = resstartDate;
-		// var resendDate = [].concat.apply([], data.endDate);
-		// resendDate = [ ...new Set(resendDate) ];
-		// data.endDate = resendDate;
-		// data.splendid = id_spliter
-		// var tottar = 0;
-		// data.TargetImpressions.forEach(num=> tottar += parseInt(num))
-		// data.TargetImpressions = tottar
-		// res.json(data);
-		// console.log(data);
-		// return data;
-		var dass = [];
-		var puller = {};
-		var pullerData = {};
-		pullerData['complete'] = {
-			target: 0,
-			clicks: 0,
-			clicks1: 0,
-			complete: 0,
-			firstQuartile: 0,
-			impressions: 0,
-			midpoint: 0,
-			ltr: 0,
-			start: 0,
-			thirdQuartile: 0,
-			updatedAt: []
-		};
-		if (audio) {
-			dass.push(audio);
-			if (puller[audio]) {
-				data.ids.audio.map((x) => puller[audio].push(x));
-				// puller[`${audio}target`] += data.ids.audimpression;
-				pullerData[`complete`].target += data.ids.audimpression;
-			} else {
-				puller[audio] = [];
-				// puller[`${audio}target`] = 0;
-				// puller[`${audio}target`] += data.ids.audimpression;
-				pullerData[`complete`].target += data.ids.audimpression;
-				data.ids.audio.map((x) => puller[audio].push(x));
-			}
-		}
-		if (!(onDemand === podcast && onDemand === musicapps)) {
-			if (onDemand) {
-				dass.push(onDemand);
-				if (puller[onDemand]) {
-					data.ids.onDemand.map((x) => puller[onDemand].push(x));
-					pullerData[`complete`].target += data.ids.subimpression.dem;
-					// puller[`${onDemand}target`] += data.ids.subimpression.dem;
-				} else {
-					puller[onDemand] = [];
-					// puller[`${onDemand}target`] = 0;
-					pullerData[`complete`].target += data.ids.subimpression.dem;
-					// puller[`${onDemand}target`] += data.ids.subimpression.dem;
-					data.ids.onDemand.map((x) => puller[onDemand].push(x));
-				}
-			}
-			if (podcast) {
-				dass.push(podcast);
-				if (puller[podcast]) {
-					data.ids.podcast.map((x) => puller[podcast].push(x));
-					pullerData[`complete`].target += data.ids.subimpression.pod;
-					// puller[`${podcast}target`] += data.ids.subimpression.pod;
-				} else {
-					puller[podcast] = [];
-					// puller[`${podcast}target`] = 0;
-					pullerData[`complete`].target += data.ids.subimpression.pod;
-					// puller[`${podcast}target`] += data.ids.subimpression.pod;
-					data.ids.podcast.map((x) => puller[podcast].push(x));
-				}
-			}
-			if (musicapps) {
-				dass.push(musicapps);
-				if (puller[musicapps]) {
-					data.ids.musicapps.map((x) => puller[musicapps].push(x));
-					pullerData[`complete`].target += data.ids.subimpression.mus;
-					// puller[`${musicapps}target`] += data.ids.subimpression.mus;
-				} else {
-					puller[musicapps] = [];
-					// puller[`${musicapps}target`] = 0;
-					pullerData[`complete`].target += data.ids.subimpression.mus;
-					// puller[`${musicapps}target`] += data.ids.subimpression.mus;
-					data.ids.musicapps.map((x) => puller[musicapps].push(x));
-				}
-			}
-		}
-		if (display) {
-			dass.push(display);
-			if (puller[display]) {
-				data.ids.display.map((x) => puller[display].push(x));
-				pullerData[`complete`].target += data.ids.disimpression;
-				// puller[`${display}target`] += data.ids.disimpression;
-			} else {
-				puller[display] = [];
-				// puller[`${display}target`] = 0;
-				pullerData[`complete`].target += data.ids.disimpression;
-				// puller[`${display}target`] += data.ids.disimpression;
-				data.ids.display.map((x) => puller[display].push(x));
-			}
-		}
-		if (video) {
-			dass.push(video);
-			if (puller[video]) {
-				data.ids.video.map((x) => puller[video].push(x));
-				pullerData[`complete`].target += data.ids.vidimpression;
-				// puller[`${video}target`] += data.ids.vidimpression;
-			} else {
-				puller[video] = [];
-				// puller[`${video}target`] = 0;
-				// puller[`${video}target`] += data.ids.vidimpression;
-				pullerData[`complete`].target += data.ids.vidimpression;
-				data.ids.video.map((x) => puller[video].push(x));
-			}
-		}
-		dass = [ ...new Set(dass) ];
-		puller['das'] = dass;
-		return puller;
-	} else {
-		console.log(respo);
-		return 'error';
-		// res.status(422).json({ error: 'somthing went wrong try again' });
-	}
-};
+// const idfindspilter = async (respo, onDemand, podcast, audio, display, video, musicapps) => {
+// 	// const { adtitle, onDemand, podcast, audio, display, video, musicapps } = req.body;
+// 	var data;
+// 	data = respo.length && respo[0];
+// 	if (data) {
+// 		var ids =
+// 			typeof campaignId !== 'undefined' && typeof campaignId !== 'string' && typeof campaignId !== 'object'
+// 				? data.id.map((id) => mongoose.Types.ObjectId(id))
+// 				: data.id;
+// 		let id_spliter = await adsetting
+// 			.find({ campaignId: { $in: ids } }, { campaignId: 1, type: 1, targetImpression: 1 })
+// 			.catch((err) => console.log(err));
+// 		data.ids = {
+// 			onDemand: [],
+// 			podcast: [],
+// 			musicapps: [],
+// 			audio: [],
+// 			subimpression: { dem: 0, mus: 0, pod: 0 },
+// 			audimpression: 0,
+// 			display: [],
+// 			disimpression: 0,
+// 			video: [],
+// 			vidimpression: 0
+// 		};
+// 		data.ids['combined'] = ids;
+// 		// data.TargetImpressions = [ ...new Set(data.TargetImpressions) ];
+// 		id_spliter = remove_duplicates_arrayobject(id_spliter, 'campaignId');
+// 		var ids_cam = [];
+// 		id_spliter.map((x) => {
+// 			if (x.campaignId) ids_cam.push(x.campaignId.toString());
+// 		});
+// 		var left_cam = arr_diff(data.id, ids_cam);
+// 		if (left_cam && left_cam.length) {
+// 			await left_cam.map((id) => data.ids.audio.push(id));
+// 			// data.ids.audio = [ ...new Set(data.ids.audio) ];
+// 			data.ids.audio = removeDuplicates(data.ids.audio);
+// 			// data.ids.audio = [ ...new Set(data.ids.audio) ];
+// 		}
+// 		if (id_spliter.length) {
+// 			var audioids = id_spliter.filter((x) => x.type === 'audio');
+// 			audioids.map((x) => {
+// 				data.ids.audio.push(x.campaignId.toString());
+// 				data.ids.audimpression += parseInt(x.targetImpression);
+// 			});
+// 			data.ids.audio = [ ...new Set(data.ids.audio) ];
+// 			if (!(onDemand === podcast && onDemand === musicapps)) {
+// 				// var dads = { onDemand: [], podcast: [], musicapps: [] };
+// 				const outcome = await idsreturnspliter(data.ids.audio);
+// 				data.ids.onDemand = outcome.dem;
+// 				data.ids.podcast = outcome.pod;
+// 				data.ids['musicapps'] = outcome.mus;
+// 				if (data.ids.onDemand.length) {
+// 					var dataonDem = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.onDemand));
+// 					dataonDem.map((im) => {
+// 						data.ids.subimpression.dem += parseInt(im.targetImpression);
+// 					});
+// 				}
+// 				if (data.ids.podcast.length) {
+// 					var datapodcast = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.podcast));
+// 					datapodcast.map((im) => {
+// 						data.ids.subimpression.pod += parseInt(im.targetImpression);
+// 					});
+// 				}
+// 				if (data.ids.musicapps.length) {
+// 					var datamusic = id_spliter.filter((x) => idmatchCheker(x.campaignId, data.ids.musicapps));
+// 					datamusic.map((im) => {
+// 						data.ids.subimpression.mus += parseInt(im.targetImpression);
+// 					});
+// 				}
+// 				// data.ids['new'] = outcome;
+// 			}
+// 			var displayids = id_spliter.filter((x) => x.type === 'display');
+// 			displayids.map((x) => {
+// 				data.ids.display.push(x.campaignId.toString());
+// 				data.ids.disimpression += parseInt(x.targetImpression);
+// 			});
+// 			data.ids.display = [ ...new Set(data.ids.display) ];
+// 			var videoids = id_spliter.filter((x) => x.type === 'video');
+// 			videoids.map((x) => {
+// 				data.ids.video.push(x.campaignId.toString());
+// 				data.ids.vidimpression += parseInt(x.targetImpression);
+// 			});
+// 			data.ids.video = [ ...new Set(data.ids.video) ];
+// 		} else {
+// 			if (ids && ids.length) {
+// 				data.ids.audio = ids;
+// 				var dattarget = data.TargetImpressions && data.TargetImpressions.length ? data.TargetImpressions : [];
+// 				dattarget.map((ar) => {
+// 					data.ids.audimpression += parseInt(ar.TR);
+// 				});
+// 			}
+// 		}
+// 		// var resstartDate = [].concat.apply([], data.startDate);
+// 		// resstartDate = [ ...new Set(resstartDate) ];
+// 		// data.startDate = resstartDate;
+// 		// var resendDate = [].concat.apply([], data.endDate);
+// 		// resendDate = [ ...new Set(resendDate) ];
+// 		// data.endDate = resendDate;
+// 		// data.splendid = id_spliter
+// 		// var tottar = 0;
+// 		// data.TargetImpressions.forEach(num=> tottar += parseInt(num))
+// 		// data.TargetImpressions = tottar
+// 		// res.json(data);
+// 		// console.log(data);
+// 		// return data;
+// 		var dass = [];
+// 		var puller = {};
+// 		var pullerData = {};
+// 		pullerData['complete'] = {
+// 			target: 0,
+// 			clicks: 0,
+// 			clicks1: 0,
+// 			complete: 0,
+// 			firstQuartile: 0,
+// 			impressions: 0,
+// 			midpoint: 0,
+// 			ltr: 0,
+// 			start: 0,
+// 			thirdQuartile: 0,
+// 			updatedAt: []
+// 		};
+// 		if (audio) {
+// 			dass.push(audio);
+// 			if (puller[audio]) {
+// 				data.ids.audio.map((x) => puller[audio].push(x));
+// 				// puller[`${audio}target`] += data.ids.audimpression;
+// 				pullerData[`complete`].target += data.ids.audimpression;
+// 			} else {
+// 				puller[audio] = [];
+// 				// puller[`${audio}target`] = 0;
+// 				// puller[`${audio}target`] += data.ids.audimpression;
+// 				pullerData[`complete`].target += data.ids.audimpression;
+// 				data.ids.audio.map((x) => puller[audio].push(x));
+// 			}
+// 		}
+// 		if (!(onDemand === podcast && onDemand === musicapps)) {
+// 			if (onDemand) {
+// 				dass.push(onDemand);
+// 				if (puller[onDemand]) {
+// 					data.ids.onDemand.map((x) => puller[onDemand].push(x));
+// 					pullerData[`complete`].target += data.ids.subimpression.dem;
+// 					// puller[`${onDemand}target`] += data.ids.subimpression.dem;
+// 				} else {
+// 					puller[onDemand] = [];
+// 					// puller[`${onDemand}target`] = 0;
+// 					pullerData[`complete`].target += data.ids.subimpression.dem;
+// 					// puller[`${onDemand}target`] += data.ids.subimpression.dem;
+// 					data.ids.onDemand.map((x) => puller[onDemand].push(x));
+// 				}
+// 			}
+// 			if (podcast) {
+// 				dass.push(podcast);
+// 				if (puller[podcast]) {
+// 					data.ids.podcast.map((x) => puller[podcast].push(x));
+// 					pullerData[`complete`].target += data.ids.subimpression.pod;
+// 					// puller[`${podcast}target`] += data.ids.subimpression.pod;
+// 				} else {
+// 					puller[podcast] = [];
+// 					// puller[`${podcast}target`] = 0;
+// 					pullerData[`complete`].target += data.ids.subimpression.pod;
+// 					// puller[`${podcast}target`] += data.ids.subimpression.pod;
+// 					data.ids.podcast.map((x) => puller[podcast].push(x));
+// 				}
+// 			}
+// 			if (musicapps) {
+// 				dass.push(musicapps);
+// 				if (puller[musicapps]) {
+// 					data.ids.musicapps.map((x) => puller[musicapps].push(x));
+// 					pullerData[`complete`].target += data.ids.subimpression.mus;
+// 					// puller[`${musicapps}target`] += data.ids.subimpression.mus;
+// 				} else {
+// 					puller[musicapps] = [];
+// 					// puller[`${musicapps}target`] = 0;
+// 					pullerData[`complete`].target += data.ids.subimpression.mus;
+// 					// puller[`${musicapps}target`] += data.ids.subimpression.mus;
+// 					data.ids.musicapps.map((x) => puller[musicapps].push(x));
+// 				}
+// 			}
+// 		}
+// 		if (display) {
+// 			dass.push(display);
+// 			if (puller[display]) {
+// 				data.ids.display.map((x) => puller[display].push(x));
+// 				pullerData[`complete`].target += data.ids.disimpression;
+// 				// puller[`${display}target`] += data.ids.disimpression;
+// 			} else {
+// 				puller[display] = [];
+// 				// puller[`${display}target`] = 0;
+// 				pullerData[`complete`].target += data.ids.disimpression;
+// 				// puller[`${display}target`] += data.ids.disimpression;
+// 				data.ids.display.map((x) => puller[display].push(x));
+// 			}
+// 		}
+// 		if (video) {
+// 			dass.push(video);
+// 			if (puller[video]) {
+// 				data.ids.video.map((x) => puller[video].push(x));
+// 				pullerData[`complete`].target += data.ids.vidimpression;
+// 				// puller[`${video}target`] += data.ids.vidimpression;
+// 			} else {
+// 				puller[video] = [];
+// 				// puller[`${video}target`] = 0;
+// 				// puller[`${video}target`] += data.ids.vidimpression;
+// 				pullerData[`complete`].target += data.ids.vidimpression;
+// 				data.ids.video.map((x) => puller[video].push(x));
+// 			}
+// 		}
+// 		dass = [ ...new Set(dass) ];
+// 		puller['das'] = dass;
+// 		return puller;
+// 	} else {
+// 		console.log(respo);
+// 		return 'error';
+// 		// res.status(422).json({ error: 'somthing went wrong try again' });
+// 	}
+// };
 
-// DailyReportMailer();
-async function DailyReportMailer() {
-	var users = await admin.find({ usertype: 'client' }).select('email').catch((err) => console.log(err));
-	// const HTTP = new XMLHttpRequest();
-	// HTTP.open('put', 'http://23.98.35.74:5000/streamingads/groupedsingleClient');
-	var ses = new aws.SES();
-	var cdate, cmonth, cyear;
-	var cdatee = new Date(new Date());
-	cdate = cdatee.getDate();
-	cdate = cdate < 10 ? '0' + cdate : cdate;
-	cmonth = cdatee.getMonth() + 1;
-	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
-	cyear = cdatee.getFullYear();
-	var chevk2 = `${cyear}-${cmonth}-${cdate}`;
-	for (var i = 0; i < users.length; i++) {
-		var mail = users[i].targetemail ? users[i].targetemail : [];
-		var id = users[i]._id;
-		console.log(mail, id);
-		let campaignss = await campaignClient.find({ userid: id }).catch((err) => console.log(err));
-		try {
-			console.log(campaignss.length);
-			campaignss.map(async (x) => {
-				console.log(x.type);
-				var endStae = new Date() > new Date(x.endDate);
-				if (endStae) {
-					console.log('campaign completed');
-				} else if (x.type === 'campaign' && x.targetemail && x.targetemail.length) {
-					let formdata = await StreamingAds.aggregate([
-						{
-							$project: {
-								id: '$_id',
-								AdTitle: { $toLower: '$AdTitle' }
-							}
-						},
-						{
-							$match: {
-								AdTitle: { $regex: x.searchName.toLowerCase() }
-							}
-						},
-						{
-							$group: {
-								_id: null,
-								id: { $push: '$id' },
-								Adtitle: { $push: '$AdTitle' }
-							}
-						}
-					]);
-					// console.log(formdata);
-					let mashh = await idfindspilter(
-						formdata,
-						x.onDemand,
-						x.podcast,
-						x.audio,
-						x.display,
-						x.video,
-						x.musicapps
-					);
-					// console.log(mashh);
-					var totaldataCount = {};
-					for (var j = 0; j < mashh.das.length; j++) {
-						var idsa = mashh[mashh.das[j]]
-							? mashh[mashh.das[j]].map((x) => mongoose.Types.ObjectId(x))
-							: [];
-						let totalcom = await campaignwisereports.aggregate([
-							{ $match: { campaignId: { $in: idsa }, appubid: { $nin: saavnids } } },
-							{
-								$group: {
-									_id: null,
-									impressions: { $sum: '$impression' },
-									complete: { $sum: '$complete' },
-									clicks: { $sum: '$CompanionClickTracking' },
-									clicks1: { $sum: '$SovClickTracking' },
-									thirdQuartile: { $sum: '$thirdQuartile' },
-									start: { $sum: '$start' },
-									firstQuartile: { $sum: '$firstQuartile' },
-									midpoint: { $sum: '$midpoint' }
-								}
-							}
-						]);
-						totalcom = totalcom && totalcom[0];
-						if (!totalcom) {
-							console.log({ idsa, name: x.searchName });
-							continue;
-						}
-						let reportdaily = await campaignwisereports.aggregate([
-							{ $match: { campaignId: { $in: idsa }, appubid: { $nin: saavnids } } },
-							{
-								$group: {
-									_id: { date: '$date' },
-									impressions: { $sum: '$impression' },
-									complete: { $sum: '$complete' },
-									firstQuartile: { $sum: '$firstQuartile' },
-									clicks: { $sum: '$CompanionClickTracking' },
-									region: { $push: '$region' }
-								}
-							},
-							{
-								$project: {
-									date: '$_id.date',
-									impressions: '$impressions',
-									firstQuartile: '$firstQuartile',
-									complete: '$complete',
-									clicks: '$clicks',
-									region: '$region',
-									_id: 0
-								}
-							},
-							{ $sort: { date: -1 } }
-						]);
-						console.log(totalcom, x.searchName, reportdaily.length, 'cooo');
-						reportdaily = reportdaily.filter((x) => x.impressions >= 10);
-						var totImp = 0,
-							totCli = 0,
-							totCom = 0;
-						var totImp1 = 0,
-							totCli1 = 0,
-							totCom1 = 0;
-						reportdaily.map((dax) => {
-							totImp += dax.impressions;
-							totCli += dax.clicks;
-							totCom += dax.complete;
-						});
-						// console.log(totalcom);
-						totalcom.complete = totalcom.complete / totalcom.firstQuartile * totalcom.impressions;
-						reportdaily.map((dax) => {
-							dax.impressions = totImp ? Math.round(dax.impressions / totImp * totalcom.impressions) : 0;
-							dax.clicks = totCli
-								? Math.round(dax.clicks / totCli * (totalcom.clicks + totalcom.clicks1))
-								: 0;
-							dax.complete = totCom ? Math.round(dax.complete / totCom * totalcom.complete) : 0;
-							totImp1 += dax.impressions;
-							totCli1 += dax.clicks;
-							totCom1 += dax.complete;
-						});
-						if (totImp > totImp1 || totCli - totCli1 > 0 || totCom - totCom1 > 0)
-							reportdaily.push({
-								date: '',
-								impressions: totImp - totImp1 > 0 ? totImp - totImp1 : 0,
-								clicks: totCli - totCli1 > 0 ? totCli - totCli1 : 0,
-								complete: totCom - totCom1 > 0 ? totCom - totCom1 : 0
-							});
-						var dum = reportdaily.filter((x) => x.date === chevk2);
-						if (dum.length) {
-							reportdaily = reportdaily.filter((x) => x.date != chevk2);
-							var tempImp = 0,
-								tempCli = 0,
-								tempCom = 0;
-							dum.map((zx) => {
-								tempImp += zx.impressions;
-								tempCli += zx.clicks;
-								tempCom += zx.complete;
-							});
-							totImp -= tempImp;
-							totCli -= tempCli;
-							totCom -= tempCom;
-						}
-						reportdaily.push({
-							date: 'Total',
-							impressions: totImp,
-							clicks: totCli,
-							complete: totCom
-						});
-						totaldataCount[mashh.das[j]] = reportdaily;
-						console.log(totalcom, totImp, totCli, totCom, reportdaily);
-						// ses.sendEmail()
-					}
-					console.log(x.searchName, mashh, totaldataCount);
-					// var params = {
-					// 	Destination: {
-					// 		BccAddresses: [],
-					// 		CcAddresses: [],
-					// 		ToAddresses: x.targetemail
-					// 	},
-					// 	Message: {
-					// 		Body: {
-					// 			Html: {
-					// 				Charset: 'UTF-8',
-					// 				Data: `
-					// 				<head>
-					// 				<style>
-					// 				table {
-					// 				font-family: arial, sans-serif;
-					// 				border-collapse: collapse;
-					// 				width: 100%;
-					// 				}
+// // DailyReportMailer();
+// async function DailyReportMailer() {
+// 	var users = await admin.find({ usertype: 'client' }).select('email').catch((err) => console.log(err));
+// 	// const HTTP = new XMLHttpRequest();
+// 	// HTTP.open('put', 'http://23.98.35.74:5000/streamingads/groupedsingleClient');
+// 	var ses = new aws.SES();
+// 	var cdate, cmonth, cyear;
+// 	var cdatee = new Date(new Date());
+// 	cdate = cdatee.getDate();
+// 	cdate = cdate < 10 ? '0' + cdate : cdate;
+// 	cmonth = cdatee.getMonth() + 1;
+// 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+// 	cyear = cdatee.getFullYear();
+// 	var chevk2 = `${cyear}-${cmonth}-${cdate}`;
+// 	for (var i = 0; i < users.length; i++) {
+// 		var mail = users[i].targetemail ? users[i].targetemail : [];
+// 		var id = users[i]._id;
+// 		console.log(mail, id);
+// 		let campaignss = await campaignClient.find({ userid: id }).catch((err) => console.log(err));
+// 		try {
+// 			console.log(campaignss.length);
+// 			campaignss.map(async (x) => {
+// 				console.log(x.type);
+// 				var endStae = new Date() > new Date(x.endDate);
+// 				if (endStae) {
+// 					console.log('campaign completed');
+// 				} else if (x.type === 'campaign' && x.targetemail && x.targetemail.length) {
+// 					let formdata = await StreamingAds.aggregate([
+// 						{
+// 							$project: {
+// 								id: '$_id',
+// 								AdTitle: { $toLower: '$AdTitle' }
+// 							}
+// 						},
+// 						{
+// 							$match: {
+// 								AdTitle: { $regex: x.searchName.toLowerCase() }
+// 							}
+// 						},
+// 						{
+// 							$group: {
+// 								_id: null,
+// 								id: { $push: '$id' },
+// 								Adtitle: { $push: '$AdTitle' }
+// 							}
+// 						}
+// 					]);
+// 					// console.log(formdata);
+// 					let mashh = await idfindspilter(
+// 						formdata,
+// 						x.onDemand,
+// 						x.podcast,
+// 						x.audio,
+// 						x.display,
+// 						x.video,
+// 						x.musicapps
+// 					);
+// 					// console.log(mashh);
+// 					var totaldataCount = {};
+// 					for (var j = 0; j < mashh.das.length; j++) {
+// 						var idsa = mashh[mashh.das[j]]
+// 							? mashh[mashh.das[j]].map((x) => mongoose.Types.ObjectId(x))
+// 							: [];
+// 						let totalcom = await campaignwisereports.aggregate([
+// 							{ $match: { campaignId: { $in: idsa }, appubid: { $nin: saavnids } } },
+// 							{
+// 								$group: {
+// 									_id: null,
+// 									impressions: { $sum: '$impression' },
+// 									complete: { $sum: '$complete' },
+// 									clicks: { $sum: '$CompanionClickTracking' },
+// 									clicks1: { $sum: '$SovClickTracking' },
+// 									thirdQuartile: { $sum: '$thirdQuartile' },
+// 									start: { $sum: '$start' },
+// 									firstQuartile: { $sum: '$firstQuartile' },
+// 									midpoint: { $sum: '$midpoint' }
+// 								}
+// 							}
+// 						]);
+// 						totalcom = totalcom && totalcom[0];
+// 						if (!totalcom) {
+// 							console.log({ idsa, name: x.searchName });
+// 							continue;
+// 						}
+// 						let reportdaily = await campaignwisereports.aggregate([
+// 							{ $match: { campaignId: { $in: idsa }, appubid: { $nin: saavnids } } },
+// 							{
+// 								$group: {
+// 									_id: { date: '$date' },
+// 									impressions: { $sum: '$impression' },
+// 									complete: { $sum: '$complete' },
+// 									firstQuartile: { $sum: '$firstQuartile' },
+// 									clicks: { $sum: '$CompanionClickTracking' },
+// 									region: { $push: '$region' }
+// 								}
+// 							},
+// 							{
+// 								$project: {
+// 									date: '$_id.date',
+// 									impressions: '$impressions',
+// 									firstQuartile: '$firstQuartile',
+// 									complete: '$complete',
+// 									clicks: '$clicks',
+// 									region: '$region',
+// 									_id: 0
+// 								}
+// 							},
+// 							{ $sort: { date: -1 } }
+// 						]);
+// 						console.log(totalcom, x.searchName, reportdaily.length, 'cooo');
+// 						reportdaily = reportdaily.filter((x) => x.impressions >= 10);
+// 						var totImp = 0,
+// 							totCli = 0,
+// 							totCom = 0;
+// 						var totImp1 = 0,
+// 							totCli1 = 0,
+// 							totCom1 = 0;
+// 						reportdaily.map((dax) => {
+// 							totImp += dax.impressions;
+// 							totCli += dax.clicks;
+// 							totCom += dax.complete;
+// 						});
+// 						// console.log(totalcom);
+// 						totalcom.complete = totalcom.complete / totalcom.firstQuartile * totalcom.impressions;
+// 						reportdaily.map((dax) => {
+// 							dax.impressions = totImp ? Math.round(dax.impressions / totImp * totalcom.impressions) : 0;
+// 							dax.clicks = totCli
+// 								? Math.round(dax.clicks / totCli * (totalcom.clicks + totalcom.clicks1))
+// 								: 0;
+// 							dax.complete = totCom ? Math.round(dax.complete / totCom * totalcom.complete) : 0;
+// 							totImp1 += dax.impressions;
+// 							totCli1 += dax.clicks;
+// 							totCom1 += dax.complete;
+// 						});
+// 						if (totImp > totImp1 || totCli - totCli1 > 0 || totCom - totCom1 > 0)
+// 							reportdaily.push({
+// 								date: '',
+// 								impressions: totImp - totImp1 > 0 ? totImp - totImp1 : 0,
+// 								clicks: totCli - totCli1 > 0 ? totCli - totCli1 : 0,
+// 								complete: totCom - totCom1 > 0 ? totCom - totCom1 : 0
+// 							});
+// 						var dum = reportdaily.filter((x) => x.date === chevk2);
+// 						if (dum.length) {
+// 							reportdaily = reportdaily.filter((x) => x.date != chevk2);
+// 							var tempImp = 0,
+// 								tempCli = 0,
+// 								tempCom = 0;
+// 							dum.map((zx) => {
+// 								tempImp += zx.impressions;
+// 								tempCli += zx.clicks;
+// 								tempCom += zx.complete;
+// 							});
+// 							totImp -= tempImp;
+// 							totCli -= tempCli;
+// 							totCom -= tempCom;
+// 						}
+// 						reportdaily.push({
+// 							date: 'Total',
+// 							impressions: totImp,
+// 							clicks: totCli,
+// 							complete: totCom
+// 						});
+// 						totaldataCount[mashh.das[j]] = reportdaily;
+// 						console.log(totalcom, totImp, totCli, totCom, reportdaily);
+// 						// ses.sendEmail()
+// 					}
+// 					console.log(x.searchName, mashh, totaldataCount);
+// 					// var params = {
+// 					// 	Destination: {
+// 					// 		BccAddresses: [],
+// 					// 		CcAddresses: [],
+// 					// 		ToAddresses: x.targetemail
+// 					// 	},
+// 					// 	Message: {
+// 					// 		Body: {
+// 					// 			Html: {
+// 					// 				Charset: 'UTF-8',
+// 					// 				Data: `
+// 					// 				<head>
+// 					// 				<style>
+// 					// 				table {
+// 					// 				font-family: arial, sans-serif;
+// 					// 				border-collapse: collapse;
+// 					// 				width: 100%;
+// 					// 				}
 
-					// 				td, th {
-					// 				border: 1px solid #dddddd;
-					// 				text-align: center;
-					// 				padding: 4px;
-					// 				}
+// 					// 				td, th {
+// 					// 				border: 1px solid #dddddd;
+// 					// 				text-align: center;
+// 					// 				padding: 4px;
+// 					// 				}
 
-					// 				tr:nth-child(even) {
-					// 				background-color: #dddddd;
-					// 				}
-					// 				</style>
-					// 				</head>
-					// 				<body>
+// 					// 				tr:nth-child(even) {
+// 					// 				background-color: #dddddd;
+// 					// 				}
+// 					// 				</style>
+// 					// 				</head>
+// 					// 				<body>
 
-					// 				${mashh.das
-					// 					.map((xas) => {
-					// 						return `
-					// 						<div>
-					// 							<h2>${xas}</h2>
-					// 							<table>
-					// 								<tr>
-					// 									<th>Date</th>
-					// 									<th>Impressions</th>
-					// 									<th>Clicks</th>
-					// 									<th>CTR</th>
-					// 									<th>Complete</th>
-					// 									<th>LTR</th>
-					// 								</tr>
-					// 								${totaldataCount[xas]
-					// 									.map((dalrep) => {
-					// 										return `<tr>
-					// 											<td>${dalrep.date}</td>
-					// 											<td>
-					// 												${dalrep.impressions}
-					// 											</td>
-					// 											<td>${dalrep.clicks}</td>
-					// 											<td>
-					// 												${Math.round(dalrep.clicks * 100 * 100 / dalrep.impressions) / 100}%
-					// 											</td>
-					// 											<td>
-					// 												${dalrep.complete}
-					// 											</td>
-					// 											<td>
-					// 												${Math.round(dalrep.complete * 100 * 100 / dalrep.impressions) / 100}%
-					// 											</td>
-					// 										</tr>`;
-					// 									})
-					// 									.join('')}
-					// 							</table>
-					// 						</div>`;
-					// 					})
-					// 					.join('')}
+// 					// 				${mashh.das
+// 					// 					.map((xas) => {
+// 					// 						return `
+// 					// 						<div>
+// 					// 							<h2>${xas}</h2>
+// 					// 							<table>
+// 					// 								<tr>
+// 					// 									<th>Date</th>
+// 					// 									<th>Impressions</th>
+// 					// 									<th>Clicks</th>
+// 					// 									<th>CTR</th>
+// 					// 									<th>Complete</th>
+// 					// 									<th>LTR</th>
+// 					// 								</tr>
+// 					// 								${totaldataCount[xas]
+// 					// 									.map((dalrep) => {
+// 					// 										return `<tr>
+// 					// 											<td>${dalrep.date}</td>
+// 					// 											<td>
+// 					// 												${dalrep.impressions}
+// 					// 											</td>
+// 					// 											<td>${dalrep.clicks}</td>
+// 					// 											<td>
+// 					// 												${Math.round(dalrep.clicks * 100 * 100 / dalrep.impressions) / 100}%
+// 					// 											</td>
+// 					// 											<td>
+// 					// 												${dalrep.complete}
+// 					// 											</td>
+// 					// 											<td>
+// 					// 												${Math.round(dalrep.complete * 100 * 100 / dalrep.impressions) / 100}%
+// 					// 											</td>
+// 					// 										</tr>`;
+// 					// 									})
+// 					// 									.join('')}
+// 					// 							</table>
+// 					// 						</div>`;
+// 					// 					})
+// 					// 					.join('')}
 
-					// 				</body>
-					// 				   `
-					// 			},
-					// 			Text: {
-					// 				Charset: 'UTF-8',
-					// 				Data: 'This is the message if in text if no data found.'
-					// 			}
-					// 		},
-					// 		Subject: {
-					// 			Charset: 'UTF-8',
-					// 			Data: `${x.campaignName} daily report`
-					// 		}
-					// 	},
-					// 	// ReplyToAddresses: [],
-					// 	// ReturnPath: '',
-					// 	// ReturnPathArn: '',
-					// 	// SourceArn: ''
-					// 	Source: email
-					// };
-					// ses.sendEmail(params, function(err, data) {
-					// 	if (err)
-					// 		console.log(err, err.stack); // an error occurred
-					// 	else console.log(data); // successful response
-					// 	/*
-					// 	data = {
-					// 	MessageId: "EXAMPLE78603177f-7a5433e7-8edb-42ae-af10-f0181f34d6ee-000000"
-					// 	}
-					// 	 */
-					// });
-					//
-					// console.log(formdata);
-					// console.log(
-					// 	idfindspilter(x.searchName, x.onDemand, x.podcast, x.audio, x.display, x.video, x.musicapps)
-					// );
-					// let campass = await
-					// request(
-					// 	{
-					// 		url: 'http://23.98.35.74:5000/streamingads/groupedsingleClient',
-					// 		method: 'put',
-					// 		headers: {
-					// 			'Content-Type': 'application/json',
-					// 			Authorization: 'Bearer ' + JWT
-					// 		},
-					// 		body: JSON.stringify({
-					// 			adtitle: x.searchName,
-					// 			podcast: x.podcast,
-					// 			onDemand: x.onDemand,
-					// 			musicapps: x.musicapps
-					// 		})
-					// 	},
-					// 	function(error, response, body) {
-					// 		console.log('error', error);
-					// 		console.log('response', response);
-					// 		console.log('body', body);
-					// 	}
-					// );
-					// fetch('/streamingads/groupedsingleClient', {
-					// 	method: 'put',
-					// 	headers: {
-					// 		'Content-Type': 'application/json',
-					// 		Authorization: 'Bearer ' + JWT
-					// 	},
-					// 	body: JSON.stringify({
-					// 		adtitle: x.searchName,
-					// 		podcast: x.podcast,
-					// 		onDemand: x.onDemand,
-					// 		musicapps: x.musicapps
-					// 	})
-					// })
-					// 	.then((res) => res.json())
-					// 	.then((resul) => {
-					// 		console.log(resul);
-					// 	})
-					// 	.catch((err) => console.log(err));
-				} else if (x.type === 'bundle') {
-					//
-				}
-			});
-		} catch (e) {
-			console.log(e);
-		}
-	}
-}
+// 					// 				</body>
+// 					// 				   `
+// 					// 			},
+// 					// 			Text: {
+// 					// 				Charset: 'UTF-8',
+// 					// 				Data: 'This is the message if in text if no data found.'
+// 					// 			}
+// 					// 		},
+// 					// 		Subject: {
+// 					// 			Charset: 'UTF-8',
+// 					// 			Data: `${x.campaignName} daily report`
+// 					// 		}
+// 					// 	},
+// 					// 	// ReplyToAddresses: [],
+// 					// 	// ReturnPath: '',
+// 					// 	// ReturnPathArn: '',
+// 					// 	// SourceArn: ''
+// 					// 	Source: email
+// 					// };
+// 					// ses.sendEmail(params, function(err, data) {
+// 					// 	if (err)
+// 					// 		console.log(err, err.stack); // an error occurred
+// 					// 	else console.log(data); // successful response
+// 					// 	/*
+// 					// 	data = {
+// 					// 	MessageId: "EXAMPLE78603177f-7a5433e7-8edb-42ae-af10-f0181f34d6ee-000000"
+// 					// 	}
+// 					// 	 */
+// 					// });
+// 					//
+// 					// console.log(formdata);
+// 					// console.log(
+// 					// 	idfindspilter(x.searchName, x.onDemand, x.podcast, x.audio, x.display, x.video, x.musicapps)
+// 					// );
+// 					// let campass = await
+// 					// request(
+// 					// 	{
+// 					// 		url: 'http://23.98.35.74:5000/streamingads/groupedsingleClient',
+// 					// 		method: 'put',
+// 					// 		headers: {
+// 					// 			'Content-Type': 'application/json',
+// 					// 			Authorization: 'Bearer ' + JWT
+// 					// 		},
+// 					// 		body: JSON.stringify({
+// 					// 			adtitle: x.searchName,
+// 					// 			podcast: x.podcast,
+// 					// 			onDemand: x.onDemand,
+// 					// 			musicapps: x.musicapps
+// 					// 		})
+// 					// 	},
+// 					// 	function(error, response, body) {
+// 					// 		console.log('error', error);
+// 					// 		console.log('response', response);
+// 					// 		console.log('body', body);
+// 					// 	}
+// 					// );
+// 					// fetch('/streamingads/groupedsingleClient', {
+// 					// 	method: 'put',
+// 					// 	headers: {
+// 					// 		'Content-Type': 'application/json',
+// 					// 		Authorization: 'Bearer ' + JWT
+// 					// 	},
+// 					// 	body: JSON.stringify({
+// 					// 		adtitle: x.searchName,
+// 					// 		podcast: x.podcast,
+// 					// 		onDemand: x.onDemand,
+// 					// 		musicapps: x.musicapps
+// 					// 	})
+// 					// })
+// 					// 	.then((res) => res.json())
+// 					// 	.then((resul) => {
+// 					// 		console.log(resul);
+// 					// 	})
+// 					// 	.catch((err) => console.log(err));
+// 				} else if (x.type === 'bundle') {
+// 					//
+// 				}
+// 			});
+// 		} catch (e) {
+// 			console.log(e);
+// 		}
+// 	}
+// }
 
 // result.map(async (zip) => {
 // 	const storeClick = zip.CompanionClickTracking
@@ -3598,3 +2567,1066 @@ async function DailyReportMailer() {
 // 		console.log('updated');
 // 	}
 // });
+
+// async function uniqueMaker({ date }) {
+// 	let uniqueids = await trackinglogs
+// 		.distinct('campaignId', { date: date, type: 'impression' })
+// 		.catch((err) => console.log(err));
+// 	uniqueids = uniqueids.map((id) => mongoose.Types.ObjectId(id));
+// 	let response = await StreamingAds.aggregate([
+// 		{ $match: { _id: { $in: uniqueids } } },
+// 		{ $project: { AdTitle: { $toLower: '$AdTitle' } } },
+// 		{ $project: { AdTitle: { $split: [ '$AdTitle', '_' ] } } },
+// 		{ $project: { AdTitle: { $slice: [ '$AdTitle', 2 ] } } },
+// 		{
+// 			$project: {
+// 				AdTitle: {
+// 					$reduce: {
+// 						input: '$AdTitle',
+// 						initialValue: '',
+// 						in: {
+// 							$concat: [ '$$value', { $cond: [ { $eq: [ '$$value', '' ] }, '', '_' ] }, '$$this' ]
+// 						}
+// 					}
+// 				},
+// 				_id: 0
+// 			}
+// 		},
+// 		{ $group: { _id: '$AdTitle' } }
+// 	]).catch((err) => console.log(err));
+// 	var ree = [];
+// 	response = await response.map(async (da) => {
+// 		let doudt = await StreamingAds.aggregate([
+// 			{ $project: { _id: '$_id', AdTitle: { $toLower: '$AdTitle' } } },
+// 			{ $match: { AdTitle: { $regex: da._id } } },
+// 			{ $group: { _id: null, ids: { $push: '$_id' } } }
+// 		]).catch((err) => console.log(err));
+// 		var title = da._id;
+// 		doudt = doudt[0].ids;
+// 		doudt = doudt.map((id) => mongoose.Types.ObjectId(id));
+// 		let splited = await adsetting.find({ campaignId: { $in: doudt } }).catch((err) => console.log(err));
+// 		var audio = [];
+// 		var display = [];
+// 		splited = await splited.map((ids) => {
+// 			if (ids.type === 'display') display.push(ids.campaignId);
+// 			else {
+// 				audio.push(ids.campaignId);
+// 			}
+// 		});
+// 		// console.log(audio)
+// 		audio = audio && audio.map((id) => id.toString());
+// 		let audioUnique = await trackinglogs.db.db
+// 			.command({
+// 				aggregate: 'trackinglogs',
+// 				pipeline: [
+// 					{ $match: { type: 'impression', campaignId: { $in: audio } } },
+// 					{ $group: { _id: '$ifa', total: { $sum: 1 } } },
+// 					{ $count: 'count' }
+// 				],
+// 				allowDiskUse: true,
+// 				cursor: {}
+// 			})
+// 			.catch((err) => console.log(err));
+// 		audioUnique = audioUnique.cursor.firstBatch && audioUnique.cursor.firstBatch[0];
+// 		console.log(audioUnique);
+// 		display = display && display.map((id) => id.toString());
+// 		let displayUnique = await trackinglogs.db.db
+// 			.command({
+// 				aggregate: 'trackinglogs',
+// 				pipeline: [
+// 					{ $match: { type: 'impression', campaignId: { $in: display } } },
+// 					{ $group: { _id: '$ifa', total: { $sum: 1 } } },
+// 					{ $count: 'count' }
+// 				],
+// 				allowDiskUse: true,
+// 				cursor: {}
+// 			})
+// 			.catch((err) => console.log(err));
+// 		displayUnique = displayUnique.cursor.firstBatch && displayUnique.cursor.firstBatch[0];
+// 		audioCount = audioUnique && audioUnique.count;
+// 		displayCount = displayUnique && displayUnique.count;
+// 		console.log(displayUnique);
+// 		const uniquedata = new Unique({
+// 			audiouser: audioCount ? audioCount : 0,
+// 			displayuser: displayCount ? displayCount : 0,
+// 			AdTitle: title
+// 		});
+// 		let dala = await Unique.deleteMany({ AdTitle: title }).catch((err) => console.log(err));
+// 		console.log(dala);
+// 		uniquedata
+// 			.save()
+// 			.then((resu) => {
+// 				return console.log('completeunique', dala);
+// 			})
+// 			.catch((err) => {
+// 				console.log(audioCount, displayCount, title, uniquedata);
+// 				return console.log(err, dala);
+// 			});
+// 	});
+// }
+
+// async function ReportsRefresher(date, credate) {
+// 	// var d = new Date()
+// 	// d.setDate(d.getDate());
+// 	// if(d.getDate() < 10){
+// 	//     var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + '0' + d.getDate()
+// 	// }else{
+// 	//     var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+// 	// }
+// 	const Report = mongoose.model('Report');
+// 	Report.deleteMany({ date: date }).then((repon) => {
+// 		console.log({ relt: repon, mess: 'deleted' });
+// 	});
+// 	console.log(date, credate);
+// 	const trackinglogs = mongoose.model('trackinglogs');
+// 	try {
+// 		let logids = await trackinglogs
+// 			.aggregate([
+// 				{ $match: { date: date } },
+// 				{ $group: { _id: null, ids: { $addToSet: '$campaignId' } } },
+// 				{ $project: { _id: 0, ids: 1 } }
+// 			])
+// 			.catch((err) => console.log(err));
+// 		logids = logids[0].ids;
+// 		let uniqueuserslist = await trackinglogs.db.db.command({
+// 			aggregate: 'trackinglogs',
+// 			pipeline: [
+// 				{
+// 					$facet: {
+// 						uniquesumdatawise: [
+// 							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
+// 							{
+// 								$group: {
+// 									_id: { campaignId: '$campaignId', appId: '$appId' },
+// 									ifa: { $addToSet: '$ifa' }
+// 								}
+// 							},
+// 							{
+// 								$group: {
+// 									_id: '$_id.campaignId',
+// 									unique: { $addToSet: '$ifa' },
+// 									publishdata: { $push: { appId: '$_id.appId', uniqueuser: { $size: '$ifa' } } }
+// 								}
+// 							},
+// 							{
+// 								$addFields: {
+// 									unique: {
+// 										$reduce: {
+// 											input: '$unique',
+// 											initialValue: [],
+// 											in: { $concatArrays: [ '$$value', '$$this' ] }
+// 										}
+// 									}
+// 								}
+// 							},
+// 							{ $project: { _id: 0, campaignId: '$_id', unique: { $size: '$unique' }, publishdata: 1 } }
+// 						],
+// 						regionwiseunique: [
+// 							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
+// 							{
+// 								$group: {
+// 									_id: { campaignId: '$campaignId', appId: '$appId', region: '$region' },
+// 									ifa: { $addToSet: '$ifa' }
+// 								}
+// 							},
+// 							{
+// 								$group: {
+// 									_id: { campaignId: '$_id.campaignId', appId: '$_id.appId' },
+// 									uniquerepo: { $push: { region: '$_id.region', unique: { $size: '$ifa' } } }
+// 								}
+// 							},
+// 							{
+// 								$group: {
+// 									_id: '$_id.campaignId',
+// 									results: { $push: { appId: '$_id.appId', result: '$uniquerepo' } }
+// 								}
+// 							},
+// 							{ $project: { _id: 0, campaignId: '$_id', results: 1 } }
+// 						],
+// 						pinwiseunique: [
+// 							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
+// 							{
+// 								$group: {
+// 									_id: { campaignId: '$campaignId', appId: '$appId', zip: '$zip' },
+// 									ifa: { $addToSet: '$ifa' }
+// 								}
+// 							},
+// 							{
+// 								$group: {
+// 									_id: { campaignId: '$_id.campaignId', appId: '$_id.appId' },
+// 									uniquerepo: { $push: { zip: '$_id.zip', unique: { $size: '$ifa' } } }
+// 								}
+// 							},
+// 							{
+// 								$group: {
+// 									_id: '$_id.campaignId',
+// 									results: { $push: { appId: '$_id.appId', result: '$uniquerepo' } }
+// 								}
+// 							},
+// 							{ $project: { _id: 0, campaignId: '$_id', results: 1 } }
+// 						],
+// 						lanwiseunique: [
+// 							{ $match: { campaignId: { $in: logids }, type: { $in: [ 'impression' ] } } },
+// 							{
+// 								$group: {
+// 									_id: { campaignId: '$campaignId', appId: '$appId', language: '$language' },
+// 									ifa: { $addToSet: '$ifa' }
+// 								}
+// 							},
+// 							{
+// 								$group: {
+// 									_id: { campaignId: '$_id.campaignId', appId: '$_id.appId' },
+// 									uniquerepo: { $push: { language: '$_id.language', unique: { $size: '$ifa' } } }
+// 								}
+// 							},
+// 							{
+// 								$group: {
+// 									_id: '$_id.campaignId',
+// 									results: { $push: { appId: '$_id.appId', result: '$uniquerepo' } }
+// 								}
+// 							},
+// 							{ $project: { _id: 0, campaignId: '$_id', results: 1 } }
+// 						]
+// 					}
+// 				}
+// 			],
+// 			allowDiskUse: true,
+// 			cursor: {}
+// 		});
+// 		uniqueuserslist = uniqueuserslist.cursor.firstBatch;
+// 		let wholetypelist = await trackinglogs.db.db
+// 			.command({
+// 				aggregate: 'trackinglogs',
+// 				pipeline: [
+// 					{
+// 						$facet: {
+// 							appIds: [
+// 								{ $match: { date: date } },
+// 								{ $group: { _id: { campaignId: '$campaignId', date: '$date', appId: '$appId' } } },
+// 								{
+// 									$group: {
+// 										_id: { campaignId: '$_id.campaignId', date: '$_id.date' },
+// 										ids: { $push: '$_id.appId' }
+// 									}
+// 								},
+// 								{ $project: { _id: 0, campaignId: '$_id.campaignId', date: '$_id.date', ids: '$ids' } }
+// 							],
+// 							typeValues: [
+// 								{ $match: { date: date } },
+// 								{
+// 									$group: {
+// 										_id: { campaignId: '$campaignId', type: '$type', appId: '$appId' },
+// 										count: { $sum: 1 }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
+// 										result: { $push: { k: '$_id.type', v: '$count' } }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: '$_id.campaignId',
+// 										report: {
+// 											$push: { appId: '$_id.appId', result: { $arrayToObject: '$result' } }
+// 										}
+// 									}
+// 								},
+// 								{ $project: { campaignId: '$_id', report: '$report', _id: 0 } }
+// 							],
+// 							typebyRegion: [
+// 								{ $match: { date: date } },
+// 								{
+// 									$group: {
+// 										_id: {
+// 											campaignId: '$campaignId',
+// 											type: '$type',
+// 											appId: '$appId',
+// 											region: '$region'
+// 										},
+// 										count: { $sum: 1 }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: {
+// 											appId: '$_id.appId',
+// 											campaignId: '$_id.campaignId',
+// 											region: '$_id.region'
+// 										},
+// 										result: { $push: { k: '$_id.type', v: '$count' } }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
+// 										result: {
+// 											$push: { region: '$_id.region', result: { $arrayToObject: '$result' } }
+// 										}
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: '$_id.campaignId',
+// 										report: { $push: { appId: '$_id.appId', result: '$result' } }
+// 									}
+// 								},
+// 								{ $project: { _id: 0, campaignId: '$_id', report: '$report' } }
+// 							],
+// 							typeByLan: [
+// 								{ $match: { date: date } },
+// 								{
+// 									$group: {
+// 										_id: {
+// 											campaignId: '$campaignId',
+// 											type: '$type',
+// 											appId: '$appId',
+// 											language: '$language'
+// 										},
+// 										count: { $sum: 1 }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: {
+// 											campaignId: '$_id.campaignId',
+// 											appId: '$_id.appId',
+// 											language: '$_id.language'
+// 										},
+// 										result: { $push: { k: '$_id.type', v: '$count' } }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
+// 										result: {
+// 											$push: { language: '$_id.language', result: { $arrayToObject: '$result' } }
+// 										}
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: '$_id.campaignId',
+// 										report: { $push: { appId: '$_id.appId', result: '$result' } }
+// 									}
+// 								},
+// 								{ $project: { _id: 0, campaignId: '$_id', report: '$report' } }
+// 							],
+// 							typeByPhModel: [
+// 								{ $match: { date: date } },
+// 								{
+// 									$group: {
+// 										_id: {
+// 											campaignId: '$campaignId',
+// 											type: '$type',
+// 											appId: '$appId',
+// 											phoneMake: '$phoneMake',
+// 											phoneModel: '$phoneModel'
+// 										},
+// 										count: { $sum: 1 }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: {
+// 											campaignId: '$_id.campaignId',
+// 											appId: '$_id.appId',
+// 											phoneMake: '$_id.phoneMake',
+// 											phoneModel: '$_id.phoneModel'
+// 										},
+// 										result: { $push: { k: '$_id.type', v: '$count' } }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
+// 										result: {
+// 											$push: {
+// 												phoneModel: { $concat: [ '$_id.phoneMake', ' - ', '$_id.phoneModel' ] },
+// 												result: { $arrayToObject: '$result' }
+// 											}
+// 										}
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: '$_id.campaignId',
+// 										report: { $push: { appId: '$_id.appId', result: '$result' } }
+// 									}
+// 								},
+// 								{ $project: { _id: 0, campaignId: '$_id', report: '$report' } }
+// 							],
+// 							typeByPT: [
+// 								{ $match: { date: date } },
+// 								{
+// 									$group: {
+// 										_id: {
+// 											campaignId: '$campaignId',
+// 											type: '$type',
+// 											appId: '$appId',
+// 											platformType: '$platformType',
+// 											osVersion: '$osVersion'
+// 										},
+// 										count: { $sum: 1 }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: {
+// 											campaignId: '$_id.campaignId',
+// 											appId: '$_id.appId',
+// 											platformType: '$_id.platformType',
+// 											osVersion: '$_id.osVersion'
+// 										},
+// 										result: { $push: { k: '$_id.type', v: '$count' } }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
+// 										result: {
+// 											$push: {
+// 												platformType: {
+// 													$concat: [ '$_id.platformType', ' - ', '$_id.osVersion' ]
+// 												},
+// 												result: { $arrayToObject: '$result' }
+// 											}
+// 										}
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: '$_id.campaignId',
+// 										report: { $push: { appId: '$_id.appId', result: '$result' } }
+// 									}
+// 								},
+// 								{ $project: { _id: 0, campaignId: '$_id', report: '$report' } }
+// 							],
+// 							typeByPlatform: [
+// 								{ $match: { date: date } },
+// 								{
+// 									$group: {
+// 										_id: {
+// 											campaignId: '$campaignId',
+// 											type: '$type',
+// 											appId: '$appId',
+// 											platformType: '$platformType'
+// 										},
+// 										count: { $sum: 1 }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: {
+// 											campaignId: '$_id.campaignId',
+// 											appId: '$_id.appId',
+// 											platformType: '$_id.platformType'
+// 										},
+// 										result: { $push: { k: '$_id.type', v: '$count' } }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
+// 										result: {
+// 											$push: {
+// 												platformType: '$_id.platformType',
+// 												result: { $arrayToObject: '$result' }
+// 											}
+// 										}
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: '$_id.campaignId',
+// 										report: { $push: { appId: '$_id.appId', result: '$result' } }
+// 									}
+// 								},
+// 								{ $project: { _id: 0, campaignId: '$_id', report: '$report' } }
+// 							],
+// 							typeByPin: [
+// 								{ $match: { date: date } },
+// 								{
+// 									$group: {
+// 										_id: { campaignId: '$campaignId', type: '$type', appId: '$appId', zip: '$zip' },
+// 										count: { $sum: 1 }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: { campaignId: '$_id.campaignId', appId: '$_id.appId', zip: '$_id.zip' },
+// 										result: { $push: { k: '$_id.type', v: '$count' } }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
+// 										result: { $push: { zip: '$_id.zip', result: { $arrayToObject: '$result' } } }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: '$_id.campaignId',
+// 										report: { $push: { appId: '$_id.appId', result: '$result' } }
+// 									}
+// 								},
+// 								{ $project: { _id: 0, campaignId: '$_id', report: '$report' } }
+// 							],
+// 							typeByDev: [
+// 								{ $match: { date: date } },
+// 								{
+// 									$group: {
+// 										_id: {
+// 											campaignId: '$campaignId',
+// 											type: '$type',
+// 											appId: '$appId',
+// 											pptype: '$pptype'
+// 										},
+// 										count: { $sum: 1 }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: {
+// 											campaignId: '$_id.campaignId',
+// 											appId: '$_id.appId',
+// 											pptype: '$_id.pptype'
+// 										},
+// 										result: { $push: { k: '$_id.type', v: '$count' } }
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: { appId: '$_id.appId', campaignId: '$_id.campaignId' },
+// 										result: {
+// 											$push: { pptype: '$_id.pptype', result: { $arrayToObject: '$result' } }
+// 										}
+// 									}
+// 								},
+// 								{
+// 									$group: {
+// 										_id: '$_id.campaignId',
+// 										report: { $push: { appId: '$_id.appId', result: '$result' } }
+// 									}
+// 								},
+// 								{ $project: { _id: 0, campaignId: '$_id', report: '$report' } }
+// 							]
+// 						}
+// 					}
+// 				],
+// 				allowDiskUse: true,
+// 				cursor: {}
+// 			})
+// 			.catch((err) => console.log(err));
+// 		wholetypelist = wholetypelist.cursor.firstBatch;
+// 		wholetypelist[0].appIds.map((caompoids) => {
+// 			var campId = caompoids.campaignId;
+// 			var repodate = caompoids.date;
+// 			var uniquedatareq = uniqueuserslist[0];
+// 			var uniquedataofcamp = uniquedatareq.uniquesumdatawise.filter((x) => x.campaignId === campId);
+// 			var uniquecountofcamp = 0;
+// 			uniquedataofcamp.map((dd) => {
+// 				uniquecountofcamp = dd.unique;
+// 			});
+// 			var uniqueregiondatacamp = uniquedatareq.regionwiseunique.filter((x) => x.campaignId === campId);
+// 			var uniquepindatacamp = uniquedatareq.pinwiseunique.filter((x) => x.campaignId === campId);
+// 			var uniquelangdatacamp = uniquedatareq.lanwiseunique.filter((x) => x.campaignId === campId);
+// 			var resdatareq = wholetypelist[0];
+// 			var impredatacamp = resdatareq.typeValues.filter((x) => x.campaignId === campId);
+// 			var regiondatacamp = resdatareq.typebyRegion.filter((x) => x.campaignId === campId);
+// 			var languagedatacamp = resdatareq.typeByLan.filter((x) => x.campaignId === campId);
+// 			var pindatacamp = resdatareq.typeByPin.filter((x) => x.campaignId === campId);
+// 			var devicedatacamp = resdatareq.typeByDev.filter((x) => x.campaignId === campId);
+// 			var phmodatacamp = resdatareq.typeByPhModel.filter((x) => x.campaignId === campId);
+// 			var plattypedatacamp = resdatareq.typeByPT.filter((x) => x.campaignId === campId);
+// 			var platformdatacamp = resdatareq.typeByPlatform.filter((x) => x.campaignId === campId);
+// 			// console.log(pindatacamp[0])
+// 			caompoids.ids.map((app_id) => {
+// 				var appIdreq = app_id;
+// 				var appuniquedata = uniquedataofcamp[0];
+// 				var appuniquecount = 0;
+// 				uniquedataofcamp.map((dd) => {
+// 					appuniquedata = dd.publishdata.filter((x) => x.appId === appIdreq);
+// 					appuniquecount = appuniquedata[0].uniqueuser;
+// 				});
+// 				var uniqueregiondataapp = [];
+// 				uniqueregiondatacamp.map((dd) => {
+// 					uniqueregiondataapp = dd.results.filter((x) => x.appId === appIdreq);
+// 					uniqueregiondataapp = uniqueregiondataapp[0].result;
+// 				});
+// 				var uniquepindataapp = [];
+// 				uniquepindatacamp.map((dd) => {
+// 					uniquepindataapp = dd.results.filter((x) => x.appId === appIdreq);
+// 					uniquepindataapp = uniquepindataapp[0].result;
+// 				});
+// 				// console.log(typeof uniquepindataapp)
+// 				var uniquelangdataapp = [];
+// 				uniquelangdatacamp.map((dd) => {
+// 					uniquelangdataapp = dd.results.filter((x) => x.appId === appIdreq);
+// 					uniquelangdataapp = uniquelangdataapp[0].result;
+// 				});
+// 				// console.log(uniquelangdataapp)
+// 				var impressionsapp;
+// 				var completeapp;
+// 				var clickapp;
+// 				var firstqapp;
+// 				var thirdqapp;
+// 				var midpointapp;
+// 				var appimpredata = [];
+// 				impredatacamp.map((dd) => {
+// 					appimpredata = dd.report.filter((x) => x.appId === appIdreq);
+// 					appimpredata = appimpredata[0].result;
+// 					impressionsapp = appimpredata.impression ? appimpredata.impression : 0;
+// 					completeapp = appimpredata.complete ? appimpredata.complete : 0;
+// 					clickapp = appimpredata.click
+// 						? appimpredata.click
+// 						: 0 + appimpredata.companionclicktracking
+// 							? appimpredata.companionclicktracking
+// 							: 0 + appimpredata.clicktracking ? appimpredata.clicktracking : 0;
+// 					firstqapp = appimpredata.firstquartile ? appimpredata.firstquartile : 0;
+// 					thirdqapp = appimpredata.thirdquartile ? appimpredata.thirdquartile : 0;
+// 					midpointapp = appimpredata.midpoint ? appimpredata.midpoint : 0;
+// 				});
+// 				var regiondataapp = [];
+// 				regiondatacamp.map((dd) => {
+// 					regiondataapp = dd.report.filter((x) => x.appId === appIdreq);
+// 					regiondataapp = regiondataapp[0].result;
+// 					regiondataapp = regiondataapp.map((ad) => {
+// 						var regionlocal = uniqueregiondataapp.filter((x) => x.region === ad.region);
+// 						regionlocal.map((mad) => {
+// 							ad.unique = mad.unique;
+// 						});
+// 						return ad;
+// 					});
+// 					// console.log(regiondataapp)
+// 				});
+// 				var pindataapp = [];
+// 				pindatacamp.map((dd) => {
+// 					pindataapp = dd.report.filter((x) => x.appId === appIdreq);
+// 					pindataapp = pindataapp[0].result;
+// 					pindataapp = pindataapp.map((ad) => {
+// 						var pinlocal = uniquepindataapp.filter((x) => x.zip === ad.zip);
+// 						// console.log(JSON.stringify(pinlocal[0]))
+// 						pinlocal.map((mad) => {
+// 							ad.unique = mad.unique;
+// 						});
+// 						return ad;
+// 					});
+// 					// console.log(pindataapp)
+// 				});
+// 				var langdataapp = [];
+// 				languagedatacamp.map((dd) => {
+// 					langdataapp = dd.report.filter((x) => x.appId === appIdreq);
+// 					langdataapp = langdataapp[0].result;
+// 					langdataapp = langdataapp.map((ad) => {
+// 						var langlocal = uniquelangdataapp.filter((x) => x.zip === ad.zip);
+// 						// console.log(JSON.stringify(langlocal[0]))
+// 						langlocal.map((mad) => {
+// 							ad.unique = mad.unique;
+// 						});
+// 						return ad;
+// 					});
+// 					// console.log(langdataapp)
+// 				});
+// 				var devicedataapp = [];
+// 				devicedatacamp.map((dd) => {
+// 					devicedataapp = dd.report.filter((x) => x.appId === appIdreq);
+// 					devicedataapp = devicedataapp[0].result;
+// 					// console.log(devicedataapp)
+// 				});
+// 				var phmodataapp = [];
+// 				phmodatacamp.map((dd) => {
+// 					phmodataapp = dd.report.filter((x) => x.appId === appIdreq);
+// 					phmodataapp = phmodataapp[0].result;
+// 					// console.log(phmodataapp)
+// 				});
+// 				var plattypedataapp = [];
+// 				plattypedatacamp.map((dd) => {
+// 					plattypedataapp = dd.report.filter((x) => x.appId === appIdreq);
+// 					plattypedataapp = plattypedataapp[0].result;
+// 					// console.log(plattypedataapp)
+// 				});
+// 				var platformbasedataapp = [];
+// 				platformdatacamp.map((dd) => {
+// 					platformbasedataapp = dd.report.filter((x) => x.appId === appIdreq);
+// 					platformbasedataapp = platformbasedataapp[0].result;
+// 					// console.log(platformbasedataapp)
+// 				});
+// 				const Report = mongoose.model('Report');
+// 				const report = new Report({
+// 					date: repodate,
+// 					Publisher: appIdreq,
+// 					campaignId: campId,
+// 					impressions: impressionsapp,
+// 					firstQuartile: firstqapp,
+// 					midpoint: midpointapp,
+// 					thirdQuartile: thirdqapp,
+// 					complete: completeapp,
+// 					clicks: clickapp,
+// 					publishunique: appuniquecount,
+// 					campunique: uniquecountofcamp,
+// 					region: regiondataapp,
+// 					platformtype: plattypedataapp,
+// 					language: langdataapp,
+// 					pincode: pindataapp,
+// 					phoneModel: phmodataapp,
+// 					phonePlatform: platformbasedataapp,
+// 					deviceModel: devicedataapp
+// 				});
+// 				report.save().then((ree) => console.log('complete')).catch((err) => console.log(err));
+// 			});
+// 		});
+// 	} catch (e) {
+// 		console.log(e);
+// 	}
+// 	// res.json(compr)
+// }
+
+// cron.schedule('00 02 * * *', function() {
+// 	var d = new Date();
+// 	d.setDate(d.getDate());
+// 	if (d.getDate() < 10) {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		}
+// 	} else {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		}
+// 	}
+// 	var currentTime = new Date();
+// 	var currentOffset = currentTime.getTimezoneOffset();
+// 	var ISTOffset = 330; // IST offset UTC +5:30
+// 	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
+// 	console.log(ISTTime);
+// 	ReportsRefresher(date, ISTTime);
+// });
+
+// cron.schedule('00 04 * * *', function() {
+// 	var d = new Date();
+// 	d.setDate(d.getDate());
+// 	if (d.getDate() < 10) {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		}
+// 	} else {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		}
+// 	}
+// 	var currentTime = new Date();
+// 	var currentOffset = currentTime.getTimezoneOffset();
+// 	var ISTOffset = 330; // IST offset UTC +5:30
+// 	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
+// 	console.log(ISTTime);
+// 	ReportsRefresher(date, ISTTime);
+// });
+
+// cron.schedule('00 06 * * *', function() {
+// 	var d = new Date();
+// 	d.setDate(d.getDate());
+// 	if (d.getDate() < 10) {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		}
+// 	} else {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		}
+// 	}
+// 	var currentTime = new Date();
+// 	var currentOffset = currentTime.getTimezoneOffset();
+// 	var ISTOffset = 330; // IST offset UTC +5:30
+// 	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
+// 	console.log(ISTTime);
+// 	ReportsRefresher(date, ISTTime);
+// });
+
+// cron.schedule('00 08 * * *', function() {
+// 	var d = new Date();
+// 	d.setDate(d.getDate());
+// 	if (d.getDate() < 10) {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		}
+// 	} else {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		}
+// 	}
+// 	var currentTime = new Date();
+// 	var currentOffset = currentTime.getTimezoneOffset();
+// 	var ISTOffset = 330; // IST offset UTC +5:30
+// 	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
+// 	console.log(ISTTime);
+// 	ReportsRefresher(date, ISTTime);
+// });
+
+// cron.schedule('00 10 * * *', function() {
+// 	var d = new Date();
+// 	d.setDate(d.getDate());
+// 	if (d.getDate() < 10) {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		}
+// 	} else {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		}
+// 	}
+// 	var currentTime = new Date();
+// 	var currentOffset = currentTime.getTimezoneOffset();
+// 	var ISTOffset = 330; // IST offset UTC +5:30
+// 	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
+// 	console.log(ISTTime);
+// 	ReportsRefresher(date, ISTTime);
+// });
+
+// cron.schedule('00 12 * * *', function() {
+// 	var d = new Date();
+// 	d.setDate(d.getDate());
+// 	if (d.getDate() < 10) {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		}
+// 	} else {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		}
+// 	}
+// 	var currentTime = new Date();
+// 	var currentOffset = currentTime.getTimezoneOffset();
+// 	var ISTOffset = 330; // IST offset UTC +5:30
+// 	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
+// 	console.log(ISTTime, date);
+// 	ReportsRefresher(date, ISTTime);
+// });
+
+// cron.schedule('00 14 * * *', function() {
+// 	var d = new Date();
+// 	d.setDate(d.getDate());
+// 	if (d.getDate() < 10) {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		}
+// 	} else {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		}
+// 	}
+// 	var currentTime = new Date();
+// 	var currentOffset = currentTime.getTimezoneOffset();
+// 	var ISTOffset = 330; // IST offset UTC +5:30
+// 	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
+// 	console.log(ISTTime);
+// 	ReportsRefresher(date, ISTTime);
+// });
+
+// cron.schedule('00 16 * * *', function() {
+// 	var d = new Date();
+// 	d.setDate(d.getDate());
+// 	if (d.getDate() < 10) {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		}
+// 	} else {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		}
+// 	}
+// 	var currentTime = new Date();
+// 	var currentOffset = currentTime.getTimezoneOffset();
+// 	var ISTOffset = 330; // IST offset UTC +5:30
+// 	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
+// 	console.log(ISTTime);
+// 	ReportsRefresher(date, ISTTime);
+// });
+
+// cron.schedule('00 18 * * *', function() {
+// 	var d = new Date();
+// 	d.setDate(d.getDate());
+// 	if (d.getDate() < 10) {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		}
+// 	} else {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		}
+// 	}
+// 	var currentTime = new Date();
+// 	var currentOffset = currentTime.getTimezoneOffset();
+// 	var ISTOffset = 330; // IST offset UTC +5:30
+// 	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
+// 	console.log(ISTTime);
+// 	ReportsRefresher(date, ISTTime);
+// });
+
+// cron.schedule('00 20 * * *', function() {
+// 	var d = new Date();
+// 	d.setDate(d.getDate());
+// 	if (d.getDate() < 10) {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		}
+// 	} else {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		}
+// 	}
+// 	var currentTime = new Date();
+// 	var currentOffset = currentTime.getTimezoneOffset();
+// 	var ISTOffset = 330; // IST offset UTC +5:30
+// 	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
+// 	console.log(ISTTime);
+// 	ReportsRefresher(date, ISTTime);
+// });
+
+// cron.schedule('00 22 * * *', function() {
+// 	var d = new Date();
+// 	d.setDate(d.getDate());
+// 	if (d.getDate() < 10) {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 		}
+// 	} else {
+// 		if (d.getMonth() + 1 > 10) {
+// 			var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		} else {
+// 			var date = d.getFullYear() + '-' + '0' + (d.getMonth() + 1) + '-' + d.getDate();
+// 		}
+// 	}
+// 	var currentTime = new Date();
+// 	var currentOffset = currentTime.getTimezoneOffset();
+// 	var ISTOffset = 330; // IST offset UTC +5:30
+// 	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset - 5) * 60000);
+// 	console.log(ISTTime);
+// 	ReportsRefresher(date, ISTTime);
+// });
+
+// cron.schedule('10 00 * * *', function() {
+// 	var d = new Date();
+// 	d.setDate(d.getDate() - 1);
+// 	if (d.getDate() < 10) {
+// 		var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + '0' + d.getDate();
+// 	} else {
+// 		var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+// 	}
+// 	var currentTime = new Date();
+// 	var currentOffset = currentTime.getTimezoneOffset();
+// 	var ISTOffset = 330; // IST offset UTC +5:30
+// 	var ISTTime = new Date(currentTime.getTime() + (ISTOffset * 2 + currentOffset) * 60000);
+// 	console.log(ISTTime);
+// 	ReportsRefresher(date, ISTTime);
+// 	uniqueMaker(date);
+// });
+
+//Pincode
+
+// cron.schedule('00 00 * * *', function () {
+// 	TempJob();
+// });
+
+// async function TempJob() {
+// 	const Zipreports2 = require('./models/zipdata2reports');
+// 	const PhoneModelReports=require('./models/phonemodelreports')
+// 	const ZipModelReports = require('./models/zipreports');
+// 	let phones = await PhoneModelReports.aggregate([
+// 		{
+// 			$project: {
+// 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+// 				phoneModel: { $toUpper: "$phoneModel" }
+// 			}
+// 		},
+// 		{ $match: { test: "2021-08-30" } },
+// 		{ $group: { _id: "$phoneModel" } }
+// 	])
+
+// 	phones.forEach(async (phn) => {
+// 		let val = await phonemodel2reports.findOne({ make_model: phn._id, rtbType: { $exists: false } })
+// 		let updates = {
+// 			cost: val ? val.cost : '',
+// 			cumulative: val ? val.cumulative : '',
+// 			release: val ? val.release : '',
+// 			company: val ? val.company : '',
+// 			type: val ? val.type : '',
+// 			total_percent: val ? val.total_percent : '',
+// 			model: val ? val.model : '',
+// 			combined_make_model: val ? val.combined_make_model : '',
+// 		}
+// 		await phonemodel2reports.updateMany({ make_model: phn._id, rtbType: { $exists: true } }, { $set: updates })
+// 	})
+
+// 	let pincodes = await ZipModelReports.aggregate([
+// 		{
+// 			$project: {
+// 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+// 				zip: "$zip"
+// 			}
+// 		},
+// 		{ $match: { test: "2021-08-30" } },
+// 		{ $group: { _id: "$zip" } }
+// 	])
+
+// 	pincodes.forEach(async (pincode) => {
+// 		let val = await Zipreports2.findOne({ pincode: pincode._id, rtbType: { $exists: false } })
+// 		let updates = {
+// 			area: val ? val.area : '',
+// 			lowersubcity: val ? val.lowersubcity : '',
+// 			subcity: val ? val.subcity : '',
+// 			city: val ? val.city : '',
+// 			grandcity: val ? val.grandcity : '',
+// 			district: val ? val.district : '',
+// 			comparison: val ? val.comparison : '',
+// 			state: val ? val.state : '',
+// 			grandstate: val ? val.grandstate : '',
+// 			latitude: val ? val.latitude : '',
+// 			longitude: val ? val.longitude : '',
+// 		}
+// 		await Zipreports2.updateMany({ pincode: pincode._id, rtbType: { $exists: true } }, { $set: updates })
+// 	})
+
+// }

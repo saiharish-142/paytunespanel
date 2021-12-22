@@ -181,6 +181,7 @@ function QuartilePublisher({ title, report, state1, ids, arrowRetuner }) {
 							<TableRow>
 								<TableCell className="boldClass">Total</TableCell>
 								<TableCell className="boldClass" />
+								<TableCell className="boldClass" />
 								<TableCell className="boldClass">{compi}</TableCell>
 								<TableCell className="boldClass">{comp1}</TableCell>
 								<TableCell className="boldClass">{comp2}</TableCell>

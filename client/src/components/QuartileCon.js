@@ -21,6 +21,7 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 	const headers = [
 		{ key: 'publisherName', label: 'Publisher' },
 		{ key: 'apppubid', label: 'PublisherId' },
+		{ key: 'ssp', label: 'SSP' },
 		{ key: 'impression', label: 'Total Impressions' },
 		{ key: 'start', label: 'Start' },
 		{ key: 'firstQuartile', label: 'First Quartile' },
@@ -120,6 +121,10 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 									PublisherId
 									{arrowRetuner(sa === 'apppubid' ? (order === 'asc' ? '1' : '2') : '3')}
 								</TableCell>
+								<TableCell onClick={() => tablesorter('ssp', 'string')} style={{ cursor: 'pointer' }}>
+									SSP
+									{arrowRetuner(sa === 'ssp' ? (order === 'asc' ? '1' : '2') : '3')}
+								</TableCell>
 								<TableCell
 									onClick={() => tablesorter('impression', 'number')}
 									style={{ cursor: 'pointer' }}
@@ -168,6 +173,7 @@ function QuartilePublisherCon({ title, report, arrowRetuner }) {
 									<TableRow key={i}>
 										<TableCell>{log.publisherName}</TableCell>
 										<TableCell>{log.apppubid}</TableCell>
+										<TableCell>{log.ssp}</TableCell>
 										<TableCell>{log.impression}</TableCell>
 										<TableCell>{log.start}</TableCell>
 										<TableCell>{log.firstQuartile}</TableCell>
