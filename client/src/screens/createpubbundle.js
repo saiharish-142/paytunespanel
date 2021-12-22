@@ -215,6 +215,12 @@ function PublisherBundle() {
                 history.push('/manageAds');
             });
     };
+
+    const filterpubdata=(ad)=>{
+        let results=pubdata.filter((pub)=>pub!==ad);
+        setsearchedpubdata(results);
+        setpubdata(results);
+    }
     // const adstoadd = (id, ad) => {  Restaurant Rivals: Free Restaurant Games Offline
     //     if (bundlename) {
     //         fetch('/bundles/addadtobundle', {
@@ -453,6 +459,7 @@ function PublisherBundle() {
                                                         onClick={() => {
                                                             setsearchedselectedpubdata([...searchedselectedpubdata,ad]);
                                                             setselectedpubdata([...selectedpubdata,ad]);
+                                                            filterpubdata(ad);
                                                             // var dataload = loadingads;
                                                             // dataload.push(ad._id);
                                                             // setloadingads(dataload);
