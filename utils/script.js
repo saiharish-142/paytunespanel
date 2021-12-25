@@ -104,7 +104,12 @@ async function apppublisherscript() {
 		{ $match: { _id: { $gt: latestiddetails[0]._id } } }
 	])
 	results.map(async (res) => {
-		let n = new Apppublisher1(res);
+		let n = new Apppublisher1(
+			{
+				...res,
+				bundletitle:res.publisherid
+			}
+		);
 		await n.save();
 	})
 }

@@ -92,6 +92,17 @@ app.use('/subrepo', require('./routes/subreports.routes'));
 app.use('/bundles', require('./routes/bundling.routes'));
 app.use('/useragent', require('./routes/useragent.routes'));
 
+// const gg=async()=>{
+// 	const Apppublisher=require('./models/apppublishers.model');
+// 	let publishers=await Apppublisher.find({bundletitle:{$exists:false}});
+// 	console.log(publishers.length)
+// 	publishers.map(async pub=>{
+// 		let puu=await Apppublisher.findOneAndUpdate({_id:pub._id},{$set:{bundletitle:pub.publisherid}})
+// 	})
+// }
+
+// gg();
+
 const commonfunctions = require('./repeater');
 // commonfunctions.func1();
 // commonfunctions.func2();
