@@ -398,7 +398,7 @@ router.post(
 				bundletitle
 			};
 			pubids.map(async (pub) => {
-				let update = await Apppublisher.findOneAndUpdate({ publishername: pub.publishername, publisherid: pub.publisherid }, { $set: updates });
+				let update = await Apppublisher.updateMany({ publishername: pub.publishername, publisherid: pub.publisherid }, { $set: updates });
 				console.log(update);
 			})
 
@@ -474,7 +474,7 @@ router.put(
 			}
 
 			finalpubname.map(async (pub) => {
-				let update = await Apppublisher.findOneAndUpdate({ publishername: pub.publishername, publisherid: pub.publisherid }, { $set: updates });
+				let update = await Apppublisher.updateMany({ publishername: pub.publishername, publisherid: pub.publisherid }, { $set: updates });
 				console.log(update);
 			})
 
@@ -499,7 +499,7 @@ router.put(
 			console.log('fsdfs', removedpubnames);
 
 			removedpubnames.map(async (pub) => {
-				let update = await Apppublisher.findOneAndUpdate({ publishername: pub.publishername, publisherid: pub.publisherid }, { $set: { bundletitle: "" } });
+				let update = await Apppublisher.updateMany({ publishername: pub.publishername, publisherid: pub.publisherid }, { $set: { bundletitle: pub.publisherid } });
 				console.log(update);
 			})
 
