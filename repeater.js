@@ -112,7 +112,7 @@ async function datareturner(datae) {
 	try {
 		let ids = await adsetting
 			.aggregate([
-				{ $match: { isRunning: true } },
+				// { $match: { isRunning: true } },
 				{
 					$project: {
 						testStart: { $dateToString: { format: '%Y-%m-%d', date: '$startDate' } },
@@ -120,6 +120,22 @@ async function datareturner(datae) {
 						campaignId: '$campaignId',
 						targetImpression: '$targetImpression',
 						type: '$type'
+					}
+				},
+				{ $match: { testEnd: { $gte: '2021-12-22' } } },
+				{
+					$group: {
+						_id: { testStart: '$testStart', testEnd: '$testEnd', campaignId: '$campaignId', type: '$type' },
+						targetImpression: { $sum: '$targetImpression' }
+					}
+				},
+				{
+					$project: {
+						testStart: '$_id.testStart',
+						testEnd: '$_id.testEnd',
+						campaignId: '$_id.campaignId',
+						targetImpression: '$targetImpression',
+						type: '$_id.type'
 					}
 				}
 			])

@@ -18,6 +18,7 @@ export const PublishHead = [
 export const QuartileHead = [
 	{ title: 'Publisher' },
 	{ title: 'PublisherId' },
+	{ title: 'ssp' },
 	{ title: 'impressions' },
 	{ title: 'start' },
 	{ title: 'firstQuartile' },
@@ -150,7 +151,7 @@ export const PublishBody = (type, report1, spentfinder, report) => {
 		return [
 			{ value: log.publishername ? log.publishername : '' },
 			{ value: log.publisherid ? log.publisherid : '' },
-			
+
 			{
 				value: log.feed === '3' ? 'Podcast' : log.feed === '' ? 'Ondemand and Streaming' : ''
 			},
@@ -375,6 +376,8 @@ export const QuartileBodyCon = (report1) => {
 			// console.log(ltr);
 			return [
 				{ value: log.publisherName ? log.publisherName : '' },
+				{ value: log.apppubid ? log.apppubid : '' },
+				{ value: log.ssp ? log.ssp : '' },
 				{ value: log.impression ? log.impression : 0 },
 				{ value: log.start ? log.start : 0 },
 				{ value: log.firstQuartile ? log.firstQuartile : 0 },

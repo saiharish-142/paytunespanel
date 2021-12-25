@@ -577,7 +577,7 @@ function TablePro() {
 								</TableCell>
 								{title != 'Display' &&
 									(title === 'Summary' && report.report.displayCompleteReport ? (
-										<TableCell>{reportsub.ltr}%</TableCell>
+										<TableCell>{Math.round(reportsub.ltr * 100) / 100}%</TableCell>
 									) : (
 										<TableCell>
 											{Math.round(reportsub.complete * 100 / reportsub.impressions * 100) / 100}%
