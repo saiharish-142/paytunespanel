@@ -94,7 +94,7 @@ app.use('/useragent', require('./routes/useragent.routes'));
 
 // const gg=async()=>{
 // 	const Apppublisher=require('./models/apppublishers.model');
-// 	let publishers=await Apppublisher.find({bundletitle:{$exists:false}});
+// 	let publishers=await Apppublisher.find({ $expr: { $ne: [ "$publisherid" , "$bundletitle" ] } });
 // 	console.log(publishers.length)
 // 	publishers.map(async pub=>{
 // 		let puu=await Apppublisher.findOneAndUpdate({_id:pub._id},{$set:{bundletitle:pub.publisherid}})

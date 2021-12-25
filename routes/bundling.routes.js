@@ -5,7 +5,7 @@ const adminauth = require('../authenMiddleware/adminauth');
 const bindstreamingads = mongoose.model('bindstreamingads');
 const streamingads = mongoose.model('streamingads');
 const adsetting = mongoose.model('adsetting');
-const Apppublisher=require('../models/apppublishers.model');
+const Apppublisher = require('../models/apppublishers.model');
 
 router.get('/', adminauth, (req, res) => {
 	bindstreamingads
@@ -130,12 +130,12 @@ router.get('/grp/:id', adminauth, (req, res) => {
 					},
 					{
 						$project: {
-							AdTitle: { $split: [ '$AdTitle', '_' ] }
+							AdTitle: { $split: ['$AdTitle', '_'] }
 						}
 					},
 					{
 						$project: {
-							AdTitle: { $slice: [ '$AdTitle', 2 ] }
+							AdTitle: { $slice: ['$AdTitle', 2] }
 						}
 					},
 					{
@@ -147,7 +147,7 @@ router.get('/grp/:id', adminauth, (req, res) => {
 									in: {
 										$concat: [
 											'$$value',
-											{ $cond: [ { $eq: [ '$$value', '' ] }, '', '_' ] },
+											{ $cond: [{ $eq: ['$$value', ''] }, '', '_'] },
 											'$$this'
 										]
 									}
@@ -353,31 +353,34 @@ router.delete('/deleteallbundles', adminauth, (req, res) => {
 router.post(
 	'/allpub',
 	adminauth,
-	async (req,res)=>{
-		try{
+	async (req, res) => {
+		try {
 			console.log(1324324342);
-			let publishers=await Apppublisher.aggregate([
+			let publishers = await Apppublisher.aggregate([
 				{
-					$match:{bundletitle:""}
-				},{
-					$group:{
-						_id:"$publishername",
-						publisherid:{$first:"$publisherid"},
-						ssp:{$first:"$ssp"}
+					$match:  { $expr: { $eq: [ "$publisherid" , "$bundletitle" ] } } 
+				}, 
+				{
+					$group: {
+						_id: "$publishername",
+						publisherid: { $first: "$publisherid" },
+						ssp: { $first: "$ssp" }
 					}
 				},
-				{$project:{
-					publisherid:"$publisherid",
-					ssp:"$ssp",
-					publishername:"$_id"
-				}}
+				{
+					$project: {
+						publisherid: "$publisherid",
+						ssp: "$ssp",
+						publishername: "$_id"
+					}
+				}
 			])
 			// let publishers=await Apppublisher.find({}).sort({_id:-1});
 			console.log(publishers.length);
-			res.status(200).json({message:"Success!",data:publishers});
-		}catch(err){
+			res.status(200).json({ message: "Success!", data: publishers });
+		} catch (err) {
 			console.log(err.message)
-			res.status(400).json({error:err.message});
+			res.status(400).json({ error: err.message });
 		}
 	}
 )
@@ -385,122 +388,123 @@ router.post(
 router.post(
 	'/createpubbundle',
 	adminauth,
-	async (req,res)=>{
-		try{
-			let {bundletitle,pubids}=req.body;
+	async (req, res) => {
+		try {
+			let { bundletitle, pubids } = req.body;
 			console.log(pubids);
 			// let ids=pubid.map(id=>mongoose.Types.ObjectId(id));
 
-			let updates={
+			let updates = {
 				bundletitle
 			};
-			pubids.map(async (pub)=>{
-				let update=await Apppublisher.findOneAndUpdate({publishername:pub.publishername,publisherid:pub.publisherid},{$set:updates});
+			pubids.map(async (pub) => {
+				let update = await Apppublisher.findOneAndUpdate({ publishername: pub.publishername, publisherid: pub.publisherid }, { $set: updates });
 				console.log(update);
 			})
-			
 
-			res.status(200).json({message:"Successfuly Created!"})
 
-		}catch(err){
+			res.status(200).json({ message: "Successfuly Created!" })
+
+		} catch (err) {
 			console.log(err.message)
-			res.status(400).json({error:err.message});
+			res.status(400).json({ error: err.message });
 		}
 	}
 )
 
-router.get('/pub/:id', adminauth, async(req, res) => {
+router.get('/pub/:id', adminauth, async (req, res) => {
 	let { id } = req.params;
-	try{
-		let pub=await Apppublisher.find({bundletitle:id});
-		let result={
-			bundletitle:id,
-			pubdata:pub
+	try {
+		let pub = await Apppublisher.find({ bundletitle: id });
+		let result = {
+			bundletitle: id,
+			pubdata: pub
 		}
-		res.status(200).json({message:"Success!",data:result});
-	}catch(err){
-		res.status(400).json({error:err.message});
+		res.status(200).json({ message: "Success!", data: result });
+	} catch (err) {
+		res.status(400).json({ error: err.message });
 	}
-	
+
 });
 
 router.post(
 	'/getbundles',
 	adminauth,
-	async(req,res)=>{
-		try{
-			let pubs=await Apppublisher.aggregate([
-				{$match:{bundletitle:{$ne:"",$exists:true}}},
-				{$group:{
-					_id:"$bundletitle",
-					id:{$push:"$_id"}
+	async (req, res) => {
+		try {
+			let pubs = await Apppublisher.aggregate([
+				{ $match: { bundletitle: { $ne: "", $exists: true } } },
+				{
+					$group: {
+						_id: "$bundletitle",
+						id: { $push: "$_id" }
+					}
 				}
-			}
 			]).allowDiskUse(true);
-			res.status(200).json({message:"Success",data:pubs});
-		}catch(err){
-			res.status(400).json({error:err.message});
+			res.status(200).json({ message: "Success", data: pubs });
+		} catch (err) {
+			res.status(400).json({ error: err.message });
 		}
-	}	
+	}
 )
 
 function containsObject(obj, list) {
-    var i;
-    for (i = 0; i < list.length; i++) {
-        if ( JSON.stringify(list[i])  ===  JSON.stringify(obj) ) {
-            return true;
-        }
-    }
+	var i;
+	for (i = 0; i < list.length; i++) {
+		if (JSON.stringify(list[i]) === JSON.stringify(obj)) {
+			return true;
+		}
+	}
 
-    return false;
+	return false;
 }
 
 router.put(
 	'/UpdatepubBundle',
 	adminauth,
-	async (req,res)=>{
-		try{
-			let {bundletitle,orgpubname,finalpubname}=req.body;
-			console.log(bundletitle,orgpubname,finalpubname);
+	async (req, res) => {
+		try {
+			let { bundletitle, orgpubname, finalpubname } = req.body;
+			console.log(bundletitle, orgpubname, finalpubname);
 
-			let updates={
+			let updates = {
 				bundletitle
 			}
 
-			finalpubname.map(async (pub)=>{
-				let update=await Apppublisher.findOneAndUpdate({publishername:pub.publishername,publisherid:pub.publisherid},{$set:updates});
+			finalpubname.map(async (pub) => {
+				let update = await Apppublisher.findOneAndUpdate({ publishername: pub.publishername, publisherid: pub.publisherid }, { $set: updates });
 				console.log(update);
 			})
 
-			
 
-			let removedpubnames=orgpubname.map((pub)=>{
-				let obj={
-					publishername:pub.publishername,
-					publisherid:pub.publisherid
-				}	
 
-				let status=containsObject(obj,finalpubname);
+			let removedpubnames = orgpubname.map((pub) => {
+				let obj = {
+					publishername: pub.publishername,
+					publisherid: pub.publisherid
+				}
+
+				let status = containsObject(obj, finalpubname);
 				console.log(status);
-				if(!status){
+				if (!status) {
 					return pub;
 				}
 
-				return {publishername:"",publisherid:""};
+				return { publishername: "", publisherid: "" };
 
 			})
 
-			console.log('fsdfs',removedpubnames);
-			
-			removedpubnames.map(async (pub)=>{
-				let update=await Apppublisher.findOneAndUpdate({publishername:pub.publishername,publisherid:pub.publisherid},{$set:{bundletitle:""}});
+			console.log('fsdfs', removedpubnames);
+
+			removedpubnames.map(async (pub) => {
+				let update = await Apppublisher.findOneAndUpdate({ publishername: pub.publishername, publisherid: pub.publisherid }, { $set: { bundletitle: "" } });
 				console.log(update);
 			})
 
-			res.status(200).json({message:"Success"});
+			res.status(200).json({ message: "Success" });
 
-		}catch(err){
-			res.status(400).json({error:err.message});
+		} catch (err) {
+			res.status(400).json({ error: err.message });
 		}
 	}
 )
