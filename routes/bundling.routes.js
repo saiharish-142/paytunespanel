@@ -433,7 +433,9 @@ router.post(
 	async (req, res) => {
 		try {
 			let pubs = await Apppublisher.aggregate([
-				{ $match: { bundletitle: { $ne: "", $exists: true } } },
+				{
+					$match:  { $expr: { $ne: [ "$publisherid" , "$bundletitle" ] } } 
+				},
 				{
 					$group: {
 						_id: "$bundletitle",
