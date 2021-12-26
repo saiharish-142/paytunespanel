@@ -414,7 +414,22 @@ router.post(
 router.get('/pub/:id', adminauth, async (req, res) => {
 	let { id } = req.params;
 	try {
-		let pub = await Apppublisher.find({ bundletitle: id });
+		let pub = await Apppublisher.aggregate([
+			{$match:{bundletitle:id}},
+			{
+				$group: {
+					_id: {pubname:"$publishername",pubid:"$publisherid"},
+					ssp: { $first: "$ssp" }
+				}
+			},
+			{
+				$project: {
+					publisherid: "$_id.pubid",
+					ssp: "$ssp",
+					publishername: "$_id.pubname"
+				}
+			}
+		]);
 		let result = {
 			bundletitle: id,
 			pubdata: pub
