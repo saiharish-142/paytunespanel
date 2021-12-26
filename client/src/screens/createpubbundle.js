@@ -411,15 +411,15 @@ function PublisherBundle() {
                                     })}
                                 {!searchedselectedpubdata.length && (
                                     <TableRow>
-                                        <TableCell>Campagins needed to be selected</TableCell>
+                                        <TableCell>Publishers needed to be selected</TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>
                         </TableContainer>
-                        <div style={{ fontSize: '15px' }}>Campaigns list</div>
+                        <div style={{ fontSize: '15px' }}>Publishers list</div>
                         <input
                             style={{ margin: '0 auto', width: '80%' }}
-                            placeholder="Search the Campagins"
+                            placeholder="Search the Publishers"
                             onChange={async (e) => {
                                 var letter = e.target.value.toLowerCase();
                                 // console.log(letter)
