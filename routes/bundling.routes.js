@@ -362,16 +362,15 @@ router.post(
 				}, 
 				{
 					$group: {
-						_id: "$publishername",
-						publisherid: { $first: "$publisherid" },
+						_id: {pubname:"$publishername",pubid:"$publisherid"},
 						ssp: { $first: "$ssp" }
 					}
 				},
 				{
 					$project: {
-						publisherid: "$publisherid",
+						publisherid: "$_id.pubid",
 						ssp: "$ssp",
-						publishername: "$_id"
+						publishername: "$_id.pubname"
 					}
 				}
 			])
