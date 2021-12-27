@@ -105,7 +105,7 @@ router.put('/reportbydate', adminauth, (req, res) => {
 		.then((reports) => {
 			var data = reports;
 			data = data.filter((x) => x.appId !== '');
-			publisherapps.populate(data, { path: 'appId' }, function (err, populatedreports) {
+			publisherapps.populate(data, { path: 'appId' }, function(err, populatedreports) {
 				if (err) {
 					res.status(422).json(err);
 				}
@@ -124,7 +124,7 @@ router.put('/reportbydatereq', adminauth, (req, res) => {
 		.then((reports) => {
 			var data = reports;
 			data = data.filter((x) => x.appId !== '');
-			publisherapps.populate(data, { path: 'appId' }, function (err, populatedreports) {
+			publisherapps.populate(data, { path: 'appId' }, function(err, populatedreports) {
 				if (err) {
 					res.status(422).json(err);
 				}
@@ -140,7 +140,7 @@ router.put('/detreportcambydat', adminauth, (req, res) => {
 	var audio = campaignId.audio.map((id) => mongoose.Types.ObjectId(id));
 	var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
 	var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
-	let ids = [...audio, ...video, ...display];
+	let ids = [ ...audio, ...video, ...display ];
 	ids = type === 'Audio' ? audio : type === 'Video' ? video : type === 'Display' ? display : ids;
 	console.log(ids);
 	// var ids = campaignId.map((id) => mongoose.Types.ObjectId(id));
@@ -179,10 +179,10 @@ router.put('/detreportcambydat', adminauth, (req, res) => {
 			resu = reports;
 			resu.map((det) => {
 				var resregion = [].concat.apply([], det.region);
-				resregion = [...new Set(resregion)];
+				resregion = [ ...new Set(resregion) ];
 				det.region = resregion;
 				var updatedDate = det.updatedAt;
-				updatedDate.sort(function (a, b) {
+				updatedDate.sort(function(a, b) {
 					return new Date(b) - new Date(a);
 				});
 				det.updatedAt = updatedDate;
@@ -212,22 +212,31 @@ router.put('/detrepocambydat', adminauth, (req, res) => {
 			},
 			{
 				$group: {
-					_id: { date: '$date' },
+					_id: { date: '$date', ssp: '$ssp' },
 					updatedAt: { $push: '$createdOn' },
 					impressions: { $sum: '$impression' },
 					complete: { $sum: '$complete' },
-					clicks: { $sum: '$CompanionClickTracking' },
-					region: { $push: '$region' }
+					clicks: { $sum: '$CompanionClickTracking' }
+				}
+			},
+			{
+				$group: {
+					_id: { date: '$_id.date' },
+					data: {
+						$push: {
+							ssp: '$_id.ssp',
+							updatedAt: '$updatedAt',
+							impressions: '$impressions',
+							complete: '$complete',
+							clicks: '$clicks'
+						}
+					}
 				}
 			},
 			{
 				$project: {
 					date: '$_id.date',
-					updatedAt: '$updatedAt',
-					impressions: '$impressions',
-					complete: '$complete',
-					clicks: '$clicks',
-					region: '$region',
+					data: '$data',
 					_id: 0
 				}
 			},
@@ -236,14 +245,32 @@ router.put('/detrepocambydat', adminauth, (req, res) => {
 		.then((reports) => {
 			resu = reports;
 			resu.map((det) => {
-				var resregion = [].concat.apply([], det.region);
-				resregion = [...new Set(resregion)];
-				det.region = resregion;
-				var updatedDate = det.updatedAt;
-				updatedDate.sort(function (a, b) {
+				var impress = 0;
+				var onliimpress = 0;
+				var comple = 0;
+				var clicks = 0;
+				var updatedDate = [];
+				det.data &&
+					det.data.map((x) => {
+						if (x && (x.ssp === 'Adswizz' || x.ssp === 'Rubicon' || x.ssp === 'Triton')) {
+							comple += x.complete ? parseInt(x.complete) : 0;
+							onliimpress += x.impressions ? parseInt(x.impressions) : 0;
+						}
+						x.updatedAt.map((y) => {
+							updatedDate.push(y);
+						});
+						impress += x.impressions ? parseInt(x.impressions) : 0;
+						clicks += x.clicks ? parseInt(x.clicks) : 0;
+					});
+				updatedDate.sort(function(a, b) {
 					return new Date(b) - new Date(a);
 				});
-				det.updatedAt = updatedDate;
+				det.onlineImpressions = onliimpress;
+				det.impressions = impress;
+				det.complete = comple;
+				det.clicks = clicks;
+				det.updatedAt = updatedDate[0];
+				det.data = undefined;
 			});
 			res.json(resu);
 		})
@@ -292,7 +319,7 @@ router.put('/sumreportofcam22', adminauth, (req, res) => {
 		.then((reports) => {
 			var data = reports;
 			data = data.filter((x) => x.Publisher !== '');
-			publisherapps.populate(data, { path: 'Publisher' }, function (err, populatedreports) {
+			publisherapps.populate(data, { path: 'Publisher' }, function(err, populatedreports) {
 				if (err) {
 					return res.status(422).json(err);
 				}
@@ -300,18 +327,18 @@ router.put('/sumreportofcam22', adminauth, (req, res) => {
 				// console.log(populatedreports)
 				resu.map((det) => {
 					var resregion = [].concat.apply([], det.region);
-					resregion = [...new Set(resregion)];
+					resregion = [ ...new Set(resregion) ];
 					det.region = resregion;
 					var rescampaignId = [].concat.apply([], det.campaignId);
-					rescampaignId = [...new Set(rescampaignId)];
+					rescampaignId = [ ...new Set(rescampaignId) ];
 					det.campaignId = rescampaignId[0];
 					var updatedDate = det.updatedAt;
-					updatedDate.sort(function (a, b) {
+					updatedDate.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					det.updatedAt = updatedDate;
 				});
-				StreamingAds.populate(resu, { path: 'campaignId' }, function (err, populatedres) {
+				StreamingAds.populate(resu, { path: 'campaignId' }, function(err, populatedres) {
 					if (err) {
 						return res.status(422).json(resu);
 					}
@@ -364,7 +391,7 @@ router.put('/sumreportofcamtest', adminauth, (req, res) => {
 		.then((reports) => {
 			var data = reports;
 			data = data.filter((x) => x.Publisher !== '');
-			publisherapps.populate(data, { path: 'Publisher' }, function (err, populatedreports) {
+			publisherapps.populate(data, { path: 'Publisher' }, function(err, populatedreports) {
 				if (err) {
 					return res.status(422).json(err);
 				}
@@ -372,18 +399,18 @@ router.put('/sumreportofcamtest', adminauth, (req, res) => {
 				// console.log(populatedreports)
 				resu.map((det) => {
 					var resregion = [].concat.apply([], det.region);
-					resregion = [...new Set(resregion)];
+					resregion = [ ...new Set(resregion) ];
 					det.region = resregion;
 					var rescampaignId = [].concat.apply([], det.campaignId);
-					rescampaignId = [...new Set(rescampaignId)];
+					rescampaignId = [ ...new Set(rescampaignId) ];
 					det.campaignId = rescampaignId[0];
 					var updatedDate = det.updatedAt;
-					updatedDate.sort(function (a, b) {
+					updatedDate.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					det.updatedAt = updatedDate;
 				});
-				StreamingAds.populate(resu, { path: 'campaignId' }, function (err, populatedres) {
+				StreamingAds.populate(resu, { path: 'campaignId' }, function(err, populatedres) {
 					if (err) {
 						return res.status(422).json(resu);
 					}
@@ -583,7 +610,7 @@ router.put('/sumreportofcamall', adminauth, (req, res) => {
 			}).catch((err) => console.log(err));
 			response.audio &&
 				response.audio.map((x) => {
-					x.updatedAt = [...new Set(x.updatedAt)];
+					x.updatedAt = [ ...new Set(x.updatedAt) ];
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
 					audioCompleteReport.impressions += parseInt(x.impressions);
 					audioCompleteReport.clicks += parseInt(x.clicks);
@@ -591,7 +618,7 @@ router.put('/sumreportofcamall', adminauth, (req, res) => {
 					audioCompleteReport.midpoint += parseInt(x.midpoint);
 					audioCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					audioCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
-					x.updatedAt.sort(function (a, b) {
+					x.updatedAt.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					x.updatedAt = x.updatedAt[0];
@@ -600,7 +627,7 @@ router.put('/sumreportofcamall', adminauth, (req, res) => {
 				});
 			response.display &&
 				response.display.map((x) => {
-					x.updatedAt = [...new Set(x.updatedAt)];
+					x.updatedAt = [ ...new Set(x.updatedAt) ];
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId);
 					displayCompleteReport.impressions += parseInt(x.impressions);
 					displayCompleteReport.clicks += parseInt(x.clicks);
@@ -608,7 +635,7 @@ router.put('/sumreportofcamall', adminauth, (req, res) => {
 					displayCompleteReport.midpoint += parseInt(x.midpoint);
 					displayCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					displayCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
-					x.updatedAt.sort(function (a, b) {
+					x.updatedAt.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					x.updatedAt = x.updatedAt[0];
@@ -617,7 +644,7 @@ router.put('/sumreportofcamall', adminauth, (req, res) => {
 				});
 			response.video &&
 				response.video.map((x) => {
-					x.updatedAt = [...new Set(x.updatedAt)];
+					x.updatedAt = [ ...new Set(x.updatedAt) ];
 					x.campaignId = remove_duplicates_arrayobject(x.campaignId);
 					videoCompleteReport.impressions += parseInt(x.impressions);
 					videoCompleteReport.clicks += parseInt(x.clicks);
@@ -625,14 +652,14 @@ router.put('/sumreportofcamall', adminauth, (req, res) => {
 					videoCompleteReport.midpoint += parseInt(x.midpoint);
 					videoCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					videoCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
-					x.updatedAt.sort(function (a, b) {
+					x.updatedAt.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					x.updatedAt = x.updatedAt[0];
 					x.campaignId = x.campaignId[0];
 					updatedAtTimes.push(x.updatedAt);
 				});
-			updatedAtTimes.sort(function (a, b) {
+			updatedAtTimes.sort(function(a, b) {
 				return new Date(b) - new Date(a);
 			});
 			var summaryCompleteReport = { impressions: 0, clicks: 0, complete: 0 };
@@ -1083,9 +1110,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 			// }
 			response.audio &&
 				response.audio.map((x) => {
-					x.updatedAt = [...new Set(x.updatedAt)];
-					x.Publisher = [...new Set(x.Publisher)];
-					x.ssp = [...new Set(x.ssp)];
+					x.updatedAt = [ ...new Set(x.updatedAt) ];
+					x.Publisher = [ ...new Set(x.Publisher) ];
+					x.ssp = [ ...new Set(x.ssp) ];
 					x.unique = 0;
 					var testappubid = x.apppubidpo;
 					var forda;
@@ -1109,7 +1136,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					audioCompleteReport.start += parseInt(x.start);
 					audioCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					audioCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
-					x.updatedAt.sort(function (a, b) {
+					x.updatedAt.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					x.Publisher = x.Publisher[0];
@@ -1133,9 +1160,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				});
 			response.display &&
 				response.display.map((x) => {
-					x.updatedAt = [...new Set(x.updatedAt)];
-					x.Publisher = [...new Set(x.Publisher)];
-					x.ssp = [...new Set(x.ssp)];
+					x.updatedAt = [ ...new Set(x.updatedAt) ];
+					x.Publisher = [ ...new Set(x.Publisher) ];
+					x.ssp = [ ...new Set(x.ssp) ];
 					var testappubid = x.apppubidpo;
 					var forda;
 					if (testappubid && testappubid.length)
@@ -1159,7 +1186,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					displayCompleteReport.start += parseInt(x.start);
 					displayCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					displayCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
-					x.updatedAt.sort(function (a, b) {
+					x.updatedAt.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					x.updatedAt = x.updatedAt[0];
@@ -1182,9 +1209,9 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 				});
 			response.video &&
 				response.video.map((x) => {
-					x.updatedAt = [...new Set(x.updatedAt)];
-					x.Publisher = [...new Set(x.Publisher)];
-					x.ssp = [...new Set(x.ssp)];
+					x.updatedAt = [ ...new Set(x.updatedAt) ];
+					x.Publisher = [ ...new Set(x.Publisher) ];
+					x.ssp = [ ...new Set(x.ssp) ];
 					var testappubid = x.apppubidpo;
 					var forda;
 					if (testappubid && testappubid.length)
@@ -1208,7 +1235,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					videoCompleteReport.start += parseInt(x.start);
 					videoCompleteReport.firstQuartile += parseInt(x.firstQuartile);
 					videoCompleteReport.thirdQuartile += parseInt(x.thirdQuartile);
-					x.updatedAt.sort(function (a, b) {
+					x.updatedAt.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					x.updatedAt = x.updatedAt[0];
@@ -1229,7 +1256,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 					x.campaignId = x.campaignId[0];
 					updatedAtTimes.push(x.updatedAt);
 				});
-			updatedAtTimes.sort(function (a, b) {
+			updatedAtTimes.sort(function(a, b) {
 				return new Date(b) - new Date(a);
 			});
 			var summaryCompleteReport = {
@@ -1281,7 +1308,7 @@ router.put('/sumreportofcamall2', adminauth, (req, res) => {
 		.catch((err) => console.log(err));
 });
 
-router.put('/sumreportofcamDiv',  (req, res) => {
+router.put('/sumreportofcamDiv', (req, res) => {
 	const { campaignId, tag } = req.body;
 	var ids = campaignId.map((id) => mongoose.Types.ObjectId(id));
 	campaignwisereports
@@ -1301,21 +1328,21 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 			},
 			{
 				$project: {
-					appdetails:{$first:"$apppubiddetails"},
-					campaignId:1,
+					appdetails: { $first: '$apppubiddetails' },
+					campaignId: 1,
 					appId: 1,
 					bundlename: 1,
-					apppubid:1,
+					apppubid: 1,
 					ssp: 1,
 					feed: 1,
 					creativesetId: 1,
-					language:1,
+					language: 1,
 					requests: 1,
 					ads: 1, ///AdServed
 					servedAudioImpressions: 1,
 					servedCompanionAds: 1,
-					completedAudioImpressions:1,
-					error:1,
+					completedAudioImpressions: 1,
+					error: 1,
 					impression: 1,
 					start: 1,
 					firstQuartile: 1,
@@ -1327,13 +1354,13 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 					CompanioncreativeView: 1,
 					CompanionClickTracking: 1,
 					SovcreativeView: 1,
-					SovClickTracking: 1,
+					SovClickTracking: 1
 				}
 			},
 			{
 				$group: {
-					_id: {  appbundle:"$appdetails.bundletitle",feed: '$feed' },
-					appubid:{$addToSet:"$apppubid"},
+					_id: { appbundle: '$appdetails.bundletitle', feed: '$feed' },
+					appubid: { $addToSet: '$apppubid' },
 					appId: { $push: '$appId' },
 					ssp: { $push: '$ssp' },
 					updatedAt: { $push: '$createdOn' },
@@ -1350,7 +1377,7 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 			},
 			{
 				$project: {
-					pubbundle:"$_id.appbundle",
+					pubbundle: '$_id.appbundle',
 					Publisher: '$appId',
 					PublisherSplit: '$appubid',
 					publisherid: '$appubid',
@@ -1420,11 +1447,11 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 				result.map((x) => {
 					summaryReport.unique.push(...x.PublisherSplit);
 				});
-				console.log('dsf',summaryReport.unique);
+				console.log('dsf', summaryReport.unique);
 				let uniqueData = await freqpublishreports.aggregate([
 					{ $match: { campaignId: { $in: ids }, appId: { $in: summaryReport.unique } } }
 				]);
-				let uniqueDataCamp = await freqCampWise.aggregate([{ $match: { campaignId: { $in: ids } } }]);
+				let uniqueDataCamp = await freqCampWise.aggregate([ { $match: { campaignId: { $in: ids } } } ]);
 				let spentData = await spentreports.aggregate([
 					{ $match: { campaignId: { $in: ids } } },
 					{ $group: { _id: '$apppubid', totalspent: { $sum: '$totalSpent' } } },
@@ -1503,9 +1530,9 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 					});
 					podcastResult.length &&
 						podcastResult.map((x) => {
-							x.updatedAt = [...new Set(x.updatedAt)];
-							x.Publisher = [...new Set(x.Publisher)];
-							x.ssp = [...new Set(x.ssp)];
+							x.updatedAt = [ ...new Set(x.updatedAt) ];
+							x.Publisher = [ ...new Set(x.Publisher) ];
+							x.ssp = [ ...new Set(x.ssp) ];
 							// x.unique = 0;
 							var testappubid = x.apppubidpo;
 							var forda;
@@ -1519,12 +1546,12 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 							x.apppubidpo = forda;
 							x.spent = tempSpent[x.PublisherSplit];
 							// console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
-							let sum=0
-							x.PublisherSplit.map(pub=>{
-								console.log('fgfg',tempUser[pub]);
-								sum+=tempUser[pub]?tempUser[pub]:0;
-							})
-							x.uniqueData=sum;
+							let sum = 0;
+							x.PublisherSplit.map((pub) => {
+								console.log('fgfg', tempUser[pub]);
+								sum += tempUser[pub] ? tempUser[pub] : 0;
+							});
+							x.uniqueData = sum;
 							// x.uniqueData = tempUser[x.PublisherSplit] ? tempUser[x.PublisherSplit] : 0;
 							x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
 							// podcastReport.uniqueValue += parseInt(x.uniqueData);
@@ -1536,7 +1563,7 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 							podcastReport.start += parseInt(x.start);
 							podcastReport.firstQuartile += parseInt(x.firstQuartile);
 							podcastReport.thirdQuartile += parseInt(x.thirdQuartile);
-							x.updatedAt.sort(function (a, b) {
+							x.updatedAt.sort(function(a, b) {
 								return new Date(b) - new Date(a);
 							});
 							x.Publisher = x.Publisher[0];
@@ -1560,9 +1587,9 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 						});
 					musicappsResult.length &&
 						musicappsResult.map((x) => {
-							x.updatedAt = [...new Set(x.updatedAt)];
-							x.Publisher = [...new Set(x.Publisher)];
-							x.ssp = [...new Set(x.ssp)];
+							x.updatedAt = [ ...new Set(x.updatedAt) ];
+							x.Publisher = [ ...new Set(x.Publisher) ];
+							x.ssp = [ ...new Set(x.ssp) ];
 							// x.unique = 0;
 							var testappubid = x.apppubidpo;
 							var forda;
@@ -1576,14 +1603,14 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 							x.apppubidpo = forda;
 							x.spent = tempSpent[x.PublisherSplit];
 							// console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
-							
-							let sum=0
-							x.PublisherSplit.map(pub=>{
-								console.log('fgfg',tempUser[pub]);
-								sum+=tempUser[pub]?tempUser[pub]:0;
-							})
-							x.uniqueData=sum;
-							
+
+							let sum = 0;
+							x.PublisherSplit.map((pub) => {
+								console.log('fgfg', tempUser[pub]);
+								sum += tempUser[pub] ? tempUser[pub] : 0;
+							});
+							x.uniqueData = sum;
+
 							// x.uniqueData = tempUser[x.PublisherSplit] ? tempUser[x.PublisherSplit] : 0;
 							x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
 							// musicappsReport.uniqueValue += parseInt(x.uniqueData);
@@ -1595,7 +1622,7 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 							musicappsReport.start += parseInt(x.start);
 							musicappsReport.firstQuartile += parseInt(x.firstQuartile);
 							musicappsReport.thirdQuartile += parseInt(x.thirdQuartile);
-							x.updatedAt.sort(function (a, b) {
+							x.updatedAt.sort(function(a, b) {
 								return new Date(b) - new Date(a);
 							});
 							x.Publisher = x.Publisher[0];
@@ -1617,15 +1644,15 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 							musicappsReport.unique.push(x.campaignId);
 							updatedAtTimes.push(x.updatedAt);
 						});
-					updatedAtTimes.sort(function (a, b) {
+					updatedAtTimes.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
-					podcastReport.unique = [...new Set(podcastReport.unique)];
+					podcastReport.unique = [ ...new Set(podcastReport.unique) ];
 					podcastReport.unique = removeDuplicates(podcastReport.unique);
 					podcastReport.unique.map((x) => {
 						podcastReport.uniqueValue += tempUserCamp[x];
 					});
-					musicappsReport.unique = [...new Set(musicappsReport.unique)];
+					musicappsReport.unique = [ ...new Set(musicappsReport.unique) ];
 					musicappsReport.unique = removeDuplicates(musicappsReport.unique);
 					musicappsReport.unique.map((x) => {
 						musicappsReport.uniqueValue += tempUserCamp[x];
@@ -1647,9 +1674,9 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 					// summaryReport.uniqueData = tempUser;
 					// summaryReport.spentData = tempSpent;
 					result.map((x) => {
-						x.updatedAt = [...new Set(x.updatedAt)];
-						x.Publisher = [...new Set(x.Publisher)];
-						x.ssp = [...new Set(x.ssp)];
+						x.updatedAt = [ ...new Set(x.updatedAt) ];
+						x.Publisher = [ ...new Set(x.Publisher) ];
+						x.ssp = [ ...new Set(x.ssp) ];
 						// x.unique = 0;
 						var testappubid = x.apppubidpo;
 						var forda;
@@ -1663,14 +1690,14 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 						x.apppubidpo = forda;
 						x.spent = tempSpent[x.PublisherSplit];
 						// console.log(tempUser[x.PublisherSplit], x.PublisherSplit);
-						
-						let sum=0
-							x.PublisherSplit.map(pub=>{
-								console.log('fgfg',tempUser[pub]);
-								sum+=tempUser[pub]?tempUser[pub]:0;
-							})
-							x.uniqueData=sum;
-						
+
+						let sum = 0;
+						x.PublisherSplit.map((pub) => {
+							console.log('fgfg', tempUser[pub]);
+							sum += tempUser[pub] ? tempUser[pub] : 0;
+						});
+						x.uniqueData = sum;
+
 						// x.uniqueData = tempUser[x.PublisherSplit] ? tempUser[x.PublisherSplit] : 0;
 						x.campaignId = remove_duplicates_arrayobject(x.campaignId, '_id');
 						summaryReport.impressions += parseInt(x.impressions);
@@ -1680,7 +1707,7 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 						summaryReport.start += parseInt(x.start);
 						summaryReport.firstQuartile += parseInt(x.firstQuartile);
 						summaryReport.thirdQuartile += parseInt(x.thirdQuartile);
-						x.updatedAt.sort(function (a, b) {
+						x.updatedAt.sort(function(a, b) {
 							return new Date(b) - new Date(a);
 						});
 						x.Publisher = x.Publisher[0];
@@ -1701,7 +1728,7 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 						x.campaignId = x.campaignId[0];
 						updatedAtTimes.push(x.updatedAt);
 					});
-					updatedAtTimes.sort(function (a, b) {
+					updatedAtTimes.sort(function(a, b) {
 						return new Date(b) - new Date(a);
 					});
 					var response = {};
@@ -1720,8 +1747,9 @@ router.put('/sumreportofcamDiv',  (req, res) => {
 			} else {
 				res.json({ message: 'No reports found...' });
 			}
-		}).catch(err=>{
-			console.log(err)
+		})
+		.catch((err) => {
+			console.log(err);
 		});
 });
 
@@ -1730,7 +1758,7 @@ router.put('/sumreportUnique', adminauth, async (req, res) => {
 	try {
 		var ids = campaignId.map((id) => mongoose.Types.ObjectId(id));
 		let uniqueData = await freqpublishreports
-			.aggregate([{ $match: { campaignId: { $in: ids } } }])
+			.aggregate([ { $match: { campaignId: { $in: ids } } } ])
 			.catch((er) => console.log(er));
 		console.log(uniqueData, ids);
 	} catch (e) {
@@ -1799,8 +1827,8 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 					}
 				});
 				var response = resol;
-				response.updatedAt = [...new Set(response.updatedAt)];
-				response.updatedAt.sort(function (a, b) {
+				response.updatedAt = [ ...new Set(response.updatedAt) ];
+				response.updatedAt.sort(function(a, b) {
 					return new Date(b) - new Date(a);
 				});
 				response.updatedAt = response.updatedAt[0];
@@ -1855,7 +1883,7 @@ router.put('/reportbycamp', adminauth, async (req, res) => {
 		let data2 = [];
 		data = data.filter((x) => x.appId !== '');
 		data2 = reports.filter((x) => !data.includes(x));
-		publisherapps.populate(data, { path: 'appId' }, function (err, populatedreports) {
+		publisherapps.populate(data, { path: 'appId' }, function(err, populatedreports) {
 			if (err) {
 				console.log(err);
 				res.status(422).json({ err, data, data2 });
@@ -1896,7 +1924,7 @@ router.put('/detreportbycamp', adminauth, (req, res) => {
 			var data = reports;
 			var data2 = [];
 			data = data.filter((x) => x.appId !== '');
-			publisherapps.populate(data, { path: 'appId' }, function (err, populatedreports) {
+			publisherapps.populate(data, { path: 'appId' }, function(err, populatedreports) {
 				if (err) {
 					res.status(422).json(err);
 				}
