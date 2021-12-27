@@ -17,8 +17,10 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(5);
 	const [ page, setPage ] = React.useState(0);
 	const [ totalImpreS, settotalImpreS ] = React.useState(0);
+	const [ totalImpreSonl, settotalImpreSonl ] = React.useState(0);
 	const [ totalClickS, settotalClickS ] = React.useState(0);
 	const [ totalCompS, settotalCompS ] = React.useState(0);
+	const [ totalCompS1, settotalCompS1 ] = React.useState(0);
 	const [ adss, setadss ] = React.useState(report);
 	const [ sa, setsa ] = React.useState('date');
 	const [ order, setorder ] = React.useState('desc');
@@ -46,6 +48,7 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 					return b.impression - a.impression;
 				});
 				var imoop = 0;
+				var imoon = 0;
 				var closk = 0;
 				var clomp = 0;
 				var imoop1 = 0;
@@ -54,6 +57,7 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 				data = data.filter((x) => x.type != 'unknown');
 				data.map((row) => {
 					imoop += parseInt(row.impressions);
+					imoon += parseInt(row.onlineImpressions);
 					row.impressions = parseInt(row.impressions);
 					closk += row.clicks;
 					clomp += row.complete;
@@ -63,6 +67,7 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 					var impre = Math.round(row.impressions * impression / imoop);
 					var cmpu = Math.round(row.complete * complete / clomp);
 					var cliol = Math.round(row.clicks * clicks / closk);
+					row.ltr2 = row.complete * 100 / row.onlineImpressions;
 					row.impressions = impre;
 					row.complete = cmpu;
 					row.clicks = cliol;
@@ -76,8 +81,10 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 				console.log(data);
 				setadss(data);
 				settotalImpreS(imoop1);
+				settotalImpreSonl(imoon);
 				settotalClickS(closk1);
 				settotalCompS(clomp1);
+				settotalCompS1(clomp);
 			} else {
 				setadss(report);
 			}
@@ -140,7 +147,7 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 										<TableCell>{row.clicks}</TableCell>
 										<TableCell>{Math.round(row.ctr * 100) / 100 + '%'}</TableCell>
 										<TableCell>{row.complete}</TableCell>
-										<TableCell>{Math.round(row.ltr * 100) / 100 + '%'}</TableCell>
+										<TableCell>{Math.round(row.ltr2 * 100) / 100 + '%'}</TableCell>
 									</TableRow>
 								);
 							})}
@@ -153,7 +160,7 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 								</TableCell>
 								<TableCell className="boldClass">{totalCompS}</TableCell>
 								<TableCell className="boldClass">
-									{Math.round(totalCompS * 100 / totalImpreS * 100) / 100}%
+									{Math.round(totalCompS1 * 100 / totalImpreSonl * 100) / 100}%
 								</TableCell>
 							</TableRow>
 						</TableBody>

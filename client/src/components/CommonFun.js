@@ -83,7 +83,8 @@ export const SumDetClientHead = [
 	{ title: 'Impressions' },
 	{ title: 'Clicks' },
 	{ title: 'CTR' },
-	{ title: 'Complete' }
+	{ title: 'Complete' },
+	{ title: 'LTR' }
 ];
 export const PincodeHead = [
 	{ title: 'Pincode' },
@@ -457,23 +458,29 @@ export const IBAClientBody = (report1, impressionR, clicksR) => {
 		];
 	});
 };
-export const SumDetClientBody = (report1, impressionR, clicksR) => {
+export const SumDetClientBody = (report1, impressionR, clicksR, completeR) => {
 	var compimpre = 0;
 	var compclick = 0;
+	var compcomplete = 0;
 	report1.map((x) => {
 		compimpre += parseInt(x.impressions);
+		compcomplete += parseInt(x.complete);
 		compclick += x.clicks;
 	});
 	return report1.map((log, index) => {
 		var Name = log.date ? log.date : '';
 		var impression = log ? Math.trunc(parseInt(log.impressions) * impressionR / compimpre) : 0;
 		var clicks = Math.trunc(log.clicks * clicksR / compclick);
+		var complete = Math.trunc(log.complete * completeR / compcomplete);
 		var ctr = impression ? clicks * 100 / impression : 0;
+		var ltr = log.onlineImpressions ? log.complete * 100 / log.onlineImpressions : 0;
 		return [
 			{ value: Name ? Name : '' },
 			{ value: impression ? impression : 0 },
 			{ value: clicks ? clicks : 0 },
-			{ value: ctr ? ctr + '%' : 0 }
+			{ value: ctr ? ctr + '%' : 0 },
+			{ value: complete ? complete : 0 },
+			{ value: ltr ? ltr + '%' : 0 }
 		];
 	});
 };
