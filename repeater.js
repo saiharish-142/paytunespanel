@@ -984,6 +984,57 @@ async function freqCampTest(chevk, chevk2) {
 		});
 }
 
+async function freqoverall(chevk, chevk2) {
+	let answertype = await campaignifareports
+		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					campaignId: '$campaignId',
+					rtbType: '$rtbType',
+					ifa: '$ifa'
+				}
+			},
+			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+			{
+				$group: {
+					_id: { ifa: '$ifa', rtbType: '$rtbType' }
+				}
+			},
+			{
+				$group: {
+					_id: { rtbType: '$_id.rtbType' },
+					users: { $sum: 1 }
+				}
+			}
+		])
+		.catch((err) => console.log(err));
+	let answeroverall = await campaignifareports
+		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					campaignId: '$campaignId',
+					rtbType: '$rtbType',
+					ifa: '$ifa'
+				}
+			},
+			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+			{
+				$group: {
+					_id: { ifa: '$ifa' }
+				}
+			},
+			{
+				$group: {
+					_id: null,
+					users: { $sum: 1 }
+				}
+			}
+		])
+		.catch((err) => console.log(err));
+}
+
 // DailyReportMailer();
 async function DailyReportMailer() {
 	var users = await admin.find({ usertype: 'client' }).select('email').catch((err) => console.log(err));
@@ -1254,7 +1305,7 @@ async function DailyReportMailer() {
 														? totaldataCount[xas]
 																.map((dalrep) => {
 																	return `<tr>
-																<td>${dalrep.date}</td>
+																<td>${dalrep.date ? dataformatchanger(dalrep.date) : ''}</td>
 																<td>
 																	${dalrep.impressions}
 																</td>
