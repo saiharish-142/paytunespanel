@@ -73,6 +73,7 @@ require('./models/useragent.model');
 require('./models/freqCampaignWise.model');
 require('./models/campaignreportsum.model');
 require('./models/freqPubreport.models');
+require('./models/singleoverallfreqdoc');
 app.get('/', (req, res) => {
 	res.send('hello!');
 });

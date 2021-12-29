@@ -14,6 +14,7 @@ const StreamingAds = mongoose.model('streamingads');
 const adsetting = mongoose.model('adsetting');
 const admin = mongoose.model('admin');
 const freqCampWise = mongoose.model('freqCampWise');
+const overallfreqreport = mongoose.model('overallfreqreport');
 const freqpubOnreports = mongoose.model('freqpubOnreports');
 const campaignwisereports = mongoose.model('campaignwisereports');
 const campaignreportsSum = mongoose.model('campaignreportsSum');
@@ -1033,6 +1034,56 @@ async function freqoverall(chevk, chevk2) {
 			}
 		])
 		.catch((err) => console.log(err));
+	if (answertype.length > 1) {
+		answertype.map(async (x) => {
+			let samp = await overallfreqreport.findOne({ rtbType: x._id.rtbType }).catch((err) => console.log(err));
+			if (samp) {
+				if (samp.createdOn === chevk2) {
+					console.log('Already Done', x.rtbType);
+				} else {
+					if (typeof samp.users === 'number') {
+						samp.users += x.users;
+					} else {
+						samp.users = x.users;
+					}
+					samp.save().then((ress) => {
+						console.log('updated', x.rtbType);
+					});
+				}
+			} else {
+				const gonasave = new overallfreqreport({
+					createdOn: chevk2,
+					users: x.users,
+					rtbType: x._id.rtbType
+				});
+				gonasave.save().then((cre) => console.log('created', x.rtbType)).catch((err) => console.log(err));
+			}
+		});
+	}
+	if (answeroverall.length > 0) {
+		let getover = await overallfreqreport.findOne({ rtbType: 'summary' }).catch((err) => console.log(err));
+		if (getover) {
+			if (getover.createdOn === chevk2) {
+				console.log('Already Done, summary');
+			} else {
+				if (typeof getover.users === 'number') {
+					getover.users += answeroverall[0].users;
+				} else {
+					getover.users = answeroverall[0].users;
+				}
+				getover.save().then((ress) => {
+					console.log('updated, x.summary');
+				});
+			}
+		} else {
+			const gonasave = new overallfreqreport({
+				createdOn: chevk2,
+				users: answeroverall[0].users,
+				rtbType: 'summary'
+			});
+			gonasave.save().then((cre) => console.log('created, summary')).catch((err) => console.log(err));
+		}
+	}
 }
 
 // DailyReportMailer();
@@ -1423,6 +1474,12 @@ router.put('/freq', adminauth, async (req, res) => {
 	res.json(data);
 });
 
+router.put('/freqsum', adminauth, async (req, res) => {
+	const { date, date2 } = req.body;
+	let data = await freqoverall(date, date2);
+	res.json(data);
+});
+
 router.put('/freqonlypub', adminauth, async (req, res) => {
 	const { date, date2 } = req.body;
 	let data = await freqPubTest(date, date2);
@@ -1435,7 +1492,7 @@ router.put('/freqonlycamp', adminauth, async (req, res) => {
 	res.json(data);
 });
 
-router.put('/autoMailer', adminauth, async (req, res) => {
+router.get('/autoMailer', adminauth, async (req, res) => {
 	// const { date, date2 } = req.body;
 	DailyReportMailer();
 	res.json('started');
