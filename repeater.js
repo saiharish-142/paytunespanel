@@ -986,6 +986,7 @@ async function freqCampTest(chevk, chevk2) {
 }
 
 async function freqoverall(chevk, chevk2) {
+	console.log('start');
 	let answertype = await campaignifareports
 		.aggregate([
 			{
@@ -1009,6 +1010,7 @@ async function freqoverall(chevk, chevk2) {
 				}
 			}
 		])
+		.allowDiskUse(true)
 		.catch((err) => console.log(err));
 	let answeroverall = await campaignifareports
 		.aggregate([
@@ -1033,6 +1035,7 @@ async function freqoverall(chevk, chevk2) {
 				}
 			}
 		])
+		.allowDiskUse(true)
 		.catch((err) => console.log(err));
 	if (answertype.length > 1) {
 		answertype.map(async (x) => {
