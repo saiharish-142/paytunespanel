@@ -502,7 +502,7 @@ let tempfunc = async () => {
 cron.schedule('30 1 * * *', function() {
 	PodcastEpisodeRefresher();
 });
-PodcastEpisodeRefresher();
+// PodcastEpisodeRefresher();
 async function PodcastEpisodeRefresher() {
 	let date = new Date(new Date());
 	date.setDate(date.getDate() - 1);
@@ -734,6 +734,25 @@ cron.schedule('35 00 * * *', function() {
 	cyear = cdatee.getFullYear();
 	var chevk = `${cyear}-${cmonth}-${cdate}`;
 	commonfunctions.freqpub(chevk, chevk2);
+});
+
+cron.schedule('20 00 * * *', function() {
+	var cdate, cmonth, cyear;
+	var cdatee = new Date(new Date());
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk2 = `${cyear}-${cmonth}-${cdate}`;
+	cdatee.setDate(cdatee.getDate() - 1);
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk = `${cyear}-${cmonth}-${cdate}`;
+	commonfunctions.freqover(chevk, chevk2);
 });
 
 cron.schedule('30 00 * * *', function() {

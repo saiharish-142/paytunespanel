@@ -1516,6 +1516,7 @@ const expo = {
 	func1: datareturner,
 	func2: pacingMailer,
 	func3: DailyReportMailer,
+	freqover: freqoverall,
 	freqpub: freqCampPubTest,
 	freqonlypub: freqPubTest,
 	freqonlycamp: freqCampTest,
