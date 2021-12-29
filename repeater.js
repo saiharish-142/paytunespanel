@@ -1042,7 +1042,7 @@ async function freqoverall(chevk, chevk2) {
 			let samp = await overallfreqreport.findOne({ rtbType: x._id.rtbType }).catch((err) => console.log(err));
 			if (samp) {
 				if (samp.createdOn === chevk2) {
-					console.log('Already Done', x.rtbType);
+					console.log('Already Done', x._id.rtbType);
 				} else {
 					if (typeof samp.users === 'number') {
 						samp.users += x.users;
@@ -1050,7 +1050,7 @@ async function freqoverall(chevk, chevk2) {
 						samp.users = x.users;
 					}
 					samp.save().then((ress) => {
-						console.log('updated', x.rtbType);
+						console.log('updated', x._id.rtbType);
 					});
 				}
 			} else {
@@ -1059,7 +1059,7 @@ async function freqoverall(chevk, chevk2) {
 					users: x.users,
 					rtbType: x._id.rtbType
 				});
-				gonasave.save().then((cre) => console.log('created', x.rtbType)).catch((err) => console.log(err));
+				gonasave.save().then((cre) => console.log('created', x._id.rtbType)).catch((err) => console.log(err));
 			}
 		});
 	}
