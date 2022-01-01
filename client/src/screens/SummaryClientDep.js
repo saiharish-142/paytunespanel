@@ -90,7 +90,7 @@ function SummaryClientDep({ adminView }) {
 		report.sets.map((x) => {
 			vamp[x] = [
 				{
-					columns: SumDetClientHead,
+					columns: SumDetClientHead(x),
 					data:
 						report.grp_ids[x].length &&
 						report.sumdetreport[x] &&
@@ -98,7 +98,8 @@ function SummaryClientDep({ adminView }) {
 							report.sumdetreport[x],
 							report.report[x].impressions,
 							report.report[x].clicks + report.report[x].clicks1,
-							report.report[x].complete
+							report.report[x].complete,
+							x
 						)
 				}
 			];

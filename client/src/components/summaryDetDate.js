@@ -65,10 +65,12 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 				console.log(imoop, closk, clomp);
 				data.map((row) => {
 					var impre = Math.round(row.impressions * impression / imoop);
+					var banimpre = row.bannerImpressions ? Math.round(row.bannerImpressions * impression / imoop) : 0;
 					var cmpu = Math.round(row.complete * complete / clomp);
 					var cliol = Math.round(row.clicks * clicks / closk);
 					row.ltr2 = row.complete * 100 / row.onlineImpressions;
 					row.impressions = impre;
+					row.bannerImpressions = banimpre;
 					row.complete = cmpu;
 					row.clicks = cliol;
 					imoop1 += impre;
@@ -118,6 +120,18 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 										sa === 'impressions' ? (order === 'asc' ? '1' : '2') : '3'
 									)}
 								</TableCell>
+								{head && head.toLowerCase().indexOf('audio') > -1 ? (
+									<TableCell
+										onClick={() => tablesorter('bannerImpressions', 'number')}
+										style={{ cursor: 'pointer' }}
+									>
+										Banner{arrowRetuner(
+											sa === 'bannerImpressions' ? (order === 'asc' ? '1' : '2') : '3'
+										)}
+									</TableCell>
+								) : (
+									''
+								)}
 								<TableCell
 									onClick={() => tablesorter('clicks', 'number')}
 									style={{ cursor: 'pointer' }}
@@ -144,6 +158,11 @@ function SummaryDetDate({ report, head, impression, clicks, complete }) {
 									<TableRow key={i}>
 										<TableCell>{row.date}</TableCell>
 										<TableCell>{row.impressions}</TableCell>
+										{head && head.toLowerCase().indexOf('audio') > -1 ? (
+											<TableCell>{row.bannerImpressions}</TableCell>
+										) : (
+											''
+										)}
 										<TableCell>{row.clicks}</TableCell>
 										<TableCell>{Math.round(row.ctr * 100) / 100 + '%'}</TableCell>
 										<TableCell>{row.complete}</TableCell>

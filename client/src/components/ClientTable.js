@@ -566,7 +566,7 @@ export default function BasicTable({ title, id, adminView }) {
 		report.sets.map((x) => {
 			vamp[x] = [
 				{
-					columns: SumDetClientHead,
+					columns: SumDetClientHead(x),
 					data:
 						!report.issumdetLoading &&
 						report.grp_ids[x].length &&
@@ -574,7 +574,9 @@ export default function BasicTable({ title, id, adminView }) {
 						SumDetClientBody(
 							report.sumdetreport[x],
 							report.report[x].impressions,
-							report.report[x].clicks + report.report[x].clicks1
+							report.report[x].clicks + report.report[x].clicks1,
+							report.report[x].complete,
+							x
 						)
 				}
 			];

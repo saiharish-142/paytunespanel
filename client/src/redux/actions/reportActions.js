@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
 	REPORT_LOADING,
 	REPORT_BASE_LOADED,
@@ -691,6 +692,7 @@ export const ClientReport = () => async (dispatch, getState) => {
 	console.log(data2);
 	var dass = [];
 	var puller = {};
+	// let bannerData = await axios.put('/')
 	var pullerCate = {};
 	var pullerData = {};
 	pullerData['complete'] = {
@@ -1018,7 +1020,9 @@ export const ClientSummDet = () => async (dispatch, getState) => {
 							Authorization: 'Bearer ' + localStorage.getItem('jwt')
 						},
 						body: JSON.stringify({
-							campaignId: repo.grp_ids[repo.sets[i]]
+							campaignId: repo.grp_ids[repo.sets[i]],
+							title: repo.sets[i],
+							videoId: repo.ids.video
 						})
 					})
 						.then((res) => res.json())
