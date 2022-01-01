@@ -54,6 +54,29 @@ const musicids = [
 	'5d10c405844dd970bf41e2af'
 ];
 
+const specific1banner = [
+	'13698',
+	'22308',
+	'845083955',
+	'22310',
+	'5b2210af504f3097e73e0d8b',
+	'5a1e46beeb993dc67979412e',
+	'jiosaavn',
+	'5efac6f9aeeeb92b8a1ee056',
+	'5c0a3f024a6c1355afaffabc',
+	'com.bsbportal.music',
+	'172101100',
+	'172101600',
+	'5d3f052e979a1c2391016c04',
+	'5d10c405844dd970bf41e2af',
+	'11726',
+	'324684580',
+	'com.spotify.music',
+	'com.jio.media.jiobeats',
+	'441813332'
+];
+const gannabanner = [ '18880', '18878', '5adeeb79cf7a7e3e5d822106', '585270521', 'com.gaana', '11726' ];
+
 router.get('/reports', adminauth, (req, res) => {
 	campaignwisereports
 		.find()
@@ -194,7 +217,7 @@ router.put('/detreportcambydat', adminauth, (req, res) => {
 
 router.put('/detrepocambydat', adminauth, (req, res) => {
 	// overall sai
-	const { campaignId } = req.body;
+	const { campaignId, title, videoId } = req.body;
 	var audio = campaignId.map((id) => mongoose.Types.ObjectId(id));
 	// var display = campaignId.display.map((id) => mongoose.Types.ObjectId(id));
 	// var video = campaignId.video.map((id) => mongoose.Types.ObjectId(id));
@@ -202,6 +225,7 @@ router.put('/detrepocambydat', adminauth, (req, res) => {
 	// ids = type === 'Audio' ? audio : type === 'Video' ? video : type === 'Display' ? display : ids;
 	// console.log(ids);
 	// var ids = campaignId.map((id) => mongoose.Types.ObjectId(id));
+	var videoTest = videoId ? videoId : [];
 	var resu = [];
 	campaignwisereports
 		.aggregate([
@@ -212,7 +236,12 @@ router.put('/detrepocambydat', adminauth, (req, res) => {
 			},
 			{
 				$group: {
-					_id: { date: '$date', ssp: '$ssp' },
+					_id: {
+						date: '$date',
+						ssp: '$ssp',
+						campaignId: '$campaignId',
+						apppubid: '$apppubid'
+					},
 					updatedAt: { $push: '$createdOn' },
 					impressions: { $sum: '$impression' },
 					complete: { $sum: '$complete' },
@@ -228,7 +257,9 @@ router.put('/detrepocambydat', adminauth, (req, res) => {
 							updatedAt: '$updatedAt',
 							impressions: '$impressions',
 							complete: '$complete',
-							clicks: '$clicks'
+							clicks: '$clicks',
+							campaignId: '$_id.campaignId',
+							apppubid: '$_id.apppubid'
 						}
 					}
 				}
@@ -244,34 +275,74 @@ router.put('/detrepocambydat', adminauth, (req, res) => {
 		])
 		.then((reports) => {
 			resu = reports;
-			resu.map((det) => {
-				var impress = 0;
-				var onliimpress = 0;
-				var comple = 0;
-				var clicks = 0;
-				var updatedDate = [];
-				det.data &&
-					det.data.map((x) => {
-						if (x && (x.ssp === 'Adswizz' || x.ssp === 'Rubicon' || x.ssp === 'Triton')) {
-							comple += x.complete ? parseInt(x.complete) : 0;
-							onliimpress += x.impressions ? parseInt(x.impressions) : 0;
-						}
-						x.updatedAt.map((y) => {
-							updatedDate.push(y);
+			if (title && title.toLowerCase().includes('audio')) {
+				resu.map((det) => {
+					var impress = 0;
+					var onliimpress = 0;
+					var banimpress = 0;
+					var comple = 0;
+					var clicks = 0;
+					var updatedDate = [];
+					det.data &&
+						det.data.map((x) => {
+							if (x && (x.ssp === 'Adswizz' || x.ssp === 'Rubicon' || x.ssp === 'Triton')) {
+								comple += x.complete ? parseInt(x.complete) : 0;
+								onliimpress += x.impressions ? parseInt(x.impressions) : 0;
+							}
+							if (videoTest.includes(x.campaignId.toString()) || specific1banner.includes(x.apppubid)) {
+								banimpress += x.impressions;
+							} else if (gannabanner.includes(x.apppubid)) {
+								banimpress += x.impressions * 0.25;
+							} else {
+								banimpress += x.impressions * 0.75;
+							}
+							x.updatedAt.map((y) => {
+								updatedDate.push(y);
+							});
+							impress += x.impressions ? parseInt(x.impressions) : 0;
+							clicks += x.clicks ? parseInt(x.clicks) : 0;
 						});
-						impress += x.impressions ? parseInt(x.impressions) : 0;
-						clicks += x.clicks ? parseInt(x.clicks) : 0;
+					updatedDate.sort(function(a, b) {
+						return new Date(b) - new Date(a);
 					});
-				updatedDate.sort(function(a, b) {
-					return new Date(b) - new Date(a);
+					det.bannerImpressions = banimpress;
+					det.onlineImpressions = onliimpress;
+					det.impressions = impress;
+					det.complete = comple;
+					det.clicks = clicks;
+					det.updatedAt = updatedDate[0];
+					det.data = undefined;
 				});
-				det.onlineImpressions = onliimpress;
-				det.impressions = impress;
-				det.complete = comple;
-				det.clicks = clicks;
-				det.updatedAt = updatedDate[0];
-				det.data = undefined;
-			});
+			} else {
+				resu.map((det) => {
+					var impress = 0;
+					var onliimpress = 0;
+					var comple = 0;
+					var clicks = 0;
+					var updatedDate = [];
+					det.data &&
+						det.data.map((x) => {
+							if (x && (x.ssp === 'Adswizz' || x.ssp === 'Rubicon' || x.ssp === 'Triton')) {
+								comple += x.complete ? parseInt(x.complete) : 0;
+								onliimpress += x.impressions ? parseInt(x.impressions) : 0;
+							}
+							x.updatedAt.map((y) => {
+								updatedDate.push(y);
+							});
+							impress += x.impressions ? parseInt(x.impressions) : 0;
+							clicks += x.clicks ? parseInt(x.clicks) : 0;
+						});
+					updatedDate.sort(function(a, b) {
+						return new Date(b) - new Date(a);
+					});
+					det.onlineImpressions = onliimpress;
+					det.impressions = impress;
+					det.complete = comple;
+					det.clicks = clicks;
+					det.updatedAt = updatedDate[0];
+					det.data = undefined;
+				});
+			}
 			res.json(resu);
 		})
 		.catch((err) => console.log(err));
