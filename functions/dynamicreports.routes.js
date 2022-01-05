@@ -30,6 +30,30 @@ function namereturner(testappubid) {
 	return forda;
 }
 
+function arr_diff(a1, a2) {
+	var a = [],
+		diff = [],
+		daila = 0,
+		diffa = 0,
+		cou = 0;
+	for (var i = 0; i < a1.length; i++) {
+		diffa += 1;
+		a[a1[i]] = true;
+	}
+	for (var i = 0; i < a2.length; i++) {
+		if (a[a2[i]]) {
+			cou += 1;
+			delete a[a2[i]];
+		}
+	}
+	for (var k in a) {
+		daila += 1;
+		diff.push(k);
+	}
+	// console.log(diff.length, diffa - daila, cou);
+	return diff;
+}
+
 router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 	try {
 		const { startDate, endDate } = req.body;
