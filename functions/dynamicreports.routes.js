@@ -92,267 +92,266 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 		// var audiodig = arr_diff(totalids, idsDefined);
 		// console.log(totalids.length, idsDefined.length);
 		// console.log(audiodig.length);
-		ids.audio = ids.audio.map((x) => mongoose.Types.ObjectId(x));
-		ids.display = ids.display.map((x) => mongoose.Types.ObjectId(x));
-		ids.video = ids.video.map((x) => mongoose.Types.ObjectId(x));
-		console.log(ids.audio.length, ids.display.length, ids.video.length);
-		let publisherDataAudio = await Campaignwisereports.aggregate([
-			{ $match: { campaignId: { $in: ids.audio } } },
-			{
-				$project: {
-					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-					apppubid: '$apppubid',
-					feed: '$feed',
-					ssp: '$ssp',
-					impression: '$impression',
-					CompanionClickTracking: '$CompanionClickTracking',
-					SovClickTracking: '$SovClickTracking',
-					start: '$start',
-					firstQuartile: '$firstQuartile',
-					midpoint: '$midpoint',
-					thirdQuartile: '$thirdQuartile',
-					complete: '$complete'
-				}
-			},
-			{ $match: { test: { $gte: startDate, $lte: endDate } } },
-			{
-				$group: {
-					_id: { appubid: '$apppubid', feed: '$feed' },
-					test: { $push: '$test' },
-					ssp: { $push: '$ssp' },
-					impressions: { $sum: '$impression' },
-					clicks: { $sum: '$CompanionClickTracking' },
-					clicks1: { $sum: '$SovClickTracking' },
-					start: { $sum: '$start' },
-					firstQuartile: { $sum: '$firstQuartile' },
-					midpoint: { $sum: '$midpoint' },
-					thirdQuartile: { $sum: '$thirdQuartile' },
-					complete: { $sum: '$complete' }
-				}
-			},
-			{
-				$project: {
-					PublisherSplit: '$_id.appubid',
-					feed: '$_id.feed',
-					test: '$test',
-					ssp: '$ssp',
-					impressions: '$impressions',
-					clicks: '$clicks',
-					clicks1: '$clicks1',
-					start: '$start',
-					firstQuartile: '$firstQuartile',
-					midpoint: '$midpoint',
-					thirdQuartile: '$thirdQuartile',
-					complete: '$complete',
-					_id: 0
-				}
-			},
-			{
-				$lookup: {
-					from: 'apppublishers',
-					localField: 'PublisherSplit',
-					foreignField: 'publisherid',
-					as: 'apppubidpo'
-				}
-			}
-		]);
-		let publisherDataDisplay = await Campaignwisereports.aggregate([
-			{ $match: { campaignId: { $in: ids.display } } },
-			{
-				$project: {
-					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-					apppubid: '$apppubid',
-					feed: '$feed',
-					ssp: '$ssp',
-					impression: '$impression',
-					CompanionClickTracking: '$CompanionClickTracking',
-					SovClickTracking: '$SovClickTracking'
-				}
-			},
-			{ $match: { test: { $gte: startDate, $lte: endDate } } },
-			{
-				$group: {
-					_id: { appubid: '$apppubid', feed: '$feed' },
-					test: { $push: '$test' },
-					ssp: { $push: '$ssp' },
-					impressions: { $sum: '$impression' },
-					clicks: { $sum: '$CompanionClickTracking' },
-					clicks1: { $sum: '$SovClickTracking' }
-				}
-			},
-			{
-				$project: {
-					PublisherSplit: '$_id.appubid',
-					feed: '$_id.feed',
-					test: '$test',
-					ssp: '$ssp',
-					impressions: '$impressions',
-					clicks: '$clicks',
-					clicks1: '$clicks1',
-					_id: 0
-				}
-			},
-			{
-				$lookup: {
-					from: 'apppublishers',
-					localField: 'PublisherSplit',
-					foreignField: 'publisherid',
-					as: 'apppubidpo'
-				}
-			}
-		]);
-		let publisherDataVideo = await Campaignwisereports.aggregate([
-			{ $match: { campaignId: { $in: ids.video } } },
-			{
-				$project: {
-					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-					apppubid: '$apppubid',
-					feed: '$feed',
-					ssp: '$ssp',
-					impression: '$impression',
-					CompanionClickTracking: '$CompanionClickTracking',
-					SovClickTracking: '$SovClickTracking',
-					start: '$start',
-					firstQuartile: '$firstQuartile',
-					midpoint: '$midpoint',
-					thirdQuartile: '$thirdQuartile',
-					complete: '$complete'
-				}
-			},
-			{ $match: { test: { $gte: startDate, $lte: endDate } } },
-			{
-				$group: {
-					_id: { appubid: '$apppubid', feed: '$feed' },
-					test: { $push: '$test' },
-					ssp: { $push: '$ssp' },
-					impressions: { $sum: '$impression' },
-					clicks: { $sum: '$CompanionClickTracking' },
-					clicks1: { $sum: '$SovClickTracking' },
-					start: { $sum: '$start' },
-					firstQuartile: { $sum: '$firstQuartile' },
-					midpoint: { $sum: '$midpoint' },
-					thirdQuartile: { $sum: '$thirdQuartile' },
-					complete: { $sum: '$complete' }
-				}
-			},
-			{
-				$project: {
-					PublisherSplit: '$_id.appubid',
-					feed: '$_id.feed',
-					test: '$test',
-					ssp: '$ssp',
-					impressions: '$impressions',
-					clicks: '$clicks',
-					clicks1: '$clicks1',
-					start: '$start',
-					firstQuartile: '$firstQuartile',
-					midpoint: '$midpoint',
-					thirdQuartile: '$thirdQuartile',
-					complete: '$complete',
-					_id: 0
-				}
-			},
-			{
-				$lookup: {
-					from: 'apppublishers',
-					localField: 'PublisherSplit',
-					foreignField: 'publisherid',
-					as: 'apppubidpo'
-				}
-			}
-		]);
-		let uadata = await uareqreports
+		// ids.audio = ids.audio.map((x) => mongoose.Types.ObjectId(x));
+		// ids.display = ids.display.map((x) => mongoose.Types.ObjectId(x));
+		// ids.video = ids.video.map((x) => mongoose.Types.ObjectId(x));
+		// console.log(ids.audio.length, ids.display.length, ids.video.length);
+		// let publisherDataAudio = await Campaignwisereports.aggregate([
+		// 	{ $match: { campaignId: { $in: ids.audio } } },
+		// 	{
+		// 		$project: {
+		// 			test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+		// 			apppubid: '$apppubid',
+		// 			feed: '$feed',
+		// 			ssp: '$ssp',
+		// 			impression: '$impression',
+		// 			CompanionClickTracking: '$CompanionClickTracking',
+		// 			SovClickTracking: '$SovClickTracking',
+		// 			start: '$start',
+		// 			firstQuartile: '$firstQuartile',
+		// 			midpoint: '$midpoint',
+		// 			thirdQuartile: '$thirdQuartile',
+		// 			complete: '$complete'
+		// 		}
+		// 	},
+		// 	{ $match: { test: { $gte: startDate, $lte: endDate } } },
+		// 	{
+		// 		$group: {
+		// 			_id: { appubid: '$apppubid', feed: '$feed' },
+		// 			test: { $push: '$test' },
+		// 			ssp: { $push: '$ssp' },
+		// 			impressions: { $sum: '$impression' },
+		// 			clicks: { $sum: '$CompanionClickTracking' },
+		// 			clicks1: { $sum: '$SovClickTracking' },
+		// 			start: { $sum: '$start' },
+		// 			firstQuartile: { $sum: '$firstQuartile' },
+		// 			midpoint: { $sum: '$midpoint' },
+		// 			thirdQuartile: { $sum: '$thirdQuartile' },
+		// 			complete: { $sum: '$complete' }
+		// 		}
+		// 	},
+		// 	{
+		// 		$project: {
+		// 			PublisherSplit: '$_id.appubid',
+		// 			feed: '$_id.feed',
+		// 			test: '$test',
+		// 			ssp: '$ssp',
+		// 			impressions: '$impressions',
+		// 			clicks: '$clicks',
+		// 			clicks1: '$clicks1',
+		// 			start: '$start',
+		// 			firstQuartile: '$firstQuartile',
+		// 			midpoint: '$midpoint',
+		// 			thirdQuartile: '$thirdQuartile',
+		// 			complete: '$complete',
+		// 			_id: 0
+		// 		}
+		// 	},
+		// 	{
+		// 		$lookup: {
+		// 			from: 'apppublishers',
+		// 			localField: 'PublisherSplit',
+		// 			foreignField: 'publisherid',
+		// 			as: 'apppubidpo'
+		// 		}
+		// 	}
+		// ]);
+		// let publisherDataDisplay = await Campaignwisereports.aggregate([
+		// 	{ $match: { campaignId: { $in: ids.display } } },
+		// 	{
+		// 		$project: {
+		// 			test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+		// 			apppubid: '$apppubid',
+		// 			feed: '$feed',
+		// 			ssp: '$ssp',
+		// 			impression: '$impression',
+		// 			CompanionClickTracking: '$CompanionClickTracking',
+		// 			SovClickTracking: '$SovClickTracking'
+		// 		}
+		// 	},
+		// 	{ $match: { test: { $gte: startDate, $lte: endDate } } },
+		// 	{
+		// 		$group: {
+		// 			_id: { appubid: '$apppubid', feed: '$feed' },
+		// 			test: { $push: '$test' },
+		// 			ssp: { $push: '$ssp' },
+		// 			impressions: { $sum: '$impression' },
+		// 			clicks: { $sum: '$CompanionClickTracking' },
+		// 			clicks1: { $sum: '$SovClickTracking' }
+		// 		}
+		// 	},
+		// 	{
+		// 		$project: {
+		// 			PublisherSplit: '$_id.appubid',
+		// 			feed: '$_id.feed',
+		// 			test: '$test',
+		// 			ssp: '$ssp',
+		// 			impressions: '$impressions',
+		// 			clicks: '$clicks',
+		// 			clicks1: '$clicks1',
+		// 			_id: 0
+		// 		}
+		// 	},
+		// 	{
+		// 		$lookup: {
+		// 			from: 'apppublishers',
+		// 			localField: 'PublisherSplit',
+		// 			foreignField: 'publisherid',
+		// 			as: 'apppubidpo'
+		// 		}
+		// 	}
+		// ]);
+		// let publisherDataVideo = await Campaignwisereports.aggregate([
+		// 	{ $match: { campaignId: { $in: ids.video } } },
+		// 	{
+		// 		$project: {
+		// 			test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+		// 			apppubid: '$apppubid',
+		// 			feed: '$feed',
+		// 			ssp: '$ssp',
+		// 			impression: '$impression',
+		// 			CompanionClickTracking: '$CompanionClickTracking',
+		// 			SovClickTracking: '$SovClickTracking',
+		// 			start: '$start',
+		// 			firstQuartile: '$firstQuartile',
+		// 			midpoint: '$midpoint',
+		// 			thirdQuartile: '$thirdQuartile',
+		// 			complete: '$complete'
+		// 		}
+		// 	},
+		// 	{ $match: { test: { $gte: startDate, $lte: endDate } } },
+		// 	{
+		// 		$group: {
+		// 			_id: { appubid: '$apppubid', feed: '$feed' },
+		// 			test: { $push: '$test' },
+		// 			ssp: { $push: '$ssp' },
+		// 			impressions: { $sum: '$impression' },
+		// 			clicks: { $sum: '$CompanionClickTracking' },
+		// 			clicks1: { $sum: '$SovClickTracking' },
+		// 			start: { $sum: '$start' },
+		// 			firstQuartile: { $sum: '$firstQuartile' },
+		// 			midpoint: { $sum: '$midpoint' },
+		// 			thirdQuartile: { $sum: '$thirdQuartile' },
+		// 			complete: { $sum: '$complete' }
+		// 		}
+		// 	},
+		// 	{
+		// 		$project: {
+		// 			PublisherSplit: '$_id.appubid',
+		// 			feed: '$_id.feed',
+		// 			test: '$test',
+		// 			ssp: '$ssp',
+		// 			impressions: '$impressions',
+		// 			clicks: '$clicks',
+		// 			clicks1: '$clicks1',
+		// 			start: '$start',
+		// 			firstQuartile: '$firstQuartile',
+		// 			midpoint: '$midpoint',
+		// 			thirdQuartile: '$thirdQuartile',
+		// 			complete: '$complete',
+		// 			_id: 0
+		// 		}
+		// 	},
+		// 	{
+		// 		$lookup: {
+		// 			from: 'apppublishers',
+		// 			localField: 'PublisherSplit',
+		// 			foreignField: 'publisherid',
+		// 			as: 'apppubidpo'
+		// 		}
+		// 	}
+		// ]);
+		let uniquePub = await campaignifareports
 			.aggregate([
-				{ $match: { date: { $gte: startDate, $lte: endDate } } },
-				{ $group: { _id: '$publisherid', request: { $sum: '$ads' } } }
+				{
+					$project: {
+						test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+						apppubid: '$apppubid',
+						rtbType: '$rtbType',
+						ifa: '$ifa'
+					}
+				},
+				{ $match: { test: { $gte: startDate, $lt: endDate } } },
+				{
+					$group: {
+						_id: { ifa: '$ifa', rtbType: '$rtbType', apppubid: '$apppubid' }
+					}
+				},
+				{
+					$group: {
+						_id: { rtbType: '$_id.rtbType', apppubid: '$_id.apppubid' },
+						users: { $sum: 1 }
+					}
+				},
+				{
+					$group: {
+						_id: '_id.rtbType',
+						data: {
+							$push: {
+								k: '$_id.apppubid',
+								v: '$users'
+							}
+						}
+					}
+				},
+				{
+					$project: {
+						_id: '$_id',
+						values: { $arrayToObject: '$data' }
+					}
+				},
+				{
+					$group: {
+						_id: null,
+						compo: {
+							$push: {
+								k: '$_id',
+								v: '$values'
+							}
+						}
+					}
+				},
+				{
+					$project: {
+						final: { $arrayToObject: '$compo' }
+					}
+				}
 			])
-			.allowDiskUse(true)
-			.catch((err) => console.log(err));
-		var sol = {};
-		uadata.map((x) => {
-			sol[x._id] = x.request;
-		});
-		// let uniquePub = await campaignifareports
+			.allowDiskUse(true);
+		let uniqueSum = await campaignifareports
+			.aggregate([
+				{
+					$project: {
+						test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+						rtbType: '$rtbType',
+						ifa: '$ifa'
+					}
+				},
+				{ $match: { test: { $gte: startDate, $lt: endDate } } },
+				{
+					$group: {
+						_id: { ifa: '$ifa', rtbType: '$rtbType' }
+					}
+				},
+				{
+					$group: {
+						_id: '$_id.rtbType',
+						users: { $sum: 1 }
+					}
+				}
+			])
+			.allowDiskUse(true);
+		// let uadata = await uareqreports
 		// 	.aggregate([
-		// 		{
-		// 			$project: {
-		// 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-		// 				apppubid: '$apppubid',
-		// 				rtbType: '$rtbType',
-		// 				ifa: '$ifa'
-		// 			}
-		// 		},
-		// 		{ $match: { test: { $gte: startDate, $lt: endDate } } },
-		// 		{
-		// 			$group: {
-		// 				_id: { ifa: '$ifa', rtbType: '$rtbType', apppubid: '$apppubid' }
-		// 			}
-		// 		},
-		// 		{
-		// 			$group: {
-		// 				_id: { rtbType: '$_id.rtbType', apppubid: '$_id.apppubid' },
-		// 				users: { $sum: 1 }
-		// 			}
-		// 		},
-		// 		{
-		// 			$group: {
-		// 				_id: '_id.rtbType',
-		// 				data: {
-		// 					$push: {
-		// 						k: '$_id.apppubid',
-		// 						v: '$users'
-		// 					}
-		// 				}
-		// 			}
-		// 		},
-		// 		{
-		// 			$project: {
-		// 				_id: '$_id',
-		// 				values: { $arrayToObject: '$data' }
-		// 			}
-		// 		},
-		// 		{
-		// 			$group: {
-		// 				_id: null,
-		// 				compo: {
-		// 					$push: {
-		// 						k: '$_id',
-		// 						v: '$values'
-		// 					}
-		// 				}
-		// 			}
-		// 		},
-		// 		{
-		// 			$project: {
-		// 				final: { $arrayToObject: '$compo' }
-		// 			}
-		// 		}
+		// 		{ $match: { date: { $gte: startDate, $lte: endDate } } },
+		// 		{ $group: { _id: '$publisherid', request: { $sum: '$ads' } } }
 		// 	])
-		// 	.allowDiskUse(true);
-		// let uniqueSum = await campaignifareports
-		// 	.aggregate([
-		// 		{
-		// 			$project: {
-		// 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-		// 				rtbType: '$rtbType',
-		// 				ifa: '$ifa'
-		// 			}
-		// 		},
-		// 		{ $match: { test: { $gte: startDate, $lt: endDate } } },
-		// 		{
-		// 			$group: {
-		// 				_id: { ifa: '$ifa', rtbType: '$rtbType' }
-		// 			}
-		// 		},
-		// 		{
-		// 			$group: {
-		// 				_id: '$_id.rtbType',
-		// 				users: { $sum: 1 }
-		// 			}
-		// 		}
-		// 	])
-		// 	.allowDiskUse(true);
-
+		// 	.allowDiskUse(true)
+		// 	.catch((err) => console.log(err));
+		// var sol = {};
+		// uadata.map((x) => {
+		// 	sol[x._id] = x.request;
+		// });
 		// var complete = {
 		// 	complete: {
 		// 		impressions: 0,
@@ -470,14 +469,14 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 		// });
 		// uniqueSum.map((y) => {
 		// 	if (y._id === 'video') {
-		// 		complete.video.totunique += parseInt(y.users);
-		// 		complete.complete.totunique += parseInt(y.users);
+		// 		complete.video.totunique += parseInt(x.users);
+		// 		complete.complete.totunique += parseInt(x.users);
 		// 	} else if (y._id === 'display') {
-		// 		complete.display.totunique += parseInt(y.users);
-		// 		complete.complete.totunique += parseInt(y.users);
+		// 		complete.display.totunique += parseInt(x.users);
+		// 		complete.complete.totunique += parseInt(x.users);
 		// 	} else {
-		// 		complete.audio.totunique += parseInt(y.users);
-		// 		complete.complete.totunique += parseInt(y.users);
+		// 		complete.audio.totunique += parseInt(x.users);
+		// 		complete.complete.totunique += parseInt(x.users);
 		// 	}
 		// });
 		// complete.complete.avgimpressions = complete.complete.impressions / totalDays;
@@ -489,12 +488,12 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 		// complete.display.avgfreq = complete.display.totunique / totalDays;
 		// complete.video.avgfreq = complete.video.totunique / totalDays;
 		// complete.audio.avgrequests = complete.audio.requests / totalDays;
-		// console.log('complete');
+		console.log('complete');
 		res.json({
-			// summary: complete,
-			audio: publisherDataAudio,
-			display: publisherDataDisplay,
-			video: publisherDataVideo
+			summary: uniqueSum,
+			// display: publisherDataDisplay,
+			// video: publisherDataVideo,
+			audio: uniquePub
 		});
 	} catch (e) {
 		console.log(e);
