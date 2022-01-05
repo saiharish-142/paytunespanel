@@ -261,87 +261,92 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 				}
 			}
 		]);
-		let uniquePub = await campaignifareports.aggregate([
-			{
-				$project: {
-					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-					apppubid: '$apppubid',
-					rtbType: '$rtbType',
-					ifa: '$ifa'
-				}
-			},
-			{ $match: { test: { $gte: startDate, $lt: endDate } } },
-			{
-				$group: {
-					_id: { ifa: '$ifa', rtbType: '$rtbType', apppubid: '$apppubid' }
-				}
-			},
-			{
-				$group: {
-					_id: { rtbType: '$_id.rtbType', apppubid: '$_id.apppubid' },
-					users: { $sum: 1 }
-				}
-			},
-			{
-				$group: {
-					_id: '_id.rtbType',
-					data: {
-						$push: {
-							k: '$_id.apppubid',
-							v: '$users'
+		let uniquePub = await campaignifareports
+			.aggregate([
+				{
+					$project: {
+						test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+						apppubid: '$apppubid',
+						rtbType: '$rtbType',
+						ifa: '$ifa'
+					}
+				},
+				{ $match: { test: { $gte: startDate, $lt: endDate } } },
+				{
+					$group: {
+						_id: { ifa: '$ifa', rtbType: '$rtbType', apppubid: '$apppubid' }
+					}
+				},
+				{
+					$group: {
+						_id: { rtbType: '$_id.rtbType', apppubid: '$_id.apppubid' },
+						users: { $sum: 1 }
+					}
+				},
+				{
+					$group: {
+						_id: '_id.rtbType',
+						data: {
+							$push: {
+								k: '$_id.apppubid',
+								v: '$users'
+							}
 						}
 					}
-				}
-			},
-			{
-				$project: {
-					_id: '$_id',
-					values: { $arrayToObject: '$data' }
-				}
-			},
-			{
-				$group: {
-					_id: null,
-					compo: {
-						$push: {
-							k: '$_id',
-							v: '$values'
+				},
+				{
+					$project: {
+						_id: '$_id',
+						values: { $arrayToObject: '$data' }
+					}
+				},
+				{
+					$group: {
+						_id: null,
+						compo: {
+							$push: {
+								k: '$_id',
+								v: '$values'
+							}
 						}
 					}
+				},
+				{
+					$project: {
+						final: { $arrayToObject: '$compo' }
+					}
 				}
-			},
-			{
-				$project: {
-					final: { $arrayToObject: '$compo' }
+			])
+			.allowDiskUse(true);
+		let uniqueSum = await campaignifareports
+			.aggregate([
+				{
+					$project: {
+						test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+						rtbType: '$rtbType',
+						ifa: '$ifa'
+					}
+				},
+				{ $match: { test: { $gte: startDate, $lt: endDate } } },
+				{
+					$group: {
+						_id: { ifa: '$ifa', rtbType: '$rtbType' }
+					}
+				},
+				{
+					$group: {
+						_id: '$_id.rtbType',
+						users: { $sum: 1 }
+					}
 				}
-			}
-		]);
-		let uniqueSum = await campaignifareports.aggregate([
-			{
-				$project: {
-					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-					rtbType: '$rtbType',
-					ifa: '$ifa'
-				}
-			},
-			{ $match: { test: { $gte: startDate, $lt: endDate } } },
-			{
-				$group: {
-					_id: { ifa: '$ifa', rtbType: '$rtbType' }
-				}
-			},
-			{
-				$group: {
-					_id: '$_id.rtbType',
-					users: { $sum: 1 }
-				}
-			}
-		]);
+			])
+			.allowDiskUse(true);
 		let uadata = await uareqreports
 			.aggregate([
 				{ $match: { date: { $gte: startDate, $lte: endDate } } },
 				{ $group: { _id: '$publisherid', request: { $sum: '$ads' } } }
 			])
+			.allowDiskUse(true)
 			.catch((err) => console.log(err));
 		var sol = {};
 		uadata.map((x) => {
