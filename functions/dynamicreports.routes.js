@@ -488,6 +488,7 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 		complete.display.avgfreq = complete.display.totunique / totalDays;
 		complete.video.avgfreq = complete.video.totunique / totalDays;
 		complete.audio.avgrequests = complete.audio.requests / totalDays;
+		console.log('complete');
 		res.json({
 			summary: complete,
 			audio: publisherDataAudio,
