@@ -261,86 +261,6 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 				}
 			}
 		]);
-		let uniquePub = await campaignifareports
-			.aggregate([
-				{
-					$project: {
-						test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-						apppubid: '$apppubid',
-						rtbType: '$rtbType',
-						ifa: '$ifa'
-					}
-				},
-				{ $match: { test: { $gte: startDate, $lt: endDate } } },
-				{
-					$group: {
-						_id: { ifa: '$ifa', rtbType: '$rtbType', apppubid: '$apppubid' }
-					}
-				},
-				{
-					$group: {
-						_id: { rtbType: '$_id.rtbType', apppubid: '$_id.apppubid' },
-						users: { $sum: 1 }
-					}
-				},
-				{
-					$group: {
-						_id: '_id.rtbType',
-						data: {
-							$push: {
-								k: '$_id.apppubid',
-								v: '$users'
-							}
-						}
-					}
-				},
-				{
-					$project: {
-						_id: '$_id',
-						values: { $arrayToObject: '$data' }
-					}
-				},
-				{
-					$group: {
-						_id: null,
-						compo: {
-							$push: {
-								k: '$_id',
-								v: '$values'
-							}
-						}
-					}
-				},
-				{
-					$project: {
-						final: { $arrayToObject: '$compo' }
-					}
-				}
-			])
-			.allowDiskUse(true);
-		let uniqueSum = await campaignifareports
-			.aggregate([
-				{
-					$project: {
-						test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-						rtbType: '$rtbType',
-						ifa: '$ifa'
-					}
-				},
-				{ $match: { test: { $gte: startDate, $lt: endDate } } },
-				{
-					$group: {
-						_id: { ifa: '$ifa', rtbType: '$rtbType' }
-					}
-				},
-				{
-					$group: {
-						_id: '$_id.rtbType',
-						users: { $sum: 1 }
-					}
-				}
-			])
-			.allowDiskUse(true);
 		let uadata = await uareqreports
 			.aggregate([
 				{ $match: { date: { $gte: startDate, $lte: endDate } } },
@@ -352,145 +272,226 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 		uadata.map((x) => {
 			sol[x._id] = x.request;
 		});
-		var complete = {
-			complete: {
-				impressions: 0,
-				avgimpressions: 0,
-				totunique: 0,
-				unique: 0,
-				avgfreq: 0,
-				clicks: 0,
-				complete: 0
-			},
-			audio: {
-				requests: 0,
-				avgrequests: 0,
-				impressions: 0,
-				avgimpressions: 0,
-				totunique: 0,
-				unique: 0,
-				avgfreq: 0,
-				clicks: 0,
-				complete: 0
-			},
-			display: {
-				impressions: 0,
-				avgimpressions: 0,
-				totunique: 0,
-				unique: 0,
-				avgfreq: 0,
-				clicks: 0
-			},
-			video: {
-				impressions: 0,
-				avgimpressions: 0,
-				totunique: 0,
-				unique: 0,
-				avgfreq: 0,
-				clicks: 0,
-				complete: 0
-			}
-		};
-		publisherDataAudio.map((x) => {
-			var daycount = dayFinderCount(x.test);
-			x.ssp = x.ssp ? x.ssp[0] : '';
-			x.apppubidpo = namereturner(x.apppubidpo);
-			x.unique =
-				uniquePub &&
-				uniquePub[0] &&
-				uniquePub[0].final &&
-				uniquePub[0].final.audio &&
-				uniquePub[0].final.audio[x.PublisherSplit]
-					? uniquePub[0].final.audio[x.PublisherSplit]
-					: 0;
-			x.avgfreq = x.unique / daycount;
-			x.avgimpressions = x.impressions / daycount;
-			x.requests = sol[x.PublisherSplit];
-			x.avgrequests = x.requests / daycount;
-			complete.complete.unique += x.unique ? parseInt(x.unique) : 0;
-			complete.complete.impressions += x.impressions ? parseInt(x.impressions) : 0;
-			complete.complete.clicks += x.clicks ? parseInt(x.clicks) : 0;
-			complete.complete.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
-			complete.complete.complete += x.complete ? parseInt(x.complete) : 0;
-			complete.audio.unique += x.unique ? parseInt(x.unique) : 0;
-			complete.audio.impressions += x.impressions ? parseInt(x.impressions) : 0;
-			complete.audio.clicks += x.clicks ? parseInt(x.clicks) : 0;
-			complete.audio.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
-			complete.audio.complete += x.complete ? parseInt(x.complete) : 0;
-			complete.audio.requests += x.requests ? parseInt(x.requests) : 0;
-		});
-		publisherDataDisplay.map((x) => {
-			var daycount = dayFinderCount(x.test);
-			x.ssp = x.ssp ? x.ssp[0] : '';
-			x.apppubidpo = namereturner(x.apppubidpo);
-			x.unique =
-				uniquePub &&
-				uniquePub[0] &&
-				uniquePub[0].final &&
-				uniquePub[0].final.audio &&
-				uniquePub[0].final.audio[x.PublisherSplit]
-					? uniquePub[0].final.audio[x.PublisherSplit]
-					: 0;
-			x.avgfreq = x.unique / daycount;
-			x.avgimpressions = x.impressions / daycount;
-			complete.complete.unique += x.unique ? parseInt(x.unique) : 0;
-			complete.complete.impressions += x.impressions ? parseInt(x.impressions) : 0;
-			complete.complete.clicks += x.clicks ? parseInt(x.clicks) : 0;
-			complete.complete.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
-			complete.display.unique += x.unique ? parseInt(x.unique) : 0;
-			complete.display.impressions += x.impressions ? parseInt(x.impressions) : 0;
-			complete.display.clicks += x.clicks ? parseInt(x.clicks) : 0;
-			complete.display.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
-		});
-		publisherDataVideo.map((x) => {
-			var daycount = dayFinderCount(x.test);
-			x.ssp = x.ssp ? x.ssp[0] : '';
-			x.apppubidpo = namereturner(x.apppubidpo);
-			x.unique =
-				uniquePub &&
-				uniquePub[0] &&
-				uniquePub[0].final &&
-				uniquePub[0].final.audio &&
-				uniquePub[0].final.audio[x.PublisherSplit]
-					? uniquePub[0].final.audio[x.PublisherSplit]
-					: 0;
-			x.avgfreq = x.unique / daycount;
-			x.avgimpressions = x.impressions / daycount;
-			complete.complete.unique += x.unique ? parseInt(x.unique) : 0;
-			complete.complete.impressions += x.impressions ? parseInt(x.impressions) : 0;
-			complete.complete.clicks += x.clicks ? parseInt(x.clicks) : 0;
-			complete.complete.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
-			complete.complete.complete += x.complete ? parseInt(x.complete) : 0;
-			complete.audio.unique += x.unique ? parseInt(x.unique) : 0;
-			complete.audio.impressions += x.impressions ? parseInt(x.impressions) : 0;
-			complete.audio.clicks += x.clicks ? parseInt(x.clicks) : 0;
-			complete.audio.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
-			complete.audio.complete += x.complete ? parseInt(x.complete) : 0;
-		});
-		uniqueSum.map((y) => {
-			if (y._id === 'video') {
-				complete.video.totunique += parseInt(y.users);
-				complete.complete.totunique += parseInt(y.users);
-			} else if (y._id === 'display') {
-				complete.display.totunique += parseInt(y.users);
-				complete.complete.totunique += parseInt(y.users);
-			} else {
-				complete.audio.totunique += parseInt(y.users);
-				complete.complete.totunique += parseInt(y.users);
-			}
-		});
-		complete.complete.avgimpressions = complete.complete.impressions / totalDays;
-		complete.audio.avgimpressions = complete.audio.impressions / totalDays;
-		complete.display.avgimpressions = complete.display.impressions / totalDays;
-		complete.video.avgimpressions = complete.video.impressions / totalDays;
-		complete.complete.avgfreq = complete.complete.totunique / totalDays;
-		complete.audio.avgfreq = complete.audio.totunique / totalDays;
-		complete.display.avgfreq = complete.display.totunique / totalDays;
-		complete.video.avgfreq = complete.video.totunique / totalDays;
-		complete.audio.avgrequests = complete.audio.requests / totalDays;
-		console.log('complete');
+		// let uniquePub = await campaignifareports
+		// 	.aggregate([
+		// 		{
+		// 			$project: {
+		// 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+		// 				apppubid: '$apppubid',
+		// 				rtbType: '$rtbType',
+		// 				ifa: '$ifa'
+		// 			}
+		// 		},
+		// 		{ $match: { test: { $gte: startDate, $lt: endDate } } },
+		// 		{
+		// 			$group: {
+		// 				_id: { ifa: '$ifa', rtbType: '$rtbType', apppubid: '$apppubid' }
+		// 			}
+		// 		},
+		// 		{
+		// 			$group: {
+		// 				_id: { rtbType: '$_id.rtbType', apppubid: '$_id.apppubid' },
+		// 				users: { $sum: 1 }
+		// 			}
+		// 		},
+		// 		{
+		// 			$group: {
+		// 				_id: '_id.rtbType',
+		// 				data: {
+		// 					$push: {
+		// 						k: '$_id.apppubid',
+		// 						v: '$users'
+		// 					}
+		// 				}
+		// 			}
+		// 		},
+		// 		{
+		// 			$project: {
+		// 				_id: '$_id',
+		// 				values: { $arrayToObject: '$data' }
+		// 			}
+		// 		},
+		// 		{
+		// 			$group: {
+		// 				_id: null,
+		// 				compo: {
+		// 					$push: {
+		// 						k: '$_id',
+		// 						v: '$values'
+		// 					}
+		// 				}
+		// 			}
+		// 		},
+		// 		{
+		// 			$project: {
+		// 				final: { $arrayToObject: '$compo' }
+		// 			}
+		// 		}
+		// 	])
+		// 	.allowDiskUse(true);
+		// let uniqueSum = await campaignifareports
+		// 	.aggregate([
+		// 		{
+		// 			$project: {
+		// 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+		// 				rtbType: '$rtbType',
+		// 				ifa: '$ifa'
+		// 			}
+		// 		},
+		// 		{ $match: { test: { $gte: startDate, $lt: endDate } } },
+		// 		{
+		// 			$group: {
+		// 				_id: { ifa: '$ifa', rtbType: '$rtbType' }
+		// 			}
+		// 		},
+		// 		{
+		// 			$group: {
+		// 				_id: '$_id.rtbType',
+		// 				users: { $sum: 1 }
+		// 			}
+		// 		}
+		// 	])
+		// 	.allowDiskUse(true);
+
+		// var complete = {
+		// 	complete: {
+		// 		impressions: 0,
+		// 		avgimpressions: 0,
+		// 		totunique: 0,
+		// 		unique: 0,
+		// 		avgfreq: 0,
+		// 		clicks: 0,
+		// 		complete: 0
+		// 	},
+		// 	audio: {
+		// 		requests: 0,
+		// 		avgrequests: 0,
+		// 		impressions: 0,
+		// 		avgimpressions: 0,
+		// 		totunique: 0,
+		// 		unique: 0,
+		// 		avgfreq: 0,
+		// 		clicks: 0,
+		// 		complete: 0
+		// 	},
+		// 	display: {
+		// 		impressions: 0,
+		// 		avgimpressions: 0,
+		// 		totunique: 0,
+		// 		unique: 0,
+		// 		avgfreq: 0,
+		// 		clicks: 0
+		// 	},
+		// 	video: {
+		// 		impressions: 0,
+		// 		avgimpressions: 0,
+		// 		totunique: 0,
+		// 		unique: 0,
+		// 		avgfreq: 0,
+		// 		clicks: 0,
+		// 		complete: 0
+		// 	}
+		// };
+		// publisherDataAudio.map((x) => {
+		// 	var daycount = dayFinderCount(x.test);
+		// 	x.ssp = x.ssp ? x.ssp[0] : '';
+		// 	x.apppubidpo = namereturner(x.apppubidpo);
+		// 	x.unique =
+		// 		uniquePub &&
+		// 		uniquePub[0] &&
+		// 		uniquePub[0].final &&
+		// 		uniquePub[0].final.audio &&
+		// 		uniquePub[0].final.audio[x.PublisherSplit]
+		// 			? uniquePub[0].final.audio[x.PublisherSplit]
+		// 			: 0;
+		// 	x.avgfreq = x.unique / daycount;
+		// 	x.avgimpressions = x.impressions / daycount;
+		// 	x.requests = sol[x.PublisherSplit];
+		// 	x.avgrequests = x.requests / daycount;
+		// 	complete.complete.unique += x.unique ? parseInt(x.unique) : 0;
+		// 	complete.complete.impressions += x.impressions ? parseInt(x.impressions) : 0;
+		// 	complete.complete.clicks += x.clicks ? parseInt(x.clicks) : 0;
+		// 	complete.complete.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
+		// 	complete.complete.complete += x.complete ? parseInt(x.complete) : 0;
+		// 	complete.audio.unique += x.unique ? parseInt(x.unique) : 0;
+		// 	complete.audio.impressions += x.impressions ? parseInt(x.impressions) : 0;
+		// 	complete.audio.clicks += x.clicks ? parseInt(x.clicks) : 0;
+		// 	complete.audio.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
+		// 	complete.audio.complete += x.complete ? parseInt(x.complete) : 0;
+		// 	complete.audio.requests += x.requests ? parseInt(x.requests) : 0;
+		// });
+		// publisherDataDisplay.map((x) => {
+		// 	var daycount = dayFinderCount(x.test);
+		// 	x.ssp = x.ssp ? x.ssp[0] : '';
+		// 	x.apppubidpo = namereturner(x.apppubidpo);
+		// 	x.unique =
+		// 		uniquePub &&
+		// 		uniquePub[0] &&
+		// 		uniquePub[0].final &&
+		// 		uniquePub[0].final.audio &&
+		// 		uniquePub[0].final.audio[x.PublisherSplit]
+		// 			? uniquePub[0].final.audio[x.PublisherSplit]
+		// 			: 0;
+		// 	x.avgfreq = x.unique / daycount;
+		// 	x.avgimpressions = x.impressions / daycount;
+		// 	complete.complete.unique += x.unique ? parseInt(x.unique) : 0;
+		// 	complete.complete.impressions += x.impressions ? parseInt(x.impressions) : 0;
+		// 	complete.complete.clicks += x.clicks ? parseInt(x.clicks) : 0;
+		// 	complete.complete.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
+		// 	complete.display.unique += x.unique ? parseInt(x.unique) : 0;
+		// 	complete.display.impressions += x.impressions ? parseInt(x.impressions) : 0;
+		// 	complete.display.clicks += x.clicks ? parseInt(x.clicks) : 0;
+		// 	complete.display.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
+		// });
+		// publisherDataVideo.map((x) => {
+		// 	var daycount = dayFinderCount(x.test);
+		// 	x.ssp = x.ssp ? x.ssp[0] : '';
+		// 	x.apppubidpo = namereturner(x.apppubidpo);
+		// 	x.unique =
+		// 		uniquePub &&
+		// 		uniquePub[0] &&
+		// 		uniquePub[0].final &&
+		// 		uniquePub[0].final.audio &&
+		// 		uniquePub[0].final.audio[x.PublisherSplit]
+		// 			? uniquePub[0].final.audio[x.PublisherSplit]
+		// 			: 0;
+		// 	x.avgfreq = x.unique / daycount;
+		// 	x.avgimpressions = x.impressions / daycount;
+		// 	complete.complete.unique += x.unique ? parseInt(x.unique) : 0;
+		// 	complete.complete.impressions += x.impressions ? parseInt(x.impressions) : 0;
+		// 	complete.complete.clicks += x.clicks ? parseInt(x.clicks) : 0;
+		// 	complete.complete.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
+		// 	complete.complete.complete += x.complete ? parseInt(x.complete) : 0;
+		// 	complete.audio.unique += x.unique ? parseInt(x.unique) : 0;
+		// 	complete.audio.impressions += x.impressions ? parseInt(x.impressions) : 0;
+		// 	complete.audio.clicks += x.clicks ? parseInt(x.clicks) : 0;
+		// 	complete.audio.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
+		// 	complete.audio.complete += x.complete ? parseInt(x.complete) : 0;
+		// });
+		// uniqueSum.map((y) => {
+		// 	if (y._id === 'video') {
+		// 		complete.video.totunique += parseInt(y.users);
+		// 		complete.complete.totunique += parseInt(y.users);
+		// 	} else if (y._id === 'display') {
+		// 		complete.display.totunique += parseInt(y.users);
+		// 		complete.complete.totunique += parseInt(y.users);
+		// 	} else {
+		// 		complete.audio.totunique += parseInt(y.users);
+		// 		complete.complete.totunique += parseInt(y.users);
+		// 	}
+		// });
+		// complete.complete.avgimpressions = complete.complete.impressions / totalDays;
+		// complete.audio.avgimpressions = complete.audio.impressions / totalDays;
+		// complete.display.avgimpressions = complete.display.impressions / totalDays;
+		// complete.video.avgimpressions = complete.video.impressions / totalDays;
+		// complete.complete.avgfreq = complete.complete.totunique / totalDays;
+		// complete.audio.avgfreq = complete.audio.totunique / totalDays;
+		// complete.display.avgfreq = complete.display.totunique / totalDays;
+		// complete.video.avgfreq = complete.video.totunique / totalDays;
+		// complete.audio.avgrequests = complete.audio.requests / totalDays;
+		// console.log('complete');
 		res.json({
-			summary: complete,
+			// summary: complete,
 			audio: publisherDataAudio,
 			display: publisherDataDisplay,
 			video: publisherDataVideo
