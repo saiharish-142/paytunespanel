@@ -77,6 +77,7 @@ require('./models/singleoverallfreqdoc');
 app.get('/', (req, res) => {
 	res.send('hello!');
 });
+const dynamic = require('./functions/dynamicreports.routes');
 app.use('/auth', require('./routes/user.routes'));
 app.use('/streamingads', require('./routes/streamingads.routes'));
 app.use('/ads', require('./routes/adsetting.routes'));
@@ -92,7 +93,7 @@ app.use('/bundle', require('./routes/bundlenamereports.routes'));
 app.use('/subrepo', require('./routes/subreports.routes'));
 app.use('/bundles', require('./routes/bundling.routes'));
 app.use('/useragent', require('./routes/useragent.routes'));
-
+app.use('/dynamic', dynamic.route);
 // const gg=async()=>{
 // 	const Apppublisher=require('./models/apppublishers.model');
 // 	let publishers=await Apppublisher.find({ $expr: { $ne: [ "$publisherid" , "$bundletitle" ] } });
