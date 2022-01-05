@@ -63,6 +63,7 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 		idsTo.forEach((x) => {
 			totalids.push(mongoose.Types.ObjectId(x._id));
 		});
+		const totalDays = (new Date(endDate) - new Date(startDate)) / (1000 * 3600 * 24);
 		const sup_ids = await adsetting
 			.find({ campaignId: { $in: totalids } })
 			.select('campaignId type')
@@ -473,6 +474,15 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 				complete.complete.totunique += parseInt(x.users);
 			}
 		});
+		complete.complete.avgimpressions = complete.complete.impressions / totalDays;
+		complete.audio.avgimpressions = complete.audio.impressions / totalDays;
+		complete.display.avgimpressions = complete.display.impressions / totalDays;
+		complete.video.avgimpressions = complete.video.impressions / totalDays;
+		complete.complete.avgfreq = complete.complete.totunique / totalDays;
+		complete.audio.avgfreq = complete.audio.totunique / totalDays;
+		complete.display.avgfreq = complete.display.totunique / totalDays;
+		complete.video.avgfreq = complete.video.totunique / totalDays;
+		complete.audio.avgrequests = complete.audio.requests / totalDays;
 		res.json({
 			summary: complete,
 			audio: publisherDataAudio,
