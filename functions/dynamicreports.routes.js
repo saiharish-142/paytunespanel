@@ -313,7 +313,10 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 			}
 		]);
 		let uadata = await uareqreports
-			.aggregate([ { $group: { _id: '$publisherid', request: { $sum: '$ads' } } } ])
+			.aggregate([
+				{ $match: { date: { $gte: startDate, $lte: endDate } } },
+				{ $group: { _id: '$publisherid', request: { $sum: '$ads' } } }
+			])
 			.catch((err) => console.log(err));
 		var sol = {};
 		uadata.map((x) => {
