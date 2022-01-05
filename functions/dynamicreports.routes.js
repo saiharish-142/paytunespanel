@@ -468,10 +468,10 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 			complete.audio.complete += x.complete ? parseInt(x.complete) : 0;
 		});
 		uniqueSum.map((y) => {
-			if (_id === 'video') {
+			if (y._id === 'video') {
 				complete.video.totunique += parseInt(x.users);
 				complete.complete.totunique += parseInt(x.users);
-			} else if (_id === 'display') {
+			} else if (y._id === 'display') {
 				complete.display.totunique += parseInt(x.users);
 				complete.complete.totunique += parseInt(x.users);
 			} else {
