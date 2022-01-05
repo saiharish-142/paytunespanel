@@ -469,14 +469,14 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 		});
 		uniqueSum.map((y) => {
 			if (y._id === 'video') {
-				complete.video.totunique += parseInt(x.users);
-				complete.complete.totunique += parseInt(x.users);
+				complete.video.totunique += parseInt(y.users);
+				complete.complete.totunique += parseInt(y.users);
 			} else if (y._id === 'display') {
-				complete.display.totunique += parseInt(x.users);
-				complete.complete.totunique += parseInt(x.users);
+				complete.display.totunique += parseInt(y.users);
+				complete.complete.totunique += parseInt(y.users);
 			} else {
-				complete.audio.totunique += parseInt(x.users);
-				complete.complete.totunique += parseInt(x.users);
+				complete.audio.totunique += parseInt(y.users);
+				complete.complete.totunique += parseInt(y.users);
 			}
 		});
 		complete.complete.avgimpressions = complete.complete.impressions / totalDays;
