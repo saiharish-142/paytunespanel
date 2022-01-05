@@ -318,29 +318,29 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 				}
 			])
 			.allowDiskUse(true);
-		let uniqueSum = await campaignifareports
-			.aggregate([
-				{
-					$project: {
-						test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-						rtbType: '$rtbType',
-						ifa: '$ifa'
-					}
-				},
-				{ $match: { test: { $gte: startDate, $lt: endDate } } },
-				{
-					$group: {
-						_id: { ifa: '$ifa', rtbType: '$rtbType' }
-					}
-				},
-				{
-					$group: {
-						_id: '$_id.rtbType',
-						users: { $sum: 1 }
-					}
-				}
-			])
-			.allowDiskUse(true);
+		// let uniqueSum = await campaignifareports
+		// 	.aggregate([
+		// 		{
+		// 			$project: {
+		// 				test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+		// 				rtbType: '$rtbType',
+		// 				ifa: '$ifa'
+		// 			}
+		// 		},
+		// 		{ $match: { test: { $gte: startDate, $lt: endDate } } },
+		// 		{
+		// 			$group: {
+		// 				_id: { ifa: '$ifa', rtbType: '$rtbType' }
+		// 			}
+		// 		},
+		// 		{
+		// 			$group: {
+		// 				_id: '$_id.rtbType',
+		// 				users: { $sum: 1 }
+		// 			}
+		// 		}
+		// 	])
+		// 	.allowDiskUse(true);
 		// let uadata = await uareqreports
 		// 	.aggregate([
 		// 		{ $match: { date: { $gte: startDate, $lte: endDate } } },
@@ -490,7 +490,7 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 		// complete.audio.avgrequests = complete.audio.requests / totalDays;
 		console.log('complete');
 		res.json({
-			summary: uniqueSum,
+			// summary: uniqueSum,
 			// display: publisherDataDisplay,
 			// video: publisherDataVideo,
 			audio: uniquePub
