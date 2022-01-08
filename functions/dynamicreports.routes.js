@@ -466,10 +466,10 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 			complete.complete.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
 			complete.complete.complete += x.complete ? parseInt(x.complete) : 0;
 			// complete.audio.unique += x.unique ? parseInt(x.unique) : 0;
-			complete.audio.impressions += x.impressions ? parseInt(x.impressions) : 0;
-			complete.audio.clicks += x.clicks ? parseInt(x.clicks) : 0;
-			complete.audio.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
-			complete.audio.complete += x.complete ? parseInt(x.complete) : 0;
+			complete.video.impressions += x.impressions ? parseInt(x.impressions) : 0;
+			complete.video.clicks += x.clicks ? parseInt(x.clicks) : 0;
+			complete.video.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
+			complete.video.complete += x.complete ? parseInt(x.complete) : 0;
 		});
 		// uniqueSum.map((y) => {
 		// 	if (y._id === 'video') {
