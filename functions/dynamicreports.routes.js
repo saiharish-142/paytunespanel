@@ -360,6 +360,10 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 				totunique: 0,
 				unique: 0,
 				avgfreq: 0,
+				firstQuartile: 0,
+				midpoint: 0,
+				thirdQuartile: 0,
+				start: 0,
 				clicks: 0,
 				complete: 0
 			},
@@ -371,6 +375,10 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 				totunique: 0,
 				unique: 0,
 				avgfreq: 0,
+				firstQuartile: 0,
+				midpoint: 0,
+				thirdQuartile: 0,
+				start: 0,
 				clicks: 0,
 				complete: 0
 			},
@@ -388,6 +396,10 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 				totunique: 0,
 				unique: 0,
 				avgfreq: 0,
+				firstQuartile: 0,
+				midpoint: 0,
+				thirdQuartile: 0,
+				start: 0,
 				clicks: 0,
 				complete: 0
 			}
@@ -414,11 +426,19 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 			complete.complete.clicks += x.clicks ? parseInt(x.clicks) : 0;
 			complete.complete.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
 			complete.complete.complete += x.complete ? parseInt(x.complete) : 0;
+			complete.complete.firstQuartile += x.firstQuartile ? parseInt(x.firstQuartile) : 0;
+			complete.complete.midpoint += x.midpoint ? parseInt(x.midpoint) : 0;
+			complete.complete.thirdQuartile += x.thirdQuartile ? parseInt(x.thirdQuartile) : 0;
+			complete.complete.start += x.start ? parseInt(x.start) : 0;
 			// complete.audio.unique += x.unique ? parseInt(x.unique) : 0;
 			complete.audio.impressions += x.impressions ? parseInt(x.impressions) : 0;
 			complete.audio.clicks += x.clicks ? parseInt(x.clicks) : 0;
 			complete.audio.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
 			complete.audio.complete += x.complete ? parseInt(x.complete) : 0;
+			complete.audio.firstQuartile += x.firstQuartile ? parseInt(x.firstQuartile) : 0;
+			complete.audio.midpoint += x.midpoint ? parseInt(x.midpoint) : 0;
+			complete.audio.thirdQuartile += x.thirdQuartile ? parseInt(x.thirdQuartile) : 0;
+			complete.audio.start += x.start ? parseInt(x.start) : 0;
 			complete.audio.requests += x.requests ? parseInt(x.requests) : 0;
 		});
 		publisherDataDisplay.map((x) => {
@@ -465,10 +485,18 @@ router.put('/dynamicConsolePublisher', adminauth, async (req, res) => {
 			complete.complete.clicks += x.clicks ? parseInt(x.clicks) : 0;
 			complete.complete.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
 			complete.complete.complete += x.complete ? parseInt(x.complete) : 0;
+			complete.complete.firstQuartile += x.firstQuartile ? parseInt(x.firstQuartile) : 0;
+			complete.complete.midpoint += x.midpoint ? parseInt(x.midpoint) : 0;
+			complete.complete.thirdQuartile += x.thirdQuartile ? parseInt(x.thirdQuartile) : 0;
+			complete.complete.start += x.start ? parseInt(x.start) : 0;
 			// complete.audio.unique += x.unique ? parseInt(x.unique) : 0;
 			complete.video.impressions += x.impressions ? parseInt(x.impressions) : 0;
 			complete.video.clicks += x.clicks ? parseInt(x.clicks) : 0;
 			complete.video.clicks += x.clicks1 ? parseInt(x.clicks1) : 0;
+			complete.video.firstQuartile += x.firstQuartile ? parseInt(x.firstQuartile) : 0;
+			complete.video.midpoint += x.midpoint ? parseInt(x.midpoint) : 0;
+			complete.video.thirdQuartile += x.thirdQuartile ? parseInt(x.thirdQuartile) : 0;
+			complete.video.start += x.start ? parseInt(x.start) : 0;
 			complete.video.complete += x.complete ? parseInt(x.complete) : 0;
 		});
 		// uniqueSum.map((y) => {
