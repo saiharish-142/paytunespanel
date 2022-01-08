@@ -3,6 +3,8 @@ import {
 	PUBLISHERDATA_LOADING,
 	PUBLISHERDATA_LOADED,
 	PUBLISHERDATA_CLEAR,
+	DYNAMIC_PUBLISHERDATA_LOADED,
+	DYNAMIC_PUBLISHERDATA_LOADING,
 	UNIQUEUSERSPUBLISHER_LOADING,
 	UNIQUEUSERSPUBLISHER_LOADED,
 	UNIQUEUSERSPUBLISHER_ERROR,
@@ -18,6 +20,8 @@ import {
 } from '../types.js';
 
 const initialState = {
+	dynamicpublisherDataLoading: true,
+	dynamicpublisherData: null,
 	publisherDataLoading: true,
 	publisherDataFail: null,
 	CompletepublisherData: null,
@@ -57,6 +61,18 @@ export default function(state = initialState, action) {
 				...state,
 				publisherDataFail: false,
 				publisherDataLoading: true
+			};
+		case DYNAMIC_PUBLISHERDATA_LOADING:
+			return {
+				...state,
+				dynamicpublisherData: null,
+				dynamicpublisherDataLoading: true
+			};
+		case DYNAMIC_PUBLISHERDATA_LOADED:
+			return {
+				...state,
+				dynamicpublisherData: action.payload,
+				dynamicpublisherDataLoading: false
 			};
 		case UNIQUEUSERSPUBLISHER_LOADED:
 			return {
