@@ -5,10 +5,10 @@ import { BrowserRouter } from 'react-router-dom';
 import Apindex from './apindex';
 
 ReactDOM.render(
-	<BrowserRouter>
-		<React.StrictMode>
+	<React.StrictMode>
+		<BrowserRouter>
 			<Apindex />
-		</React.StrictMode>
-	</BrowserRouter>,
+		</BrowserRouter>
+	</React.StrictMode>,
 	document.getElementById('root')
 );
