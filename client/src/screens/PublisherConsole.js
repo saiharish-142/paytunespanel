@@ -28,7 +28,7 @@ import {
 	ConsolePhoneBodyAudio
 } from '../components/CommonFun';
 import ReactExport from 'react-data-export';
-import BasicDateRangePicker from '../components/dateRangepicker';
+// import BasicDateRangePicker from '../components/dateRangepicker';
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 
