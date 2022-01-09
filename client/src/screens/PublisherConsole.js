@@ -248,7 +248,7 @@ function PublisherConsole() {
 					<ExcelSheet dataSet={QuartileDown.video} name="Complete Quartile Publisher Video Wise" />
 				</ExeclDownload>
 			</div>
-			<Paper className="tableCont tabledatemain">
+			{/* <Paper className="tableCont tabledatemain">
 				<BasicDateRangePicker startDate={setstartDate} endDate={setendDate} />
 				<Button
 					color="primary"
@@ -293,7 +293,7 @@ function PublisherConsole() {
 						/>
 					</ExeclDownload>
 				)}
-			</Paper>
+			</Paper> */}
 			{consoledata &&
 			!consoledata.uniqueusersloading && (
 				<div>
