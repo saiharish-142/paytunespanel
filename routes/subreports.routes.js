@@ -17,6 +17,7 @@ const Serverreport = require('../models/serverreport');
 const Campaignwisereports = mongoose.model('campaignwisereports');
 const frequencyreports = mongoose.model('frequencyreports');
 const freqCampWise = mongoose.model('freqCampWise');
+const overallfreqreport = mongoose.model('overallfreqreport');
 // const CategoryReports = mongoose.model('categoryreports');
 const CategoryReports = require('../models/categoryreports');
 const adminauth = require('../authenMiddleware/adminauth');
@@ -1755,22 +1756,27 @@ router.get('/publisherComplete/usersCount', adminauth, async (req, res) => {
 		// ids.audio = ids.audio.map((x) => mongoose.Types.ObjectId(x));
 		// ids.display = ids.display.map((x) => mongoose.Types.ObjectId(x));
 		// ids.video = ids.video.map((x) => mongoose.Types.ObjectId(x));
-		var users = { audio: 0, display: 0, video: 0 };
-		var audioCount = await freqCampWise.aggregate([
+		var users = { audio: 0, display: 0, video: 0, summary: 0 };
+		var audioCount = await overallfreqreport.aggregate([
 			{ $match: { rtbType: 'audio' } },
 			{ $group: { _id: null, users: { $sum: '$users' } } }
 		]);
-		var displayCount = await freqCampWise.aggregate([
+		var displayCount = await overallfreqreport.aggregate([
 			{ $match: { rtbType: 'display' } },
 			{ $group: { _id: null, users: { $sum: '$users' } } }
 		]);
-		var videoCount = await freqCampWise.aggregate([
+		var videoCount = await overallfreqreport.aggregate([
 			{ $match: { rtbType: 'video' } },
+			{ $group: { _id: null, users: { $sum: '$users' } } }
+		]);
+		var summaryCount = await overallfreqreport.aggregate([
+			{ $match: { rtbType: 'summary' } },
 			{ $group: { _id: null, users: { $sum: '$users' } } }
 		]);
 		users.audio = audioCount[0].users;
 		users.display = displayCount[0].users;
 		users.video = videoCount[0].users;
+		users.summary = summaryCount[0].users;
 		res.json(users);
 	} catch (e) {
 		console.log(e);

@@ -6,8 +6,10 @@ import {
 	orderManagerPublisherData,
 	PublisherLoading,
 	LoadUniqueUsersData,
+	LoadDynamicReportTest,
 	searchPublisherData,
-	storepaginationPublisherData
+	storepaginationPublisherData,
+	DynamicPublisherLoading
 } from '../redux/actions/ConsoledateActions';
 import { LoadQuartileData } from '../redux/actions/SeperateActions';
 import PreLoader from '../components/loaders/PreLoader';
@@ -26,6 +28,7 @@ import {
 	ConsolePhoneBodyAudio
 } from '../components/CommonFun';
 import ReactExport from 'react-data-export';
+import BasicDateRangePicker from '../components/dateRangepicker';
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 
@@ -33,6 +36,8 @@ function PublisherConsole() {
 	const dispatchRedux = useDispatch();
 	const consoledata = useSelector((state) => state.consoleDateReport);
 	const quartiledata = useSelector((state) => state.quartile);
+	const [ startDate, setstartDate ] = React.useState('');
+	const [ endDate, setendDate ] = React.useState('');
 	// const [ searchval, setSearchval ] = useState('');
 	useEffect(() => {
 		if (
@@ -42,6 +47,7 @@ function PublisherConsole() {
 			dispatchRedux(PublisherLoading());
 			dispatchRedux(LoadPublisherData());
 			dispatchRedux(LoadUniqueUsersData());
+			// dispatchRedux(LoadDynamicReportTest());
 			// dispatchRedux(LoadQuartileData());
 		}
 		// if (consoledata && consoledata.publisherDataValue) {
@@ -242,6 +248,52 @@ function PublisherConsole() {
 					<ExcelSheet dataSet={QuartileDown.video} name="Complete Quartile Publisher Video Wise" />
 				</ExeclDownload>
 			</div>
+			<Paper className="tableCont tabledatemain">
+				<BasicDateRangePicker setstartDate={setstartDate} setendDate={setendDate} />
+				<Button
+					color="primary"
+					variant="contained"
+					style={{ margin: '5px' }}
+					onClick={() => {
+						dispatchRedux(DynamicPublisherLoading());
+						dispatchRedux(LoadDynamicReportTest(startDate, endDate));
+						console.log({ startDate, endDate });
+					}}
+				>
+					Submit
+				</Button>
+				{consoledata && consoledata.dynamicpublisherDataLoading ? (
+					''
+				) : (
+					<ExeclDownload
+						filename={`Complete Report Publisher ${consoledata.dynamicpublisherData
+							? consoledata.dynamicpublisherData.startDate
+							: 0} to ${consoledata.dynamicpublisherData ? consoledata.dynamicpublisherData.endDate : 0}`}
+					>
+						<ExcelSheet dataSet={consoledata.dynamicpublisherData.summary} name="Overall Summary Report" />
+						<ExcelSheet
+							dataSet={consoledata.dynamicpublisherData.publishAudio}
+							name="Complete Publisher Audio Wise"
+						/>
+						<ExcelSheet
+							dataSet={consoledata.dynamicpublisherData.publishDisplay}
+							name="Complete Publisher Display Wise"
+						/>
+						<ExcelSheet
+							dataSet={consoledata.dynamicpublisherData.publishVideo}
+							name="Complete Publisher Video Wise"
+						/>
+						<ExcelSheet
+							dataSet={consoledata.dynamicpublisherData.quartileAudio}
+							name="Complete Quartile Publisher Audio Wise"
+						/>
+						<ExcelSheet
+							dataSet={consoledata.dynamicpublisherData.quartileVideo}
+							name="Complete Quartile Publisher Video Wise"
+						/>
+					</ExeclDownload>
+				)}
+			</Paper>
 			{consoledata &&
 			!consoledata.uniqueusersloading && (
 				<div>

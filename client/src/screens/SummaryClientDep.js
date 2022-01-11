@@ -90,14 +90,16 @@ function SummaryClientDep({ adminView }) {
 		report.sets.map((x) => {
 			vamp[x] = [
 				{
-					columns: SumDetClientHead,
+					columns: SumDetClientHead(x),
 					data:
 						report.grp_ids[x].length &&
 						report.sumdetreport[x] &&
 						SumDetClientBody(
 							report.sumdetreport[x],
 							report.report[x].impressions,
-							report.report[x].clicks + report.report[x].clicks1
+							report.report[x].clicks + report.report[x].clicks1,
+							report.report[x].complete,
+							x
 						)
 				}
 			];
@@ -155,7 +157,7 @@ function SummaryClientDep({ adminView }) {
 			<div className="titleReport">{report.title && report.title.toUpperCase()} Campaign</div>
 			<div className="titleReport">Daily report</div>
 			<div>last updated at - {updatedatetimeseter()}</div>
-			<ExeclDownload filename={`Pincode Wise Report ${report.title}`}>
+			<ExeclDownload filename={`Daily Report ${report.title}`}>
 				{report.sets &&
 					report.sets.map((x) => {
 						return <ExcelSheet dataSet={datesumda[x]} name={`Daily Report ${x}`} />;

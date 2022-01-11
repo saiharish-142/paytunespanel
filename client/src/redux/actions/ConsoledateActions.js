@@ -7,6 +7,8 @@ import {
 	UNIQUEUSERSPUBLISHER_LOADED,
 	UNIQUEUSERSPUBLISHER_ERROR,
 	PUBLISHERDATA_CLEAR,
+	DYNAMIC_PUBLISHERDATA_LOADED,
+	DYNAMIC_PUBLISHERDATA_LOADING,
 	PUBLISHERDATA_PAGINATION_AUDIO,
 	PUBLISHERDATA_PAGINATION_DISPLAY,
 	PUBLISHERDATA_PAGINATION_VIDEO,
@@ -25,6 +27,12 @@ export const PublisherLoading = () => (dispatch, getState) => {
 	});
 	dispatch({
 		type: UNIQUEUSERSPUBLISHER_LOADING
+	});
+};
+
+export const DynamicPublisherLoading = () => (dispatch, getState) => {
+	dispatch({
+		type: DYNAMIC_PUBLISHERDATA_LOADING
 	});
 };
 
@@ -267,6 +275,504 @@ export const LoadUniqueUsersData = () => (dispatch, getState) => {
 				});
 			});
 	}
+};
+
+export const LoadDynamicReportTest = (startDate, endDate) => (dispatch, getState) => {
+	console.log({ startDate, endDate });
+	console.log('called');
+	fetch('/dynamic/dynamicConsolePublisher', {
+		method: 'PUT',
+		headers: tokenConfig(getState).headers,
+		body: JSON.stringify({ startDate: startDate, endDate: endDate })
+	})
+		.then((res) => res.json())
+		.then((results) => {
+			var result = results
+			console.log(result);
+			const summ = [
+				{
+					ySteps: 1,
+					xSteps: 3,
+					columns: [ { title: `Overall Summary Report ${startDate} to ${endDate}` } ],
+					data: [ [ { value: '' } ] ]
+				},
+				{
+					columns: [
+						{ title: 'Total Impressions' },
+						{ title: 'Average Impressions' },
+						{ title: 'Total Clicks' },
+						{ title: 'CTR' },
+						{ title: 'LTR' }
+					],
+					data: [
+						[
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.complete &&
+									result.summary.complete.impressions
+										? result.summary.complete.impressions
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.complete &&
+									result.summary.complete.avgimpressions
+										? result.summary.complete.avgimpressions
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.complete &&
+									result.summary.complete.clicks
+										? result.summary.complete.clicks
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.complete &&
+									result.summary.complete.clicks &&
+									result.summary.complete.impressions
+										? result.summary.complete.clicks / result.summary.complete.impressions + '%'
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.complete &&
+									result.summary.complete.complete &&
+									result.summary.complete.impressions
+										? result.summary.complete.complete / result.summary.complete.impressions + '%'
+										: 0
+							}
+						]
+					]
+				},
+				{
+					ySteps: 1,
+					xSteps: 3,
+					columns: [ { title: `Overall Audio Report` } ],
+					data: [ [ { value: '' } ] ]
+				},
+				{
+					columns: [
+						{ title: 'Total Request' },
+						{ title: 'Average Request' },
+						{ title: 'Total Impressions' },
+						{ title: 'Average Impressions' },
+						{ title: 'Total Clicks' },
+						{ title: 'CTR' },
+						{ title: 'LTR' }
+					],
+					data: [
+						[
+							{
+								value:
+									result && result.summary && result.summary.audio && result.summary.audio.requests
+										? result.summary.audio.requests
+										: 0
+							},
+							{
+								value:
+									result && result.summary && result.summary.audio && result.summary.audio.avgrequests
+										? result.summary.audio.avgrequests
+										: 0
+							},
+							{
+								value:
+									result && result.summary && result.summary.audio && result.summary.audio.impressions
+										? result.summary.audio.impressions
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.audio &&
+									result.summary.audio.avgimpressions
+										? result.summary.audio.avgimpressions
+										: 0
+							},
+							{
+								value:
+									result && result.summary && result.summary.audio && result.summary.audio.clicks
+										? result.summary.audio.clicks
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.audio &&
+									result.summary.audio.clicks &&
+									result.summary.audio.impressions
+										? result.summary.audio.clicks / result.summary.audio.impressions + '%'
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.audio &&
+									result.summary.audio.complete &&
+									result.summary.audio.impressions
+										? result.summary.audio.complete / result.summary.audio.impressions + '%'
+										: 0
+							}
+						]
+					]
+				},
+				{
+					ySteps: 1,
+					xSteps: 3,
+					columns: [ { title: `Overall Display Report` } ],
+					data: [ [ { value: '' } ] ]
+				},
+				{
+					columns: [
+						{ title: 'Total Impressions' },
+						{ title: 'Average Impressions' },
+						{ title: 'Total Clicks' },
+						{ title: 'CTR' }
+					],
+					data: [
+						[
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.display &&
+									result.summary.display.impressions
+										? result.summary.display.impressions
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.display &&
+									result.summary.display.avgimpressions
+										? result.summary.display.avgimpressions
+										: 0
+							},
+							{
+								value:
+									result && result.summary && result.summary.display && result.summary.display.clicks
+										? result.summary.display.clicks
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.display &&
+									result.summary.display.clicks &&
+									result.summary.display.impressions
+										? result.summary.display.clicks / result.summary.display.impressions + '%'
+										: 0
+							}
+						]
+					]
+				},
+				{
+					ySteps: 1,
+					xSteps: 3,
+					columns: [ { title: `Overall Video Report` } ],
+					data: [ [ { value: '' } ] ]
+				},
+				{
+					columns: [
+						{ title: 'Total Impressions' },
+						{ title: 'Average Impressions' },
+						{ title: 'Total Clicks' },
+						{ title: 'CTR' },
+						{ title: 'LTR' }
+					],
+					data: [
+						[
+							{
+								value:
+									result && result.summary && result.summary.video && result.summary.video.impressions
+										? result.summary.video.impressions
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.video &&
+									result.summary.video.avgimpressions
+										? result.summary.video.avgimpressions
+										: 0
+							},
+							{
+								value:
+									result && result.summary && result.summary.video && result.summary.video.clicks
+										? result.summary.video.clicks
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.video &&
+									result.summary.video.clicks &&
+									result.summary.video.impressions
+										? result.summary.video.clicks / result.summary.video.impressions + '%'
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.video &&
+									result.summary.video.complete &&
+									result.summary.video.impressions
+										? result.summary.video.complete / result.summary.video.impressions + '%'
+										: 0
+							}
+						]
+					]
+				},
+				{
+					ySteps: 1,
+					xSteps: 3,
+					columns: [ { title: `Overall Quartile Summary Report` } ],
+					data: [ [ { value: '' } ] ]
+				},
+				{
+					columns: [
+						{ title: '' },
+						{ title: 'Start' },
+						{ title: 'First Quartile' },
+						{ title: 'Second Quartile' },
+						{ title: 'Third Quartile' },
+						{ title: 'Complete' },
+						{ title: 'Total Impressions' }
+					],
+					data: [
+						[
+							{ value: 'Impressions' },
+							{
+								value:
+									result && result.summary && result.summary.complete && result.summary.complete.start
+										? result.summary.complete.start
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.complete &&
+									result.summary.complete.firstQuartile
+										? result.summary.complete.firstQuartile
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.complete &&
+									result.summary.complete.midpoint
+										? result.summary.complete.midpoint
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.complete &&
+									result.summary.complete.thirdQuartile
+										? result.summary.complete.thirdQuartile
+										: 0
+							},
+							{
+								value:
+									result &&
+									result.summary &&
+									result.summary.complete &&
+									result.summary.complete.complete
+										? result.summary.complete.complete
+										: 0
+							}
+						]
+					]
+				}
+			];
+			result.audio && result.audio.sort(function(b,a){return a.impressions-b.impressions})
+			result.display && result.display.sort(function(b,a){return a.impressions-b.impressions})
+			result.video && result.video.sort(function(b,a){return a.impressions-b.impressions})
+			const publishAudio = [
+				{
+					columns: [
+						{ title: 'Publisher' },
+						{ title: 'PublisherId' },
+						{ title: 'SSP' },
+						{ title: 'Feed' },
+						{ title: 'Requests' },
+						{ title: 'Avgerage Requests' },
+						{ title: 'Total Impressions' },
+						{ title: 'Average Impressions' },
+						{ title: 'Total Clicks' },
+						{ title: 'CTR' }
+					],
+					data:
+						result && result.audio && result.audio.length
+							? result.audio.map((x) => [
+									{ value: x.apppubidpo && x.apppubidpo.bundletitle ? x.apppubidpo.bundletitle : '' },
+									{ value: x.PublisherSplit ? x.PublisherSplit : '' },
+									{ value: x.ssp ? x.ssp : '' },
+									{ value: x.feed === '3' ? 'Podcast' : 'Ondemand and Streaming' },
+									{ value: x.requests ? x.requests : 0 },
+									{ value: x.avgrequests ? x.avgrequests : 0 },
+									{ value: x.impressions ? x.impressions : 0 },
+									{ value: x.avgimpressions ? x.avgimpressions : 0 },
+									{ value: x.clicks ? x.clicks : 0 },
+									{ value: x.clicks && x.impressions ? x.clicks / x.impressions + '%' : 0 + '%' }
+								])
+							: [ [ { value: '' } ] ]
+				}
+			];
+			const publishVideo = [
+				{
+					columns: [
+						{ title: 'Publisher' },
+						{ title: 'PublisherId' },
+						{ title: 'SSP' },
+						{ title: 'Feed' },
+						{ title: 'Total Impressions' },
+						{ title: 'Average Impressions' },
+						{ title: 'Total Clicks' },
+						{ title: 'CTR' }
+					],
+					data:
+						result && result.video && result.video.length
+							? result.video.map((x) => [
+									{ value: x.apppubidpo && x.apppubidpo.bundletitle ? x.apppubidpo.bundletitle : '' },
+									{ value: x.PublisherSplit ? x.PublisherSplit : '' },
+									{ value: x.ssp ? x.ssp : '' },
+									{ value: x.feed === '3' ? 'Podcast' : 'Ondemand and Streaming' },
+									{ value: x.impressions ? x.impressions : 0 },
+									{ value: x.avgimpressions ? x.avgimpressions : 0 },
+									{ value: x.clicks ? x.clicks : 0 },
+									{ value: x.clicks && x.impressions ? x.clicks / x.impressions + '%' : 0 + '%' }
+								])
+							: [ [ { value: '' } ] ]
+				}
+			];
+			const publishDisplay = [
+				{
+					columns: [
+						{ title: 'Publisher' },
+						{ title: 'PublisherId' },
+						{ title: 'SSP' },
+						{ title: 'Feed' },
+						{ title: 'Total Impressions' },
+						{ title: 'Average Impressions' },
+						{ title: 'Total Clicks' },
+						{ title: 'CTR' }
+					],
+					data:
+						result && result.display && result.display.length
+							? result.display.map((x) => [
+									{ value: x.apppubidpo && x.apppubidpo.bundletitle ? x.apppubidpo.bundletitle : '' },
+									{ value: x.PublisherSplit ? x.PublisherSplit : '' },
+									{ value: x.ssp ? x.ssp : '' },
+									{ value: x.feed === '3' ? 'Podcast' : 'Ondemand and Streaming' },
+									{ value: x.impressions ? x.impressions : 0 },
+									{ value: x.avgimpressions ? x.avgimpressions : 0 },
+									{ value: x.clicks ? x.clicks : 0 },
+									{ value: x.clicks && x.impressions ? x.clicks / x.impressions + '%' : 0 + '%' }
+								])
+							: [ [ { value: '' } ] ]
+				}
+			];
+			const quartileAudio = [
+				{
+					columns: [
+						{ title: 'Publisher' },
+						{ title: 'PublisherId' },
+						{ title: 'Total Impressions' },
+						{ title: 'Start' },
+						{ title: 'First Quartile' },
+						{ title: 'Second Quartile' },
+						{ title: 'Third Quartile' },
+						{ title: 'Complete' },
+						{ title: 'LTR' }
+					],
+					data:
+						result && result.audio && result.audio.length
+							? result.audio.map((x) => [
+									{ value: x.apppubidpo && x.apppubidpo.bundletitle ? x.apppubidpo.bundletitle : '' },
+									{ value: x.PublisherSplit ? x.PublisherSplit : '' },
+									{ value: x.ssp ? x.ssp : '' },
+									{ value: x.impressions ? x.impressions : 0 },
+									{ value: x.start ? x.start : 0 },
+									{ value: x.firstQuartile ? x.firstQuartile : 0 },
+									{ value: x.midpoint ? x.midpoint : 0 },
+									{ value: x.thirdQuartile ? x.thirdQuartile : 0 },
+									{ value: x.complete ? x.complete : 0 },
+									{ value: x.complete && x.impressions ? x.complete / x.impressions + '%' : 0 + '%' }
+								])
+							: [ [ { value: '' } ] ]
+				}
+			];
+			const quartileVideo = [
+				{
+					columns: [
+						{ title: 'Publisher' },
+						{ title: 'PublisherId' },
+						{ title: 'Total Impressions' },
+						{ title: 'Start' },
+						{ title: 'First Quartile' },
+						{ title: 'Second Quartile' },
+						{ title: 'Third Quartile' },
+						{ title: 'Complete' },
+						{ title: 'LTR' }
+					],
+					data:
+						result && result.video && result.video.length
+							? result.video.map((x) => [
+									{ value: x.apppubidpo && x.apppubidpo.bundletitle ? x.apppubidpo.bundletitle : '' },
+									{ value: x.PublisherSplit ? x.PublisherSplit : '' },
+									{ value: x.ssp ? x.ssp : '' },
+									{ value: x.impressions ? x.impressions : 0 },
+									{ value: x.start ? x.start : 0 },
+									{ value: x.firstQuartile ? x.firstQuartile : 0 },
+									{ value: x.midpoint ? x.midpoint : 0 },
+									{ value: x.thirdQuartile ? x.thirdQuartile : 0 },
+									{ value: x.complete ? x.complete : 0 },
+									{ value: x.complete && x.impressions ? x.complete / x.impressions + '%' : 0 + '%' }
+								])
+							: [ [ { value: '' } ] ]
+				}
+			];
+			console.log({ summary: summ, publishAudio, publishDisplay, publishVideo, quartileAudio, quartileVideo });
+			dispatch({
+				type: DYNAMIC_PUBLISHERDATA_LOADED,
+				payload: {
+					summary: summ,
+					publishAudio,
+					publishDisplay,
+					publishVideo,
+					quartileAudio,
+					quartileVideo,
+					startDate,
+					endDate
+				}
+			});
+		})
+		.catch((err) => {
+			console.log(err);
+		});
 };
 
 const audioS = (pagination, rpp) => (dispatch, getState) => {

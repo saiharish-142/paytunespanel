@@ -73,9 +73,11 @@ require('./models/useragent.model');
 require('./models/freqCampaignWise.model');
 require('./models/campaignreportsum.model');
 require('./models/freqPubreport.models');
+require('./models/singleoverallfreqdoc');
 app.get('/', (req, res) => {
 	res.send('hello!');
 });
+const dynamic = require('./functions/dynamicreports.routes');
 app.use('/auth', require('./routes/user.routes'));
 app.use('/streamingads', require('./routes/streamingads.routes'));
 app.use('/ads', require('./routes/adsetting.routes'));
@@ -91,7 +93,7 @@ app.use('/bundle', require('./routes/bundlenamereports.routes'));
 app.use('/subrepo', require('./routes/subreports.routes'));
 app.use('/bundles', require('./routes/bundling.routes'));
 app.use('/useragent', require('./routes/useragent.routes'));
-
+app.use('/dynamic', dynamic.route);
 // const gg=async()=>{
 // 	const Apppublisher=require('./models/apppublishers.model');
 // 	let publishers=await Apppublisher.find({ $expr: { $ne: [ "$publisherid" , "$bundletitle" ] } });
@@ -501,7 +503,7 @@ let tempfunc = async () => {
 cron.schedule('30 1 * * *', function() {
 	PodcastEpisodeRefresher();
 });
-PodcastEpisodeRefresher();
+// PodcastEpisodeRefresher();
 async function PodcastEpisodeRefresher() {
 	let date = new Date(new Date());
 	date.setDate(date.getDate() - 1);
@@ -733,6 +735,25 @@ cron.schedule('35 00 * * *', function() {
 	cyear = cdatee.getFullYear();
 	var chevk = `${cyear}-${cmonth}-${cdate}`;
 	commonfunctions.freqpub(chevk, chevk2);
+});
+
+cron.schedule('20 00 * * *', function() {
+	var cdate, cmonth, cyear;
+	var cdatee = new Date(new Date());
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk2 = `${cyear}-${cmonth}-${cdate}`;
+	cdatee.setDate(cdatee.getDate() - 1);
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var chevk = `${cyear}-${cmonth}-${cdate}`;
+	commonfunctions.freqover(chevk, chevk2);
 });
 
 cron.schedule('30 00 * * *', function() {

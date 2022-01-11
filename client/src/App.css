@@ -301,6 +301,17 @@
   margin-top: 20px !important ;
 }
 
+.tabledatemain{
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  padding: 20px 0;
+}
+
+.tabledatemain input{
+  padding: 0 10px !important;
+}
+
 @media screen and (max-width: 700px){
   .navbar{
     height: 10vh;

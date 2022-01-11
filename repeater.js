@@ -14,6 +14,7 @@ const StreamingAds = mongoose.model('streamingads');
 const adsetting = mongoose.model('adsetting');
 const admin = mongoose.model('admin');
 const freqCampWise = mongoose.model('freqCampWise');
+const overallfreqreport = mongoose.model('overallfreqreport');
 const freqpubOnreports = mongoose.model('freqpubOnreports');
 const campaignwisereports = mongoose.model('campaignwisereports');
 const campaignreportsSum = mongoose.model('campaignreportsSum');
@@ -62,6 +63,29 @@ const musicids = [
 	'5adeeb79cf7a7e3e5d822106',
 	'5d10c405844dd970bf41e2af'
 ];
+
+const specific1banner = [
+	'13698',
+	'22308',
+	'845083955',
+	'22310',
+	'5b2210af504f3097e73e0d8b',
+	'5a1e46beeb993dc67979412e',
+	'jiosaavn',
+	'5efac6f9aeeeb92b8a1ee056',
+	'5c0a3f024a6c1355afaffabc',
+	'com.bsbportal.music',
+	'172101100',
+	'172101600',
+	'5d3f052e979a1c2391016c04',
+	'5d10c405844dd970bf41e2af',
+	'11726',
+	'324684580',
+	'com.spotify.music',
+	'com.jio.media.jiobeats',
+	'441813332'
+];
+const gannabanner = [ '18880', '18878', '5adeeb79cf7a7e3e5d822106', '585270521', 'com.gaana', '11726' ];
 
 function arr_diff(a1, a2) {
 	var a = [],
@@ -722,6 +746,7 @@ const idSplitter = async (respo, onDemand, podcast, audio, display, video, music
 			idsSet.video.map((x) => answer[video].push(x));
 		}
 		answer['das'] = [ ...new Set(das) ];
+		answer['ids'] = idsSet;
 		return answer;
 	} else {
 		console.log('no ids found');
@@ -984,6 +1009,110 @@ async function freqCampTest(chevk, chevk2) {
 		});
 }
 
+async function freqoverall(chevk, chevk2) {
+	console.log('start');
+	let answertype = await campaignifareports
+		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					campaignId: '$campaignId',
+					rtbType: '$rtbType',
+					ifa: '$ifa'
+				}
+			},
+			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+			{
+				$group: {
+					_id: { ifa: '$ifa', rtbType: '$rtbType' }
+				}
+			},
+			{
+				$group: {
+					_id: { rtbType: '$_id.rtbType' },
+					users: { $sum: 1 }
+				}
+			}
+		])
+		.allowDiskUse(true)
+		.catch((err) => console.log(err));
+	let answeroverall = await campaignifareports
+		.aggregate([
+			{
+				$project: {
+					test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
+					campaignId: '$campaignId',
+					rtbType: '$rtbType',
+					ifa: '$ifa'
+				}
+			},
+			{ $match: { test: { $gte: chevk, $lt: chevk2 } } },
+			{
+				$group: {
+					_id: { ifa: '$ifa' }
+				}
+			},
+			{
+				$group: {
+					_id: null,
+					users: { $sum: 1 }
+				}
+			}
+		])
+		.allowDiskUse(true)
+		.catch((err) => console.log(err));
+	if (answertype.length > 1) {
+		answertype.map(async (x) => {
+			let samp = await overallfreqreport.findOne({ rtbType: x._id.rtbType }).catch((err) => console.log(err));
+			if (samp) {
+				if (samp.createdOn === chevk2) {
+					console.log('Already Done', x._id.rtbType);
+				} else {
+					if (typeof samp.users === 'number') {
+						samp.users += x.users;
+					} else {
+						samp.users = x.users;
+					}
+					samp.save().then((ress) => {
+						console.log('updated', x._id.rtbType);
+					});
+				}
+			} else {
+				const gonasave = new overallfreqreport({
+					createdOn: chevk2,
+					users: x.users,
+					rtbType: x._id.rtbType
+				});
+				gonasave.save().then((cre) => console.log('created', x._id.rtbType)).catch((err) => console.log(err));
+			}
+		});
+	}
+	if (answeroverall.length > 0) {
+		let getover = await overallfreqreport.findOne({ rtbType: 'summary' }).catch((err) => console.log(err));
+		if (getover) {
+			if (getover.createdOn === chevk2) {
+				console.log('Already Done, summary');
+			} else {
+				if (typeof getover.users === 'number') {
+					getover.users += answeroverall[0].users;
+				} else {
+					getover.users = answeroverall[0].users;
+				}
+				getover.save().then((ress) => {
+					console.log('updated, x.summary');
+				});
+			}
+		} else {
+			const gonasave = new overallfreqreport({
+				createdOn: chevk2,
+				users: answeroverall[0].users,
+				rtbType: 'summary'
+			});
+			gonasave.save().then((cre) => console.log('created, summary')).catch((err) => console.log(err));
+		}
+	}
+}
+
 // DailyReportMailer();
 async function DailyReportMailer() {
 	var users = await admin.find({ usertype: 'client' }).select('email').catch((err) => console.log(err));
@@ -1050,11 +1179,12 @@ async function DailyReportMailer() {
 						var idsa = mashh[mashh.das[j]]
 							? mashh[mashh.das[j]].map((x) => mongoose.Types.ObjectId(x))
 							: [];
+						// if(mashh.ids.video)
 						let totalcoms = await campaignwisereports.aggregate([
 							{ $match: { campaignId: { $in: idsa } } },
 							{
 								$group: {
-									_id: '$ssp',
+									_id: { ssp: '$ssp' },
 									impressions: { $sum: '$impression' },
 									complete: { $sum: '$complete' },
 									clicks: { $sum: '$CompanionClickTracking' },
@@ -1076,18 +1206,23 @@ async function DailyReportMailer() {
 							totalcom.impressions += x.impressions;
 							totalcom.clicks += x.clicks;
 							totalcom.clicks1 += x.clicks1;
-							if (x && (x._id === 'Adswizz' || x._id === 'Rubicon' || x._id === 'Triton')) {
+							if (x && (x._id.ssp === 'Adswizz' || x._id.ssp === 'Rubicon' || x._id.ssp === 'Triton')) {
 								totalcom.complete += x.complete;
 								totalcom.onlineImpressions += x.impressions;
 							}
 						});
-						console.log(x.searchName, totalcoms, totalcom);
+						// console.log(x.searchName, totalcoms, totalcom);
 						// continue;
 						let reportdaily = await campaignwisereports.aggregate([
 							{ $match: { campaignId: { $in: idsa } } },
 							{
 								$group: {
-									_id: { date: '$date', ssp: '$ssp' },
+									_id: {
+										date: '$date',
+										ssp: '$ssp',
+										campaignId: '$campaignId',
+										apppubid: '$apppubid'
+									},
 									impressions: { $sum: '$impression' },
 									complete: { $sum: '$complete' },
 									firstQuartile: { $sum: '$firstQuartile' },
@@ -1103,7 +1238,9 @@ async function DailyReportMailer() {
 											firstQuartile: '$firstQuartile',
 											complete: '$complete',
 											clicks: '$clicks',
-											ssp: '$_id.ssp'
+											ssp: '$_id.ssp',
+											campaignId: '$_id.campaignId',
+											apppubid: '$_id.apppubid'
 										}
 									}
 								}
@@ -1117,32 +1254,72 @@ async function DailyReportMailer() {
 							},
 							{ $sort: { date: -1 } }
 						]);
-						reportdaily.map((pi) => {
-							pi.impressions = 0;
-							pi.onlineImpressions = 0;
-							pi.complete = 0;
-							pi.clicks = 0;
-							pi.data &&
-								pi.data.map((z) => {
-									pi.impressions += z.impressions;
-									pi.clicks += z.clicks;
-									if (z && (z.ssp === 'Adswizz' || z.ssp === 'Rubicon' || z.ssp === 'Triton')) {
-										pi.complete += z.complete;
-										pi.onlineImpressions += z.impressions;
-									}
-								});
-						});
+						var videoTest = mashh.ids.video ? mashh.ids.video.map((x) => x.toString()) : [];
+						if (mashh.das[j].toLowerCase().includes('audio')) {
+							reportdaily.map((pi) => {
+								pi.impressions = 0;
+								pi.onlineImpressions = 0;
+								pi.bannerImpressions = 0.0;
+								pi.complete = 0;
+								pi.clicks = 0;
+								pi.data &&
+									pi.data.map((z) => {
+										pi.impressions += z.impressions;
+										pi.clicks += z.clicks;
+										if (z && (z.ssp === 'Adswizz' || z.ssp === 'Rubicon' || z.ssp === 'Triton')) {
+											pi.complete += z.complete;
+											pi.onlineImpressions += z.impressions;
+										}
+										// console.log(specific1banner.includes(z.apppubid));
+										// if (videoTest.length && videoTest.includes(z.campaignId.toString())) {
+										// 	console.log(mashh, z.campaignId);
+										// }
+										// console.log(videoTest.includes(z.campaignId.toString()));
+										if (
+											videoTest.includes(z.campaignId.toString()) ||
+											specific1banner.includes(z.apppubid)
+										) {
+											pi.bannerImpressions += z.impressions;
+										} else if (gannabanner.includes(z.apppubid)) {
+											pi.bannerImpressions += z.impressions * 0.25;
+										} else {
+											pi.bannerImpressions += z.impressions * 0.75;
+										}
+										// console.log(pi.bannerImpressions);
+									});
+							});
+						} else {
+							reportdaily.map((pi) => {
+								pi.impressions = 0;
+								pi.onlineImpressions = 0;
+								pi.complete = 0;
+								pi.clicks = 0;
+								pi.data &&
+									pi.data.map((z) => {
+										pi.impressions += z.impressions;
+										pi.clicks += z.clicks;
+										if (z && (z.ssp === 'Adswizz' || z.ssp === 'Rubicon' || z.ssp === 'Triton')) {
+											pi.complete += z.complete;
+											pi.onlineImpressions += z.impressions;
+										}
+									});
+							});
+						}
+
 						// console.log(totalcom, x.searchName, reportdaily.length, 'cooo');
 						reportdaily = reportdaily.filter((x) => x.impressions >= 10);
 						var totImp = 0,
 							totOniImp = 0,
 							totCli = 0,
-							totCom = 0;
+							totCom = 0,
+							totBan = 0;
 						var totImp1 = 0,
 							totCli1 = 0,
+							totBan1 = 0,
 							totCom1 = 0;
 						reportdaily.map((dax) => {
 							totOniImp += dax.onlineImpressions;
+							totBan += dax.bannerImpressions;
 							totImp += dax.impressions;
 							totCli += dax.clicks;
 							totCom += dax.complete;
@@ -1151,6 +1328,10 @@ async function DailyReportMailer() {
 						// totalcom.complete = totalcom.complete / totalcom.onlineImpressions * totalcom.impressions;
 						reportdaily.map((dax) => {
 							dax.impressions = totImp ? Math.round(dax.impressions / totImp * totalcom.impressions) : 0;
+							dax.bannerImpressions =
+								totImp && dax.bannerImpressions
+									? Math.round(dax.bannerImpressions / totImp * totalcom.impressions)
+									: 0;
 							dax.onlineImpressions = dax.onlineImpressions ? Math.round(dax.onlineImpressions) : 0;
 							dax.clicks = totCli
 								? Math.round(dax.clicks / totCli * (totalcom.clicks + totalcom.clicks1))
@@ -1159,6 +1340,7 @@ async function DailyReportMailer() {
 							totImp1 += dax.impressions;
 							totCli1 += dax.clicks;
 							totCom1 += dax.complete;
+							totBan1 += dax.bannerImpressions ? dax.bannerImpressions : 0;
 						});
 						if (totImp > totImp1 || totCli - totCli1 > 0 || totCom - totCom1 > 0)
 							reportdaily.push({
@@ -1172,22 +1354,26 @@ async function DailyReportMailer() {
 							reportdaily = reportdaily.filter((x) => x.date != chevk2);
 							var tempImp = 0,
 								tempOniImp = 0,
+								tempBanImp = 0,
 								tempCli = 0,
 								tempCom = 0;
 							dum.map((zx) => {
 								tempImp += zx.impressions;
 								tempOniImp += zx.onlineImpressions;
+								tempBanImp += zx.bannerImpressions;
 								tempCli += zx.clicks;
 								tempCom += zx.complete;
 							});
 							totImp -= tempImp;
 							totOniImp -= tempOniImp;
+							totBan1 -= tempBanImp;
 							totCli -= tempCli;
 							totCom -= tempCom;
 						}
 						reportdaily.push({
 							date: 'Total',
 							onlineImpressions: totOniImp,
+							bannerImpressions: totBan1,
 							impressions: totImp,
 							clicks: totCli,
 							complete: totCom
@@ -1246,6 +1432,7 @@ async function DailyReportMailer() {
 													<tr>
 														<th>Date</th>
 														<th>Impressions</th>
+														${xas.toLowerCase().indexOf('audio') > -1 ? ` <th>Banner </th>` : ``}
 														<th>Clicks</th>
 														<th>CTR</th>
 														${!(xas === 'Display' || xas === 'display') ? ` <th>LTR</th>` : ``}
@@ -1254,10 +1441,15 @@ async function DailyReportMailer() {
 														? totaldataCount[xas]
 																.map((dalrep) => {
 																	return `<tr>
-																<td>${dalrep.date}</td>
+																<td>${dalrep.date ? dataformatchanger(dalrep.date) : ''}</td>
 																<td>
 																	${dalrep.impressions}
 																</td>
+																${xas.toLowerCase().indexOf('audio') > -1
+																	? `<td>
+																	${dalrep.bannerImpressions}
+																	</td>`
+																	: ``}
 																<td>${dalrep.clicks}</td>
 																<td>
 																	${Math.round(dalrep.clicks * 100 * 100 / dalrep.impressions) / 100}%
@@ -1372,6 +1564,12 @@ router.put('/freq', adminauth, async (req, res) => {
 	res.json(data);
 });
 
+router.put('/freqsum', adminauth, async (req, res) => {
+	const { date, date2 } = req.body;
+	let data = await freqoverall(date, date2);
+	res.json(data);
+});
+
 router.put('/freqonlypub', adminauth, async (req, res) => {
 	const { date, date2 } = req.body;
 	let data = await freqPubTest(date, date2);
@@ -1384,7 +1582,7 @@ router.put('/freqonlycamp', adminauth, async (req, res) => {
 	res.json(data);
 });
 
-router.put('/autoMailer', adminauth, async (req, res) => {
+router.get('/autoMailer', adminauth, async (req, res) => {
 	// const { date, date2 } = req.body;
 	DailyReportMailer();
 	res.json('started');
@@ -1405,6 +1603,7 @@ const expo = {
 	func1: datareturner,
 	func2: pacingMailer,
 	func3: DailyReportMailer,
+	freqover: freqoverall,
 	freqpub: freqCampPubTest,
 	freqonlypub: freqPubTest,
 	freqonlycamp: freqCampTest,
