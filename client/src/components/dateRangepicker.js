@@ -5,7 +5,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Box from '@mui/material/Box';
 
-export default function BasicDateRangePicker({ startDate, endDate }) {
+export default function BasicDateRangePicker({ setstartDate, setendDate }) {
 	const [ value, setValue ] = React.useState([ null, null ]);
 	// const [ startDate, setstartDate ] = React.useState('');
 	// const [ endDate, setendDate ] = React.useState('');
@@ -38,8 +38,8 @@ export default function BasicDateRangePicker({ startDate, endDate }) {
 						});
 					console.log(newValue);
 					console.log(did);
-					startDate(newValue[0] ? did[0] : '');
-					endDate(newValue[1] ? did[1] : '');
+					setstartDate(newValue[0] ? did[0] : '');
+					setendDate(newValue[1] ? did[1] : '');
 					setValue(newValue);
 				}}
 				renderInput={(startProps, endProps) => (

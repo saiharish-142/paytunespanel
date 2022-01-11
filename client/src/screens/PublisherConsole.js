@@ -28,7 +28,7 @@ import {
 	ConsolePhoneBodyAudio
 } from '../components/CommonFun';
 import ReactExport from 'react-data-export';
-// import BasicDateRangePicker from '../components/dateRangepicker';
+import BasicDateRangePicker from '../components/dateRangepicker';
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 
@@ -248,8 +248,8 @@ function PublisherConsole() {
 					<ExcelSheet dataSet={QuartileDown.video} name="Complete Quartile Publisher Video Wise" />
 				</ExeclDownload>
 			</div>
-			{/* <Paper className="tableCont tabledatemain">
-				<BasicDateRangePicker startDate={setstartDate} endDate={setendDate} />
+			<Paper className="tableCont tabledatemain">
+				<BasicDateRangePicker setstartDate={setstartDate} setendDate={setendDate} />
 				<Button
 					color="primary"
 					variant="contained"
@@ -293,7 +293,7 @@ function PublisherConsole() {
 						/>
 					</ExeclDownload>
 				)}
-			</Paper> */}
+			</Paper>
 			{consoledata &&
 			!consoledata.uniqueusersloading && (
 				<div>
