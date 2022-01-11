@@ -198,21 +198,21 @@ export default function Zipdata() {
 		setdatatrus(setDatatrus);
 	};
 
-	React.useMemo(() => {
-		let sortedProducts =  searchedData?searchedData: rows;
-		if (sortconfig !== null) {
-		  sortedProducts.sort((a, b) => {
-			if (a[sortconfig.key] < b[sortconfig.key]) {
-			  return sortconfig.direction === 'ascending' ? -1 : 1;
-			}
-			if (a[sortconfig.key] > b[sortconfig.key]) {
-			  return sortconfig.direction === 'ascending' ? 1 : -1;
-			}
-			return 0;
-		  });
-		}
-		return sortedProducts;
-	  }, [rows, searchedData,sortconfig]);
+	// React.useMemo(() => {
+	// 	let sortedProducts =  searchedData?searchedData: rows;
+	// 	if (sortconfig !== null) {
+	// 	  sortedProducts.sort((a, b) => {
+	// 		if (a[sortconfig.key] < b[sortconfig.key]) {
+	// 		  return sortconfig.direction === 'ascending' ? -1 : 1;
+	// 		}
+	// 		if (a[sortconfig.key] > b[sortconfig.key]) {
+	// 		  return sortconfig.direction === 'ascending' ? 1 : -1;
+	// 		}
+	// 		return 0;
+	// 	  });
+	// 	}
+	// 	return sortedProducts;
+	//   }, [rows, searchedData,sortconfig]);
 
 
 
