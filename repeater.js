@@ -136,7 +136,7 @@ async function datareturner(datae) {
 	try {
 		let ids = await adsetting
 			.aggregate([
-				// { $match: { isRunning: true } },
+				{ $match: { isRunning: true } },
 				{
 					$project: {
 						testStart: { $dateToString: { format: '%Y-%m-%d', date: '$startDate' } },
@@ -146,7 +146,7 @@ async function datareturner(datae) {
 						type: '$type'
 					}
 				},
-				{ $match: { testEnd: { $gte: '2021-12-22' } } },
+				// { $match: { testEnd: { $gte: '2021-12-22' } } },
 				{
 					$group: {
 						_id: { testStart: '$testStart', testEnd: '$testEnd', campaignId: '$campaignId', type: '$type' },
@@ -279,6 +279,7 @@ async function pacingMailer() {
 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
 	cyear = cdatee.getFullYear();
 	var chevk2 = `${cyear}-${cmonth}-${cdate}`;
+	console.log(chevk2);
 	let data = await campaignreportsSum
 		.find({ createdOn: chevk2 })
 		.populate({ path: 'campaignId', select: 'AdTitle' })
