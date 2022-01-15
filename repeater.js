@@ -263,6 +263,9 @@ async function datareturner(datae) {
 
 function dataformatchanger(date) {
 	var data = date;
+	if (data === 'Total') {
+		return data;
+	}
 	if (data) {
 		return data.substr(8, 2) + '-' + data.substr(5, 2) + '-' + data.substr(0, 4);
 	} else {
