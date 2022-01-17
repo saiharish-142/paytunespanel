@@ -74,9 +74,11 @@ require('./models/freqCampaignWise.model');
 require('./models/campaignreportsum.model');
 require('./models/freqPubreport.models');
 require('./models/singleoverallfreqdoc');
+require('./models/tempModel.model');
 app.get('/', (req, res) => {
 	res.send('hello!');
 });
+const dataPullerML = require('./Data/DataPuller');
 const dynamic = require('./functions/dynamicreports.routes');
 app.use('/auth', require('./routes/user.routes'));
 app.use('/streamingads', require('./routes/streamingads.routes'));
@@ -94,6 +96,7 @@ app.use('/subrepo', require('./routes/subreports.routes'));
 app.use('/bundles', require('./routes/bundling.routes'));
 app.use('/useragent', require('./routes/useragent.routes'));
 app.use('/dynamic', dynamic.route);
+app.use('/dataPullML', dataPullerML.route);
 // const gg=async()=>{
 // 	const Apppublisher=require('./models/apppublishers.model');
 // 	let publishers=await Apppublisher.find({ $expr: { $ne: [ "$publisherid" , "$bundletitle" ] } });
