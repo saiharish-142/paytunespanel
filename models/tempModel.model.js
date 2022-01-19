@@ -6,7 +6,12 @@ const tempModelSchema = new mongoose.Schema({
 	campaignId: { type: String },
 	impression: { type: Number },
 	click: { type: Number },
+	firstquartile: { type: Number },
+	thirdquartile: { type: Number },
+	midpoint: { type: Number },
+	start: { type: Number },
 	complete: { type: Number }
 });
+tempModelSchema.index({ campaignId: 1, time: 1 });
 
 mongoose.model('tempModel', tempModelSchema);

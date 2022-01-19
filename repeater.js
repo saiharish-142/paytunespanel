@@ -304,9 +304,9 @@ async function pacingMailer() {
 		Destination: {
 			BccAddresses: [],
 			CcAddresses: [],
-			// ToAddresses: [ 'saiharishmedam@gmail.com' ]
+			ToAddresses: [ 'saiharishmedam@gmail.com' ]
 			// ToAddresses: [ 'fin-ops@paytunes.in', 'raj.v@paytunes.in', 'saiharishmedam@gmail.com' ]
-			ToAddresses: [ 'fin-ops@paytunes.in', 'raj.v@paytunes.in' ]
+			// ToAddresses: [ 'fin-ops@paytunes.in', 'raj.v@paytunes.in' ]
 			// ToAddresses:  ['fin-ops@paytunes.in']
 		},
 		Message: {
