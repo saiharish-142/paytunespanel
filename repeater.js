@@ -1209,9 +1209,9 @@ async function DailyReportMailer() {
 							totalcom.impressions += x.impressions;
 							totalcom.clicks += x.clicks;
 							totalcom.clicks1 += x.clicks1;
+							totalcom.onlineImpressions += x.impressions;
 							if (x && (x._id.ssp === 'Adswizz' || x._id.ssp === 'Rubicon' || x._id.ssp === 'Triton')) {
 								totalcom.complete += x.complete;
-								totalcom.onlineImpressions += x.impressions;
 							} else {
 								totalcom.complete += x.impressions;
 							}
@@ -1271,9 +1271,9 @@ async function DailyReportMailer() {
 									pi.data.map((z) => {
 										pi.impressions += z.impressions;
 										pi.clicks += z.clicks;
+										pi.onlineImpressions += z.impressions;
 										if (z && (z.ssp === 'Adswizz' || z.ssp === 'Rubicon' || z.ssp === 'Triton')) {
 											pi.complete += z.complete;
-											pi.onlineImpressions += z.impressions;
 										} else {
 											pi.complete += z.impressions;
 										}
@@ -1305,9 +1305,9 @@ async function DailyReportMailer() {
 									pi.data.map((z) => {
 										pi.impressions += z.impressions;
 										pi.clicks += z.clicks;
+										pi.onlineImpressions += z.impressions;
 										if (z && (z.ssp === 'Adswizz' || z.ssp === 'Rubicon' || z.ssp === 'Triton')) {
 											pi.complete += z.complete;
-											pi.onlineImpressions += z.impressions;
 										} else {
 											pi.complete += z.impressions;
 										}

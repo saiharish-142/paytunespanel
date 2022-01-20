@@ -285,9 +285,9 @@ router.put('/detrepocambydat', adminauth, (req, res) => {
 					var updatedDate = [];
 					det.data &&
 						det.data.map((x) => {
+							onliimpress += x.impressions ? parseInt(x.impressions) : 0;
 							if (x && (x.ssp === 'Adswizz' || x.ssp === 'Rubicon' || x.ssp === 'Triton')) {
 								comple += x.complete ? parseInt(x.complete) : 0;
-								onliimpress += x.impressions ? parseInt(x.impressions) : 0;
 							} else {
 								comple += x.impressions ? parseInt(x.impressions) : 0;
 							}
@@ -324,9 +324,9 @@ router.put('/detrepocambydat', adminauth, (req, res) => {
 					var updatedDate = [];
 					det.data &&
 						det.data.map((x) => {
+							onliimpress += x.impressions ? parseInt(x.impressions) : 0;
 							if (x && (x.ssp === 'Adswizz' || x.ssp === 'Rubicon' || x.ssp === 'Triton')) {
 								comple += x.complete ? parseInt(x.complete) : 0;
-								onliimpress += x.impressions ? parseInt(x.impressions) : 0;
 							} else {
 								comple += x.impressions ? parseInt(x.impressions) : 0;
 							}
