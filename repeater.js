@@ -1212,6 +1212,8 @@ async function DailyReportMailer() {
 							if (x && (x._id.ssp === 'Adswizz' || x._id.ssp === 'Rubicon' || x._id.ssp === 'Triton')) {
 								totalcom.complete += x.complete;
 								totalcom.onlineImpressions += x.impressions;
+							} else {
+								totalcom.complete += x.impressions;
 							}
 						});
 						// console.log(x.searchName, totalcoms, totalcom);
@@ -1272,6 +1274,8 @@ async function DailyReportMailer() {
 										if (z && (z.ssp === 'Adswizz' || z.ssp === 'Rubicon' || z.ssp === 'Triton')) {
 											pi.complete += z.complete;
 											pi.onlineImpressions += z.impressions;
+										} else {
+											pi.complete += z.impressions;
 										}
 										// console.log(specific1banner.includes(z.apppubid));
 										// if (videoTest.length && videoTest.includes(z.campaignId.toString())) {
@@ -1304,6 +1308,8 @@ async function DailyReportMailer() {
 										if (z && (z.ssp === 'Adswizz' || z.ssp === 'Rubicon' || z.ssp === 'Triton')) {
 											pi.complete += z.complete;
 											pi.onlineImpressions += z.impressions;
+										} else {
+											pi.complete += z.impressions;
 										}
 									});
 							});
