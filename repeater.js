@@ -204,7 +204,7 @@ async function datareturner(datae) {
 			} else {
 				avgach = impress / totaldays;
 			}
-			console.log({ balancedays, completedays, tod, avgach });
+			// console.log({ balancedays, completedays, tod, avgach });
 			var impress = impreset[ids[j].campaignId];
 			var target = ids[j].targetImpression ? parseInt(ids[j].targetImpression) : 0;
 			var balance = target - impress;
@@ -216,15 +216,14 @@ async function datareturner(datae) {
 				check.impression = impress;
 				check.balanceDays = balancedays ? balancedays : 0;
 				check.targetImpression = target;
-				check.balanceimpression = balance;
-				check.avgreq = avgreq;
-				check.avgach = avgach;
-				check.avgach = avgach;
+				check.balanceimpression = balance ? balance : 0;
+				check.avgreq = avgreq ? avgreq : 0;
+				check.avgach = avgach ? avgach : 0;
 				check.createdOn = chevk2;
 				check
 					.save()
 					.then((result) => {
-						console.log(result, 'updated');
+						console.log('updated');
 					})
 					.catch((err) => {
 						console.log(err);
@@ -234,12 +233,12 @@ async function datareturner(datae) {
 					campaignId: ids[j].campaignId,
 					rtbType: ids[j].type,
 					noofDays: totaldays,
-					balanceDays: balancedays,
+					balanceDays: balancedays ? balancedays : 0,
 					targetImpression: target,
 					impression: impress,
-					balanceimpression: balance,
-					avgreq: avgreq,
-					avgach: avgach,
+					balanceimpression: balance ? balance : 0,
+					avgreq: avgreq ? avgreq : 0,
+					avgach: avgach ? avgach : 0,
 					createdOn: chevk2,
 					startDate: ids[j].testStart,
 					endDate: ids[j].testEnd
@@ -247,7 +246,7 @@ async function datareturner(datae) {
 				newbie
 					.save()
 					.then((result) => {
-						console.log(result, 'completed');
+						console.log('completed');
 					})
 					.catch((err) => {
 						console.log(err);
@@ -304,9 +303,9 @@ async function pacingMailer() {
 		Destination: {
 			BccAddresses: [],
 			CcAddresses: [],
-			ToAddresses: [ 'saiharishmedam@gmail.com' ]
+			// ToAddresses: [ 'saiharishmedam@gmail.com' ]
 			// ToAddresses: [ 'fin-ops@paytunes.in', 'raj.v@paytunes.in', 'saiharishmedam@gmail.com' ]
-			// ToAddresses: [ 'fin-ops@paytunes.in', 'raj.v@paytunes.in' ]
+			ToAddresses: [ 'fin-ops@paytunes.in', 'raj.v@paytunes.in' ]
 			// ToAddresses:  ['fin-ops@paytunes.in']
 		},
 		Message: {

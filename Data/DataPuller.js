@@ -212,6 +212,10 @@ async function datareturner() {
 					time: da.time,
 					impression: da.impression,
 					click: da.click,
+					firstquartile: da.firstquartile,
+					thirdquartile: da.thirdquartile,
+					midpoint: da.midpoint,
+					start: da.start,
 					complete: da.complete,
 					AdTitle: da.campaignId.AdTitle
 				});
