@@ -1368,8 +1368,8 @@ async function DailyReportMailer() {
 						Destination: {
 							BccAddresses: [],
 							CcAddresses: [],
-							// ToAddresses: x.targetemail
-							ToAddresses: [ 'saiharishmedam@gmail.com' ]
+							ToAddresses: x.targetemail
+							// ToAddresses: [ 'saiharishmedam@gmail.com' ]
 						},
 						Message: {
 							Body: {
