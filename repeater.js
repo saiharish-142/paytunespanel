@@ -16,6 +16,7 @@ const admin = mongoose.model('admin');
 const freqCampWise = mongoose.model('freqCampWise');
 const overallfreqreport = mongoose.model('overallfreqreport');
 const freqpubOnreports = mongoose.model('freqpubOnreports');
+const bindstreamingads = mongoose.model('bindstreamingads');
 const campaignwisereports = mongoose.model('campaignwisereports');
 const campaignreportsSum = mongoose.model('campaignreportsSum');
 var aws = require('aws-sdk');
@@ -136,7 +137,7 @@ async function datareturner(datae) {
 	try {
 		let ids = await adsetting
 			.aggregate([
-				// { $match: { isRunning: true } },
+				{ $match: { isRunning: true } },
 				{
 					$project: {
 						testStart: { $dateToString: { format: '%Y-%m-%d', date: '$startDate' } },
@@ -146,7 +147,7 @@ async function datareturner(datae) {
 						type: '$type'
 					}
 				},
-				{ $match: { testEnd: { $gte: '2021-12-22' } } },
+				// { $match: { testEnd: { $gte: '2021-12-22' } } },
 				{
 					$group: {
 						_id: { testStart: '$testStart', testEnd: '$testEnd', campaignId: '$campaignId', type: '$type' },
@@ -204,7 +205,7 @@ async function datareturner(datae) {
 			} else {
 				avgach = impress / totaldays;
 			}
-			console.log({ balancedays, completedays, tod, avgach });
+			// console.log({ balancedays, completedays, tod, avgach });
 			var impress = impreset[ids[j].campaignId];
 			var target = ids[j].targetImpression ? parseInt(ids[j].targetImpression) : 0;
 			var balance = target - impress;
@@ -216,15 +217,14 @@ async function datareturner(datae) {
 				check.impression = impress;
 				check.balanceDays = balancedays ? balancedays : 0;
 				check.targetImpression = target;
-				check.balanceimpression = balance;
-				check.avgreq = avgreq;
-				check.avgach = avgach;
-				check.avgach = avgach;
+				check.balanceimpression = balance ? balance : 0;
+				check.avgreq = avgreq ? avgreq : 0;
+				check.avgach = avgach ? avgach : 0;
 				check.createdOn = chevk2;
 				check
 					.save()
 					.then((result) => {
-						console.log(result, 'updated');
+						console.log('updated');
 					})
 					.catch((err) => {
 						console.log(err);
@@ -234,12 +234,12 @@ async function datareturner(datae) {
 					campaignId: ids[j].campaignId,
 					rtbType: ids[j].type,
 					noofDays: totaldays,
-					balanceDays: balancedays,
+					balanceDays: balancedays ? balancedays : 0,
 					targetImpression: target,
 					impression: impress,
-					balanceimpression: balance,
-					avgreq: avgreq,
-					avgach: avgach,
+					balanceimpression: balance ? balance : 0,
+					avgreq: avgreq ? avgreq : 0,
+					avgach: avgach ? avgach : 0,
 					createdOn: chevk2,
 					startDate: ids[j].testStart,
 					endDate: ids[j].testEnd
@@ -247,7 +247,7 @@ async function datareturner(datae) {
 				newbie
 					.save()
 					.then((result) => {
-						console.log(result, 'completed');
+						console.log('completed');
 					})
 					.catch((err) => {
 						console.log(err);
@@ -263,6 +263,9 @@ async function datareturner(datae) {
 
 function dataformatchanger(date) {
 	var data = date;
+	if (data === 'Total') {
+		return data;
+	}
 	if (data) {
 		return data.substr(8, 2) + '-' + data.substr(5, 2) + '-' + data.substr(0, 4);
 	} else {
@@ -279,6 +282,7 @@ async function pacingMailer() {
 	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
 	cyear = cdatee.getFullYear();
 	var chevk2 = `${cyear}-${cmonth}-${cdate}`;
+	console.log(chevk2);
 	let data = await campaignreportsSum
 		.find({ createdOn: chevk2 })
 		.populate({ path: 'campaignId', select: 'AdTitle' })
@@ -1131,48 +1135,17 @@ async function DailyReportMailer() {
 		var id = users[i]._id;
 		console.log(mail, id);
 		let campaignss = await campaignClient.find({ userid: id }).catch((err) => console.log(err));
+		var campaignIds = [];
 		try {
 			console.log(campaignss.length);
 			campaignss.map(async (x) => {
+				// if (x.campaignName !== 'Coinswitch_Jan2022') {
+				// 	return;
+				// }
+				// console.log(x.targetemail);
 				console.log(x.type);
-				var endStae = new Date() > new Date(x.endDate);
-				if (endStae) {
-					console.log('campaign completed');
-				} else if (x.type === 'campaign' && x.targetemail && x.targetemail.length) {
-					let formdata = await StreamingAds.aggregate([
-						{
-							$project: {
-								id: '$_id',
-								AdTitle: { $toLower: '$AdTitle' }
-							}
-						},
-						{
-							$match: {
-								AdTitle: { $regex: x.searchName.toLowerCase() }
-							}
-						},
-						{
-							$group: {
-								_id: null,
-								id: { $push: '$id' },
-								Adtitle: { $push: '$AdTitle' }
-							}
-						}
-					]);
-					// console.log(formdata);
-					if (!(formdata && formdata[0] && formdata[0].id && formdata[0].id.length)) {
-						console.log(formdata, x.searchName);
-						return;
-					}
-					let mashh = await idSplitter(
-						formdata[0].id,
-						x.onDemand,
-						x.podcast,
-						x.audio,
-						x.display,
-						x.video,
-						x.musicapps
-					);
+				async function mailer(ids, campaignName) {
+					let mashh = await idSplitter(ids, x.onDemand, x.podcast, x.audio, x.display, x.video, x.musicapps);
 					// console.log(mashh);
 					var totaldataCount = {};
 					for (var j = 0; j < mashh.das.length; j++) {
@@ -1206,9 +1179,11 @@ async function DailyReportMailer() {
 							totalcom.impressions += x.impressions;
 							totalcom.clicks += x.clicks;
 							totalcom.clicks1 += x.clicks1;
+							totalcom.onlineImpressions += x.impressions;
 							if (x && (x._id.ssp === 'Adswizz' || x._id.ssp === 'Rubicon' || x._id.ssp === 'Triton')) {
 								totalcom.complete += x.complete;
-								totalcom.onlineImpressions += x.impressions;
+							} else {
+								totalcom.complete += x.impressions;
 							}
 						});
 						// console.log(x.searchName, totalcoms, totalcom);
@@ -1266,9 +1241,11 @@ async function DailyReportMailer() {
 									pi.data.map((z) => {
 										pi.impressions += z.impressions;
 										pi.clicks += z.clicks;
+										pi.onlineImpressions += z.impressions;
 										if (z && (z.ssp === 'Adswizz' || z.ssp === 'Rubicon' || z.ssp === 'Triton')) {
 											pi.complete += z.complete;
-											pi.onlineImpressions += z.impressions;
+										} else {
+											pi.complete += z.impressions;
 										}
 										// console.log(specific1banner.includes(z.apppubid));
 										// if (videoTest.length && videoTest.includes(z.campaignId.toString())) {
@@ -1298,9 +1275,11 @@ async function DailyReportMailer() {
 									pi.data.map((z) => {
 										pi.impressions += z.impressions;
 										pi.clicks += z.clicks;
+										pi.onlineImpressions += z.impressions;
 										if (z && (z.ssp === 'Adswizz' || z.ssp === 'Rubicon' || z.ssp === 'Triton')) {
 											pi.complete += z.complete;
-											pi.onlineImpressions += z.impressions;
+										} else {
+											pi.complete += z.impressions;
 										}
 									});
 							});
@@ -1408,20 +1387,20 @@ async function DailyReportMailer() {
 									border-collapse: collapse;
 									width: 100%;
 									}
-
+	
 									td, th {
 									border: 1px solid #dddddd;
 									text-align: center;
 									padding: 4px;
 									}
-
+	
 									tr:nth-child(even) {
 									background-color: #dddddd;
 									}
 									</style>
 									</head>
 									<body>
-
+	
 									${mashh.das
 										.map((xas) => {
 											if (totaldataCount[xas] && totaldataCount[xas].length)
@@ -1467,7 +1446,7 @@ async function DailyReportMailer() {
 											</div>`;
 										})
 										.join('')}
-
+	
 									</body>
 									`
 								},
@@ -1478,7 +1457,7 @@ async function DailyReportMailer() {
 							},
 							Subject: {
 								Charset: 'UTF-8',
-								Data: `${x.campaignName} daily report`
+								Data: `${campaignName} daily report`
 							}
 						},
 						// ReplyToAddresses: [],
@@ -1497,53 +1476,97 @@ async function DailyReportMailer() {
 						}
 						 */
 					});
-
-					// console.log(formdata);
-					// console.log(
-					// 	idfindspilter(x.searchName, x.onDemand, x.podcast, x.audio, x.display, x.video, x.musicapps)
-					// );
-					// let campass = await request(
-					// 	{
-					// 		url: 'http://23.98.35.74:5000/streamingads/groupedsingleClient',
-					// 		method: 'put',
-					// 		headers: {
-					// 			'Content-Type': 'application/json',
-					// 			Authorization: 'Bearer ' + JWT
-					// 		},
-					// 		body: JSON.stringify({
-					// 			adtitle: x.searchName,
-					// 			podcast: x.podcast,
-					// 			onDemand: x.onDemand,
-					// 			musicapps: x.musicapps
-					// 		})
-					// 	},
-					// 	function(error, response, body) {
-					// 		console.log('error', error);
-					// 		console.log('response', response);
-					// 		console.log('body', body);
-					// 	}
-					// );
-					// fetch('/streamingads/groupedsingleClient', {
-					// 	method: 'put',
-					// 	headers: {
-					// 		'Content-Type': 'application/json',
-					// 		Authorization: 'Bearer ' + JWT
-					// 	},
-					// 	body: JSON.stringify({
-					// 		adtitle: x.searchName,
-					// 		podcast: x.podcast,
-					// 		onDemand: x.onDemand,
-					// 		musicapps: x.musicapps
-					// 	})
-					// })
-					// 	.then((res) => res.json())
-					// 	.then((resul) => {
-					// 		console.log(resul);
-					// 	})
-					// 	.catch((err) => console.log(err));
-				} else if (x.type === 'bundle') {
-					//
 				}
+				var endStae = new Date() > new Date(x.endDate);
+				if (endStae) {
+					console.log('campaign completed');
+				} else if (x.type === 'campaign' && x.targetemail && x.targetemail.length) {
+					let formdata = await StreamingAds.aggregate([
+						{
+							$project: {
+								id: '$_id',
+								AdTitle: { $toLower: '$AdTitle' }
+							}
+						},
+						{
+							$match: {
+								AdTitle: { $regex: x.searchName.toLowerCase() }
+							}
+						},
+						{
+							$group: {
+								_id: null,
+								id: { $push: '$id' },
+								Adtitle: { $push: '$AdTitle' }
+							}
+						}
+					]);
+					// console.log(formdata);
+					if (!(formdata && formdata[0] && formdata[0].id && formdata[0].id.length)) {
+						console.log(formdata, x.searchName);
+						return;
+					}
+					return;
+					console.log(formdata[0].id);
+					mailer(formdata[0].id, x.campaignName);
+					// campaignIds = formdata[0].id;
+				} else if (x.type === 'bundle' && x.targetemail && x.targetemail.length) {
+					let formdataBundle = await bindstreamingads.findById(x.searchName);
+					console.log(formdataBundle.ids);
+					console.log(formdataBundle.ids);
+					mailer(formdataBundle.ids, x.campaignName + ' grouped');
+					campaignIds = formdataBundle.ids;
+				} else {
+					return;
+				}
+				if (!(campaignIds && campaignIds.length)) {
+					console.log('no ids');
+					return;
+				}
+
+				// console.log(formdata);
+				// console.log(
+				// 	idfindspilter(x.searchName, x.onDemand, x.podcast, x.audio, x.display, x.video, x.musicapps)
+				// );
+				// let campass = await request(
+				// 	{
+				// 		url: 'http://23.98.35.74:5000/streamingads/groupedsingleClient',
+				// 		method: 'put',
+				// 		headers: {
+				// 			'Content-Type': 'application/json',
+				// 			Authorization: 'Bearer ' + JWT
+				// 		},
+				// 		body: JSON.stringify({
+				// 			adtitle: x.searchName,
+				// 			podcast: x.podcast,
+				// 			onDemand: x.onDemand,
+				// 			musicapps: x.musicapps
+				// 		})
+				// 	},
+				// 	function(error, response, body) {
+				// 		console.log('error', error);
+				// 		console.log('response', response);
+				// 		console.log('body', body);
+				// 	}
+				// );
+				// fetch('/streamingads/groupedsingleClient', {
+				// 	method: 'put',
+				// 	headers: {
+				// 		'Content-Type': 'application/json',
+				// 		Authorization: 'Bearer ' + JWT
+				// 	},
+				// 	body: JSON.stringify({
+				// 		adtitle: x.searchName,
+				// 		podcast: x.podcast,
+				// 		onDemand: x.onDemand,
+				// 		musicapps: x.musicapps
+				// 	})
+				// })
+				// 	.then((res) => res.json())
+				// 	.then((resul) => {
+				// 		console.log(resul);
+				// 	})
+				// 	.catch((err) => console.log(err));
 			});
 		} catch (e) {
 			console.log(e);

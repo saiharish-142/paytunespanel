@@ -285,9 +285,11 @@ router.put('/detrepocambydat', adminauth, (req, res) => {
 					var updatedDate = [];
 					det.data &&
 						det.data.map((x) => {
+							onliimpress += x.impressions ? parseInt(x.impressions) : 0;
 							if (x && (x.ssp === 'Adswizz' || x.ssp === 'Rubicon' || x.ssp === 'Triton')) {
 								comple += x.complete ? parseInt(x.complete) : 0;
-								onliimpress += x.impressions ? parseInt(x.impressions) : 0;
+							} else {
+								comple += x.impressions ? parseInt(x.impressions) : 0;
 							}
 							if (videoTest.includes(x.campaignId.toString()) || specific1banner.includes(x.apppubid)) {
 								banimpress += x.impressions;
@@ -322,9 +324,11 @@ router.put('/detrepocambydat', adminauth, (req, res) => {
 					var updatedDate = [];
 					det.data &&
 						det.data.map((x) => {
+							onliimpress += x.impressions ? parseInt(x.impressions) : 0;
 							if (x && (x.ssp === 'Adswizz' || x.ssp === 'Rubicon' || x.ssp === 'Triton')) {
 								comple += x.complete ? parseInt(x.complete) : 0;
-								onliimpress += x.impressions ? parseInt(x.impressions) : 0;
+							} else {
+								comple += x.impressions ? parseInt(x.impressions) : 0;
 							}
 							x.updatedAt.map((y) => {
 								updatedDate.push(y);
@@ -1895,6 +1899,12 @@ router.put('/sumreportofcamallClient', adminauth, (req, res) => {
 						resol.thirdQuartile += z.thirdQuartile;
 						resol.complete += z.complete;
 						resol.onlineImpressions += z.impressions;
+					} else {
+						resol.start += z.start ? z.start : 0;
+						resol.firstQuartile += z.firstQuartile ? z.firstQuartile : 0;
+						resol.midpoint += z.midpoint ? z.midpoint : 0;
+						resol.thirdQuartile += z.thirdQuartile ? z.thirdQuartile : 0;
+						resol.complete += z.complete ? z.complete : 0;
 					}
 				});
 				var response = resol;

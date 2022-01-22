@@ -6,8 +6,8 @@ import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import { CSVLink } from 'react-csv';
 import { Alert } from '@material-ui/lab';
 import { orderSetter } from '../redux/actions/manageadsAction';
-import PodcastCategorydata from '../screens/podcastcategory'
-import OndemandCategorydata from '../screens/ondemandcategory'
+import PodcastCategorydata from '../screens/podcastcategory';
+import OndemandCategorydata from '../screens/ondemandcategory';
 import VideoCategorydata from './videocategorydata';
 
 import {
@@ -44,30 +44,30 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: theme.palette.background.paper,
 		border: '2px solid #000',
 		boxShadow: theme.shadows[5],
-		padding: '2% 2% 2% 6%',
+		padding: '2% 2% 2% 6%'
 	}
 }));
 
 export default function Categorydata() {
 	const classes = useStyles();
-	const [open, setOpen] = React.useState(false);
+	const [ open, setOpen ] = React.useState(false);
 
 	const handleOpen = (data) => {
 		setOpen(true);
-		setShow(true)
+		setShow(true);
 		settempdata(data);
 	};
 
 	const handleClose = () => {
 		setOpen(false);
 	};
-	const [error, seterror] = useState('');
-	const [success, setsuccess] = useState('');
-	const [rows, setrows] = useState([]);
-	const [sortconfig, setsortconfig] = useState({ key: 'impression', direction: 'descending' })
+	const [ error, seterror ] = useState('');
+	const [ success, setsuccess ] = useState('');
+	const [ rows, setrows ] = useState([]);
+	const [ sortconfig, setsortconfig ] = useState({ key: 'impression', direction: 'descending' });
 	const [ datafilterstatus, setdatafilterstatus ] = useState({ A: true, B: true });
-	const [rowsPerPage, setRowsPerPage] = useState(10);
-	const [page, setPage] = useState(0);
+	const [ rowsPerPage, setRowsPerPage ] = useState(10);
+	const [ page, setPage ] = useState(0);
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
@@ -78,10 +78,10 @@ export default function Categorydata() {
 	const [ datatrus, setdatatrus ] = useState([]);
 	const [ sa, setsa ] = React.useState('impression');
 	const [ order, setorder ] = React.useState('desc');
-	const [show, setShow] = useState(false);
-	const [tempdata, settempdata] = useState({});
-	const [search1, setsearch] = useState('');
-	const [searchedData, setsearchedData] = useState([]);
+	const [ show, setShow ] = useState(false);
+	const [ tempdata, settempdata ] = useState({});
+	const [ search1, setsearch ] = useState('');
+	const [ searchedData, setsearchedData ] = useState([]);
 	// const handleShow = (data) => {
 	// 	setShow(true);
 	// 	settempdata(data);
@@ -110,17 +110,20 @@ export default function Categorydata() {
 	};
 	function SearchData() {
 		let arr = [];
-		let search=new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase())
-		arr = rows.filter(
-			(row) => {
-				if ((row.category ? row.category : "").toString().replace(/\s+/g, '').trim().toLowerCase().match(search,'ig')   ) {
-					return row
-				}
-
+		let search = new RegExp(search1.replace(/\s+/g, '').trim().toLowerCase());
+		arr = rows.filter((row) => {
+			if (
+				(row.category ? row.category : '')
+					.toString()
+					.replace(/\s+/g, '')
+					.trim()
+					.toLowerCase()
+					.match(search, 'ig')
+			) {
+				return row;
 			}
-
-		);
-		console.log(arr)
+		});
+		console.log(arr);
 		if (arr.length === 0) {
 			setsearchedData('No Data Found!');
 		} else {
@@ -149,6 +152,24 @@ export default function Categorydata() {
 				console.log(dat);
 			});
 	}, []);
+	React.useMemo(
+		() => {
+			let sortedProducts = searchedData ? searchedData : rows;
+			if (sortconfig !== null) {
+				sortedProducts.sort((a, b) => {
+					if (a[sortconfig.key] < b[sortconfig.key]) {
+						return sortconfig.direction === 'ascending' ? -1 : 1;
+					}
+					if (a[sortconfig.key] > b[sortconfig.key]) {
+						return sortconfig.direction === 'ascending' ? 1 : -1;
+					}
+					return 0;
+				});
+			}
+			return sortedProducts;
+		},
+		[ rows, searchedData, sortconfig ]
+	);
 
 	const headers = [
 		{ key: 'category', label: 'Category' },
@@ -171,31 +192,13 @@ export default function Categorydata() {
 
 	const filterManger = (A, B) => {
 		var manage = datatrus.filter(
-			(x) =>
-				(A && x.tier4!==""|| B && x.tier4==="" )
-				// (!text || x.ua.toLowerCase().indexOf(text.toLowerCase()) > -1) &&
-				// ((A && x.display != '') || (B && x.display === ''))
+			(x) => (A && x.tier4 !== '') || (B && x.tier4 === '')
+			// (!text || x.ua.toLowerCase().indexOf(text.toLowerCase()) > -1) &&
+			// ((A && x.display != '') || (B && x.display === ''))
 		);
 		// console.log(manage);
 		setrows(manage);
 	};
-
-	React.useMemo(() => {
-		let sortedProducts =  searchedData?searchedData: rows;
-		if (sortconfig !== null) {
-		  sortedProducts.sort((a, b) => {
-			if (a[sortconfig.key] < b[sortconfig.key]) {
-			  return sortconfig.direction === 'ascending' ? -1 : 1;
-			}
-			if (a[sortconfig.key] > b[sortconfig.key]) {
-			  return sortconfig.direction === 'ascending' ? 1 : -1;
-			}
-			return 0;
-		  });
-		}
-		return sortedProducts;
-	  }, [rows, searchedData,sortconfig]);
-
 
 	const arrowRetuner = (mode) => {
 		if (mode === '1') {
@@ -267,7 +270,7 @@ export default function Categorydata() {
 			</div>
 
 			<Paper>
-				<CSVLink {...csvReport}  >Download Table</CSVLink>
+				<CSVLink {...csvReport}>Download Table</CSVLink>
 				{searchedData === 'No Data Found!' ? (
 					<h7>{searchedData}</h7>
 				) : (
@@ -276,79 +279,168 @@ export default function Categorydata() {
 							<TableHead>
 								<TableRow>
 									{/* <TableCell>{title}</TableCell> */}
-									{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('category', 'string')} >Category {arrowRetuner(sa === 'category' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('impression', 'number')} >Impressions {arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('avgimpression', 'number')} >Avg Impressions {arrowRetuner(sa === 'avgimpression' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('click', 'number')} >Clicks {arrowRetuner(sa === 'click' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
-									<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('tier1', 'string')} >Tier1 {arrowRetuner(sa === 'tier1' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
-									<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('tier2', 'string')} >Tier2 {arrowRetuner(sa === 'tier2' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
-									<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('tier3', 'string')} >Tier3 {arrowRetuner(sa === 'tier3' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>
-									{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('tier4', 'string')} >Tier4 {arrowRetuner(sa === 'tier4' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('gendercategory', 'string')} >Gender Category {arrowRetuner(sa === 'gendercategory' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('AgeCategory', 'string')} >Age category {arrowRetuner(sa === 'AgeCategory' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell style={{ cursor: 'pointer' }} onClick={() => tablesorter('new_taxonamy', 'string')} >New Taxonamy {arrowRetuner(sa === 'new_taxonamy' ? (order === 'asc' ? '1' : '2') : '3')}</TableCell>}
-									{<TableCell style={{width:'10%'}} >
-									<FormGroup>
-									<FormControlLabel
-										control={
-											<Checkbox
-												size="small"
-												checked={datafilterstatus.B}
-												onChange={(e) => {
-													setdatafilterstatus({ ...datafilterstatus, B: e.target.checked });
-													filterManger(datafilterstatus.A, e.target.checked);
-												}}
-											/>
-										}
-										label="Entries Not Done"
-									/>
-									<FormControlLabel
-										control={
-											<Checkbox
-												size="small"
-												checked={datafilterstatus.A}
-												onChange={(e) => {
-													setdatafilterstatus({ ...datafilterstatus, A: e.target.checked });
-													filterManger(e.target.checked, datafilterstatus.B);
-												}}
-											/>
-										}
-										label="Entries Done"
-									/>
-								</FormGroup>
-										</TableCell>}
+									{
+										<TableCell
+											style={{ cursor: 'pointer' }}
+											onClick={() => tablesorter('category', 'string')}
+										>
+											Category{' '}
+											{arrowRetuner(sa === 'category' ? (order === 'asc' ? '1' : '2') : '3')}
+										</TableCell>
+									}
+									{
+										<TableCell
+											style={{ cursor: 'pointer' }}
+											onClick={() => tablesorter('impression', 'number')}
+										>
+											Impressions{' '}
+											{arrowRetuner(sa === 'impression' ? (order === 'asc' ? '1' : '2') : '3')}
+										</TableCell>
+									}
+									{
+										<TableCell
+											style={{ cursor: 'pointer' }}
+											onClick={() => tablesorter('avgimpression', 'number')}
+										>
+											Avg Impressions{' '}
+											{arrowRetuner(sa === 'avgimpression' ? (order === 'asc' ? '1' : '2') : '3')}
+										</TableCell>
+									}
+									{
+										<TableCell
+											style={{ cursor: 'pointer' }}
+											onClick={() => tablesorter('click', 'number')}
+										>
+											Clicks {arrowRetuner(sa === 'click' ? (order === 'asc' ? '1' : '2') : '3')}
+										</TableCell>
+									}
+									<TableCell
+										style={{ cursor: 'pointer' }}
+										onClick={() => tablesorter('tier1', 'string')}
+									>
+										Tier1 {arrowRetuner(sa === 'tier1' ? (order === 'asc' ? '1' : '2') : '3')}
+									</TableCell>
+									<TableCell
+										style={{ cursor: 'pointer' }}
+										onClick={() => tablesorter('tier2', 'string')}
+									>
+										Tier2 {arrowRetuner(sa === 'tier2' ? (order === 'asc' ? '1' : '2') : '3')}
+									</TableCell>
+									<TableCell
+										style={{ cursor: 'pointer' }}
+										onClick={() => tablesorter('tier3', 'string')}
+									>
+										Tier3 {arrowRetuner(sa === 'tier3' ? (order === 'asc' ? '1' : '2') : '3')}
+									</TableCell>
+									{
+										<TableCell
+											style={{ cursor: 'pointer' }}
+											onClick={() => tablesorter('tier4', 'string')}
+										>
+											Tier4 {arrowRetuner(sa === 'tier4' ? (order === 'asc' ? '1' : '2') : '3')}
+										</TableCell>
+									}
+									{
+										<TableCell
+											style={{ cursor: 'pointer' }}
+											onClick={() => tablesorter('gendercategory', 'string')}
+										>
+											Gender Category{' '}
+											{arrowRetuner(
+												sa === 'gendercategory' ? (order === 'asc' ? '1' : '2') : '3'
+											)}
+										</TableCell>
+									}
+									{
+										<TableCell
+											style={{ cursor: 'pointer' }}
+											onClick={() => tablesorter('AgeCategory', 'string')}
+										>
+											Age category{' '}
+											{arrowRetuner(sa === 'AgeCategory' ? (order === 'asc' ? '1' : '2') : '3')}
+										</TableCell>
+									}
+									{
+										<TableCell
+											style={{ cursor: 'pointer' }}
+											onClick={() => tablesorter('new_taxonamy', 'string')}
+										>
+											New Taxonamy{' '}
+											{arrowRetuner(sa === 'new_taxonamy' ? (order === 'asc' ? '1' : '2') : '3')}
+										</TableCell>
+									}
+									{
+										<TableCell style={{ width: '10%' }}>
+											<FormGroup>
+												<FormControlLabel
+													control={
+														<Checkbox
+															size="small"
+															checked={datafilterstatus.B}
+															onChange={(e) => {
+																setdatafilterstatus({
+																	...datafilterstatus,
+																	B: e.target.checked
+																});
+																filterManger(datafilterstatus.A, e.target.checked);
+															}}
+														/>
+													}
+													label="Entries Not Done"
+												/>
+												<FormControlLabel
+													control={
+														<Checkbox
+															size="small"
+															checked={datafilterstatus.A}
+															onChange={(e) => {
+																setdatafilterstatus({
+																	...datafilterstatus,
+																	A: e.target.checked
+																});
+																filterManger(e.target.checked, datafilterstatus.B);
+															}}
+														/>
+													}
+													label="Entries Done"
+												/>
+											</FormGroup>
+										</TableCell>
+									}
 									{<TableCell />}
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{(searchedData.length !== 0 ? searchedData : rows).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-									<TableRow key={row.name}>
-										<TableCell component="th" scope="row">
-											{row.category ? row.category : ''}
-										</TableCell>
-										<TableCell>{row.impression ? row.impression : ''}</TableCell>
-										<TableCell>{row.impression ? Math.round(row.avgimpression) : ''}</TableCell>
-										<TableCell>{row.click ? row.click : ''}</TableCell>
-										<TableCell>{row.tier1 ? row.tier1 : ''}</TableCell>
-										<TableCell>{row.tier2 ? row.tier2 : ''}</TableCell>
-										<TableCell>{row.tier3 ? row.tier3 : ''}</TableCell>
-										<TableCell>{row.tier4 ? row.tier4 : ''}</TableCell>
-										<TableCell>{row.genderCategory ? row.genderCategory : ''}</TableCell>
-										<TableCell>{row.AgeCategory ? row.AgeCategory : ''}</TableCell>
-										<TableCell>{row.new_taxonamy ? row.new_taxonamy : ''}</TableCell>
-										<TableCell>
-											<button className="btn" onClick={() => handleOpen(row)}>
-												Edit{' '}
-											</button>
-										</TableCell>
-									</TableRow>
-								))}
+								{(searchedData.length !== 0 ? searchedData : rows)
+									.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+									.map((row) => (
+										<TableRow key={row.name}>
+											<TableCell component="th" scope="row">
+												{row.category ? row.category : ''}
+											</TableCell>
+											<TableCell>{row.impression ? row.impression : ''}</TableCell>
+											<TableCell>{row.impression ? Math.round(row.avgimpression) : ''}</TableCell>
+											<TableCell>{row.click ? row.click : ''}</TableCell>
+											<TableCell>{row.tier1 ? row.tier1 : ''}</TableCell>
+											<TableCell>{row.tier2 ? row.tier2 : ''}</TableCell>
+											<TableCell>{row.tier3 ? row.tier3 : ''}</TableCell>
+											<TableCell>{row.tier4 ? row.tier4 : ''}</TableCell>
+											<TableCell>{row.genderCategory ? row.genderCategory : ''}</TableCell>
+											<TableCell>{row.AgeCategory ? row.AgeCategory : ''}</TableCell>
+											<TableCell>{row.new_taxonamy ? row.new_taxonamy : ''}</TableCell>
+											<TableCell>
+												<button className="btn" onClick={() => handleOpen(row)}>
+													Edit{' '}
+												</button>
+											</TableCell>
+										</TableRow>
+									))}
 							</TableBody>
 						</Table>
 					</TableContainer>
 				)}
 				<TablePagination
-					rowsPerPageOptions={[10, 100, 1000, 10000]}
+					rowsPerPageOptions={[ 10, 100, 1000, 10000 ]}
 					component="div"
 					count={rows ? rows.length : 0}
 					rowsPerPage={rowsPerPage}
