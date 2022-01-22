@@ -11,6 +11,7 @@ const CategoryReports2 = require('../models/categoryreports2');
 // const Campaignwisereports=require('../models/campaignwisereports.model')
 const SpentReport = mongoose.model('spentreports');
 const Campaignwisereports = mongoose.model('campaignwisereports');
+let{db1,db2}=require('../db')
 
 router.get('/rtbrs', adminauth, (req, res) => {
 	Rtbrequest.find()
@@ -260,7 +261,7 @@ router.post('/getepisodewise_report', adminauth, async (req, res) => {
 					episodename: '$_id.episodename',
 					category: '$_id.category',
 					language: "$_id.language",
-					publisher:  "$publisher",
+					publisher: "$publisher",
 					request: '$request',
 					avgrequest: '$avgrequest',
 					displayname: '$displayname',
@@ -272,7 +273,7 @@ router.post('/getepisodewise_report', adminauth, async (req, res) => {
 					publishername: '$publishername'
 				}
 			},
-			{$sort:{avgrequest:-1}}
+			{ $sort: { avgrequest: -1 } }
 		]);
 		res.status(200).json(result);
 	} catch (err) {
@@ -285,7 +286,7 @@ router.post('/getcategory', adminauth, async (req, res) => {
 	try {
 		let { category } = req.body;
 		const match = await CategoryReports2.findOne({
-			$or: [ { category }, { new_taxonamy: category } ]
+			$or: [{ category }, { new_taxonamy: category }]
 		});
 		if (!match) {
 			res.status(200).json({ category: '' });
@@ -318,5 +319,58 @@ router.post('/editepisodedata', adminauth, async (req, res) => {
 		res.status(400).json({ error: err.message });
 	}
 });
+
+router.get(
+	'/tvdata',
+	//adminauth,
+	async (req, res) => {
+		try {
+			const TvRequest=db2.model('tvrequests',require('../models/tvrequests'));
+			let results = await TvRequest.aggregate([
+				{
+					$group: {
+						_id: { date: "$date", publisherid: "$publisherid" },
+						rtbType: { $first: "$rtbType" },
+						ssp: { $first: "$ssp" },
+						request: { $sum: "$request" }
+					}
+				},
+				{
+					$lookup: {
+						from: 'apppublishers',
+						localField: '_id.publisherid',
+						foreignField: 'publisherid',
+						as: 'app_details'
+					}
+				},
+				{
+					$project: {
+						date: "$_id.date",
+						publisherid: "$_id.publisherid",
+						rtbType: 1,
+						ssp: 1,
+						request: 1,
+						app1:{$first:"$app_details"}
+					}
+				},
+				{
+					$project: {
+						date: 1,
+						publisherid: 1,
+						rtbType: 1,
+						ssp: 1,
+						request: 1,
+						publishername:'$app1.publishername'
+					}
+				},
+				{ $sort: { date: -1 } }
+			]).allowDiskUse(true);
+
+			res.status(200).json(results);
+		} catch (err) {
+			res.status(400).json({ error: err.message });
+		}
+	}
+)
 
 module.exports = router;

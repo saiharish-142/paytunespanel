@@ -22,6 +22,7 @@ import Biddata from './screens/biddata';
 import Phonedata from './screens/phonedata';
 import Zipdata from './screens/zipdata';
 import EpisodeTab from './components/episodestab';
+import TvRequestdata from './screens/tvrequestscreen';
 import Serverreport from './screens/serverreport';
 import DetailedAudio from './components/detailedoverallaudio';
 import DetailedVideo from './components/detailedoverallvideo';
@@ -140,6 +141,7 @@ function App() {
 							<Route path="/categorydata" exact render={() => <Categorydata />} />
 							<Route path="/zipdata" exact render={() => <Zipdata />} />
 							<Route path="/episodetabdata" exact render={() => <EpisodeTab />} />
+							<Route path="/tvrequestdata" exact render={() => <TvRequestdata />} />
 							<Route path="/serverreport" exact render={() => <Serverreport />} />
 							<Route path="/useragentdata" exact render={() => <Useragentdata />} />
 							<Route path="/clientSideCamp" exact render={() => <Dashboard clientview={true} />} />

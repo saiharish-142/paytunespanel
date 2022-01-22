@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-// import  {useForm} from 'react-hook-form'
-import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
-import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
+
 import { Alert } from '@material-ui/lab';
 import { CSVLink } from 'react-csv';
 import { arrowRetuner } from '../components/CommonFun';

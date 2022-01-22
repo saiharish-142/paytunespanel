@@ -288,6 +288,23 @@ export default function TemporaryDrawer() {
 										className={classes.nested}
 										onClick={() => {
 											setopen(false);
+											history.push('/tvrequestdata');
+										}}
+									>
+										<ListItemIcon>
+											<i className="material-icons">keyboard_arrow_right</i>
+										</ListItemIcon>
+										<ListItemText>TV Request Data</ListItemText>
+									</ListItem>
+								</React.Fragment>
+							)}
+							{state &&
+							state.usertype === 'admin' && (
+								<React.Fragment>
+									<ListItem
+										className={classes.nested}
+										onClick={() => {
+											setopen(false);
 											history.push('/serverreport');
 										}}
 									>
