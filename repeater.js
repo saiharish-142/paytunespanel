@@ -1139,8 +1139,12 @@ async function DailyReportMailer() {
 		try {
 			console.log(campaignss.length);
 			campaignss.map(async (x) => {
+				// if (x.campaignName !== 'Coinswitch_Jan2022') {
+				// 	return;
+				// }
+				// console.log(x.targetemail);
 				console.log(x.type);
-				async function mailer(ids) {
+				async function mailer(ids, campaignName) {
 					let mashh = await idSplitter(ids, x.onDemand, x.podcast, x.audio, x.display, x.video, x.musicapps);
 					// console.log(mashh);
 					var totaldataCount = {};
@@ -1453,7 +1457,7 @@ async function DailyReportMailer() {
 							},
 							Subject: {
 								Charset: 'UTF-8',
-								Data: `${x.campaignName} daily report`
+								Data: `${campaignName} daily report`
 							}
 						},
 						// ReplyToAddresses: [],
@@ -1502,14 +1506,15 @@ async function DailyReportMailer() {
 						console.log(formdata, x.searchName);
 						return;
 					}
+					return;
 					console.log(formdata[0].id);
-					mailer(formdata[0].id);
+					mailer(formdata[0].id, x.campaignName);
 					// campaignIds = formdata[0].id;
 				} else if (x.type === 'bundle' && x.targetemail && x.targetemail.length) {
 					let formdataBundle = await bindstreamingads.findById(x.searchName);
 					console.log(formdataBundle.ids);
 					console.log(formdataBundle.ids);
-					mailer(formdataBundle.ids);
+					mailer(formdataBundle.ids, x.campaignName + ' grouped');
 					campaignIds = formdataBundle.ids;
 				} else {
 					return;

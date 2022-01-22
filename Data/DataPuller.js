@@ -7,6 +7,8 @@ const adminauth = require('../authenMiddleware/adminauth');
 const trackinglogs = mongoose.model('trackinglogs');
 const tempModel = mongoose.model('tempModel');
 const StreamingAds = mongoose.model('streamingads');
+const CategoryReports2 = require('../models/categoryreports2');
+const adsetting = mongoose.model('adsetting');
 
 router.get('/question1', adminauth, async (req, res) => {
 	try {
@@ -200,6 +202,21 @@ async function datareturner() {
 		// 		})
 		// 	);
 		// });
+		var categoryData = await CategoryReports2.find().catch((err) => console.log(err));
+		var categoryObj = {};
+		categoryData.map((x) => {
+			if (!categoryObj[x.category]) categoryObj[x.category] = x;
+		});
+		var adsSet = await adsetting.find({}).select('adCategory type campaignId').catch((err) => console.log(err));
+		var adsSetObj = {};
+		adsSet.map((x) => {
+			if (!adsSetObj[x.campaignId]) {
+				if (x.adCategory) {
+					x.category = categoryObj[x.adCategory];
+				}
+				adsSetObj[x.campaignId] = x;
+			}
+		});
 		console.log(data.length);
 		StreamingAds.populate(data, { path: 'campaignId', select: 'AdTitle startDate endDate' }, async function(
 			err,
@@ -208,6 +225,22 @@ async function datareturner() {
 			if (err) console.log(err);
 			var temp = [];
 			populatedreports.map((da) => {
+				var type = '',
+					category = '',
+					name = '',
+					tier1 = '',
+					tier2 = '',
+					tier3 = '',
+					tier4 = '';
+				if (adsSetObj[da.campaignId._id]) {
+					type = adsSetObj[da.campaignId._id].type;
+					category = adsSetObj[da.campaignId._id].adCategory;
+					name = adsSetObj[da.campaignId._id].category ? adsSetObj[da.campaignId._id].category.Name : '';
+					tier1 = adsSetObj[da.campaignId._id].category ? adsSetObj[da.campaignId._id].category.tier1 : '';
+					tier2 = adsSetObj[da.campaignId._id].category ? adsSetObj[da.campaignId._id].category.tier2 : '';
+					tier3 = adsSetObj[da.campaignId._id].category ? adsSetObj[da.campaignId._id].category.tier3 : '';
+					tier4 = adsSetObj[da.campaignId._id].category ? adsSetObj[da.campaignId._id].category.tier4 : '';
+				}
 				temp.push({
 					time: da.time,
 					impression: da.impression,
@@ -217,6 +250,13 @@ async function datareturner() {
 					midpoint: da.midpoint,
 					start: da.start,
 					complete: da.complete,
+					type,
+					category,
+					categoryName: name,
+					tier1,
+					tier2,
+					tier3,
+					tier4,
 					AdTitle: da.campaignId.AdTitle
 				});
 			});
