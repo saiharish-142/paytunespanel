@@ -1506,7 +1506,6 @@ async function DailyReportMailer() {
 						console.log(formdata, x.searchName);
 						return;
 					}
-					return;
 					console.log(formdata[0].id);
 					mailer(formdata[0].id, x.campaignName);
 					// campaignIds = formdata[0].id;
