@@ -322,7 +322,7 @@ router.post('/editepisodedata', adminauth, async (req, res) => {
 
 router.get(
 	'/tvdata',
-	//adminauth,
+	adminauth,
 	async (req, res) => {
 		try {
 			const TvRequest=db2.model('tvrequests',require('../models/tvrequests'));

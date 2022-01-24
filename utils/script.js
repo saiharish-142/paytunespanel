@@ -174,7 +174,7 @@ async function resScript() {
 cron.schedule('00 1 * * *',podcastscript)
 cron.schedule('10 1 * * *',UareqScript)
 cron.schedule('20 1 * * *',apppublisherscript)
-cron.schedule('35 1 * * *',Addsettingscript)
+// cron.schedule('35 1 * * *',Addsettingscript)
 cron.schedule('40 1 * * *',reqScript)
 cron.schedule('45 1 * * *',resScript)
 cron.schedule('50 1 * * *',ZipreqScript)

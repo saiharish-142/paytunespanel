@@ -1,7 +1,7 @@
 {
   "name": "admin-app",
   "version": "0.1.0",
-  "proxy": "http://23.98.35.74:5000",
+  "proxy": "http://localhost:5000",
   "private": true,
   "dependencies": {
     "@babel/plugin-transform-modules-umd": "^7.14.0",

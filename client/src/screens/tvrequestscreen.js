@@ -113,7 +113,7 @@ export default function TvRequestdata() {
 	}
 	useEffect(() => {
 		fetch('/rtbreq/tvdata', {
-			method: 'get',
+			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + localStorage.getItem('jwt')
