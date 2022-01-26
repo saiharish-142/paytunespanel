@@ -120,58 +120,60 @@ router.get('/question1', adminauth, async (req, res) => {
 
 router.get('/question3', adminauth, async (req, res) => {
 	try {
-		let data = await trackinglogs.aggregate([
-			{
-				$match: {
-					type: {
-						$in: [
-							'impression',
-							'complete',
-							'click',
-							'companionclicktracking',
-							'clicktracking',
-							'firstquartile',
-							'thirdquartile',
-							'midpoint',
-							'start'
-						]
+		let data = await trackinglogs
+			.aggregate([
+				{
+					$match: {
+						type: {
+							$in: [
+								'impression',
+								'complete',
+								'click',
+								'companionclicktracking',
+								'clicktracking',
+								'firstquartile',
+								'thirdquartile',
+								'midpoint',
+								'start'
+							]
+						}
+					}
+				},
+				{
+					$project: {
+						campaignId: '$campaignId',
+						zip: '$zip',
+						type: '$type'
+					}
+				},
+				{
+					$project: {
+						campaignId: '$campaignId',
+						zip: '$zip',
+						type: '$type'
+					}
+				},
+				{
+					$group: {
+						_id: { campaignId: '$campaignId', zip: '$zip', type: '$type' },
+						count: { $sum: 1 }
+					}
+				},
+				{
+					$group: {
+						_id: { campaignId: '$_id.campaignId', zip: '$_id.zip' },
+						data: { $push: { k: '$_id.type', v: '$count' } }
+					}
+				},
+				{
+					$project: {
+						campaignId: '$_id.campaignId',
+						zip: '$_id.zip',
+						data: { $arrayToObject: '$data' }
 					}
 				}
-			},
-			{
-				$project: {
-					campaignId: '$campaignId',
-					zip: '$zip',
-					type: '$type'
-				}
-			},
-			{
-				$project: {
-					campaignId: '$campaignId',
-					zip: '$zip',
-					type: '$type'
-				}
-			},
-			{
-				$group: {
-					_id: { campaignId: '$campaignId', zip: '$zip', type: '$type' },
-					count: { $sum: 1 }
-				}
-			},
-			{
-				$group: {
-					_id: { campaignId: '$_id.campaignId', zip: '$_id.zip' },
-					data: { $push: { k: '$_id.type', v: '$count' } }
-				}
-			},
-			{
-				$project: {
-					campaignId: '$_id.campaignId',
-					zip: '$_id.zip',
-					data: { $arrayToObject: '$data' }
-				}
-			}
-		]);
+			])
+			.allowDiskUse(true);
 		// var num = data.length;
 		for (var i = 0; i < data.length; i++) {
 			const storer = new tempModel1({
@@ -206,58 +208,60 @@ router.get('/question3', adminauth, async (req, res) => {
 
 router.get('/question4', adminauth, async (req, res) => {
 	try {
-		let data = await trackinglogs.aggregate([
-			{
-				$match: {
-					type: {
-						$in: [
-							'impression',
-							'complete',
-							'click',
-							'companionclicktracking',
-							'clicktracking',
-							'firstquartile',
-							'thirdquartile',
-							'midpoint',
-							'start'
-						]
+		let data = await trackinglogs
+			.aggregate([
+				{
+					$match: {
+						type: {
+							$in: [
+								'impression',
+								'complete',
+								'click',
+								'companionclicktracking',
+								'clicktracking',
+								'firstquartile',
+								'thirdquartile',
+								'midpoint',
+								'start'
+							]
+						}
+					}
+				},
+				{
+					$project: {
+						campaignId: '$campaignId',
+						phoneModel: '$phoneModel',
+						type: '$type'
+					}
+				},
+				{
+					$project: {
+						campaignId: '$campaignId',
+						phoneModel: '$phoneModel',
+						type: '$type'
+					}
+				},
+				{
+					$group: {
+						_id: { campaignId: '$campaignId', phoneModel: '$phoneModel', type: '$type' },
+						count: { $sum: 1 }
+					}
+				},
+				{
+					$group: {
+						_id: { campaignId: '$_id.campaignId', phoneModel: '$_id.phoneModel' },
+						data: { $push: { k: '$_id.type', v: '$count' } }
+					}
+				},
+				{
+					$project: {
+						campaignId: '$_id.campaignId',
+						phoneModel: '$_id.phoneModel',
+						data: { $arrayToObject: '$data' }
 					}
 				}
-			},
-			{
-				$project: {
-					campaignId: '$campaignId',
-					phoneModel: '$phoneModel',
-					type: '$type'
-				}
-			},
-			{
-				$project: {
-					campaignId: '$campaignId',
-					phoneModel: '$phoneModel',
-					type: '$type'
-				}
-			},
-			{
-				$group: {
-					_id: { campaignId: '$campaignId', phoneModel: '$phoneModel', type: '$type' },
-					count: { $sum: 1 }
-				}
-			},
-			{
-				$group: {
-					_id: { campaignId: '$_id.campaignId', phoneModel: '$_id.phoneModel' },
-					data: { $push: { k: '$_id.type', v: '$count' } }
-				}
-			},
-			{
-				$project: {
-					campaignId: '$_id.campaignId',
-					phoneModel: '$_id.phoneModel',
-					data: { $arrayToObject: '$data' }
-				}
-			}
-		]);
+			])
+			.allowDiskUse(true);
 		// var num = data.length;
 		for (var i = 0; i < data.length; i++) {
 			const storer = new tempModel2({
