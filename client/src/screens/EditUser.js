@@ -96,6 +96,7 @@ function EditUser() {
 		title: '',
 		searchName: '',
 		adtitle: '',
+		subject: '',
 		titles: [],
 		targetemail: [],
 		type: '',
@@ -279,6 +280,7 @@ function EditUser() {
 				targetemail: selectedsemicampaigns.targetemail,
 				endDate: selectedsemicampaigns.endDate,
 				PricingModel: selectedsemicampaigns.PricingModel,
+				subject: selectedsemicampaigns.subject,
 				type: selectedsemicampaigns.type,
 				campaignName: selectedsemicampaigns.title,
 				audio: selectedsemicampaigns.audio,
@@ -358,6 +360,7 @@ function EditUser() {
 				startDate: selectedsemicampaigns.startDate,
 				endDate: selectedsemicampaigns.endDate,
 				PricingModel: selectedsemicampaigns.PricingModel,
+				subject: selectedsemicampaigns.subject,
 				type: selectedsemicampaigns.type,
 				campaignName: selectedsemicampaigns.title,
 				audio: selectedsemicampaigns.audio,
@@ -528,6 +531,7 @@ function EditUser() {
 			adtitle: '',
 			targetemail: [],
 			titles: [],
+			subject: '',
 			type: '',
 			endDate: null,
 			startDate: null,
@@ -887,6 +891,22 @@ function EditUser() {
 												setselectedsemicampaigns({
 													...selectedsemicampaigns,
 													title: e.target.value
+												})}
+										/>
+									</div>
+								</div>
+								<div className="editcamptitledis">
+									<div className="liscomp">
+										<div>Subject to be displayed :</div>
+										<input
+											placeholder="Campaign or bundle title"
+											required
+											className="titleing"
+											value={selectedsemicampaigns.subject}
+											onChange={(e) =>
+												setselectedsemicampaigns({
+													...selectedsemicampaigns,
+													subject: e.target.value
 												})}
 										/>
 									</div>

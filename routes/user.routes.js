@@ -210,6 +210,7 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 		endDate,
 		PricingModel,
 		startDate,
+		subject,
 		type,
 		targetemail,
 		campaignName,
@@ -233,6 +234,7 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 	// );
 	if (
 		!userid ||
+		!subject ||
 		!searchName ||
 		!endDate ||
 		!startDate ||
@@ -257,6 +259,7 @@ router.post('/addCampaign', adminauth, async (req, res) => {
 		type: type,
 		targetemail,
 		startDate,
+		subject,
 		endDate,
 		PricingModel,
 		audio,
@@ -284,6 +287,7 @@ router.put('/editcampaign', adminauth, async (req, res) => {
 		searchName,
 		campaignName,
 		targetemail,
+		subject,
 		audio,
 		display,
 		video,
@@ -313,6 +317,9 @@ router.put('/editcampaign', adminauth, async (req, res) => {
 	}
 	if (display) {
 		campaign.display = display;
+	}
+	if (subject) {
+		campaign.subject = subject;
 	}
 	if (video) {
 		campaign.video = video;

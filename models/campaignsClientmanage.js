@@ -10,6 +10,7 @@ const ClientCampaignsetSchema = new mongoose.Schema({
 	PricingModel: { type: String },
 	endDate: { type: Date },
 	startDate: { type: Date },
+	subject: { type: String },
 	audio: { type: String },
 	display: { type: String },
 	video: { type: String },
