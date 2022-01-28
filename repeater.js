@@ -1410,7 +1410,7 @@ async function DailyReportMailer() {
 												<table>
 													<tr>
 														<th>Date</th>
-														<th>Impressions</th>
+														<th>${xas} Impressions</th>
 														${xas.toLowerCase().indexOf('audio') > -1 ? ` <th>Banner </th>` : ``}
 														<th>Clicks</th>
 														<th>CTR</th>
@@ -1457,7 +1457,7 @@ async function DailyReportMailer() {
 							},
 							Subject: {
 								Charset: 'UTF-8',
-								Data: `${campaignName} daily report`
+								Data: `Paytunes: ${campaignName} Daily Report`
 							}
 						},
 						// ReplyToAddresses: [],
