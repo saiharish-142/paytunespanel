@@ -1457,7 +1457,7 @@ async function DailyReportMailer() {
 							},
 							Subject: {
 								Charset: 'UTF-8',
-								Data: `Paytunes: ${campaignName} Daily Report`
+								Data: x.subject ? x.subject : `Paytunes: ${campaignName} Daily Report`
 							}
 						},
 						// ReplyToAddresses: [],
