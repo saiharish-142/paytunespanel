@@ -369,7 +369,7 @@ async function datareturner22() {
 		console.log(e);
 	}
 }
-datareturner();
+// datareturner();
 async function datareturner() {
 	try {
 		var data = await tempModel.find();
