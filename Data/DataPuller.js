@@ -136,7 +136,7 @@ router.get('/question3', adminauth, async (req, res) => {
 				{
 					$match: {
 						type: {
-							$in: [ 'impression', 'complete', 'click' ]
+							$in: [ 'impression', 'complete', 'click', 'companionclicktracking', 'clicktracking' ]
 						},
 						test: { $gte: startDate, $lt: endDate }
 					}
@@ -464,6 +464,126 @@ async function datareturner() {
 				await csv.toDisk('./Data1.csv').then((sol) => console.log(sol)).catch((er) => console.log(er));
 			}
 		);
+	} catch (e) {
+		console.log(e);
+	}
+}
+datareturner1();
+async function datareturner1() {
+	try {
+		var data = await tempModel1.find();
+		var zipData = await Zipreports2.find();
+		var zippin = {};
+		zipData.map((x) => {
+			zippin[x.pincode] = x;
+		});
+		var fileStore = [];
+		data.map((x) => {
+			fileStore.push({
+				pincode: x.zip,
+				city: zippin[x.zip] ? zippin[x.zip].city : '',
+				grandcity: zippin[x.zip] ? zippin[x.zip].grandcity : '',
+				district: zippin[x.zip] ? zippin[x.zip].district : '',
+				state: zippin[x.zip] ? zippin[x.zip].state : '',
+				grandstate: zippin[x.zip] ? zippin[x.zip].grandstate : '',
+				impression: x.impression,
+				cilck: x.cilck,
+				complete: x.complete
+			});
+		});
+		const csv = new ObjectsToCsv(fileStore);
+		await csv.toDisk('./Data2.csv').then((sol) => console.log(sol)).catch((er) => console.log(er));
+		// var obj = {};
+		// obj.arr = new Array();
+		// data.map((x) => {
+		// 	if (!obj[x.time + x.campaignId]) {
+		// 		obj[x.time + x.campaignId] = true;
+		// 		obj.arr.push(x);
+		// 	}
+		// });
+		// data = obj.arr;
+		// console.log(data.length);
+		// data = obj.arr.filter((value, index) => {
+		// 	const _value = JSON.stringify(value);
+		// 	return (
+		// 		index ===
+		// 		obj.arr.findIndex((obj) => {
+		// 			return JSON.stringify(obj) === _value;
+		// 		})
+		// 	);
+		// });
+		// var categoryData = await CategoryReports2.find().catch((err) => console.log(err));
+		// var categoryObj = {};
+		// categoryData.map((x) => {
+		// 	if (!categoryObj[x.category]) categoryObj[x.category] = x;
+		// });
+		// var adsSet = await adsetting.find({}).select('adCategory type campaignId').catch((err) => console.log(err));
+		// var adsSetObj = {};
+		// adsSet.map((x) => {
+		// 	if (!adsSetObj[x.campaignId]) {
+		// 		if (x.adCategory) {
+		// 			x.category = categoryObj[x.adCategory];
+		// 		}
+		// 		adsSetObj[x.campaignId] = x;
+		// 	}
+		// });
+		// console.log(data.length);
+		// StreamingAds.populate(
+		// 	data,
+		// 	{ path: 'campaignId', select: 'AdTitle startDate endDate Duration' },
+		// 	async function(err, populatedreports) {
+		// 		if (err) console.log(err);
+		// 		var temp = [];
+		// 		populatedreports.map((da) => {
+		// 			var type = '',
+		// 				category = '',
+		// 				name = '',
+		// 				tier1 = '',
+		// 				tier2 = '',
+		// 				tier3 = '',
+		// 				tier4 = '';
+		// 			if (adsSetObj[da.campaignId._id]) {
+		// 				type = adsSetObj[da.campaignId._id].type;
+		// 				category = adsSetObj[da.campaignId._id].adCategory;
+		// 				name = adsSetObj[da.campaignId._id].category ? adsSetObj[da.campaignId._id].category.Name : '';
+		// 				tier1 = adsSetObj[da.campaignId._id].category
+		// 					? adsSetObj[da.campaignId._id].category.tier1
+		// 					: '';
+		// 				tier2 = adsSetObj[da.campaignId._id].category
+		// 					? adsSetObj[da.campaignId._id].category.tier2
+		// 					: '';
+		// 				tier3 = adsSetObj[da.campaignId._id].category
+		// 					? adsSetObj[da.campaignId._id].category.tier3
+		// 					: '';
+		// 				tier4 = adsSetObj[da.campaignId._id].category
+		// 					? adsSetObj[da.campaignId._id].category.tier4
+		// 					: '';
+		// 			}
+		// 			temp.push({
+		// 				time: da.time,
+		// 				impression: da.impression,
+		// 				click: da.click,
+		// 				firstquartile: da.firstquartile,
+		// 				thirdquartile: da.thirdquartile,
+		// 				midpoint: da.midpoint,
+		// 				start: da.start,
+		// 				complete: da.complete,
+		// 				type,
+		// 				category,
+		// 				categoryName: name,
+		// 				tier1,
+		// 				tier2,
+		// 				tier3,
+		// 				tier4,
+		// 				AdTitle: da.campaignId.AdTitle,
+		// 				Duration: da.campaignId.Duration
+		// 			});
+		// 		});
+		// 		console.log(temp);
+		// 		const csv = new ObjectsToCsv(temp);
+		// 		await csv.toDisk('./Data1.csv').then((sol) => console.log(sol)).catch((er) => console.log(er));
+		// 	}
+		// );
 	} catch (e) {
 		console.log(e);
 	}
