@@ -468,7 +468,7 @@ async function datareturner() {
 		console.log(e);
 	}
 }
-datareturner1();
+// datareturner1();
 async function datareturner1() {
 	try {
 		var data = await tempModel1.find();
