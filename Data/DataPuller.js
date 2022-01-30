@@ -127,24 +127,11 @@ router.get('/question3', adminauth, async (req, res) => {
 		let data = await trackinglogs
 			.aggregate([
 				{
-					$project: {
-						test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } },
-						zip: '$zip',
-						type: '$type'
-					}
-				},
-				{
 					$match: {
 						type: {
 							$in: [ 'impression', 'complete', 'click', 'companionclicktracking', 'clicktracking' ]
 						},
-						test: { $gte: startDate, $lt: endDate }
-					}
-				},
-				{
-					$project: {
-						zip: '$zip',
-						type: '$type'
+						date: { $gte: startDate, $lt: endDate }
 					}
 				},
 				{
@@ -471,21 +458,37 @@ async function datareturner() {
 // datareturner1();
 async function datareturner1() {
 	try {
-		var data = await tempModel1.find();
-		var zipData = await Zipreports2.find();
-		var zippin = {};
-		zipData.map((x) => {
-			zippin[x.pincode] = x;
-		});
+		// var zipData = await Zipreports2.aggregate([ { $match: { pincode: { $gt: 99999, $lt: 1000000 } } } ]);
+		// console.log(zipData.length);
+		var data = await tempModel1.aggregate([
+			{ $match: { impression: { $gte: 500 } } },
+			{
+				$lookup: {
+					from: 'zipreports2',
+					localField: 'zip',
+					foreignField: 'pincode',
+					as: 'extra'
+				}
+			},
+			{ $unwind: { path: '$extra', preserveNullAndEmptyArrays: true } }
+		]);
+		console.log(data.length);
+		// var zips = [];
+		// data.map((x) => zips.push(x.zip));
+		// var zippin = {};
+		// zipData.map((x) => {
+		// 	zippin[x.pincode] = x;
+		// });
 		var fileStore = [];
 		data.map((x) => {
+			console.log(XMLHttpRequest);
 			fileStore.push({
 				pincode: x.zip,
-				city: zippin[x.zip] ? zippin[x.zip].city : '',
-				grandcity: zippin[x.zip] ? zippin[x.zip].grandcity : '',
-				district: zippin[x.zip] ? zippin[x.zip].district : '',
-				state: zippin[x.zip] ? zippin[x.zip].state : '',
-				grandstate: zippin[x.zip] ? zippin[x.zip].grandstate : '',
+				city: x.extra ? x.extra.city : '',
+				grandcity: x.extra ? x.extra.grandcity : '',
+				district: x.extra ? x.extra.district : '',
+				state: x.extra ? x.extra.state : '',
+				grandstate: x.extra ? x.extra.grandstate : '',
 				impression: x.impression,
 				cilck: x.cilck,
 				complete: x.complete
