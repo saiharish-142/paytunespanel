@@ -121,6 +121,89 @@ router.get('/question1', adminauth, async (req, res) => {
 	}
 });
 
+router.get('/question2', adminauth, async (req, res) => {
+	const { startDate, endDate } = req.body;
+	try {
+		let data = await trackinglogs
+			.aggregate([
+				{
+					$match: {
+						type: {
+							$in: [ 'impression', 'complete', 'click', 'companionclicktracking', 'clicktracking' ]
+						},
+						date: { $gte: startDate, $lt: endDate }
+					}
+				},
+				{
+					$group: {
+						_id: { zip: '$zip', type: '$type' },
+						count: { $sum: 1 }
+					}
+				},
+				{
+					$group: {
+						_id: { zip: '$_id.zip' },
+						data: { $push: { k: '$_id.type', v: '$count' } }
+					}
+				},
+				{
+					$project: {
+						zip: '$_id.zip',
+						data: { $arrayToObject: '$data' }
+					}
+				}
+			])
+			.allowDiskUse(true);
+		var num = data.length;
+		console.log(num);
+		for (var i = 0; i < data.length; i++) {
+			let tempo = await tempModel1.findOne({ zip: data[i].zip });
+			if (tempo) {
+				if (tempo.startDate === startDate) {
+					return console.log('Already Done', i);
+				}
+				tempo.startDate = startDate;
+				tempo.impression += data[i].data.impression ? data[i].data.impression : 0;
+				tempo.click += data[i].data.click
+					? data[i].data.click
+					: 0 + data[i].data.companionclicktracking
+						? data[i].data.companionclicktracking
+						: 0 + data[i].data.clicktracking ? data[i].data.clicktracking : 0;
+				tempo.complete += data[i].data.complete ? data[i].data.complete : 0;
+				tempo
+					.save()
+					.then((result) => {
+						console.log('Updated', i);
+					})
+					.catch((err) => console.log('error', i, err));
+			} else {
+				const storer = new tempModel1({
+					zip: data[i].zip,
+					startDate,
+					impression: data[i].data.impression ? data[i].data.impression : 0,
+					click: data[i].data.click
+						? data[i].data.click
+						: 0 + data[i].data.companionclicktracking
+							? data[i].data.companionclicktracking
+							: 0 + data[i].data.clicktracking ? data[i].data.clicktracking : 0,
+					complete: data[i].data.complete ? data[i].data.complete : 0
+				});
+				storer
+					.save()
+					.then((result) => {
+						console.log('saved', i);
+					})
+					.catch((err) => {
+						console.log('err', i);
+					});
+			}
+		}
+	} catch (e) {
+		console.log(e);
+		res.status(422).json({ err: e });
+	}
+});
+
 router.get('/question3', adminauth, async (req, res) => {
 	const { startDate, endDate } = req.body;
 	try {
