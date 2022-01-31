@@ -128,29 +128,42 @@ router.get('/question2', adminauth, async (req, res) => {
 		let data = await trackinglogs
 			.aggregate([
 				{
+					$project: {
+						type: '$type',
+						zip: '$zip',
+						test: { $dateToString: { format: '%Y-%m-%d', date: '$createdOn' } }
+					}
+				},
+				{
 					$match: {
 						type: {
 							$in: [ 'impression', 'complete', 'click', 'companionclicktracking', 'clicktracking' ]
 						},
-						date: { $gte: startDate, $lt: endDate }
+						test: { $gte: startDate, $lt: endDate }
 					}
 				},
 				{
 					$group: {
-						_id: { zip: '$zip', type: '$type' },
-						count: { $sum: 1 }
-					}
-				},
-				{
-					$group: {
-						_id: { zip: '$_id.zip' },
-						data: { $push: { k: '$_id.type', v: '$count' } }
-					}
-				},
-				{
-					$project: {
-						zip: '$_id.zip',
-						data: { $arrayToObject: '$data' }
+						_id: '$zip',
+						impression: {
+							$sum: {
+								$cond: [ { $eq: [ '$type', 'impression' ] }, 1, 0 ]
+							}
+						},
+						complete: {
+							$sum: {
+								$cond: [ { $eq: [ '$type', 'complete' ] }, 1, 0 ]
+							}
+						},
+						click: {
+							$sum: {
+								$cond: [
+									{ $in: [ '$type', [ 'click', 'companionclicktracking', 'clicktracking' ] ] },
+									1,
+									0
+								]
+							}
+						}
 					}
 				}
 			])
@@ -164,13 +177,9 @@ router.get('/question2', adminauth, async (req, res) => {
 					return console.log('Already Done', i);
 				}
 				tempo.startDate = startDate;
-				tempo.impression += data[i].data.impression ? data[i].data.impression : 0;
-				tempo.click += data[i].data.click
-					? data[i].data.click
-					: 0 + data[i].data.companionclicktracking
-						? data[i].data.companionclicktracking
-						: 0 + data[i].data.clicktracking ? data[i].data.clicktracking : 0;
-				tempo.complete += data[i].data.complete ? data[i].data.complete : 0;
+				tempo.impression += data[i].impression ? data[i].impression : 0;
+				tempo.complete += data[i].complete ? data[i].complete : 0;
+				tempo.click += data[i].click ? data[i].click : 0;
 				tempo
 					.save()
 					.then((result) => {
@@ -181,13 +190,9 @@ router.get('/question2', adminauth, async (req, res) => {
 				const storer = new tempModel1({
 					zip: data[i].zip,
 					startDate,
-					impression: data[i].data.impression ? data[i].data.impression : 0,
-					click: data[i].data.click
-						? data[i].data.click
-						: 0 + data[i].data.companionclicktracking
-							? data[i].data.companionclicktracking
-							: 0 + data[i].data.clicktracking ? data[i].data.clicktracking : 0,
-					complete: data[i].data.complete ? data[i].data.complete : 0
+					impression: data[i].impression ? data[i].impression : 0,
+					click: data[i].click ? data[i].click : 0,
+					complete: data[i].complete ? data[i].complete : 0
 				});
 				storer
 					.save()
