@@ -34,6 +34,7 @@ require('./models/user.model');
 require('./models/streamingads.model');
 require('./models/publisherapps.model');
 require('./models/trackinglogs.model');
+require('./models/trackinglogs08oct21.model');
 require('./models/oldtracking.model');
 require('./models/wrappers.model');
 require('./models/rtbrequests.model');
