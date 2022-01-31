@@ -123,6 +123,7 @@ router.get('/question1', adminauth, async (req, res) => {
 
 router.get('/question2', adminauth, async (req, res) => {
 	const { startDate, endDate } = req.body;
+	console.log('started');
 	try {
 		let data = await trackinglogs
 			.aggregate([
