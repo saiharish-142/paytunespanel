@@ -1,6 +1,7 @@
 
 dist
 dev.js
+comment.js
 config.json
 package-lock.json
 node_modules/
