@@ -288,7 +288,7 @@ export default function Biddata() {
 
 							<TableCell>Bids Responded</TableCell>
 							<TableCell>Bids Won</TableCell>
-							<TableCell>Total Spent</TableCell>
+							{/* <TableCell>Total Spent</TableCell> */}
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -300,7 +300,7 @@ export default function Biddata() {
 								<TableCell>Triton</TableCell>
 								<TableCell>{row.requests}</TableCell>
 								<TableCell>{findbidwons(row._id.Date, 'Triton')}</TableCell>
-								<TableCell>{findspentdata(row._id.Date, 'Triton')}</TableCell>
+								{/* <TableCell>{findspentdata(row._id.Date, 'Triton')}</TableCell> */}
 							</TableRow>
 						))}
 					</TableBody>
@@ -327,7 +327,7 @@ export default function Biddata() {
 							<TableCell>SSP</TableCell>
 							<TableCell>Bids Responded</TableCell>
 							<TableCell>Bids Won</TableCell>
-							<TableCell>Total Spent</TableCell>
+							{/* <TableCell>Total Spent</TableCell> */}
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -339,7 +339,7 @@ export default function Biddata() {
 								<TableCell>Rubicon</TableCell>
 								<TableCell>{row.requests}</TableCell>
 								<TableCell>{findbidwons(row._id.Date, 'Rubicon')}</TableCell>
-								<TableCell>{findspentdata(row._id.Date, 'Rubicon')}</TableCell>
+								{/* <TableCell>{findspentdata(row._id.Date, 'Rubicon')}</TableCell> */}
 							</TableRow>
 						))}
 					</TableBody>
