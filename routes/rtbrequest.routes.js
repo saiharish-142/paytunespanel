@@ -11,7 +11,7 @@ const CategoryReports2 = require('../models/categoryreports2');
 // const Campaignwisereports=require('../models/campaignwisereports.model')
 const SpentReport = mongoose.model('spentreports');
 const Campaignwisereports = mongoose.model('campaignwisereports');
-let{db1,db2}=require('../db')
+let { db1, db2 } = require('../db')
 
 router.get('/rtbrs', adminauth, (req, res) => {
 	Rtbrequest.find()
@@ -117,30 +117,28 @@ router.post('/get_resreports_via_ssp', adminauth, async (req, res) => {
 	}
 });
 
-router.get('/get_bids_won', adminauth, async (req, res) => {
+router.get('/get_bids_won',  async (req, res) => {
 	try {
-		const result = await SpentReport.aggregate([
+		const result = await Campaignwisereports.aggregate([
 			{
 				$facet: {
 					Triton_Data: [
-						{ $match: { ssp: 'Triton' } },
+						{ $match: { ssp: 'Triton', date: { $gt: '2021-10-26' } } },
 						{
 							$group: {
 								_id: { Date: '$date' },
 								impressions: { $sum: '$impression' }
 							}
 						},
-						{ $match: { '_id.Date': { $gt: '2021-06-30' } } }
 					],
 					Rubicon_Data: [
-						{ $match: { ssp: 'Rubicon' } },
+						{ $match: { ssp: 'Rubicon', date: { $gt: '2021-10-26' } } },
 						{
 							$group: {
 								_id: { Date: '$date' },
 								impressions: { $sum: '$impression' }
 							}
 						},
-						{ $match: { '_id.Date': { $gt: '2021-06-30' } } }
 					]
 				}
 			}
@@ -325,7 +323,7 @@ router.get(
 	adminauth,
 	async (req, res) => {
 		try {
-			const TvRequest=db2.model('tvrequests',require('../models/tvrequests'));
+			const TvRequest = db2.model('tvrequests', require('../models/tvrequests'));
 			let results = await TvRequest.aggregate([
 				{
 					$group: {
@@ -350,7 +348,7 @@ router.get(
 						rtbType: 1,
 						ssp: 1,
 						request: 1,
-						app1:{$first:"$app_details"}
+						app1: { $first: "$app_details" }
 					}
 				},
 				{
@@ -360,7 +358,7 @@ router.get(
 						rtbType: 1,
 						ssp: 1,
 						request: 1,
-						publishername:'$app1.publishername'
+						publishername: '$app1.publishername'
 					}
 				},
 				{ $sort: { date: -1 } }
