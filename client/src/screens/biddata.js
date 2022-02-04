@@ -288,6 +288,7 @@ export default function Biddata() {
 
 							<TableCell>Bids Responded</TableCell>
 							<TableCell>Bids Won</TableCell>
+							<TableCell>Bids Won %</TableCell>
 							{/* <TableCell>Total Spent</TableCell> */}
 						</TableRow>
 					</TableHead>
@@ -300,6 +301,9 @@ export default function Biddata() {
 								<TableCell>Triton</TableCell>
 								<TableCell>{row.requests}</TableCell>
 								<TableCell>{findbidwons(row._id.Date, 'Triton')}</TableCell>
+								<TableCell>
+									{Math.round(findbidwons(row._id.Date, 'Triton') * 100 / row.requests * 100) / 100}%
+								</TableCell>
 								{/* <TableCell>{findspentdata(row._id.Date, 'Triton')}</TableCell> */}
 							</TableRow>
 						))}
@@ -327,6 +331,7 @@ export default function Biddata() {
 							<TableCell>SSP</TableCell>
 							<TableCell>Bids Responded</TableCell>
 							<TableCell>Bids Won</TableCell>
+							<TableCell>Bids Won %</TableCell>
 							{/* <TableCell>Total Spent</TableCell> */}
 						</TableRow>
 					</TableHead>
@@ -339,6 +344,9 @@ export default function Biddata() {
 								<TableCell>Rubicon</TableCell>
 								<TableCell>{row.requests}</TableCell>
 								<TableCell>{findbidwons(row._id.Date, 'Rubicon')}</TableCell>
+								<TableCell>
+									{Math.round(findbidwons(row._id.Date, 'Rubicon') * 100 / row.requests * 100) / 100}%
+								</TableCell>
 								{/* <TableCell>{findspentdata(row._id.Date, 'Rubicon')}</TableCell> */}
 							</TableRow>
 						))}
