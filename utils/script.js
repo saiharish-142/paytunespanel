@@ -30,9 +30,8 @@ const Uareports2=db2.model('uareqreports',Uareportschema)
 
 
 function getyesterday() {
-	let date = new Date(new Date());
+	let date = new Date();
 	date.setDate(date.getDate() - 1);
-	date = new Date(date);
 	const year = date.getFullYear();
 	let month;
 	if (date.getMonth() + 1 >= 10) {
@@ -52,8 +51,8 @@ function getyesterday() {
 async function podcastscript() {
 	let yesterday = getyesterday()
 	let results = await EpisodeModel.aggregate([
-		{$match:{createdOn:{$gt: new Date('2022-01-12T00:00:00.000Z'),$lt:new Date('2022-01-15T00:00:00.000Z') }}},
-		// { $match: { createdOn:  {$gt: new Date(`${yesterday}T00:00:00.000Z`),$lt:new Date()  }  } },
+		// {$match:{createdOn:{$gt: new Date('2022-01-12T00:00:00.000Z'),$lt:new Date('2022-01-15T00:00:00.000Z') }}},
+		{ $match: { createdOn:  {$gt: new Date(`${yesterday}T00:00:00.000Z`),$lt:new Date()  }  } },
 	])
 	console.log('podcast',results.length)
 	results.map(async (res) => {
@@ -131,8 +130,8 @@ async function Demographyscript() {
 async function ZipreqScript() {
 	let yesterday = getyesterday();
 	let results = await Zipreq2.aggregate([
-		 {$match:{date:{$gt:'2021-12-31',$lt:'2022-01-04'}}},
-		// { $match: { date: yesterday } },
+		//  {$match:{date:{$gt:'2021-12-31',$lt:'2022-01-04'}}},
+		{ $match: { date: yesterday } },
 		{$sort:{date:1}}
 	]).allowDiskUse(true)
 	console.log('zipreq',results.length)
@@ -145,8 +144,8 @@ async function ZipreqScript() {
 async function reqScript() {
 	let yesterday = getyesterday();
 	let results = await req2.aggregate([
-		{$match:{date:{$gt:'2021-12-28'}}},
-		// { $match: { date: yesterday } },
+		// {$match:{date:{$gt:'2021-12-28'}}},
+		{ $match: { date: yesterday } },
 		{$sort:{date:1}}
 	])
 	console.log('er',results[0])
@@ -160,8 +159,8 @@ async function resScript() {
 	let yesterday = getyesterday();
 	console.log(yesterday)
 	let results = await res2.aggregate([
-		{$match:{date:{$gt:'2021-12-28'}}},
-		// { $match: { date: yesterday }},
+		// {$match:{date:{$gt:'2021-12-28'}}},
+		{ $match: { date: yesterday }},
 		{$sort:{date:1}}
 	])
 	console.log(results[0])
