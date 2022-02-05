@@ -172,7 +172,7 @@ router.get('/question2', adminauth, async (req, res) => {
 		var num = data.length;
 		console.log(num);
 		for (var i = 0; i < data.length; i++) {
-			let tempo = await tempModel1.findOne({ zip: data[i].zip });
+			let tempo = await tempModel1.findOne({ zip: data[i]._id });
 			if (tempo) {
 				if (tempo.startDate === startDate) {
 					return console.log('Already Done', i);
@@ -189,7 +189,7 @@ router.get('/question2', adminauth, async (req, res) => {
 					.catch((err) => console.log('error', i, err));
 			} else {
 				const storer = new tempModel1({
-					zip: data[i].zip,
+					zip: data[i]._id,
 					startDate,
 					impression: data[i].impression ? data[i].impression : 0,
 					click: data[i].click ? data[i].click : 0,
