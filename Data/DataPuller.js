@@ -6,6 +6,7 @@ const adminauth = require('../authenMiddleware/adminauth');
 // const freqpublishreports = mongoose.model('freqpublishreports');
 const trackinglogs = mongoose.model('trackinglogs');
 const trackinglogs8oct21 = mongoose.model('trackinglogs8oct21');
+const trackinglogs_29jan22 = mongoose.model('trackinglogs_29jan22');
 const tempModel = mongoose.model('tempModel');
 const tempModel1 = mongoose.model('tempModel1');
 const tempModel2 = mongoose.model('tempModel2');
@@ -126,7 +127,7 @@ router.get('/question2', adminauth, async (req, res) => {
 	const { startDate, endDate } = req.body;
 	console.log('started');
 	try {
-		let data = await trackinglogs8oct21
+		let data = await trackinglogs_29jan22
 			.aggregate([
 				{
 					$project: {
