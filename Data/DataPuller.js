@@ -216,13 +216,28 @@ router.get('/getdataPin', adminauth, async (req, res) => {
 	var data = await tempModel1.find();
 	var zipData = await Zipreports2.aggregate([ { $match: { pincode: { $gt: 99999, $lt: 1000000 } } } ]);
 	var zipdataStore = {};
+	var datareturner = [];
 	zipData.map((x) => {
 		zipdataStore[x.pincode] = x;
 	});
 	data.map((x) => {
-		x.data = zipdataStore[x.zip];
+		let temp = zipdataStore[x.zip];
+		datareturner.push({
+			zip: x.zip,
+			area: temp.area ? temp.area : '',
+			lowersubcity: temp.lowersubcity ? temp.lowersubcity : '',
+			subcity: temp.subcity ? temp.subcity : '',
+			city: temp.city ? temp.city : '',
+			grandcity: temp.grandcity ? temp.grandcity : '',
+			district: temp.district ? temp.district : '',
+			state: temp.state ? temp.state : '',
+			grandstate: temp.grandstate ? temp.grandstate : '',
+			impression: x.impression,
+			click: x.click,
+			complete: x.complete
+		});
 	});
-	res.json(data);
+	res.json(datareturner);
 });
 
 router.get('/question3', adminauth, async (req, res) => {
