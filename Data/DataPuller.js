@@ -215,11 +215,13 @@ router.get('/question2', adminauth, async (req, res) => {
 router.get('/getdataPin', adminauth, async (req, res) => {
 	var data = await tempModel1.find();
 	var zipData = await Zipreports2.aggregate([ { $match: { pincode: { $gt: 99999, $lt: 1000000 } } } ]);
+	console.log(data.length, zipData.length);
 	var zipdataStore = {};
 	var datareturner = [];
 	zipData.map((x) => {
 		zipdataStore[x.pincode] = x;
 	});
+	console.log(zipdataStore);
 	data.map((x) => {
 		let temp = zipdataStore[x.zip];
 		console.log(temp);
