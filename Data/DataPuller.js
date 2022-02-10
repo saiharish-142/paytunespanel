@@ -223,18 +223,19 @@ router.get('/getdataPin', adminauth, async (req, res) => {
 	});
 	console.log(zipdataStore);
 	data.map((x) => {
+		if (x.impression <= 600) return;
 		let temp = zipdataStore[x.zip];
-		console.log(temp);
+		console.log(x.zip, temp);
 		datareturner.push({
 			zip: x.zip,
-			area: temp.area ? temp.area : '',
-			lowersubcity: temp.lowersubcity ? temp.lowersubcity : '',
-			subcity: temp.subcity ? temp.subcity : '',
-			city: temp.city ? temp.city : '',
-			grandcity: temp.grandcity ? temp.grandcity : '',
-			district: temp.district ? temp.district : '',
-			state: temp.state ? temp.state : '',
-			grandstate: temp.grandstate ? temp.grandstate : '',
+			area: temp ? temp.area : '',
+			lowersubcity: temp ? temp.lowersubcity : '',
+			subcity: temp ? temp.subcity : '',
+			city: temp ? temp.city : '',
+			grandcity: temp ? temp.grandcity : '',
+			district: temp ? temp.district : '',
+			state: temp ? temp.state : '',
+			grandstate: temp ? temp.grandstate : '',
 			impression: x.impression,
 			click: x.click,
 			complete: x.complete
