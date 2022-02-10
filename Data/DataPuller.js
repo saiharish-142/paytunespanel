@@ -222,6 +222,7 @@ router.get('/getdataPin', adminauth, async (req, res) => {
 	});
 	data.map((x) => {
 		let temp = zipdataStore[x.zip];
+		console.log(temp);
 		datareturner.push({
 			zip: x.zip,
 			area: temp.area ? temp.area : '',
