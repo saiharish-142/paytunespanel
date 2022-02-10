@@ -212,6 +212,19 @@ router.get('/question2', adminauth, async (req, res) => {
 	}
 });
 
+router.get('/getdataPin', adminauth, async (req, res) => {
+	var data = await tempModel1.find();
+	var zipData = await Zipreports2.aggregate([ { $match: { pincode: { $gt: 99999, $lt: 1000000 } } } ]);
+	var zipdataStore = {};
+	zipData.map((x) => {
+		zipdataStore[x.pincode] = x;
+	});
+	data.map((x) => {
+		x.data = zipdataStore[x.zip];
+	});
+	res.json(data);
+});
+
 router.get('/question3', adminauth, async (req, res) => {
 	const { startDate, endDate } = req.body;
 	try {
