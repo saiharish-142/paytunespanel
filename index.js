@@ -30,6 +30,8 @@ mongoose.connection.on('error', (err) => {
 	console.log('error in connection', err);
 });
 
+console.log(new Date().getHours(), new Date().getMinutes());
+
 require('./models/user.model');
 require('./models/streamingads.model');
 require('./models/publisherapps.model');
