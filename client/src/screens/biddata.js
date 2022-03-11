@@ -28,7 +28,8 @@ export default function Biddata() {
 	const [ bids, setbid ] = useState([]);
 	const [ bids1, setbids1 ] = useState([]);
 	const [ bidwons, setbidwons ] = useState({ Triton_Data: [], Rubicon_Data: [] });
-	const [ bidImpression, setbidImpression ] = useState({ Triton_Data: {}, Rubicon_Data: {} });
+	// const [ bidImpression, setbidImpression ] = useState({ Triton_Data: {}, Rubicon_Data: {} });
+	const [ bidImpressionTriton_Data, setbidImpressionTriton_Data ] = useState({});
 	const [ spentdata, setspentdata ] = useState({ Triton_Data: [], Rubicon_Data: [] });
 	const [ rowsPerPage, setRowsPerPage ] = useState(7);
 	const [ rowsPerPage1, setRowsPerPage1 ] = useState(7);
@@ -218,7 +219,7 @@ export default function Biddata() {
 						reso[`${x._id.substr(0,4)}-${x._id.substr(4,2)}-${x._id.substr(6,2)}`] = x.impression
 					}
 				})
-				setbidImpression(prev=>(...prev,Triton_Data:reso));
+				setbidImpressionTriton_Data(reso);
 			});
 	},[])
 
@@ -325,7 +326,7 @@ export default function Biddata() {
 								</TableCell>
 								<TableCell>Triton</TableCell>
 								<TableCell>{row.requests}</TableCell>
-								<TableCell>{(bidImpression && bidImpression.Triton_Data )? bidImpression.Triton_Data[row._id.Date]  :''}</TableCell>
+								<TableCell>{(bidImpressionTriton_Data )? bidImpressionTriton_Data[row._id.Date]  :''}</TableCell>
 								<TableCell>{findbidwons(row._id.Date, 'Triton')}</TableCell>
 								<TableCell>
 									{Math.round(findbidwons(row._id.Date, 'Triton') * 100 / row.requests * 100) / 100}%
