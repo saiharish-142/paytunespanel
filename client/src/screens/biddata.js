@@ -28,6 +28,7 @@ export default function Biddata() {
 	const [ bids, setbid ] = useState([]);
 	const [ bids1, setbids1 ] = useState([]);
 	const [ bidwons, setbidwons ] = useState({ Triton_Data: [], Rubicon_Data: [] });
+	const [ bidImpression, setbidImpression ] = useState({ Triton_Data: {}, Rubicon_Data: {} });
 	const [ spentdata, setspentdata ] = useState({ Triton_Data: [], Rubicon_Data: [] });
 	const [ rowsPerPage, setRowsPerPage ] = useState(7);
 	const [ rowsPerPage1, setRowsPerPage1 ] = useState(7);
@@ -197,6 +198,30 @@ export default function Biddata() {
 			});
 	}, []);
 
+	useEffect(()=>{
+		fetch('/rtbreq/get_impressions_triton', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('jwt')
+			}
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				console.log(data);
+				if (data.error) {
+					return console.log(data.error);
+				}
+				var reso = {}
+				data.map(x=>{
+					if(x._id){
+						reso[`${x._id.substr(0,4)}-${x._id.substr(4,2)}-${x._id.substr(6,2)}`] = x.impression
+					}
+				})
+				setbidImpression(prev=>(...prev,Triton_Data:reso));
+			});
+	},[])
+
 	React.useMemo(
 		() => {
 			let sortedProducts = publisherbids;
@@ -285,8 +310,8 @@ export default function Biddata() {
 						<TableRow>
 							<TableCell>Date</TableCell>
 							<TableCell>SSP</TableCell>
-
 							<TableCell>Bids Responded</TableCell>
+							<TableCell>Bids impression</TableCell>
 							<TableCell>Bids Won</TableCell>
 							<TableCell>Bids Won %</TableCell>
 							{/* <TableCell>Total Spent</TableCell> */}
@@ -300,6 +325,7 @@ export default function Biddata() {
 								</TableCell>
 								<TableCell>Triton</TableCell>
 								<TableCell>{row.requests}</TableCell>
+								<TableCell>{(bidImpression && bidImpression.Triton_Data )? bidImpression.Triton_Data[row._id.Date]  :''}</TableCell>
 								<TableCell>{findbidwons(row._id.Date, 'Triton')}</TableCell>
 								<TableCell>
 									{Math.round(findbidwons(row._id.Date, 'Triton') * 100 / row.requests * 100) / 100}%
