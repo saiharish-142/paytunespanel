@@ -9,9 +9,19 @@ const EpisodeModel = require('../models/episodemodel');
 const EpisodeModel2 = require('../models/episodemodel2');
 const CategoryReports2 = require('../models/categoryreports2');
 // const Campaignwisereports=require('../models/campaignwisereports.model')
+// const withistories = mongoose.model('withistories');
 const SpentReport = mongoose.model('spentreports');
 const Campaignwisereports = mongoose.model('campaignwisereports');
-let { db1, db2 } = require('../db')
+let { db1, db2 } = require('../db.js')
+const withistoriesSchema = new mongoose.Schema({
+	campaignId:  { type: String } ,
+	appId:  { type: String } ,
+	date:  { type: String } ,
+	auction_price:  { type: String } ,
+	rtbType:  { type: String } ,
+	url:  { type: String } 
+});
+const withistories = db2.model('withistories',withistoriesSchema)
 
 router.get('/rtbrs', adminauth, (req, res) => {
 	Rtbrequest.find()
@@ -22,6 +32,17 @@ router.get('/rtbrs', adminauth, (req, res) => {
 			console.log(err);
 		});
 });
+
+router.get('/get_impressions_triton',adminauth,(req,res)=>{
+	withistories.aggregate([
+		{$group:{_id:"$date",impression:{$sum:1}}}
+	]).then(result=>{
+		res.json(result)
+	}).catch(err=>{
+		res.status(422).json({err:err,error:'Somthing went wrong'})
+		console.log(err)
+	})
+})
 
 router.post('/addrtbr', adminauth, (req, res) => {
 	const { bidreq, bidid, imp, app, device, user, at, tmax, source, ext, Type, bidstatus } = req.body;

@@ -81,6 +81,7 @@ require('./models/singleoverallfreqdoc');
 require('./models/tempModel.model');
 require('./models/tempModel1.model');
 require('./models/tempModel2.model');
+require('./models/withistories.model')
 app.get('/', (req, res) => {
 	res.send('hello!');
 });
