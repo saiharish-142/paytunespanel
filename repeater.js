@@ -19,6 +19,9 @@ const freqpubOnreports = mongoose.model('freqpubOnreports');
 const bindstreamingads = mongoose.model('bindstreamingads');
 const campaignwisereports = mongoose.model('campaignwisereports');
 const campaignreportsSum = mongoose.model('campaignreportsSum');
+const Reqreport = mongoose.model('reqreport');
+const Resreport = mongoose.model('resreport');
+const Rtbrequest = mongoose.model('rtbrequests');
 var aws = require('aws-sdk');
 aws.config.loadFromPath(__dirname + '/config.json');
 const ses = new aws.SES();
@@ -1573,11 +1576,207 @@ async function DailyReportMailer() {
 	}
 }
 
+async function DailyBidDiffMailer(){
+	var cdatee = new Date()
+	cdatee.setDate(cdatee.getDate() - 1);
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var earlyDay = `${cyear}-${cmonth}-${cdate}`;
+	cdatee.setDate(cdatee.getDate() - 1);
+	cdate = cdatee.getDate();
+	cdate = cdate < 10 ? '0' + cdate : cdate;
+	cmonth = cdatee.getMonth() + 1;
+	cmonth = cmonth < 10 ? '0' + cmonth : cmonth;
+	cyear = cdatee.getFullYear();
+	var prevDay = `${cyear}-${cmonth}-${cdate}`;
+	var bidreq = await Reqreport.aggregate([
+		{$match:{date:{$gte:prevDay,$lte:earlyDay}}},
+		{$group:{
+			_id:{date:"$date",ssp:"$ssp"},requests: {$sum: '$requests'}
+		}}
+	])
+	var bidres = await Resreport.aggregate([
+		{$match:{date:{$gte:prevDay,$lte:earlyDay}}},
+		{$group:{
+			_id:{date:"$date",ssp:"$ssp"},requests: {$sum: '$ads'}
+		}}
+	])
+	var bidwon = await campaignwisereports.aggregate([
+		{$match:{date:{$gte:prevDay,$lte:earlyDay}}},
+		{$group:{
+			_id:{date:"$date",ssp:"$ssp"},impressions: { $sum: '$impression' }
+		}}
+	])
+	var wonset = {Triton:{},Rubicon:{}}
+	var resset = {Triton:{},Rubicon:{}}
+	var reqset = {Triton:{},Rubicon:{}}
+	bidwon.map(x=>{
+		if(x._id.ssp==='Triton')
+		wonset.Triton[x._id.date]=x.impressions
+		if(x._id.ssp==='Rubicon')
+		wonset.Rubicon[x._id.date]=x.impressions
+	})
+	bidres.map(x=>{
+		if(x._id.ssp==='Triton')
+		resset.Triton[x._id.date]=x.requests
+		if(x._id.ssp==='Rubicon')
+		resset.Rubicon[x._id.date]=x.requests
+	})
+	bidreq.map(x=>{
+		if(x._id.ssp==='Triton')
+		reqset.Triton[x._id.date]=x.requests
+		if(x._id.ssp==='Rubicon')
+		reqset.Rubicon[x._id.date]=x.requests
+	})
+	var mailerToken = false;
+	var wontritontemp = (wonset.Triton[prevDay] -wonset.Triton[earlyDay])*100 / wonset.Triton[prevDay]
+	var wonrubicontemp = (wonset.Rubicon[prevDay] -wonset.Rubicon[earlyDay])*100 / wonset.Rubicon[prevDay]
+	var restritontemp = (resset.Triton[prevDay] -resset.Triton[earlyDay])*100 / resset.Triton[prevDay]
+	var resrubicontemp = (resset.Rubicon[prevDay] -resset.Rubicon[earlyDay])*100 / resset.Rubicon[prevDay]
+	var reqtritontemp = (reqset.Triton[prevDay] -reqset.Triton[earlyDay])*100 / reqset.Triton[prevDay]
+	var reqrubicontemp = (reqset.Rubicon[prevDay] -reqset.Rubicon[earlyDay])*100 / reqset.Rubicon[prevDay]
+	if(
+		wonrubicontemp>=10 || wonrubicontemp<=-10 || wontritontemp>=10 || wontritontemp<=-10 || 
+		restritontemp>=10 || restritontemp<=-10 || resrubicontemp>=10 || resrubicontemp<=-10 || 
+		reqtritontemp>=10 || reqtritontemp<=-10 || reqrubicontemp>=10 || reqrubicontemp<=-10 
+		){
+			mailerToken=true
+		}
+		var params = {
+			Destination: {
+				BccAddresses: [],
+				CcAddresses: [],
+				// ToAddresses: [ 'saiharishmedam@gmail.com' ]
+				// ToAddresses: [ 'fin-ops@paytunes.in', 'raj.v@paytunes.in', 'saiharishmedam@gmail.com' ]
+				ToAddresses: [ 'fin-ops@paytunes.in', 'raj.v@paytunes.in' ]
+				// ToAddresses:  ['fin-ops@paytunes.in']
+			},
+			Message: {
+				Body: {
+					Html: {
+						Charset: 'UTF-8',
+						Data: `
+						<head>
+						<style>
+						table {
+						font-family: arial, sans-serif;
+						border-collapse: collapse;
+						width: 100%;
+						}
+	
+						td, th {
+						border: 1px solid #dddddd;
+						text-align: center;
+						padding: 4px;
+						}
+	
+						tr:nth-child(even) {
+						background-color: #dddddd;
+						}
+						</style>
+						</head>
+						<body>
+	
+								<div>
+									<h2>Bid Data Variations Triton</h2>
+									<table>
+										<tr>
+											<th>Date</th>
+											<th>SSP</th>
+											<th>Bid Responded</th>
+											<th>Bid Won</th>
+											<th>Bid Won %</th>
+										</tr>
+										<tr>
+											<td>${earlyDay}</td>
+											<td>Triton</td>
+											<td>${resset.Triton[earlyDay]}</td>
+											<td>${wonset.Triton[earlyDay]}</td>
+											<td>${Math.round(wonset.Triton[earlyDay]*100/resset.Triton[earlyDay]*100)/100}%</td>
+										</tr>
+										<tr>
+											<td>${prevDay}</td>
+											<td>Triton</td>
+											<td>${resset.Triton[prevDay]}</td>
+											<td>${wonset.Triton[prevDay]}</td>
+											<td>${Math.round(wonset.Triton[prevDay]*100/resset.Triton[prevDay]*100)/100}%</td>
+										</tr>
+									</table>
+									<h2>Bid Data Variations Rubicon</h2>
+									<table>
+										<tr>
+											<th>Date</th>
+											<th>SSP</th>
+											<th>Bid Responded</th>
+											<th>Bid Won</th>
+											<th>Bid Won %</th>
+										</tr>
+										<tr>
+											<td>${earlyDay}</td>
+											<td>Rubicon</td>
+											<td>${resset.Rubicon[earlyDay]}</td>
+											<td>${wonset.Rubicon[earlyDay]}</td>
+											<td>${Math.round(wonset.Rubicon[earlyDay]*100/resset.Rubicon[earlyDay]*100)/100}%</td>
+										</tr>
+										<tr>
+											<td>${prevDay}</td>
+											<td>Rubicon</td>
+											<td>${resset.Rubicon[prevDay]}</td>
+											<td>${wonset.Rubicon[prevDay]}</td>
+											<td>${Math.round(wonset.Rubicon[prevDay]*100/resset.Rubicon[prevDay]*100)/100}%</td>
+										</tr>
+									</table>
+								</div>
+	
+						</body>
+							`
+					},
+					Text: {
+						Charset: 'UTF-8',
+						Data: 'This is the message if in text if no data found.'
+					}
+				},
+				Subject: {
+					Charset: 'UTF-8',
+					Data: `Bid Data Varition Report`
+				}
+			},
+			// ReplyToAddresses: [],
+			// ReturnPath: '',
+			// ReturnPathArn: '',
+			// SourceArn: ''
+			Source: email
+		};
+		ses.sendEmail(params, function(err, data) {
+			if (err)
+				console.log(err, err.stack); // an error occurred
+			else console.log(data); // successful response
+			/*
+			data = {
+			MessageId: "EXAMPLE78603177f-7a5433e7-8edb-42ae-af10-f0181f34d6ee-000000"
+			}
+				*/
+		});
+	return {bidwon,bidreq,bidres,wonset,reqset,resset,mailerToken}
+	// var earlyDay = `${cdate.getFullYear()}-${cdate.getMonth() + 1 < 10 ? '0' + cdate.getMonth() + 1 : cdate.getMonth() + 1}-${cdate.getDate() < 10 ? '0' + cdate.getDate() : cdate.getDate()}`
+	// cdate.setDate(cdate.getDate() - 1);
+	// var prevDay = `${cdate.getFullYear()}-${cdate.getMonth() + 1 < 10 ? '0' + cdate.getMonth() + 1 : cdate.getMonth() + 1}-${cdate.getDate() < 10 ? '0' + cdate.getDate() : cdate.getDate()}`
+
+}
+
 router.put('/campaignPrior', adminauth, async (req, res) => {
 	const { date } = req.body;
 	var datee = new Date(date).toISOString();
 	let ans = await datareturner(datee);
 	res.json(ans);
+});
+
+router.get('/bidmailer', adminauth, async (req, res) => {
+	let data = await DailyBidDiffMailer();
+	res.json(data);
 });
 
 router.put('/freq', adminauth, async (req, res) => {
@@ -1625,6 +1824,7 @@ const expo = {
 	func1: datareturner,
 	func2: pacingMailer,
 	func3: DailyReportMailer,
+	func4: DailyBidDiffMailer,
 	freqover: freqoverall,
 	freqpub: freqCampPubTest,
 	freqonlypub: freqPubTest,

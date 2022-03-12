@@ -139,6 +139,10 @@ cron.schedule('00 09 * * *', function() {
 	commonfunctions.func2();
 });
 
+cron.schedule('00 09 * * *', function() {
+	commonfunctions.func4();
+});
+
 cron.schedule('00 1 * * *', function() {
 	PincodeRefresher();
 });
