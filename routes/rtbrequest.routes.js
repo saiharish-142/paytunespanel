@@ -184,6 +184,42 @@ router.get('/get_bids_won_publisher', adminauth, async (req, res) => {
 			{ $group: { _id: { Date: '$date', appId: '$appId' }, impressions: { $sum: '$impression' } } },
 			//{$match:{ '_id.Date':date}},
 
+			{ $addFields: { new_appid: { $convert: { input:'$_id.appId', to : 'objectId', onError: '',onNull: ''} } } },
+			{
+				$lookup: {
+					from: 'publisherapps',
+					localField: 'new_appid',
+					foreignField: '_id',
+					as: 'app_details'
+				}
+			},
+			{ $unwind: { path: '$app_details', preserveNullAndEmptyArrays: true } },
+			{
+				$project: {
+					appName: '$app_details.AppName',
+					date: '$_id.Date',
+					impressions: 1
+				}
+			},
+			{ $sort: { impressions: -1 } },
+			{ $match: { 'date': { $gt: '2021-06-30' } } }
+		]);
+		res.status(200).json(result);
+	} catch (err) {
+		console.log(err.message);
+		res.status(400).json({ error: err.message });
+	}
+});
+
+router.get('/get_bids_won_publisher_trial1', adminauth, async (req, res) => {
+	try {
+		// const dat=new Date().toISOString()
+		// const t=dat.split('T')
+		// const date=t[0]
+		const result = await Campaignwisereports.aggregate([
+			{ $group: { _id: { Date: '$date', appId: '$appId' }, impressions: { $sum: '$impression' } } },
+			//{$match:{ '_id.Date':date}},
+
 			{ $addFields: { new_appid: { $toObjectId: '$_id.appId' } } },
 			{
 				$lookup: {
@@ -194,7 +230,6 @@ router.get('/get_bids_won_publisher', adminauth, async (req, res) => {
 				}
 			},
 			{ $unwind: { path: '$app_details', preserveNullAndEmptyArrays: true } },
-
 			{
 				$project: {
 					appName: '$app_details.AppName',
